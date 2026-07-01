@@ -1,1 +1,5 @@
 @import "tailwindcss";
+
+*, *::before, *::after {
+  font-family: 'Public Sans', system-ui, sans-serif;
+}

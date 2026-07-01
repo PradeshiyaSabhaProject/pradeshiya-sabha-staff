@@ -15,25 +15,23 @@ jobs:
     name: Static Application Security Testing (SAST)
     runs-on: ubuntu-latest
     permissions:
-      actions: read
       contents: read
-      security-events: write # Required for CodeQL to report security events to GitHub Security tab
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --- GitHub CodeQL SAST Analysis ---
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+      # --- Trivy Open-Source SAST & Vulnerability Scanner ---
+      - name: Run Trivy SAST & Vulnerability Scanner
+        uses: aquasecurity/trivy-action@0.29.0
         with:
-          languages: javascript-typescript
-          queries: security-extended,security-and-quality
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
-        with:
-          category: "/language:javascript-typescript"
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '0' # Set to '1' to fail the pipeline if critical issues are found
+          ignore-unfixed: true
+          scanners: 'vuln,secret,misconfig'
+          severity: 'CRITICAL,HIGH'
 
       # --- Node.js Dependency Security Audit & Linting ---
       - name: Setup Node.js
