@@ -23,7 +23,7 @@ jobs:
 
       # --- Trivy Open-Source SAST & Vulnerability Scanner ---
       - name: Run Trivy SAST & Vulnerability Scanner
-        uses: aquasecurity/trivy-action@v0.29.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
