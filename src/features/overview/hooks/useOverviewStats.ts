@@ -8,7 +8,6 @@ export function useOverviewStats() {
 
   useEffect(() => {
     let isMounted = true
-    setLoading(true)
 
     fetchOverviewStats()
       .then((data) => {

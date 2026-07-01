@@ -10,10 +10,15 @@ export function useFetch<T>(url: string): UseFetchResult<T> {
   const [data, setData] = useState<T | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
+  const [prevUrl, setPrevUrl] = useState<string>(url)
+
+  if (url !== prevUrl) {
+    setPrevUrl(url)
+    setLoading(true)
+  }
 
   useEffect(() => {
     let isMounted = true
-    setLoading(true)
 
     fetch(url)
       .then((res) => {
