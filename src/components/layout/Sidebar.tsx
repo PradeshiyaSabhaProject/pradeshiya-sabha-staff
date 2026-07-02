@@ -103,7 +103,15 @@ const navItems: NavItem[] = [
     ],
   },
   { label: 'Asset Management', path: '/assets', icon: <AssetIcon /> },
-  { label: 'Complain Management', path: '/complaints', icon: <ComplainIcon /> },
+  {
+    label: 'Complain Management',
+    path: '/complaints',
+    icon: <ComplainIcon />,
+    children: [
+      { label: 'All Complaints', path: '/complaints/all', roles: ['admin', 'manager'] },
+      { label: 'My Complaints', path: '/complaints/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+    ],
+  },
   {
     label: 'Letter Management',
     path: '/letters',
@@ -114,6 +122,7 @@ const navItems: NavItem[] = [
       { label: 'Inward Letters', path: '/letters/inward', roles: ['admin', 'staff', 'manager'] },
       { label: 'Outward Letters', path: '/letters/outward', roles: ['admin', 'staff', 'manager'] },
       { label: 'Assigned Officers', path: '/letters/assigned', roles: ['admin', 'manager', 'superadmin'] },
+      { label: 'Write Letter', path: '/letters/write', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
     ],
   },
   { label: 'Profile', path: '/profile', icon: <ProfileIcon /> },

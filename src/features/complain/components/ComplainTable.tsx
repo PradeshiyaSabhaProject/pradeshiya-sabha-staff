@@ -4,6 +4,8 @@ import type { Complaint } from '../hooks/useComplainData'
 interface ComplainTableProps {
   complaints: Complaint[]
   onView: (complaint: Complaint) => void
+  showTabs?: boolean
+  showOfficer?: boolean
 }
 
 const EyeIcon = () => (
@@ -38,7 +40,7 @@ const TABS = [
   { id: 'rescheduled', label: 'Rescheduled', status: 'RESCHEDULED' },
 ]
 
-const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView }) => {
+const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showTabs = true, showOfficer = true }) => {
   const [activeTab, setActiveTab] = useState('all')
 
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
@@ -96,26 +98,28 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView }) => 
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       
       {/* Tabs */}
-      <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.id
-          const count = getTabCount(tab.id, tab.status)
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
-                isActive 
-                  ? 'border-[#801028] text-[#801028]' 
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              {tab.label}
-              <span className="text-xs font-bold text-gray-400">({count})</span>
-            </button>
-          )
-        })}
-      </div>
+      {showTabs && (
+        <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
+          {TABS.map((tab) => {
+            const isActive = activeTab === tab.id
+            const count = getTabCount(tab.id, tab.status)
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+                  isActive 
+                    ? 'border-[#801028] text-[#801028]' 
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                {tab.label}
+                <span className="text-xs font-bold text-gray-400">({count})</span>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {/* Filters */}
       <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
@@ -164,19 +168,21 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView }) => 
           </div>
         </div>
 
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
-          <select 
-            value={filters.officer} 
-            onChange={(e) => setFilters({...filters, officer: e.target.value})}
-            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
-          >
-            <option value="">All Officers</option>
-            {uniqueOfficers.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
-          <div className="absolute right-3 pointer-events-none">
-            <ChevronDownIcon />
+        {showOfficer && (
+          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+            <select 
+              value={filters.officer} 
+              onChange={(e) => setFilters({...filters, officer: e.target.value})}
+              className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+            >
+              <option value="">All Officers</option>
+              {uniqueOfficers.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+            <div className="absolute right-3 pointer-events-none">
+              <ChevronDownIcon />
+            </div>
           </div>
-        </div>
+        )}
         
         <div className="flex items-center gap-2">
           <button 
@@ -205,7 +211,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView }) => 
               <th className="py-4 px-6">CITIZEN NAME</th>
               <th className="py-4 px-6">CATEGORY</th>
               <th className="py-4 px-6">DATE & TIME</th>
-              <th className="py-4 px-6">ASSIGNED OFFICER</th>
+              {showOfficer && <th className="py-4 px-6">ASSIGNED OFFICER</th>}
               <th className="py-4 px-6">STATUS</th>
               <th className="py-4 px-6 text-center">ACTION</th>
             </tr>
@@ -223,7 +229,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView }) => 
                   <div className="font-bold text-gray-900">{complaint.date}</div>
                   <div className="text-xs text-gray-400 mt-0.5">{complaint.time}</div>
                 </td>
-                <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.assignedOfficer}</td>
+                {showOfficer && <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.assignedOfficer}</td>}
                 <td className="py-4 px-6 whitespace-nowrap">
                   <span className={`px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(complaint.status)}`}>
                     {complaint.status}

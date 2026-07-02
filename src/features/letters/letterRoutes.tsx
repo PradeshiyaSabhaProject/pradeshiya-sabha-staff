@@ -4,6 +4,7 @@ import MyLettersPage from './pages/MyLettersPage'
 import InwardLettersPage from './pages/InwardLettersPage'
 import OutwardLettersPage from './pages/OutwardLettersPage'
 import AssignedOfficersPage from './pages/AssignedOfficersPage'
+import WriteLetterPage from './pages/WriteLetterPage'
 
 export const letterRoutes = (
   <>
@@ -13,6 +14,7 @@ export const letterRoutes = (
     <Route path="letters/inward" element={<InwardLettersPage />} />
     <Route path="letters/outward" element={<OutwardLettersPage />} />
     <Route path="letters/assigned" element={<AssignedOfficersPage />} />
+    <Route path="letters/write" element={<WriteLetterPage />} />
   </>
 )
 
