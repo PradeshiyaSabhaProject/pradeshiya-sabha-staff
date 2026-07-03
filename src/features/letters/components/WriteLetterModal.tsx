@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { DepartmentOption, SentLetterAttachment } from '../hooks/useWriteLetterData'
 
 interface WriteLetterModalProps {
@@ -28,10 +28,8 @@ const SparklesIcon = () => (
 )
 
 const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, departments, onSubmit }) => {
-  if (!isOpen) return null
-
   const [selectedDept, setSelectedDept] = useState(departments[0]?.name || '')
-  const [selectedOfficer, setSelectedOfficer] = useState('')
+  const [selectedOfficer, setSelectedOfficer] = useState(departments[0]?.officers[0] || '')
   const [subject, setSubject] = useState('')
   const [body, setBody] = useState('')
   const [attachments, setAttachments] = useState<SentLetterAttachment[]>([])
@@ -41,11 +39,15 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
   const currentDeptObj = departments.find(d => d.name === selectedDept)
   const officersList = currentDeptObj?.officers || []
 
-  useEffect(() => {
+  const [prevDept, setPrevDept] = useState(selectedDept)
+  if (selectedDept !== prevDept) {
+    setPrevDept(selectedDept)
     if (officersList.length > 0 && !officersList.includes(selectedOfficer)) {
       setSelectedOfficer(officersList[0])
     }
-  }, [selectedDept, officersList, selectedOfficer])
+  }
+
+  if (!isOpen) return null
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {

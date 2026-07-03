@@ -66,7 +66,7 @@ const WriteLetterPage: React.FC = () => {
     }
   }
 
-  const handleCreateLetter = (newLetterData: any) => {
+  const handleCreateLetter = (newLetterData: Omit<SentLetter, 'id' | 'refNo' | 'dateTime' | 'senderName' | 'senderId' | 'status'>) => {
     const created = addSentLetter(newLetterData)
     // Optionally open the doc preview immediately for gratification
     setSelectedDocLetter(created)

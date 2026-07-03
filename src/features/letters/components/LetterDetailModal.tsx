@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { type Letter, type LetterStatus, updateLetterInStore } from '../hooks/useLetterData'
 
 interface LetterDetailModalProps {
@@ -38,17 +38,17 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
 }) => {
   const [superiorOfficer, setSuperiorOfficer] = useState('Hon. Chairman (Chief Executive)')
   const [isForwarded, setIsForwarded] = useState(false)
-  const [status, setStatus] = useState<LetterStatus>('PENDING')
+  const [status, setStatus] = useState<LetterStatus>(letter?.status || 'PENDING')
   const [isStatusUpdated, setIsStatusUpdated] = useState(false)
+  const [prevLetterId, setPrevLetterId] = useState(letter?.id)
 
-  useEffect(() => {
-    if (letter) {
-      setSuperiorOfficer('Hon. Chairman (Chief Executive)')
-      setIsForwarded(false)
-      setStatus(letter.status)
-      setIsStatusUpdated(false)
-    }
-  }, [letter])
+  if (letter?.id !== prevLetterId) {
+    setPrevLetterId(letter?.id)
+    setSuperiorOfficer('Hon. Chairman (Chief Executive)')
+    setIsForwarded(false)
+    if (letter) setStatus(letter.status)
+    setIsStatusUpdated(false)
+  }
 
   if (!letter) return null
 
