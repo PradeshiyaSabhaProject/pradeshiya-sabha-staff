@@ -103,8 +103,28 @@ const navItems: NavItem[] = [
     ],
   },
   { label: 'Asset Management', path: '/assets', icon: <AssetIcon /> },
-  { label: 'Complain Management', path: '/complaints', icon: <ComplainIcon /> },
-  { label: 'Letter Management', path: '/letters', icon: <LetterIcon /> },
+  {
+    label: 'Complain Management',
+    path: '/complaints',
+    icon: <ComplainIcon />,
+    children: [
+      { label: 'All Complaints', path: '/complaints/all', roles: ['admin', 'manager'] },
+      { label: 'My Complaints', path: '/complaints/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+    ],
+  },
+  {
+    label: 'Letter Management',
+    path: '/letters',
+    icon: <LetterIcon />,
+    children: [
+      { label: 'All Letters', path: '/letters/all', roles: ['admin', 'manager'] },
+      { label: 'My Letters', path: '/letters/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+      { label: 'Inward Letters', path: '/letters/inward', roles: ['admin', 'staff', 'manager'] },
+      { label: 'Outward Letters', path: '/letters/outward', roles: ['admin', 'staff', 'manager'] },
+      { label: 'Assigned Officers', path: '/letters/assigned', roles: ['admin', 'manager', 'superadmin'] },
+      { label: 'Write Letter', path: '/letters/write', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+    ],
+  },
   { label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
 ]
@@ -116,6 +136,7 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
     '/appointments': false,
+    '/letters': false,
   })
 
   const toggleMenu = (path: string) => {
