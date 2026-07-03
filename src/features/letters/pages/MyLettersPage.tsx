@@ -42,13 +42,15 @@ const MyLettersPage: React.FC = () => {
           letters={letters} 
           onView={handleView} 
           showTabs={false} 
-          showOfficer={false} 
+          showOfficer={true} 
         />
       )}
 
       <LetterDetailModal 
         letter={selectedLetter} 
         onClose={handleCloseModal} 
+        allowForwardToSuperior={true}
+        allowStatusChange={true}
       />
 
     </div>

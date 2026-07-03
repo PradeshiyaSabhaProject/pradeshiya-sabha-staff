@@ -143,29 +143,46 @@ const DUMMY_LETTERS: Letter[] = [
   }
 ]
 
+let currentLetters: Letter[] = [...DUMMY_LETTERS]
+type Listener = () => void
+const listeners: Set<Listener> = new Set()
+
+export const updateLetterInStore = (updatedLetter: Letter) => {
+  currentLetters = currentLetters.map(l => l.id === updatedLetter.id ? updatedLetter : l)
+  listeners.forEach(fn => fn())
+}
+
 export const useLetterData = () => {
   const [loading, setLoading] = useState(true)
-  const [letters, setLetters] = useState<Letter[]>([])
+  const [letters, setLetters] = useState<Letter[]>(currentLetters)
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setLetters(DUMMY_LETTERS)
+      setLetters([...currentLetters])
       setLoading(false)
-    }, 500)
-    return () => clearTimeout(timer)
+    }, 300)
+    
+    const listener = () => setLetters([...currentLetters])
+    listeners.add(listener)
+    return () => {
+      clearTimeout(timer)
+      listeners.delete(listener)
+    }
   }, [])
 
+  // Calculate dynamic stats from currentLetters
   const stats = {
-    pending: 12,
-    approved: 28,
-    rejected: 3,
-    completed: 12,
-    total: 63
+    pending: currentLetters.filter(l => l.status === 'PENDING').length,
+    approved: currentLetters.filter(l => l.status === 'APPROVED').length,
+    rejected: currentLetters.filter(l => l.status === 'REJECTED').length,
+    completed: currentLetters.filter(l => l.status === 'COMPLETED').length,
+    total: currentLetters.length
   }
 
   return {
     loading,
     letters,
-    stats
+    stats,
+    updateLetter: updateLetterInStore
   }
 }

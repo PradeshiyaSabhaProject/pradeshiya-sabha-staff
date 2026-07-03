@@ -1,9 +1,11 @@
-import React from 'react'
-import type { Letter } from '../hooks/useLetterData'
+import React, { useState, useEffect } from 'react'
+import { type Letter, type LetterStatus, updateLetterInStore } from '../hooks/useLetterData'
 
 interface LetterDetailModalProps {
   letter: Letter | null
   onClose: () => void
+  allowForwardToSuperior?: boolean
+  allowStatusChange?: boolean
 }
 
 const CloseIcon = () => (
@@ -28,8 +30,45 @@ const PdfIcon = () => (
   </svg>
 )
 
-const LetterDetailModal: React.FC<LetterDetailModalProps> = ({ letter, onClose }) => {
+const LetterDetailModal: React.FC<LetterDetailModalProps> = ({ 
+  letter, 
+  onClose, 
+  allowForwardToSuperior = false,
+  allowStatusChange = false
+}) => {
+  const [superiorOfficer, setSuperiorOfficer] = useState('Hon. Chairman (Chief Executive)')
+  const [isForwarded, setIsForwarded] = useState(false)
+  const [status, setStatus] = useState<LetterStatus>('PENDING')
+  const [isStatusUpdated, setIsStatusUpdated] = useState(false)
+
+  useEffect(() => {
+    if (letter) {
+      setSuperiorOfficer('Hon. Chairman (Chief Executive)')
+      setIsForwarded(false)
+      setStatus(letter.status)
+      setIsStatusUpdated(false)
+    }
+  }, [letter])
+
   if (!letter) return null
+
+  const handleForwardToSuperior = () => {
+    const updated = { ...letter, assignedOfficer: superiorOfficer }
+    updateLetterInStore(updated)
+    setIsForwarded(true)
+    setTimeout(() => {
+      onClose()
+    }, 1200)
+  }
+
+  const handleUpdateStatus = () => {
+    const updated = { ...letter, status: status }
+    updateLetterInStore(updated)
+    setIsStatusUpdated(true)
+    setTimeout(() => {
+      onClose()
+    }, 1200)
+  }
 
   const getStatusStyle = (status: string) => {
     switch (status) {
@@ -85,7 +124,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({ letter, onClose }
               <p className="text-sm font-semibold text-gray-800">{letter.citizenPhone}</p>
             </div>
             <div>
-              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">STATUS</p>
+              <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1">CURRENT STATUS</p>
               <div className="mt-0.5">
                 <span className={`px-3 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(letter.status)}`}>
                   {letter.status}
@@ -128,21 +167,105 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({ letter, onClose }
             )}
           </div>
 
+          {/* Update Correspondence Status (Only in My Letters) */}
+          {allowStatusChange && (
+            <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
+              <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
+                <span>🔄 Update Correspondence Status</span>
+              </h3>
+              <p className="text-xs text-amber-800">
+                Modify the processing status of this citizen letter to reflect current administrative progress.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center pt-1">
+                <div className="flex-1">
+                  <select 
+                    value={status} 
+                    onChange={(e) => setStatus(e.target.value as LetterStatus)}
+                    disabled={isStatusUpdated}
+                    className="w-full border border-amber-300 rounded-lg px-3 py-2 text-sm font-semibold bg-white text-gray-800 focus:outline-none focus:border-amber-600 cursor-pointer disabled:opacity-60"
+                  >
+                    <option value="PENDING">PENDING (In Review)</option>
+                    <option value="APPROVED">APPROVED (Action Authorized)</option>
+                    <option value="REJECTED">REJECTED (Request Denied)</option>
+                    <option value="COMPLETED">COMPLETED (Action Finished)</option>
+                    <option value="RESCHEDULED">RESCHEDULED (Postponed)</option>
+                    <option value="NO-SHOW">NO-SHOW (Citizen Absent)</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleUpdateStatus}
+                  disabled={isStatusUpdated}
+                  className={`px-5 py-2 text-white text-sm font-bold rounded-lg transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
+                    isStatusUpdated ? 'bg-green-600' : 'bg-amber-700 hover:bg-amber-800'
+                  }`}
+                >
+                  <span>{isStatusUpdated ? '✓ Status Updated!' : 'Update Status'}</span>
+                </button>
+              </div>
+              {isStatusUpdated && (
+                <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
+                  <span>✓ Letter status changed to {status}!</span>
+                  <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Saved</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Escalate / Forward to Superior Official (Only in My Letters) */}
+          {allowForwardToSuperior && (
+            <div className="bg-purple-50/80 border border-purple-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
+              <h3 className="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
+                <span>⬆️ Escalate: Forward to Official Above Designation</span>
+              </h3>
+              <p className="text-xs text-purple-700">
+                Forward this correspondence to a superior municipal authority or executive officer for higher-level review and action.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center pt-1">
+                <div className="flex-1">
+                  <select 
+                    value={superiorOfficer} 
+                    onChange={(e) => setSuperiorOfficer(e.target.value)}
+                    disabled={isForwarded}
+                    className="w-full border border-purple-300 rounded-lg px-3 py-2 text-sm font-semibold bg-white text-gray-800 focus:outline-none focus:border-purple-600 cursor-pointer disabled:opacity-60"
+                  >
+                    <option value="Hon. Chairman (Chief Executive)">Hon. Chairman (Chief Executive of Sabha)</option>
+                    <option value="Secretary of Pradeshiya Sabha">Secretary of Pradeshiya Sabha (Chief Admin Officer)</option>
+                    <option value="Chief Engineer (Works Dept)">Chief Engineer (Head of Works & Technical Dept)</option>
+                    <option value="Revenue Superintendent">Revenue Superintendent (Head of Finance)</option>
+                    <option value="Senior Staff Officer / Deputy Secretary">Senior Staff Officer / Deputy Secretary</option>
+                  </select>
+                </div>
+                <button 
+                  onClick={handleForwardToSuperior}
+                  disabled={isForwarded}
+                  className={`px-5 py-2 text-white text-sm font-bold rounded-lg transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
+                    isForwarded ? 'bg-green-600' : 'bg-[#801028] hover:bg-[#600a1c]'
+                  }`}
+                >
+                  <span>{isForwarded ? '✓ Escalated!' : 'Forward to Superior'}</span>
+                </button>
+              </div>
+              {isForwarded && (
+                <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
+                  <span>✓ Correspondence forwarded to {superiorOfficer}!</span>
+                  <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Transferred</span>
+                </div>
+              )}
+            </div>
+          )}
+
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 bg-white flex items-center justify-end gap-3">
+        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-3">
+          <div className="text-xs text-gray-500">
+            Currently assigned to: <span className="font-bold text-gray-800">{letter.assignedOfficer}</span>
+          </div>
           <button 
             onClick={onClose}
-            className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            className="px-5 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
           >
             Close
-          </button>
-          <button 
-            onClick={onClose}
-            className="px-5 py-2.5 bg-[#801028] text-white text-sm font-semibold rounded-lg hover:bg-[#600a1c] transition-colors shadow-sm cursor-pointer"
-          >
-            Assign Officer
           </button>
         </div>
 
@@ -152,3 +275,4 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({ letter, onClose }
 }
 
 export default LetterDetailModal
+
