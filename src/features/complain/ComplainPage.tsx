@@ -22,8 +22,8 @@ const ComplainPage: React.FC = () => {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">All Complaints</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and review all citizen-submitted grievances</p>
+          <h1 className="text-2xl font-bold text-gray-900">My Complaints</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage and review all complaints have for you</p>
         </div>
         <div>
           <button className="flex items-center gap-2 bg-white border border-gray-200 text-sm font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">

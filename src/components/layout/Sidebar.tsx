@@ -103,7 +103,16 @@ const navItems: NavItem[] = [
     ],
   },
   { label: 'Asset Management', path: '/assets', icon: <AssetIcon /> },
-  { label: 'Complain Management', path: '/complaints', icon: <ComplainIcon /> },
+  {
+    label: 'Complain Management',
+    path: '/complaints',
+    icon: <ComplainIcon />,
+    children: [
+      { label: 'All Complaints', path: '/complaints/all', roles: ['admin', 'manager'] },
+      { label: 'My Complaints', path: '/complaints', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+      { label: 'Assigned Officers', path: '/complaints/officers', roles: ['admin', 'manager'] },
+    ],
+  },
   { label: 'Letter Management', path: '/letters', icon: <LetterIcon /> },
   { label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
