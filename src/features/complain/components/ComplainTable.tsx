@@ -33,6 +33,8 @@ const CalendarIcon = () => (
 const TABS = [
   { id: 'all', label: 'All Complaints', status: null },
   { id: 'pending', label: 'Pending', status: 'PENDING' },
+  { id: 'reviewing', label: 'Reviewing', status: 'REVIEWING' },
+  { id: 'inprogress', label: 'In Progress', status: 'IN PROGRESS' },
   { id: 'approved', label: 'Approved', status: 'APPROVED' },
   { id: 'rejected', label: 'Rejected', status: 'REJECTED' },
   { id: 'completed', label: 'Completed', status: 'COMPLETED' },
@@ -80,6 +82,8 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'PENDING': return 'text-orange-600 border-orange-300'
+      case 'REVIEWING': return 'text-amber-600 border-amber-300'
+      case 'IN PROGRESS': return 'text-indigo-600 border-indigo-300'
       case 'APPROVED': return 'text-green-600 border-green-300'
       case 'REJECTED': return 'text-red-600 border-red-300'
       case 'COMPLETED': return 'text-purple-600 border-purple-300'

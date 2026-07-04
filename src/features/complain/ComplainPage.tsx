@@ -5,7 +5,7 @@ import ComplainTable from './components/ComplainTable'
 import ComplainDetailModal from './components/ComplainDetailModal'
 
 const ComplainPage: React.FC = () => {
-  const { loading, complaints, stats } = useComplainData()
+  const { loading, complaints, stats, updateComplaint } = useComplainData()
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null)
 
   const handleView = (complaint: Complaint) => {
@@ -53,7 +53,12 @@ const ComplainPage: React.FC = () => {
       {selectedComplaint && (
         <ComplainDetailModal 
           complaint={selectedComplaint} 
-          onClose={handleCloseModal} 
+          onClose={handleCloseModal}
+          mode="all"
+          onUpdateComplaint={(id, updatedData) => {
+            const updated = updateComplaint(id, updatedData)
+            if (updated) setSelectedComplaint(updated)
+          }}
         />
       )}
 
