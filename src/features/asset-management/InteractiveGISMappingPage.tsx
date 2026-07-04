@@ -208,25 +208,16 @@ export const InteractiveGISMappingPage: React.FC = () => {
       if (isNaN(lat) || isNaN(lng)) return
 
       // Determine marker color and icon based on category & priority
-      let bgStyle = 'background: #A31736; border: 2px solid white;' // default maroon
-      let iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
+      const bgStyle = asset.category === 'Utility / Infrastructure' ? 'background: #1d4ed8; border: 2px solid white;'
+        : asset.category === 'Building' ? 'background: #800000; border: 2px solid white;'
+        : asset.category === 'Land' ? 'background: #059669; border: 2px solid white;'
+        : asset.category === 'Road' ? 'background: #4b5563; border: 2px solid white;'
+        : 'background: #A31736; border: 2px solid white;'
 
-      if (asset.category === 'Utility / Infrastructure') {
-        bgStyle = 'background: #1d4ed8; border: 2px solid white;' // blue
-        iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
-      } else if (asset.category === 'Building') {
-        bgStyle = 'background: #800000; border: 2px solid white;' // dark red/maroon
-        iconHtml = `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
-      } else if (asset.category === 'Land') {
-        bgStyle = 'background: #059669; border: 2px solid white;' // emerald green
-        iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
-      } else if (asset.category === 'Road') {
-        bgStyle = 'background: #4b5563; border: 2px solid white;' // grey
-        iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="w-4 h-4"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>`
-      } else {
-        bgStyle = 'background: #d97706; border: 2px solid white;' // amber
-        iconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" class="w-4 h-4"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`
-      }
+      const iconHtml = asset.category === 'Utility / Infrastructure' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
+        : asset.category === 'Building' ? `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
+        : asset.category === 'Land' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
+        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
 
       // If high priority / disputed, add red glow/badge
       const priorityGroup = getAssetPriorityGroup(asset.status)

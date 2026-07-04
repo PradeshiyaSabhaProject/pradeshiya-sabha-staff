@@ -116,11 +116,10 @@ export const AssetDirectoryPage: React.FC = () => {
       return `Rs. ${asset.valuation.toLocaleString('en-US', { minimumFractionDigits: 0 })}`
     }
     // Default mock valuation calculation if not set
-    let baseVal = 45000000
-    if (asset.category === 'Land') baseVal = 124500000
-    else if (asset.category === 'Road') baseVal = 45200000
-    else if (asset.category === 'Building') baseVal = 32800000
-    else baseVal = 85000000
+    const baseVal = asset.category === 'Land' ? 124500000
+      : asset.category === 'Road' ? 45200000
+      : asset.category === 'Building' ? 32800000
+      : 85000000
     return `Rs. ${(baseVal * (asset.value || 1)).toLocaleString('en-US')}`
   }
 

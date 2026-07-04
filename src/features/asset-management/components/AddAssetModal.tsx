@@ -28,36 +28,26 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
   const [value, setValue] = useState<number>(1)
   const [unit, setUnit] = useState('Plots')
 
-  // Auto-set standard unit based on category selection
-  useEffect(() => {
-    switch (category) {
-      case 'Land':
-        setUnit('Plots')
-        break
-      case 'Road':
-        setUnit('KM')
-        break
-      case 'Building':
-        setUnit('Units')
-        break
-      case 'Vehicle':
-      case 'Machinery & Equipment':
-      case 'Utility / Infrastructure':
-        setUnit('Items')
-        break
-      default:
-        setUnit('Items')
+  const getDefaultUnit = (cat: string) => {
+    switch (cat) {
+      case 'Land': return 'Plots'
+      case 'Road': return 'KM'
+      case 'Building': return 'Units'
+      default: return 'Items'
     }
-  }, [category])
+  }
 
   // Reset fields on modal open/close
   useEffect(() => {
     if (isOpen) {
-      setName('')
-      setCategory('Land')
-      setLocation('')
-      setStatus('Operational')
-      setValue(1)
+      setTimeout(() => {
+        setName('')
+        setCategory('Land')
+        setLocation('')
+        setStatus('Operational')
+        setValue(1)
+        setUnit('Plots')
+      }, 0)
     }
   }, [isOpen])
 
@@ -134,7 +124,11 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
               <div className="relative">
                 <select
                   value={category}
-                  onChange={(e) => setCategory(e.target.value as AssetRecord['category'])}
+                  onChange={(e) => {
+                    const cat = e.target.value as AssetRecord['category']
+                    setCategory(cat)
+                    setUnit(getDefaultUnit(cat))
+                  }}
                   className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer"
                 >
                   <option value="Land">Land</option>

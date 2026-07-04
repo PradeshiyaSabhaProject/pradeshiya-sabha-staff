@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export type ComplaintStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW' | 'RESCHEDULED'
+export type ComplaintStatus = 'PENDING' | 'REVIEWING' | 'IN PROGRESS' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW' | 'RESCHEDULED'
 
 export interface ComplaintAttachment {
   id: string
@@ -8,6 +8,14 @@ export interface ComplaintAttachment {
   size: string
   type: 'image' | 'pdf'
   url: string
+}
+
+export interface OfficerRemark {
+  id: string
+  text: string
+  date: string
+  time: string
+  author: string
 }
 
 export interface Complaint {
@@ -21,9 +29,12 @@ export interface Complaint {
   date: string
   time: string
   assignedOfficer: string
+  assignedTechnician?: string
   status: ComplaintStatus
   description: string
   attachments: ComplaintAttachment[]
+  officerRemarks?: OfficerRemark[]
+  citizenNotified?: boolean
 }
 
 const DUMMY_COMPLAINTS: Complaint[] = [
@@ -113,28 +124,41 @@ const DUMMY_COMPLAINTS: Complaint[] = [
 
 export const useComplainData = () => {
   const [loading, setLoading] = useState(true)
-  const [complaints, setComplaints] = useState<Complaint[]>([])
+  const [complaints, setComplaints] = useState<Complaint[]>(() => {
+    const saved = localStorage.getItem('pradeshiya_complaints')
+    return saved ? JSON.parse(saved) : DUMMY_COMPLAINTS
+  })
 
   useEffect(() => {
-    // Simulate API fetch
     const timer = setTimeout(() => {
-      setComplaints(DUMMY_COMPLAINTS)
       setLoading(false)
-    }, 800)
+    }, 500)
     return () => clearTimeout(timer)
   }, [])
 
+  const saveComplaints = (updatedList: Complaint[]) => {
+    setComplaints(updatedList)
+    localStorage.setItem('pradeshiya_complaints', JSON.stringify(updatedList))
+  }
+
+  const updateComplaint = (id: string, updatedFields: Partial<Complaint>) => {
+    const updated = complaints.map(c => c.id === id ? { ...c, ...updatedFields } : c)
+    saveComplaints(updated)
+    return updated.find(c => c.id === id) || null
+  }
+
   const stats = {
-    pending: 12,
-    approved: 28,
-    rejected: 3,
-    completed: 12,
-    total: 63
+    pending: complaints.filter(c => c.status === 'PENDING' || c.status === 'REVIEWING').length,
+    approved: complaints.filter(c => c.status === 'APPROVED' || c.status === 'IN PROGRESS').length,
+    rejected: complaints.filter(c => c.status === 'REJECTED').length,
+    completed: complaints.filter(c => c.status === 'COMPLETED').length,
+    total: complaints.length
   }
 
   return {
     loading,
     complaints,
+    updateComplaint,
     stats
   }
 }
