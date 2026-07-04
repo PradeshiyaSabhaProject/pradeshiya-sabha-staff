@@ -114,37 +114,30 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     { name: 'Structural_Survey_Final.docx', size: '2.4 MB • Uploaded just now', type: 'doc', status: 'Document' },
   ])
 
-  // Update unit and asset ID preview when category changes
-  useEffect(() => {
+  const getCategoryDefaults = (cat: string) => {
     const rand = Math.floor(1000 + Math.random() * 9000)
-    switch (category) {
+    switch (cat) {
       case 'Land':
-        setUnit('Plots')
-        setAssetIdPreview(`PS-LN-2026-${rand}`)
-        break
+        return { unit: 'Plots', id: `PS-LN-2026-${rand}` }
       case 'Road':
-        setUnit('KM')
-        setAssetIdPreview(`PS-RD-2026-${rand}`)
-        break
+        return { unit: 'KM', id: `PS-RD-2026-${rand}` }
       case 'Building':
-        setUnit('sq.ft')
-        setAssetIdPreview(`PS-BL-2026-${rand}`)
-        break
+        return { unit: 'sq.ft', id: `PS-BL-2026-${rand}` }
       case 'Vehicle':
       case 'Machinery & Equipment':
       case 'Utility / Infrastructure':
-        setUnit('Items')
-        setAssetIdPreview(`PS-AST-2026-${rand}`)
-        break
+        return { unit: 'Items', id: `PS-AST-2026-${rand}` }
       default:
-        setUnit('Items')
+        return { unit: 'Items', id: `PS-AST-2026-${rand}` }
     }
-  }, [category])
+  }
 
   // Reset wizard on open
   useEffect(() => {
     if (isOpen) {
-      setStep(1)
+      setTimeout(() => {
+        setStep(1)
+      }, 0)
     }
   }, [isOpen])
 
@@ -363,7 +356,13 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   <div className="relative">
                     <select
                       value={category}
-                      onChange={(e) => setCategory(e.target.value as AssetRecord['category'])}
+                      onChange={(e) => {
+                        const cat = e.target.value as AssetRecord['category']
+                        setCategory(cat)
+                        const defaults = getCategoryDefaults(cat)
+                        setUnit(defaults.unit)
+                        setAssetIdPreview(defaults.id)
+                      }}
                       className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm text-gray-800 font-medium focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-10 cursor-pointer"
                     >
                       <option value="Land">Land</option>

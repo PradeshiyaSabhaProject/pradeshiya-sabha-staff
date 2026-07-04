@@ -231,7 +231,9 @@ export function useAssetData() {
 
   // Reset page on filter change
   useEffect(() => {
-    setCurrentPage(1)
+    setTimeout(() => {
+      setCurrentPage(1)
+    }, 0)
   }, [categoryFilter, statusFilter, searchQuery])
 
   // Filtered Assets

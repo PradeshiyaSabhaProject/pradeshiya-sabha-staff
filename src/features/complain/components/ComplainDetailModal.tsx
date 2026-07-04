@@ -86,10 +86,12 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
 
   useEffect(() => {
     if (complaint) {
-      setCurrentStatus(complaint.status)
-      setAssignedTech(complaint.assignedTechnician)
-      setRemarksList(complaint.officerRemarks || [])
-      setCitizenNotified(complaint.citizenNotified || false)
+      setTimeout(() => {
+        setCurrentStatus(complaint.status)
+        setAssignedTech(complaint.assignedTechnician)
+        setRemarksList(complaint.officerRemarks || [])
+        setCitizenNotified(complaint.citizenNotified || false)
+      }, 0)
     }
   }, [complaint])
 
@@ -128,8 +130,9 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
 
   const handleSendRemark = () => {
     if (!remarkText.trim() || !complaint) return
+    const timestamp = new Date().getTime()
     const newRemark: OfficerRemark = {
-      id: `rem-${Date.now()}`,
+      id: `rem-${timestamp}`,
       text: remarkText.trim(),
       date: new Date().toLocaleDateString('en-CA'),
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
