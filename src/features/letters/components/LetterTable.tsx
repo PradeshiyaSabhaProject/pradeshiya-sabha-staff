@@ -1,9 +1,9 @@
 import React, { useState, useMemo } from 'react'
-import type { Complaint } from '../hooks/useComplainData'
+import type { Letter } from '../hooks/useLetterData'
 
-interface ComplainTableProps {
-  complaints: Complaint[]
-  onView: (complaint: Complaint) => void
+interface LetterTableProps {
+  letters: Letter[]
+  onView: (letter: Letter) => void
   showTabs?: boolean
   showOfficer?: boolean
 }
@@ -31,10 +31,8 @@ const CalendarIcon = () => (
 )
 
 const TABS = [
-  { id: 'all', label: 'All Complaints', status: null },
+  { id: 'all', label: 'All Letters', status: null },
   { id: 'pending', label: 'Pending', status: 'PENDING' },
-  { id: 'reviewing', label: 'Reviewing', status: 'REVIEWING' },
-  { id: 'inprogress', label: 'In Progress', status: 'IN PROGRESS' },
   { id: 'approved', label: 'Approved', status: 'APPROVED' },
   { id: 'rejected', label: 'Rejected', status: 'REJECTED' },
   { id: 'completed', label: 'Completed', status: 'COMPLETED' },
@@ -42,16 +40,16 @@ const TABS = [
   { id: 'rescheduled', label: 'Rescheduled', status: 'RESCHEDULED' },
 ]
 
-const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showTabs = true, showOfficer = true }) => {
+const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = false, showOfficer = false }) => {
   const [activeTab, setActiveTab] = useState('all')
 
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueDates = useMemo(() => Array.from(new Set(complaints.map(c => c.date))).sort(), [complaints])
-  const uniqueCategories = useMemo(() => Array.from(new Set(complaints.map(c => c.category))).sort(), [complaints])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(complaints.map(c => c.status))).sort(), [complaints])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(complaints.map(c => c.assignedOfficer))).sort(), [complaints])
+  const uniqueDates = useMemo(() => Array.from(new Set(letters.map(l => l.date))).sort(), [letters])
+  const uniqueCategories = useMemo(() => Array.from(new Set(letters.map(l => l.category))).sort(), [letters])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(letters.map(l => l.status))).sort(), [letters])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(letters.map(l => l.assignedOfficer))).sort(), [letters])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
@@ -63,27 +61,25 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
     setActiveTab('all')
   }
 
-  const filteredComplaints = useMemo(() => {
-    return complaints.filter(c => {
-      // Tab filter
-      const tabObj = TABS.find(t => t.id === activeTab)
-      if (tabObj && tabObj.status && c.status !== tabObj.status) return false
+  const filteredLetters = useMemo(() => {
+    return letters.filter(l => {
+      if (showTabs) {
+        const tabObj = TABS.find(t => t.id === activeTab)
+        if (tabObj && tabObj.status && l.status !== tabObj.status) return false
+      }
       
-      // Dropdown filters
-      if (appliedFilters.date && c.date !== appliedFilters.date) return false
-      if (appliedFilters.category && c.category !== appliedFilters.category) return false
-      if (appliedFilters.status && c.status !== appliedFilters.status) return false
-      if (appliedFilters.officer && c.assignedOfficer !== appliedFilters.officer) return false
+      if (appliedFilters.date && l.date !== appliedFilters.date) return false
+      if (appliedFilters.category && l.category !== appliedFilters.category) return false
+      if (appliedFilters.status && l.status !== appliedFilters.status) return false
+      if (showOfficer && appliedFilters.officer && l.assignedOfficer !== appliedFilters.officer) return false
       
       return true
     })
-  }, [complaints, activeTab, appliedFilters])
+  }, [letters, activeTab, appliedFilters, showTabs, showOfficer])
 
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'PENDING': return 'text-orange-600 border-orange-300'
-      case 'REVIEWING': return 'text-amber-600 border-amber-300'
-      case 'IN PROGRESS': return 'text-indigo-600 border-indigo-300'
       case 'APPROVED': return 'text-green-600 border-green-300'
       case 'REJECTED': return 'text-red-600 border-red-300'
       case 'COMPLETED': return 'text-purple-600 border-purple-300'
@@ -92,16 +88,15 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
     }
   }
 
-  // Count complaints per tab ignoring dropdown filters (or including them if you prefer)
   const getTabCount = (tabId: string, status: string | null) => {
-    if (tabId === 'all') return complaints.length
-    return complaints.filter(c => c.status === status).length
+    if (tabId === 'all') return letters.length
+    return letters.filter(l => l.status === status).length
   }
 
   return (
     <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
       
-      {/* Tabs */}
+      {/* Optional Tabs */}
       {showTabs && (
         <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
           {TABS.map((tab) => {
@@ -127,15 +122,21 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
 
       {/* Filters */}
       <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
-        <div className="flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028] px-3">
-          <CalendarIcon />
-          <input 
-            type="date"
+        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="absolute left-3">
+            <CalendarIcon />
+          </div>
+          <select 
             value={filters.date} 
             onChange={(e) => setFilters({...filters, date: e.target.value})}
-            className="w-full outline-none text-sm text-gray-600 bg-transparent py-2 pl-2 cursor-pointer"
-            title="Filter by Date"
-          />
+            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-9 pr-8 cursor-pointer"
+          >
+            <option value="">All Dates</option>
+            {uniqueDates.map(d => <option key={d} value={d}>{d}</option>)}
+          </select>
+          <div className="absolute right-3 pointer-events-none">
+            <ChevronDownIcon />
+          </div>
         </div>
 
         <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
@@ -205,7 +206,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-              <th className="py-4 px-6">ID</th>
+              <th className="py-4 px-6">LETTER ID</th>
               <th className="py-4 px-6">CITIZEN NAME</th>
               <th className="py-4 px-6">CATEGORY</th>
               <th className="py-4 px-6">DATE & TIME</th>
@@ -215,27 +216,27 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">
-            {filteredComplaints.map((complaint) => (
-              <tr key={complaint.id} className="hover:bg-gray-50/60 transition-colors">
-                <td className="py-4 px-6 font-bold text-gray-700 whitespace-nowrap">{complaint.refId}</td>
+            {filteredLetters.map((letter) => (
+              <tr key={letter.id} className="hover:bg-gray-50/60 transition-colors">
+                <td className="py-4 px-6 font-bold text-gray-700 whitespace-nowrap">{letter.refId}</td>
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="font-bold text-gray-900">{complaint.citizenName}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{complaint.citizenPhone}</div>
+                  <div className="font-bold text-gray-900">{letter.citizenName}</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{letter.citizenPhone}</div>
                 </td>
-                <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.category}</td>
+                <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{letter.category}</td>
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="font-bold text-gray-900">{complaint.date}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{complaint.time}</div>
+                  <div className="font-bold text-gray-900">{letter.date}</div>
+                  <div className="text-xs text-gray-400 mt-0.5">{letter.time}</div>
                 </td>
-                {showOfficer && <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.assignedOfficer}</td>}
+                {showOfficer && <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{letter.assignedOfficer}</td>}
                 <td className="py-4 px-6 whitespace-nowrap">
-                  <span className={`px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(complaint.status)}`}>
-                    {complaint.status}
+                  <span className={`px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(letter.status)}`}>
+                    {letter.status}
                   </span>
                 </td>
                 <td className="py-4 px-6 text-center whitespace-nowrap">
                   <button 
-                    onClick={() => onView(complaint)}
+                    onClick={() => onView(letter)}
                     className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
                   >
                     <EyeIcon />
@@ -243,10 +244,10 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
                 </td>
               </tr>
             ))}
-            {filteredComplaints.length === 0 && (
+            {filteredLetters.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-gray-500">
-                  No complaints match the selected filters.
+                <td colSpan={showOfficer ? 7 : 6} className="py-8 text-center text-gray-500">
+                  No letters match the selected filters.
                 </td>
               </tr>
             )}
@@ -257,7 +258,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       {/* Pagination Footer */}
       <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-white">
         <span className="text-sm text-gray-500">
-          Showing {filteredComplaints.length > 0 ? 1 : 0}-{Math.min(filteredComplaints.length, 8)} of {filteredComplaints.length} results
+          Showing {filteredLetters.length > 0 ? 1 : 0}-{Math.min(filteredLetters.length, 8)} of {filteredLetters.length} results
         </span>
         <div className="flex items-center gap-1 text-sm font-semibold text-gray-600">
           <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
@@ -270,5 +271,4 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   )
 }
 
-export default ComplainTable
-
+export default LetterTable

@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { useComplainData, type Complaint } from './hooks/useComplainData'
-import ComplainStats from './components/ComplainStats'
-import ComplainTable from './components/ComplainTable'
-import ComplainDetailModal from './components/ComplainDetailModal'
+import { useLetterData, type Letter } from '../hooks/useLetterData'
+import LetterStats from '../components/LetterStats'
+import LetterTable from '../components/LetterTable'
+import LetterDetailModal from '../components/LetterDetailModal'
 
-const ComplainPage: React.FC = () => {
-  const { loading, complaints, stats, updateComplaint } = useComplainData()
-  const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null)
+const AllLettersPage: React.FC = () => {
+  const { loading, letters, stats } = useLetterData()
+  const [selectedLetter, setSelectedLetter] = useState<Letter | null>(null)
 
-  const handleView = (complaint: Complaint) => {
-    setSelectedComplaint(complaint)
+  const handleView = (letter: Letter) => {
+    setSelectedLetter(letter)
   }
 
   const handleCloseModal = () => {
-    setSelectedComplaint(null)
+    setSelectedLetter(null)
   }
 
   return (
@@ -22,8 +22,8 @@ const ComplainPage: React.FC = () => {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Complaints</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and review all complaints have for you</p>
+          <h1 className="text-2xl font-bold text-gray-900">All Letters</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage and review all citizen-submitted letters</p>
         </div>
         <div>
           <button className="flex items-center gap-2 bg-white border border-gray-200 text-sm font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
@@ -45,25 +45,23 @@ const ComplainPage: React.FC = () => {
         </div>
       ) : (
         <>
-          <ComplainStats stats={stats} />
-          <ComplainTable complaints={complaints} onView={handleView} />
+          <LetterStats stats={stats} />
+          <LetterTable 
+            letters={letters} 
+            onView={handleView} 
+            showTabs={true} 
+            showOfficer={true} 
+          />
         </>
       )}
 
-      {selectedComplaint && (
-        <ComplainDetailModal 
-          complaint={selectedComplaint} 
-          onClose={handleCloseModal}
-          mode="all"
-          onUpdateComplaint={(id, updatedData) => {
-            const updated = updateComplaint(id, updatedData)
-            if (updated) setSelectedComplaint(updated)
-          }}
-        />
-      )}
+      <LetterDetailModal 
+        letter={selectedLetter} 
+        onClose={handleCloseModal} 
+      />
 
     </div>
   )
 }
 
-export default ComplainPage
+export default AllLettersPage

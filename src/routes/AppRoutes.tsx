@@ -2,7 +2,10 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
+import assetRoutes from '../features/asset-management/assetRoutes'
+import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
+import letterRoutes from '../features/letters/letterRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -55,14 +58,13 @@ export const AppRoutes: React.FC = () => {
         {overviewRoutes}
 
         {/* Appointment Management Routes */}
-        <Route path="appointments/all" element={<DummySection title="All Appointments" desc="Manage and review all public and official appointments scheduled with the Sabha." />} />
-        <Route path="appointments/my" element={<DummySection title="My Appointments" desc="View your personal calendar and assigned appointments." />} />
+        {appointmentRoutes}
         <Route path="appointments/audits" element={<DummySection title="System Audits (Restricted)" desc="Confidential audit logs and system administration activity." />} />
 
         {/* Other Feature Routes */}
-        <Route path="assets" element={<DummySection title="Asset Management" desc="Track municipal properties, machinery, and council infrastructure assets." />} />
+        {assetRoutes}
         {complainRoutes}
-        <Route path="letters" element={<DummySection title="Letter Management" desc="Official dispatch records, incoming correspondence, and postal logs." />} />
+        {letterRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />
         <Route path="archive" element={<DummySection title="Data Archive" desc="Historical council records, closed complaints, and archived resolutions." />} />
 

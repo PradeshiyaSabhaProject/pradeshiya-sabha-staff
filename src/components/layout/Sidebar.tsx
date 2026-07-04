@@ -102,18 +102,38 @@ const navItems: NavItem[] = [
       { label: 'System Audits (Restricted)', path: '/appointments/audits', roles: ['superadmin'] },
     ],
   },
-  { label: 'Asset Management', path: '/assets', icon: <AssetIcon /> },
+  {
+    label: 'Asset Management',
+    path: '/assets',
+    icon: <AssetIcon />,
+    children: [
+      { label: 'Asset Overview', path: '/assets/overview' },
+      { label: 'Asset Directory', path: '/assets/directory' },
+      { label: 'Interactive GIS Mapping', path: '/assets/gis-mapping' },
+    ]
+  },
   {
     label: 'Complain Management',
     path: '/complaints',
     icon: <ComplainIcon />,
     children: [
       { label: 'All Complaints', path: '/complaints/all', roles: ['admin', 'manager'] },
-      { label: 'My Complaints', path: '/complaints', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
-      { label: 'Assigned Officers', path: '/complaints/officers', roles: ['admin', 'manager'] },
+      { label: 'My Complaints', path: '/complaints/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
     ],
   },
-  { label: 'Letter Management', path: '/letters', icon: <LetterIcon /> },
+  {
+    label: 'Letter Management',
+    path: '/letters',
+    icon: <LetterIcon />,
+    children: [
+      { label: 'All Letters', path: '/letters/all', roles: ['admin', 'manager'] },
+      { label: 'My Letters', path: '/letters/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+      { label: 'Inward Letters', path: '/letters/inward', roles: ['admin', 'staff', 'manager'] },
+      { label: 'Outward Letters', path: '/letters/outward', roles: ['admin', 'staff', 'manager'] },
+      { label: 'Assigned Officers', path: '/letters/assigned', roles: ['admin', 'manager', 'superadmin'] },
+      { label: 'Write Letter', path: '/letters/write', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+    ],
+  },
   { label: 'Profile', path: '/profile', icon: <ProfileIcon /> },
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
 ]
@@ -125,6 +145,8 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
     '/appointments': false,
+    '/letters': false,
+    '/assets': false,
   })
 
   const toggleMenu = (path: string) => {
@@ -225,11 +247,12 @@ const Sidebar: React.FC = () => {
                       <Link
                         key={child.path}
                         to={child.path}
-                        className={`flex items-center pl-14 pr-5 py-2.5 text-sm font-medium transition-all ${childActive
+                        className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${childActive
                             ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
                           }`}
                       >
+                        <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
                         {child.label}
                       </Link>
                     )
