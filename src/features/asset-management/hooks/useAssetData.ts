@@ -36,6 +36,39 @@ export interface AssetStats {
 
 const INITIAL_ASSETS: AssetRecord[] = [
   {
+    id: 'ASSET-UT-1046',
+    category: 'Utility / Infrastructure',
+    name: 'Peliyagoda Water Pumping Station',
+    location: 'Peliyagoda / Kelani River',
+    dateAdded: 'Nov 01, 2023',
+    status: 'Operational',
+    value: 2,
+    unit: 'Plants',
+    coordinates: { lat: '6.9520', lng: '79.8880' }
+  },
+  {
+    id: 'ASSET-BL-1184',
+    category: 'Building',
+    name: 'Diyatha Uyana Civic Center',
+    location: 'Sri Jayawardenepura Kotte',
+    dateAdded: 'Oct 28, 2023',
+    status: 'Operational',
+    value: 1,
+    unit: 'Units',
+    coordinates: { lat: '6.9010', lng: '79.9180' }
+  },
+  {
+    id: 'ASSET-LN-0923',
+    category: 'Land',
+    name: 'Mount Lavinia Coastal Reserve',
+    location: 'Mount Lavinia',
+    dateAdded: 'Oct 26, 2023',
+    status: 'Verified',
+    value: 3,
+    unit: 'Plots',
+    coordinates: { lat: '6.8330', lng: '79.8640' }
+  },
+  {
     id: 'ASSET-RD-0042',
     category: 'Road',
     name: 'Surface Roadway',
@@ -44,6 +77,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Verified',
     value: 4.5,
     unit: 'KM',
+    coordinates: { lat: '6.8850', lng: '79.9150' }
   },
   {
     id: 'ASSET-BL-1182',
@@ -54,6 +88,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Digitized',
     value: 1,
     unit: 'Units',
+    coordinates: { lat: '6.8018', lng: '79.9227' }
   },
   {
     id: 'ASSET-LN-0921',
@@ -64,6 +99,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Verified',
     value: 2,
     unit: 'Plots',
+    coordinates: { lat: '6.8450', lng: '80.0010' }
   },
   {
     id: 'ASSET-RD-0043',
@@ -74,6 +110,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Audit Pending',
     value: 12,
     unit: 'KM',
+    coordinates: { lat: '6.8750', lng: '79.9350' }
   },
   {
     id: 'ASSET-VH-0512',
@@ -84,6 +121,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Operational',
     value: 1,
     unit: 'Items',
+    coordinates: { lat: '6.8441', lng: '80.0024' }
   },
   {
     id: 'ASSET-EQ-0881',
@@ -94,6 +132,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Under Maintenance',
     value: 3,
     unit: 'Items',
+    coordinates: { lat: '6.8320', lng: '80.0150' }
   },
   {
     id: 'ASSET-UT-1044',
@@ -104,6 +143,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Operational',
     value: 1,
     unit: 'Items',
+    coordinates: { lat: '6.8250', lng: '79.9550' }
   },
   {
     id: 'ASSET-LN-0922',
@@ -114,6 +154,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Disputed',
     value: 1,
     unit: 'Plots',
+    coordinates: { lat: '6.8525', lng: '80.0233' }
   },
   {
     id: 'ASSET-BL-1183',
@@ -124,6 +165,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Operational',
     value: 1,
     unit: 'Units',
+    coordinates: { lat: '6.8430', lng: '79.9980' }
   },
   {
     id: 'ASSET-VH-0513',
@@ -134,6 +176,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Operational',
     value: 1,
     unit: 'Items',
+    coordinates: { lat: '6.8445', lng: '80.0030' }
   },
   {
     id: 'ASSET-EQ-0882',
@@ -144,6 +187,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Under Maintenance',
     value: 1,
     unit: 'Items',
+    coordinates: { lat: '6.8480', lng: '79.9463' }
   },
   {
     id: 'ASSET-UT-1045',
@@ -154,6 +198,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
     status: 'Operational',
     value: 1,
     unit: 'Items',
+    coordinates: { lat: '6.8550', lng: '80.0650' }
   },
 ]
 

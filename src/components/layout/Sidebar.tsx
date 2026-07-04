@@ -109,6 +109,7 @@ const navItems: NavItem[] = [
     children: [
       { label: 'Asset Overview', path: '/assets/overview' },
       { label: 'Asset Directory', path: '/assets/directory' },
+      { label: 'Interactive GIS Mapping', path: '/assets/gis-mapping' },
     ]
   },
   {
@@ -246,11 +247,12 @@ const Sidebar: React.FC = () => {
                       <Link
                         key={child.path}
                         to={child.path}
-                        className={`flex items-center pl-14 pr-5 py-2.5 text-sm font-medium transition-all ${childActive
+                        className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${childActive
                             ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
                           }`}
                       >
+                        <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
                         {child.label}
                       </Link>
                     )
