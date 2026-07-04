@@ -107,7 +107,8 @@ const navItems: NavItem[] = [
     path: '/assets',
     icon: <AssetIcon />,
     children: [
-      { label: 'Asset Overview', path: '/assets/overview' }
+      { label: 'Asset Overview', path: '/assets/overview' },
+      { label: 'Asset Directory', path: '/assets/directory' },
     ]
   },
   {

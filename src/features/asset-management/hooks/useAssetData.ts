@@ -1,5 +1,12 @@
 import { useState, useEffect, useMemo } from 'react'
 
+export interface AssetAttachment {
+  name: string
+  size: string
+  type: string
+  status?: string
+}
+
 export interface AssetRecord {
   id: string
   category: 'Land' | 'Road' | 'Building' | 'Vehicle' | 'Machinery & Equipment' | 'Utility / Infrastructure'
@@ -9,7 +16,16 @@ export interface AssetRecord {
   status: 'Operational' | 'Under Maintenance' | 'Disputed' | 'Verified' | 'Digitized' | 'Audit Pending'
   value: number
   unit: string
+  valuation?: number
+  acquisitionDate?: string
+  fundingSource?: string
+  areaSize?: string
+  conditionStatus?: string
+  coordinates?: { lat: string; lng: string }
+  attachments?: AssetAttachment[]
+  depreciation?: string
 }
+
 
 export interface AssetStats {
   municipalLands: { value: number; label: string; change: string }
