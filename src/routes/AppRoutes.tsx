@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
+import assetRoutes from '../features/asset-management/assetRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
 import LoginPage from '../features/auth/LoginPage'
@@ -61,7 +62,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="appointments/audits" element={<DummySection title="System Audits (Restricted)" desc="Confidential audit logs and system administration activity." />} />
 
         {/* Other Feature Routes */}
-        <Route path="assets" element={<DummySection title="Asset Management" desc="Track municipal properties, machinery, and council infrastructure assets." />} />
+        {assetRoutes}
         {complainRoutes}
         {letterRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />

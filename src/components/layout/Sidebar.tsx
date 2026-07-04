@@ -102,7 +102,14 @@ const navItems: NavItem[] = [
       { label: 'System Audits (Restricted)', path: '/appointments/audits', roles: ['superadmin'] },
     ],
   },
-  { label: 'Asset Management', path: '/assets', icon: <AssetIcon /> },
+  {
+    label: 'Asset Management',
+    path: '/assets',
+    icon: <AssetIcon />,
+    children: [
+      { label: 'Asset Overview', path: '/assets/overview' }
+    ]
+  },
   {
     label: 'Complain Management',
     path: '/complaints',
@@ -137,6 +144,7 @@ const Sidebar: React.FC = () => {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
     '/appointments': false,
     '/letters': false,
+    '/assets': false,
   })
 
   const toggleMenu = (path: string) => {
