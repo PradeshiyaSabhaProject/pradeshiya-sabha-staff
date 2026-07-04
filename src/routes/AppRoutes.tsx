@@ -2,6 +2,7 @@ import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
+import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -54,8 +55,7 @@ export const AppRoutes: React.FC = () => {
         {overviewRoutes}
 
         {/* Appointment Management Routes */}
-        <Route path="appointments/all" element={<DummySection title="All Appointments" desc="Manage and review all public and official appointments scheduled with the Sabha." />} />
-        <Route path="appointments/my" element={<DummySection title="My Appointments" desc="View your personal calendar and assigned appointments." />} />
+        {appointmentRoutes}
         <Route path="appointments/audits" element={<DummySection title="System Audits (Restricted)" desc="Confidential audit logs and system administration activity." />} />
 
         {/* Other Feature Routes */}
