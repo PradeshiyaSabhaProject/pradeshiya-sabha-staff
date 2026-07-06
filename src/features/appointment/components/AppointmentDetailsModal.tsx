@@ -37,6 +37,20 @@ const DownloadIcon = () => (
   </svg>
 );
 
+const BellIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+  </svg>
+);
+
+const CheckCircleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-green-600">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+);
+
 export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = ({
   isOpen,
   onClose,
@@ -50,11 +64,14 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
   const [rescheduleError, setRescheduleError] = useState('');
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   if (!isOpen || !appointment) return null;
 
   const isAssignedToCurrentUser = appointment.assignedOfficer.toLowerCase() === user?.name?.toLowerCase();
-  const showActions = (mode === 'my' || isAssignedToCurrentUser) && appointment.status === 'PENDING';
+  const isMyMode = mode === 'my';
+  const showPendingActions = isMyMode && appointment.status === 'PENDING';
+  const showApprovedActions = isMyMode && appointment.status === 'APPROVED';
 
   // Format status style classes
   const getStatusBadge = (status: AppointmentStatus) => {
@@ -158,9 +175,21 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             <div className="grid grid-cols-12 gap-2">
               <span className="col-span-4 font-medium text-gray-500">Status</span>
               <span className="col-span-1 text-gray-400">:</span>
-              <span className={`col-span-7 font-bold uppercase ${getStatusBadge(appointment.status)}`}>
-                {appointment.status}
-              </span>
+              <div className="col-span-7 flex items-center gap-3">
+                <span className={`font-bold uppercase ${getStatusBadge(appointment.status)}`}>
+                  {appointment.status}
+                </span>
+                {appointment.status === 'APPROVED' && showApprovedActions && (
+                  <button
+                    onClick={() => setShowNotificationModal(true)}
+                    title="Notify client about approval"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold rounded-lg transition-all hover:scale-105 active:scale-95 cursor-pointer border border-blue-300 shadow-xs"
+                  >
+                    <BellIcon />
+                    <span>Notify</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-12 gap-2">
@@ -247,34 +276,99 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           </form>
         )}
 
-        {/* Action Buttons at the Bottom (only for my mode or when assigned to current user, and not rescheduling) */}
-        {showActions && !isRescheduling && (
+        {/* Action Buttons at the Bottom */}
+        {!isRescheduling && (showPendingActions || showApprovedActions) && (
           <div className="flex flex-wrap items-center justify-center gap-4 mt-4 pt-6 border-t border-gray-100">
-            <button
-              onClick={() => {
-                onUpdateStatus(appointment.id, 'APPROVED');
-                onClose();
-              }}
-              className="bg-[#16a34a] hover:bg-[#15803d] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
-            >
-              Approve
-            </button>
-            <button
-              onClick={() => {
-                onUpdateStatus(appointment.id, 'REJECTED');
-                onClose();
-              }}
-              className="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
-            >
-              Reject
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsRescheduling(true)}
-              className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
-            >
-              Reschedule
-            </button>
+            {showPendingActions && (
+              <>
+                <button
+                  onClick={() => {
+                    onUpdateStatus(appointment.id, 'APPROVED');
+                    onClose();
+                  }}
+                  className="bg-[#16a34a] hover:bg-[#15803d] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => {
+                    onUpdateStatus(appointment.id, 'REJECTED');
+                    onClose();
+                  }}
+                  className="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
+                >
+                  Reject
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsRescheduling(true)}
+                  className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
+                >
+                  Reschedule
+                </button>
+              </>
+            )}
+            {showApprovedActions && (
+              <button
+                type="button"
+                onClick={() => setIsRescheduling(true)}
+                className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
+              >
+                Reschedule
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Notification Modal */}
+        {showNotificationModal && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 flex flex-col items-center">
+                <div className="mb-4">
+                  <CheckCircleIcon />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+                  Notification Sent Successfully
+                </h3>
+                <p className="text-sm text-gray-600 text-center">
+                  The client has been notified about the appointment approval.
+                </p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-xs font-bold text-blue-900 mb-2">Appointment Details:</p>
+                  <div className="space-y-1.5 text-xs text-gray-700">
+                    <p>
+                      <span className="font-semibold text-gray-900">Client:</span> {appointment.citizenName}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Service:</span> {appointment.service}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Scheduled:</span> {appointment.dateTime}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Contact:</span> {appointment.phone} / {appointment.email}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p className="text-xs font-bold text-green-900 mb-1">Notification Message:</p>
+                  <p className="text-xs text-gray-700 italic leading-relaxed">
+                    "Dear {appointment.citizenName}, Your appointment for {appointment.service} has been approved by {appointment.assignedOfficer}. Your scheduled appointment is on {appointment.dateTime}. Please come prepared with the necessary documents. If you have any questions, please contact us at the Pradeshiya Sabha office."
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 border-t border-gray-100 p-4 flex justify-end gap-3">
+                <button
+                  onClick={() => setShowNotificationModal(false)}
+                  className="px-6 py-2.5 border border-gray-300 text-gray-700 text-sm font-bold rounded-lg bg-white hover:bg-gray-50 transition-all cursor-pointer"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
