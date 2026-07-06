@@ -4,7 +4,7 @@ import ComplainTable from '../components/ComplainTable'
 import ComplainDetailModal from '../components/ComplainDetailModal'
 
 const MyComplaintsPage: React.FC = () => {
-  const { loading, complaints } = useComplainData()
+  const { loading, complaints, updateComplaint } = useComplainData()
   const [selectedComplaint, setSelectedComplaint] = useState<Complaint | null>(null)
 
   const handleView = (complaint: Complaint) => {
@@ -16,7 +16,7 @@ const MyComplaintsPage: React.FC = () => {
   }
 
   // Filter complaints handled by or relevant to the current user
-  const myComplaints = complaints.filter(c => c.assignedOfficer.includes('Perera') || c.assignedOfficer.includes('Silva') || c.status === 'PENDING')
+  const myComplaints = complaints.filter(c => c.assignedOfficer.includes('Perera') || c.assignedOfficer.includes('Silva') || c.status === 'PENDING' || c.status === 'REVIEWING' || c.status === 'IN PROGRESS')
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
@@ -50,7 +50,12 @@ const MyComplaintsPage: React.FC = () => {
       {selectedComplaint && (
         <ComplainDetailModal 
           complaint={selectedComplaint} 
-          onClose={handleCloseModal} 
+          onClose={handleCloseModal}
+          mode="my"
+          onUpdateComplaint={(id, updatedData) => {
+            const updated = updateComplaint(id, updatedData)
+            if (updated) setSelectedComplaint(updated)
+          }}
         />
       )}
 
