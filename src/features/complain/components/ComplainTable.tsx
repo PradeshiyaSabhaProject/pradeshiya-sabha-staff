@@ -127,21 +127,15 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
 
       {/* Filters */}
       <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
-          <div className="absolute left-3">
-            <CalendarIcon />
-          </div>
-          <select 
+        <div className="flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028] px-3">
+          <CalendarIcon />
+          <input 
+            type="date"
             value={filters.date} 
             onChange={(e) => setFilters({...filters, date: e.target.value})}
-            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-9 pr-8 cursor-pointer"
-          >
-            <option value="">All Dates</option>
-            {uniqueDates.map(d => <option key={d} value={d}>{d}</option>)}
-          </select>
-          <div className="absolute right-3 pointer-events-none">
-            <ChevronDownIcon />
-          </div>
+            className="w-full outline-none text-sm text-gray-600 bg-transparent py-2 pl-2 cursor-pointer"
+            title="Filter by Date"
+          />
         </div>
 
         <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
