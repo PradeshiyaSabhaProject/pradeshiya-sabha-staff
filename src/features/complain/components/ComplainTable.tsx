@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import type { Complaint } from '../hooks/useComplainData'
+import { getDeadlineStatus, isComplaintAssignedToCurrentTO } from '../utils/deadlineUtils'
+import { useAuth } from '../../../context/AuthContext'
 
 interface ComplainTableProps {
   complaints: Complaint[]
@@ -48,7 +50,6 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueDates = useMemo(() => Array.from(new Set(complaints.map(c => c.date))).sort(), [complaints])
   const uniqueCategories = useMemo(() => Array.from(new Set(complaints.map(c => c.category))).sort(), [complaints])
   const uniqueStatuses = useMemo(() => Array.from(new Set(complaints.map(c => c.status))).sort(), [complaints])
   const uniqueOfficers = useMemo(() => Array.from(new Set(complaints.map(c => c.assignedOfficer))).sort(), [complaints])
@@ -92,10 +93,46 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
     }
   }
 
+  const getDeadlineStatusStyle = (status: string) => {
+    switch (status) {
+      case 'PENDING':
+        return 'text-red-700 bg-red-400 border-red-500'
+      case 'REVIEWING':
+        return 'text-orange-700 bg-orange-400 border-orange-500'
+      case 'IN PROGRESS':
+        return 'text-green-700 bg-green-400 border-green-500'
+      default:
+        return 'text-gray-700 bg-gray-50 border-gray-200'
+    }
+  }
+
   // Count complaints per tab ignoring dropdown filters (or including them if you prefer)
   const getTabCount = (tabId: string, status: string | null) => {
     if (tabId === 'all') return complaints.length
     return complaints.filter(c => c.status === status).length
+  }
+
+  const { user } = useAuth()
+  const currentTOName = user?.name ?? ''
+  // Determine whether to show deadline columns based on the active tab's status
+  const tabObj = TABS.find(t => t.id === activeTab)
+  const hiddenStatuses = ['APPROVED', 'REJECTED', 'COMPLETED', 'NO-SHOW']
+  const showDeadline = !(tabObj && tabObj.status && hiddenStatuses.includes(tabObj.status))
+
+  const tableColumnCount = 6 + (showOfficer ? 1 : 0) + (showDeadline ? 2 : 0)
+
+  const computeDeadlineFromReceivedDate = (receivedDate: string) => {
+    const parsed = new Date(receivedDate)
+    if (Number.isNaN(parsed.getTime())) return ''
+    parsed.setDate(parsed.getDate() + 7)
+    return parsed.toISOString().slice(0, 10)
+  }
+
+  const formatDeadline = (dueDate?: string) => {
+    if (!dueDate) return ''
+    const parsed = new Date(dueDate)
+    if (Number.isNaN(parsed.getTime())) return dueDate
+    return parsed.toLocaleDateString('en-US')
   }
 
   return (
@@ -208,44 +245,68 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
               <th className="py-4 px-6">ID</th>
               <th className="py-4 px-6">CITIZEN NAME</th>
               <th className="py-4 px-6">CATEGORY</th>
-              <th className="py-4 px-6">DATE & TIME</th>
+              <th className="py-4 px-6">RECEIVED DATE</th>
+              {showDeadline && (
+                <>
+                  <th className="py-4 px-6">DEADLINE</th>
+                  <th className="py-4 px-6">DEADLINE STATUS</th>
+                </>
+              )}
               {showOfficer && <th className="py-4 px-6">ASSIGNED OFFICER</th>}
               <th className="py-4 px-6">STATUS</th>
               <th className="py-4 px-6 text-center">ACTION</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">
-            {filteredComplaints.map((complaint) => (
-              <tr key={complaint.id} className="hover:bg-gray-50/60 transition-colors">
-                <td className="py-4 px-6 font-bold text-gray-700 whitespace-nowrap">{complaint.refId}</td>
-                <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="font-bold text-gray-900">{complaint.citizenName}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{complaint.citizenPhone}</div>
-                </td>
-                <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.category}</td>
-                <td className="py-4 px-6 whitespace-nowrap">
-                  <div className="font-bold text-gray-900">{complaint.date}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{complaint.time}</div>
-                </td>
-                {showOfficer && <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.assignedOfficer}</td>}
-                <td className="py-4 px-6 whitespace-nowrap">
-                  <span className={`px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(complaint.status)}`}>
-                    {complaint.status}
-                  </span>
-                </td>
-                <td className="py-4 px-6 text-center whitespace-nowrap">
-                  <button 
-                    onClick={() => onView(complaint)}
-                    className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
-                  >
-                    <EyeIcon />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {filteredComplaints.map((complaint) => {
+              const isAssignedToCurrentTO = isComplaintAssignedToCurrentTO(complaint, currentTOName)
+              const computedDueDate = computeDeadlineFromReceivedDate(complaint.date)
+              const deadlineStatus = getDeadlineStatus({ status: complaint.status, dueDate: computedDueDate }, isAssignedToCurrentTO)
+
+              return (
+                <tr key={complaint.id} className="hover:bg-gray-50/60 transition-colors">
+                  <td className="py-4 px-6 font-bold text-gray-700 whitespace-nowrap">{complaint.refId}</td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    <div className="font-bold text-gray-900">{complaint.citizenName}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{complaint.citizenPhone}</div>
+                  </td>
+                  <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.category}</td>
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    <div className="font-bold text-gray-900">{complaint.date}</div>
+                    <div className="text-xs text-gray-400 mt-0.5">{complaint.time}</div>
+                  </td>
+                  {showDeadline && (
+                    <>
+                      <td className="py-4 px-6 whitespace-nowrap font-semibold text-gray-700">{formatDeadline(computedDueDate)}</td>
+                      <td className="py-4 px-6 whitespace-nowrap">
+                        {deadlineStatus ? (
+                          <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getDeadlineStatusStyle(complaint.status)}`}>
+                            {deadlineStatus}
+                          </span>
+                        ) : null}
+                      </td>
+                    </>
+                  )}
+                  {showOfficer && <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{complaint.assignedOfficer}</td>}
+                  <td className="py-4 px-6 whitespace-nowrap">
+                    <span className={`px-4 py-1.5 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getStatusStyle(complaint.status)}`}>
+                      {complaint.status}
+                    </span>
+                  </td>
+                  <td className="py-4 px-6 text-center whitespace-nowrap">
+                    <button 
+                      onClick={() => onView(complaint)}
+                      className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
+                    >
+                      <EyeIcon />
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
             {filteredComplaints.length === 0 && (
               <tr>
-                <td colSpan={7} className="py-8 text-center text-gray-500">
+                <td colSpan={tableColumnCount} className="py-8 text-center text-gray-500">
                   No complaints match the selected filters.
                 </td>
               </tr>

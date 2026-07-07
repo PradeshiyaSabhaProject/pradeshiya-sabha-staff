@@ -35,6 +35,7 @@ export interface Complaint {
   attachments: ComplaintAttachment[]
   officerRemarks?: OfficerRemark[]
   citizenNotified?: boolean
+  dueDate?: string
 }
 
 const DUMMY_COMPLAINTS: Complaint[] = [
@@ -49,6 +50,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     date: '2023-06-05',
     time: '10:30 AM',
     assignedOfficer: 'M.Perera',
+    assignedTechnician: 'M.Perera',
     status: 'PENDING',
     description: 'The garbage collection truck has not visited our street for the last three days, leading to an accumulation of waste and hygiene concerns in the neighborhood. We request immediate action to resolve this issue.',
     attachments: [
@@ -56,7 +58,8 @@ const DUMMY_COMPLAINTS: Complaint[] = [
       { id: 'a2', name: 'NIC Back.jpg', size: '110 KB', type: 'image', url: '#' },
       { id: 'a3', name: 'Site Photo.jpg', size: '2.1 MB', type: 'image', url: '#' },
       { id: 'a4', name: 'Waste Management Request.pdf', size: '1.4 MB', type: 'pdf', url: '#' },
-    ]
+    ],
+    dueDate: '2026-07-14'
   },
   {
     id: '2',
@@ -69,11 +72,49 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     date: '2023-06-05',
     time: '11:00 AM',
     assignedOfficer: 'L.D.Silva',
+    assignedTechnician: 'L.D.Silva',
     status: 'APPROVED',
     description: 'Large pothole on main street causing traffic delays.',
     attachments: [
       { id: 'a5', name: 'Road_Damage.jpg', size: '3.4 MB', type: 'image', url: '#' },
-    ]
+    ],
+    dueDate: '2026-07-05'
+  },
+  {
+    id: '6',
+    refId: '#PS-2023-0852',
+    citizenName: 'Ayesha Fernando',
+    citizenNic: '199456789012',
+    citizenPhone: '0719876543',
+    citizenEmail: 'ayesha.f@example.com',
+    category: 'Water Supply',
+    date: '2023-06-08',
+    time: '01:20 PM',
+    assignedOfficer: 'P.Kumara',
+    assignedTechnician: 'P.Kumara',
+    status: 'REVIEWING',
+    description: 'Water pressure in the neighborhood has been low for two days. Please inspect the main supply line.',
+    attachments: [
+      { id: 'a6', name: 'Water_Pipe.jpg', size: '1.2 MB', type: 'image', url: '#' },
+    ],
+    dueDate: '2023-06-15'
+  },
+  {
+    id: '7',
+    refId: '#PS-2023-0853',
+    citizenName: 'Ruwan Jayasuriya',
+    citizenNic: '198765432109',
+    citizenPhone: '0773344556',
+    citizenEmail: 'ruwan.j@example.com',
+    category: 'Public Roads',
+    date: '2023-06-09',
+    time: '08:00 AM',
+    assignedOfficer: 'L.D.Silva',
+    assignedTechnician: 'L.D.Silva',
+    status: 'IN PROGRESS',
+    description: 'Road resurfacing work is scheduled, but the barriers are not placed correctly and traffic is getting blocked.',
+    attachments: [],
+    dueDate: '2023-06-16'
   },
   {
     id: '3',
@@ -86,9 +127,11 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     date: '2023-06-05',
     time: '02:45 PM',
     assignedOfficer: 'N.Fernando',
+    assignedTechnician: 'N.Fernando',
     status: 'RESCHEDULED',
     description: 'Street light pole #45 is not working.',
-    attachments: []
+    attachments: [],
+    dueDate: '2026-07-10'
   },
   {
     id: '4',
@@ -101,9 +144,11 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     date: '2023-06-06',
     time: '09:15 AM',
     assignedOfficer: 'M.Perera',
+    assignedTechnician: 'M.Perera',
     status: 'COMPLETED',
     description: 'Garbage not collected last week.',
-    attachments: []
+    attachments: [],
+    dueDate: '2026-07-06'
   },
   {
     id: '5',
@@ -118,7 +163,8 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     assignedOfficer: 'L.D.Silva',
     status: 'REJECTED',
     description: 'Request for new road construction (out of budget).',
-    attachments: []
+    attachments: [],
+    dueDate: '2026-07-08'
   },
 ]
 
