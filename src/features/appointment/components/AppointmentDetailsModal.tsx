@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
 import { type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
 interface AppointmentDetailsModalProps {
@@ -59,7 +58,6 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   onUpdateStatus,
   onReschedule,
 }) => {
-  const { user } = useAuth();
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
@@ -68,7 +66,6 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   if (!isOpen || !appointment) return null;
 
-  const isAssignedToCurrentUser = appointment.assignedOfficer.toLowerCase() === user?.name?.toLowerCase();
   const isMyMode = mode === 'my';
   const showPendingActions = isMyMode && appointment.status === 'PENDING';
   const showApprovedActions = isMyMode && appointment.status === 'APPROVED';

@@ -75,7 +75,7 @@ const Footer: React.FC = () => {
               </p>
             </div>
             {/* Social icons */}
-            <div className="flex items-center gap-3 mt-5">
+            <div className="flex items-center gap-2 mt-5">
               {[
                 { Icon: FacebookIcon, label: 'Facebook', href: '#' },
                 { Icon: YoutubeIcon, label: 'YouTube', href: '#' },
@@ -85,7 +85,7 @@ const Footer: React.FC = () => {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-9 h-9 rounded-full border border-gray-600 flex items-center justify-center text-gray-400 hover:border-white hover:text-white transition-colors"
+                  className="w-8 h-8 rounded border border-gray-600 flex items-center justify-center text-gray-400 hover:border-white hover:text-white transition-colors"
                 >
                   <Icon />
                 </a>

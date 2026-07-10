@@ -84,15 +84,15 @@ const LetterStats: React.FC<LetterStatsProps> = ({ stats }) => {
       {cards.map((card) => (
         <div
           key={card.id}
-          className={`flex flex-col items-center justify-center p-6 bg-white border-2 rounded-xl shadow-sm hover:shadow-md transition-shadow ${card.borderClass}`}
+          className={`flex flex-col items-center justify-center p-5 bg-white border rounded shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
         >
-          <div className="flex items-center gap-2 mb-3">
-            <div className={`p-1.5 rounded-full ${card.bgClass}`}>
+          <div className="flex items-center gap-2 mb-2.5">
+            <div className={`p-1.5 rounded ${card.bgClass}`}>
               {card.icon}
             </div>
-            <span className={`text-sm font-semibold ${card.colorClass}`}>{card.label}</span>
+            <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
           </div>
-          <p className={`text-4xl font-extrabold ${card.colorClass}`}>
+          <p className={`text-3xl font-extrabold ${card.colorClass}`}>
             {card.value.toString().padStart(2, '0')}
           </p>
         </div>

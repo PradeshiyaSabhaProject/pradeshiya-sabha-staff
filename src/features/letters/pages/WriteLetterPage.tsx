@@ -31,6 +31,35 @@ const ChevronDownIcon = () => (
   </svg>
 )
 
+const MailIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-blue-500 shrink-0">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+    <polyline points="22,6 12,13 2,6" />
+  </svg>
+)
+
+const CheckCircleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-green-500 shrink-0">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+)
+
+const ClockIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-amber-500 shrink-0">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+)
+
+const ClipboardCheckIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-purple-500 shrink-0">
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    <path d="M9 14l2 2 4-4" />
+  </svg>
+)
+
 const WriteLetterPage: React.FC = () => {
   const { loading, sentLetters, departments, addSentLetter, stats } = useWriteLetterData()
   
@@ -76,10 +105,10 @@ const WriteLetterPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-8">
       
       {/* Header section with Write Letter Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded border border-gray-300 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#801028] inline-block"></span>
+            <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block"></span>
             <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Write Letter &amp; Sent Correspondence</h1>
           </div>
           <p className="text-sm text-gray-500 mt-1">
@@ -89,7 +118,7 @@ const WriteLetterPage: React.FC = () => {
         <div>
           <button
             onClick={() => setIsWriteModalOpen(true)}
-            className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white font-bold px-6 py-3 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-5 py-2.5 rounded shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
           >
             <PlusIcon />
             <span>Write a Letter</span>
@@ -99,45 +128,70 @@ const WriteLetterPage: React.FC = () => {
 
       {/* Summary Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border-2 border-gray-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-gray-400">Total Sent Letters</p>
-            <p className="text-3xl font-extrabold text-gray-900 mt-1">{stats.totalSent.toString().padStart(2, '0')}</p>
+        {[
+          {
+            id: 'sent',
+            label: 'Total Sent Letters',
+            value: stats.totalSent,
+            icon: <MailIcon />,
+            colorClass: 'text-blue-500',
+            borderClass: 'border-blue-300',
+            bgClass: 'bg-blue-50/30'
+          },
+          {
+            id: 'delivered',
+            label: 'Delivered',
+            value: stats.delivered,
+            icon: <CheckCircleIcon />,
+            colorClass: 'text-green-500',
+            borderClass: 'border-green-300',
+            bgClass: 'bg-green-50/30'
+          },
+          {
+            id: 'inReview',
+            label: 'In Review',
+            value: stats.inReview,
+            icon: <ClockIcon />,
+            colorClass: 'text-amber-500',
+            borderClass: 'border-amber-300',
+            bgClass: 'bg-amber-50/30'
+          },
+          {
+            id: 'approved',
+            label: 'Approved',
+            value: stats.approved,
+            icon: <ClipboardCheckIcon />,
+            colorClass: 'text-purple-500',
+            borderClass: 'border-purple-300',
+            bgClass: 'bg-purple-50/30'
+          }
+        ].map((card) => (
+          <div
+            key={card.id}
+            className={`flex flex-col items-center justify-center p-5 bg-white border rounded shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
+          >
+            <div className="flex items-center gap-2 mb-2.5">
+              <div className={`p-1.5 rounded ${card.bgClass}`}>
+                {card.icon}
+              </div>
+              <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
+            </div>
+            <p className={`text-3xl font-extrabold ${card.colorClass}`}>
+              {card.value.toString().padStart(2, '0')}
+            </p>
           </div>
-          <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-xl">📨</div>
-        </div>
-        <div className="bg-white border-2 border-green-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-green-600">Delivered</p>
-            <p className="text-3xl font-extrabold text-green-700 mt-1">{stats.delivered.toString().padStart(2, '0')}</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-xl">📬</div>
-        </div>
-        <div className="bg-white border-2 border-amber-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-amber-600">In Review</p>
-            <p className="text-3xl font-extrabold text-amber-700 mt-1">{stats.inReview.toString().padStart(2, '0')}</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-xl">⏳</div>
-        </div>
-        <div className="bg-white border-2 border-purple-200 rounded-xl p-5 shadow-xs flex items-center justify-between">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wider text-purple-600">Approved</p>
-            <p className="text-3xl font-extrabold text-purple-700 mt-1">{stats.approved.toString().padStart(2, '0')}</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-xl">✅</div>
-        </div>
+        ))}
       </div>
 
       {/* Filter and Search Toolbar */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-white border border-gray-300 rounded p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
           {/* Department Filter */}
           <div className="relative min-w-[180px]">
             <select
               value={deptFilter}
               onChange={(e) => setDeptFilter(e.target.value)}
-              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
+              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
             >
               <option value="">All Departments</option>
               {departments.map(d => (
@@ -154,7 +208,7 @@ const WriteLetterPage: React.FC = () => {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
+              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="SENT">SENT</option>
@@ -170,7 +224,7 @@ const WriteLetterPage: React.FC = () => {
           {(deptFilter || statusFilter || searchQuery) && (
             <button
               onClick={() => { setDeptFilter(''); setStatusFilter(''); setSearchQuery(''); }}
-              className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer"
+              className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer uppercase tracking-wider"
             >
               Reset Filters
             </button>
@@ -184,9 +238,8 @@ const WriteLetterPage: React.FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search ref no, subject, officer..."
-            className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#801028] transition-all"
-          >
-          </input>
+            className="w-full bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#801028] transition-all"
+          />
         </div>
       </div>
 
@@ -194,24 +247,24 @@ const WriteLetterPage: React.FC = () => {
       {loading ? (
         <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
       ) : (
-        <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+        <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse min-w-[850px]">
               <thead>
-                <tr className="border-b border-gray-200 text-[11px] font-bold text-gray-400 uppercase tracking-wider bg-gray-50/50">
-                  <th className="py-4 px-6">REFERENCE NO</th>
-                  <th className="py-4 px-6">SENT DATE &amp; TIME</th>
-                  <th className="py-4 px-6">TO DEPARTMENT</th>
-                  <th className="py-4 px-6">RECIPIENT OFFICER</th>
-                  <th className="py-4 px-6">SUBJECT</th>
-                  <th className="py-4 px-6">STATUS</th>
-                  <th className="py-4 px-6 text-center">ACTIONS</th>
+                <tr className="border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider bg-gray-50">
+                  <th className="py-3.5 px-6">REFERENCE NO</th>
+                  <th className="py-3.5 px-6">SENT DATE &amp; TIME</th>
+                  <th className="py-3.5 px-6">TO DEPARTMENT</th>
+                  <th className="py-3.5 px-6">RECIPIENT OFFICER</th>
+                  <th className="py-3.5 px-6">SUBJECT</th>
+                  <th className="py-3.5 px-6">STATUS</th>
+                  <th className="py-3.5 px-6 text-center">ACTIONS</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100 text-sm">
                 {filteredLetters.map((letter) => (
                   <tr key={letter.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="py-4 px-6 font-extrabold text-[#801028] font-mono whitespace-nowrap">{letter.refNo}</td>
+                    <td className="py-4 px-6 font-bold text-[#801028] font-mono whitespace-nowrap">{letter.refNo}</td>
                     <td className="py-4 px-6 whitespace-nowrap text-xs font-semibold text-gray-600">{letter.dateTime}</td>
                     <td className="py-4 px-6 font-bold text-gray-900 whitespace-nowrap">{letter.department}</td>
                     <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{letter.recipientOfficer}</td>
@@ -219,7 +272,7 @@ const WriteLetterPage: React.FC = () => {
                       {letter.subject}
                     </td>
                     <td className="py-4 px-6 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase border inline-block ${getStatusStyle(letter.status)}`}>
+                      <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase border inline-block ${getStatusStyle(letter.status)}`}>
                         {letter.status}
                       </span>
                     </td>
@@ -227,14 +280,14 @@ const WriteLetterPage: React.FC = () => {
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           onClick={() => setSelectedDocLetter(letter)}
-                          className="p-2 rounded-lg hover:bg-gray-100 transition-colors group cursor-pointer"
+                          className="p-1.5 border border-gray-300 bg-white rounded hover:bg-gray-100 transition-colors group cursor-pointer shadow-xs"
                           title="View letter document format"
                         >
                           <EyeIcon />
                         </button>
                         <button
                           onClick={() => setSelectedDocLetter(letter)}
-                          className="p-2 rounded-lg hover:bg-[#801028]/10 text-[#801028] transition-colors group cursor-pointer"
+                          className="p-1.5 border border-[#801028]/20 bg-white rounded hover:bg-[#801028]/10 text-[#801028] transition-colors group cursor-pointer shadow-xs"
                           title="Download / Print official letter"
                         >
                           <DownloadIcon />

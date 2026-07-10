@@ -96,7 +96,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
                     key={label}
                     href={href}
                     aria-label={label}
-                    className="w-7 h-7 rounded-full bg-gray-700 hover:bg-[#A31736] text-white flex items-center justify-center transition-colors"
+                    className="w-7 h-7 rounded bg-gray-700 hover:bg-[#A31736] text-white flex items-center justify-center transition-colors"
                   >
                     <Icon />
                   </a>
@@ -106,7 +106,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Phone */}
               <a
                 href="tel:+94112855230"
-                className="flex items-center gap-1.5 bg-gray-800 hover:bg-[#A31736] text-white text-sm px-3 py-1.5 rounded-full transition-colors"
+                className="flex items-center gap-1.5 bg-gray-800 hover:bg-[#A31736] text-white text-sm px-3 py-1.5 rounded transition-colors"
               >
                 <WhatsAppIcon />
                 <span className="font-medium">+94 11 285 5230</span>
@@ -118,20 +118,20 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
 
       {/* ── Row 2: Main Nav Bar (dark red) ── */}
       {!hideNav && user && (
-        <div className="bg-[#A31736] text-white px-6 py-0">
+        <div className="bg-[#A31736] text-white px-6 py-0 border-b border-[#801028]">
           <div className="max-w-screen-2xl mx-auto flex items-center justify-between h-14">
             {/* Title */}
-            <span className="text-lg font-bold tracking-wide whitespace-nowrap">
-              Homagama Pradeshiya Sabha
+            <span className="text-base font-bold tracking-wide uppercase whitespace-nowrap">
+              Homagama Pradeshiya Sabha - Administrative Portal
             </span>
 
             {/* Nav links + separator + actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {/* Topbar Nav links */}
 
 
               {/* Verified badge */}
-              <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm font-medium">
+              <div className="flex items-center gap-1.5 bg-white/10 border border-white/30 rounded px-3 py-1 text-xs font-semibold uppercase tracking-wider">
                 <CheckBadgeIcon />
                 <span>Verified Staff Member</span>
               </div>
@@ -139,7 +139,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Help */}
               <button
                 aria-label="Help"
-                className="ml-2 p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="ml-2 p-2 rounded hover:bg-white/10 transition-colors"
               >
                 <HelpIcon />
               </button>
@@ -147,7 +147,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Profile */}
               <button
                 aria-label="My profile"
-                className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="p-2 rounded hover:bg-white/10 transition-colors"
               >
                 <UserIcon />
               </button>

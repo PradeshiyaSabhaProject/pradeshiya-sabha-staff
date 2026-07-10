@@ -120,13 +120,13 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in print:p-0 print:bg-white print:static">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden print:shadow-none print:max-h-none print:max-w-none print:w-full print:rounded-none border border-gray-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in print:p-0 print:bg-white print:static">
+      <div className="bg-white rounded shadow-lg w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden print:shadow-none print:max-h-none print:max-w-none print:w-full print:rounded-none border border-gray-300">
         
         {/* Modal Toolbar (Hidden when printing) */}
         <div className="flex items-center justify-between px-6 py-4 bg-gray-900 text-white border-b border-gray-800 shrink-0 print:hidden">
           <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#801028] inline-block animate-pulse"></span>
+            <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block"></span>
             <h2 className="text-sm font-bold tracking-wider uppercase text-gray-200">
               Official Letter Document Preview
             </h2>
@@ -134,7 +134,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
           <div className="flex items-center gap-3">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3.5 py-2 rounded-lg transition-colors cursor-pointer border border-gray-700 shadow-sm"
+              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3.5 py-2 rounded transition-colors cursor-pointer border border-gray-700 shadow-sm uppercase tracking-wider"
               title="Print letter directly"
             >
               <PrinterIcon />
@@ -142,7 +142,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             </button>
             <button
               onClick={handleDownloadFile}
-              className="flex items-center gap-2 bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer shadow-md"
+              className="flex items-center gap-2 bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer shadow-md uppercase tracking-wider"
               title="Download formatted document"
             >
               <DownloadIcon />
@@ -151,7 +151,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             <div className="h-5 w-px bg-gray-700 mx-1"></div>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white p-1.5 rounded-lg transition-colors cursor-pointer hover:bg-gray-800"
+              className="text-gray-400 hover:text-white p-1.5 rounded transition-colors cursor-pointer hover:bg-gray-800"
             >
               <CloseIcon />
             </button>

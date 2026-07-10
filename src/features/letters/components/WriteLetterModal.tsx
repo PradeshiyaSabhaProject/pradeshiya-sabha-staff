@@ -111,15 +111,15 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
   const currentTimeStr = `${now.toISOString().split('T')[0]} | ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 animate-fade-in overflow-y-auto">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden my-auto border border-gray-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in overflow-y-auto">
+      <div className="bg-white rounded shadow-lg w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden my-auto border border-gray-300">
         
         {/* Header */}
-        <div className="bg-[#801028] text-white px-6 py-5 flex items-center justify-between shrink-0 shadow-md">
+        <div className="bg-[#801028] text-white px-6 py-4 flex items-center justify-between shrink-0 shadow-sm">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-400 block animate-pulse"></span>
-              <h2 className="text-lg font-bold tracking-wide">Write Official Letter</h2>
+              <span className="w-2.5 h-2.5 rounded bg-green-400 block"></span>
+              <h2 className="text-base font-bold uppercase tracking-wider">Write Official Letter</h2>
             </div>
             <p className="text-xs text-white/80 mt-0.5">
               Compose and dispatch formal correspondence to internal municipal departments &amp; officers
@@ -129,7 +129,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
             <button
               type="button"
               onClick={handleAutoFillSample}
-              className="bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20"
+              className="bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-3 py-1.5 rounded flex items-center gap-1.5 transition-colors cursor-pointer border border-white/20 uppercase tracking-wider"
               title="Fill sample letter data"
             >
               <SparklesIcon />
@@ -137,7 +137,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
             </button>
             <button
               onClick={onClose}
-              className="text-white/80 hover:text-white p-1.5 rounded-lg transition-colors hover:bg-white/10 cursor-pointer"
+              className="text-white/80 hover:text-white p-1.5 rounded transition-colors hover:bg-white/10 cursor-pointer"
             >
               <CloseIcon />
             </button>
@@ -148,49 +148,49 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
         <form onSubmit={handleSubmitForm} className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
           
           {/* Auto-Filled System Data Banner */}
-          <div className="bg-amber-50/70 border border-amber-200/80 rounded-xl p-4 text-xs md:text-sm text-gray-800 space-y-3">
-            <div className="flex items-center justify-between border-b border-amber-200/60 pb-2">
-              <span className="font-extrabold text-amber-900 flex items-center gap-1.5">
+          <div className="bg-gray-50 border border-gray-300 rounded p-4 text-xs md:text-sm text-gray-800 space-y-3">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+              <span className="font-bold text-gray-900 flex items-center gap-1.5 uppercase tracking-wider text-xs">
                 <span>⚡</span> SYSTEM AUTO-FILLED METADATA
               </span>
-              <span className="text-[11px] bg-amber-200/80 text-amber-900 font-bold px-2 py-0.5 rounded-full uppercase">
+              <span className="text-[10px] bg-gray-200 text-gray-800 font-bold px-2 py-0.5 rounded uppercase">
                 Verified Sender
               </span>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-2 gap-x-4 text-xs">
               <div>
-                <span className="text-gray-500 block text-[11px] uppercase font-bold">Reference No:</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold">Reference No:</span>
                 <span className="font-mono font-bold text-[#801028]">[Auto-Generated]</span>
               </div>
               <div>
-                <span className="text-gray-500 block text-[11px] uppercase font-bold">Date &amp; Time:</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold">Date &amp; Time:</span>
                 <span className="font-semibold text-gray-800">{currentTimeStr}</span>
               </div>
               <div>
-                <span className="text-gray-500 block text-[11px] uppercase font-bold">Initial Status:</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold">Initial Status:</span>
                 <span className="font-bold text-green-700">SENT</span>
               </div>
               <div>
-                <span className="text-gray-500 block text-[11px] uppercase font-bold">Sender Name:</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold">Sender Name:</span>
                 <span className="font-bold text-gray-900">Anuradha Wijesinghe</span>
               </div>
               <div className="sm:col-span-2">
-                <span className="text-gray-500 block text-[11px] uppercase font-bold">Sender ID &amp; Role:</span>
+                <span className="text-gray-500 block text-[10px] uppercase font-bold">Sender ID &amp; Role:</span>
                 <span className="font-semibold text-gray-800">EMP-2023-042 (Staff Administration Officer)</span>
               </div>
             </div>
           </div>
 
           {/* Department and Officer Selection */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gray-50 p-5 rounded-2xl border border-gray-200">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gray-50 p-5 rounded border border-gray-300">
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                Select Department <span className="text-red-500">*</span>
+                Select Department <span className="text-red-600">*</span>
               </label>
               <select
                 value={selectedDept}
                 onChange={(e) => setSelectedDept(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-2 focus:ring-[#801028]/20 transition-all cursor-pointer shadow-2xs"
+                className="w-full bg-white border border-gray-300 rounded px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#801028] transition-all cursor-pointer"
                 required
               >
                 {departments.map(d => (
@@ -201,12 +201,12 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
 
             <div>
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-                To Department Person (Officer) <span className="text-red-500">*</span>
+                To Department Person (Officer) <span className="text-red-600">*</span>
               </label>
               <select
                 value={selectedOfficer}
                 onChange={(e) => setSelectedOfficer(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-semibold text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-2 focus:ring-[#801028]/20 transition-all cursor-pointer shadow-2xs"
+                className="w-full bg-white border border-gray-300 rounded px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#801028] transition-all cursor-pointer"
                 required
               >
                 {officersList.map(officer => (
@@ -222,14 +222,14 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           {/* Subject Line */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              Letter Subject <span className="text-red-500">*</span>
+              Letter Subject <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter official subject line (e.g. Request for Inspection / Submission of Reports)..."
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm font-medium text-gray-900 focus:outline-none focus:border-[#801028] focus:ring-2 focus:ring-[#801028]/20 transition-all shadow-2xs"
+              className="w-full bg-white border border-gray-300 rounded px-4 py-2.5 text-xs font-medium text-gray-900 focus:outline-none focus:border-[#801028] transition-all"
               required
             />
           </div>
@@ -237,14 +237,14 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           {/* Letter Body */}
           <div>
             <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
-              Letter Body <span className="text-red-500">*</span>
+              Letter Body <span className="text-red-600">*</span>
             </label>
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={6}
               placeholder="Write the full content of the letter here. Paragraphs will be preserved and formatted according to the official Pradeshiya Sabha document standards..."
-              className="w-full bg-white border border-gray-300 rounded-xl p-4 text-sm font-serif text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-2 focus:ring-[#801028]/20 transition-all leading-relaxed shadow-2xs"
+              className="w-full bg-white border border-gray-300 rounded p-4 text-xs font-serif text-gray-800 focus:outline-none focus:border-[#801028] transition-all leading-relaxed"
               required
             />
           </div>
@@ -255,10 +255,10 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
               <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Attachments (Optional)
               </label>
-              <span className="text-xs text-gray-400">Supported: PDF, JPG, PNG, DOC</span>
+              <span className="text-xs text-gray-500">Supported: PDF, JPG, PNG, DOC</span>
             </div>
             
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-[#801028] transition-colors bg-gray-50/50">
+            <div className="border border-dashed border-gray-400 rounded p-6 text-center hover:border-[#801028] transition-colors bg-gray-50">
               <input
                 type="file"
                 id="file-upload"
@@ -269,11 +269,11 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                 htmlFor="file-upload"
                 className="cursor-pointer flex flex-col items-center justify-center text-gray-600 hover:text-[#801028]"
               >
-                <div className="w-10 h-10 rounded-full bg-white shadow-sm border border-gray-200 flex items-center justify-center mb-2 text-lg">
+                <div className="w-10 h-10 rounded bg-white border border-gray-300 flex items-center justify-center mb-2 text-lg">
                   📎
                 </div>
-                <span className="text-sm font-semibold">Click to attach supporting documents</span>
-                <span className="text-xs text-gray-400 mt-0.5">Maximum file size: 10MB</span>
+                <span className="text-xs font-semibold">Click to attach supporting documents</span>
+                <span className="text-[11px] text-gray-500 mt-0.5">Maximum file size: 10MB</span>
               </label>
             </div>
 
@@ -281,7 +281,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
             {attachments.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
                 {attachments.map(att => (
-                  <div key={att.id} className="flex items-center gap-2 bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-800 shadow-2xs">
+                  <div key={att.id} className="flex items-center gap-2 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs font-medium text-gray-800">
                     <span>{att.type === 'pdf' ? '📕' : '🖼️'}</span>
                     <span className="font-bold">{att.name}</span>
                     <span className="text-gray-400">({att.size})</span>
@@ -303,18 +303,18 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold text-sm rounded-xl transition-colors cursor-pointer"
+              className="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold text-xs rounded transition-colors cursor-pointer uppercase tracking-wider"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-8 py-3 bg-[#801028] hover:bg-[#600a1c] disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md hover:shadow-lg cursor-pointer flex items-center gap-2"
+              className="px-6 py-2.5 bg-[#801028] hover:bg-[#600a1c] disabled:opacity-50 text-white font-bold text-xs rounded transition-all cursor-pointer flex items-center gap-2 uppercase tracking-wider"
             >
               {isSubmitting ? (
                 <>
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded animate-spin"></span>
                   <span>Dispatching Letter...</span>
                 </>
               ) : (

@@ -141,11 +141,11 @@ const OverviewPage: React.FC = () => {
           : kpiStats.map(stat => (
             <div
               key={stat.id}
-              className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between cursor-default"
+              className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default"
             >
               <div className="flex items-start justify-between">
-                <span className="text-sm font-medium text-gray-600">{stat.label}</span>
-                <div className="p-1.5 bg-blue-50/60 rounded-lg">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-600">{stat.label}</span>
+                <div className="p-1.5 bg-blue-50/60 rounded">
                   {renderKpiIcon(stat.icon)}
                 </div>
               </div>
@@ -162,14 +162,14 @@ const OverviewPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
         {/* Left Box: Centralized Task Inbox (takes 2 columns) */}
-        <div className="lg:col-span-2 bg-white border border-gray-200/80 rounded-xl shadow-sm overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-gray-900">Centralized Task Inbox</h2>
+        <div className="lg:col-span-2 bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-wide">Centralized Task Inbox</h2>
             <div className="flex items-center gap-2">
-              <button className="bg-gray-100/80 hover:bg-gray-200/80 text-gray-700 text-sm font-medium px-4 py-1.5 rounded-lg border border-gray-300/60 transition-colors cursor-pointer">
+              <button className="bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer">
                 Filter
               </button>
-              <button className="bg-[#A31736] hover:bg-[#801028] text-white text-sm font-medium px-4 py-1.5 rounded-lg transition-colors shadow-sm cursor-pointer">
+              <button className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer">
                 Export CSV
               </button>
             </div>
@@ -178,7 +178,7 @@ const OverviewPage: React.FC = () => {
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse min-w-[600px]">
               <thead>
-                <tr className="bg-gray-100/60 border-y border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
                   <th className="py-3 px-6">REF ID</th>
                   <th className="py-3 px-6">DEPARTMENT</th>
                   <th className="py-3 px-6">TASK SUBJECT</th>
@@ -186,7 +186,7 @@ const OverviewPage: React.FC = () => {
                   <th className="py-3 px-6 text-right">ACTION</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
+              <tbody className="divide-y divide-gray-200 text-sm">
                 {loading ? (
                   [1, 2, 3, 4, 5, 6].map(i => (
                     <tr key={i}>
@@ -195,17 +195,17 @@ const OverviewPage: React.FC = () => {
                   ))
                 ) : (
                   taskInbox?.map(item => (
-                    <tr key={item.id} className="hover:bg-gray-50/60 transition-colors group">
-                      <td className="py-4 px-6 font-medium text-gray-600 whitespace-nowrap">{item.refId}</td>
-                      <td className="py-4 px-6 font-bold text-gray-900 whitespace-nowrap">{item.department}</td>
-                      <td className="py-4 px-6 text-gray-800 max-w-sm">{item.subject}</td>
-                      <td className="py-4 px-6 whitespace-nowrap">
-                        <span className={`text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wide inline-block ${PRIORITY_BADGES[item.priority]}`}>
+                    <tr key={item.id} className="hover:bg-gray-50 transition-colors group">
+                      <td className="py-3.5 px-6 font-mono text-xs font-semibold text-gray-600 whitespace-nowrap">{item.refId}</td>
+                      <td className="py-3.5 px-6 font-bold text-gray-900 whitespace-nowrap">{item.department}</td>
+                      <td className="py-3.5 px-6 text-gray-800 max-w-sm">{item.subject}</td>
+                      <td className="py-3.5 px-6 whitespace-nowrap">
+                        <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wide inline-block border ${PRIORITY_BADGES[item.priority]}`}>
                           {item.priority}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-right whitespace-nowrap">
-                        <button className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-4 py-1.5 rounded-md bg-white shadow-2xs cursor-pointer">
+                      <td className="py-3.5 px-6 text-right whitespace-nowrap">
+                        <button className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-4 py-1 rounded bg-white shadow-xs cursor-pointer uppercase tracking-wider">
                           Assign
                         </button>
                       </td>
@@ -221,9 +221,9 @@ const OverviewPage: React.FC = () => {
         <div className="lg:col-span-1 flex flex-col gap-6">
 
           {/* Departmental Health Card */}
-          <div className="bg-white border border-gray-200/80 rounded-xl p-6 shadow-sm flex flex-col justify-between">
+          <div className="bg-white border border-gray-300 rounded p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <h2 className="text-xl font-bold text-gray-900 mb-6">Departmental Health</h2>
+              <h2 className="text-lg font-bold text-gray-900 mb-6 uppercase tracking-wide">Departmental Health</h2>
               <div className="space-y-5">
                 {loading ? (
                   [1, 2, 3].map(i => <div key={i}>{skeleton('h-10')}</div>)
@@ -234,9 +234,9 @@ const OverviewPage: React.FC = () => {
                         <span className="text-sm font-semibold text-gray-800">{dept.department}</span>
                         <span className={`text-sm font-bold ${dept.textColor}`}>{dept.loadPercent}% Load</span>
                       </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                      <div className="w-full bg-gray-200 rounded-sm h-2 overflow-hidden">
                         <div
-                          className={`${dept.barColor} h-2.5 rounded-full transition-all duration-1000`}
+                          className={`${dept.barColor} h-2 rounded-sm transition-all duration-1000`}
                           style={{ width: `${dept.loadPercent}%` }}
                         />
                       </div>
@@ -245,10 +245,10 @@ const OverviewPage: React.FC = () => {
                 )}
               </div>
             </div>
-            <div className="mt-8 pt-4 border-t border-gray-100 text-center">
+            <div className="mt-8 pt-4 border-t border-gray-200 text-center">
               <a
                 href="#analytics"
-                className="text-sm font-bold text-[#1e3a8a] hover:text-blue-800 inline-flex items-center gap-1.5 transition-colors"
+                className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:text-blue-800 inline-flex items-center gap-1.5 transition-colors"
               >
                 View Full Analytics <span className="text-base leading-none">→</span>
               </a>
@@ -256,8 +256,8 @@ const OverviewPage: React.FC = () => {
           </div>
 
           {/* Quick Reports Card */}
-          <div className="bg-white border border-gray-200/80 rounded-xl p-6 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Quick Reports</h2>
+          <div className="bg-white border border-gray-300 rounded p-6 shadow-sm">
+            <h2 className="text-lg font-bold text-gray-900 mb-4 uppercase tracking-wide">Quick Reports</h2>
             <div className="space-y-3">
               {loading ? (
                 [1, 2].map(i => <div key={i}>{skeleton('h-16')}</div>)
@@ -265,9 +265,9 @@ const OverviewPage: React.FC = () => {
                 quickReports?.map(report => (
                   <div
                     key={report.id}
-                    className="border border-gray-200/80 rounded-xl p-4 flex items-center gap-4 hover:border-[#A31736]/30 hover:bg-[#A31736]/5 transition-all cursor-pointer group"
+                    className="border border-gray-300 rounded p-4 flex items-center gap-4 hover:border-[#A31736] hover:bg-gray-50 transition-all cursor-pointer group"
                   >
-                    <div className="bg-[#A31736] text-white w-12 h-12 rounded-xl flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                    <div className="bg-[#A31736] text-white w-10 h-10 rounded flex items-center justify-center shrink-0 shadow-sm">
                       {report.icon === 'summary' ? <SummaryReportIcon /> : <FinancialReportIcon />}
                     </div>
                     <div className="min-w-0 flex-1">

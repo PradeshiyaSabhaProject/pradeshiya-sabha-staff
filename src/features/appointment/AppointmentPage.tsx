@@ -9,7 +9,7 @@ interface AppointmentPageProps {
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 const OrangeClockIcon = () => (
-  <div className="p-2.5 bg-orange-50 rounded-full shrink-0">
+  <div className="p-2 bg-orange-50 rounded border border-orange-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-orange-500">
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
@@ -18,7 +18,7 @@ const OrangeClockIcon = () => (
 );
 
 const GreenClockIcon = () => (
-  <div className="p-2.5 bg-green-50 rounded-full shrink-0">
+  <div className="p-2 bg-green-50 rounded border border-green-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-green-500">
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 15 9" />
@@ -27,7 +27,7 @@ const GreenClockIcon = () => (
 );
 
 const RedWarningIcon = () => (
-  <div className="p-2.5 bg-red-50 rounded-full shrink-0">
+  <div className="p-2 bg-red-50 rounded border border-red-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-red-500">
       <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
       <line x1="12" y1="9" x2="12" y2="13" />
@@ -37,7 +37,7 @@ const RedWarningIcon = () => (
 );
 
 const PurpleClipboardIcon = () => (
-  <div className="p-2.5 bg-purple-50 rounded-full shrink-0">
+  <div className="p-2 bg-purple-50 rounded border border-purple-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-purple-500">
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
       <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
@@ -277,10 +277,10 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
       {/* ── Stats Cards Grid ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pending */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between cursor-default min-h-[120px]">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
           <div className="flex items-center justify-center gap-2">
             <OrangeClockIcon />
-            <span className="text-[13px] font-bold text-[#ea580c]/90 uppercase tracking-wide">Pending Appointment</span>
+            <span className="text-xs font-bold text-[#ea580c]/90 uppercase tracking-wider">Pending Appointment</span>
           </div>
           <p className="text-3xl font-extrabold text-[#ea580c] text-center mt-2.5 tracking-tight">
             {loading ? '...' : tabCounts.pending.toString().padStart(2, '0')}
@@ -288,10 +288,10 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
 
         {/* Approved */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between cursor-default min-h-[120px]">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
           <div className="flex items-center justify-center gap-2">
             <GreenClockIcon />
-            <span className="text-[13px] font-bold text-[#16a34a]/90 uppercase tracking-wide">Approved Appointment</span>
+            <span className="text-xs font-bold text-[#16a34a]/90 uppercase tracking-wider">Approved Appointment</span>
           </div>
           <p className="text-3xl font-extrabold text-[#16a34a] text-center mt-2.5 tracking-tight">
             {loading ? '...' : tabCounts.approved.toString().padStart(2, '0')}
@@ -299,10 +299,10 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
 
         {/* Rejected */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between cursor-default min-h-[120px]">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
           <div className="flex items-center justify-center gap-2">
             <RedWarningIcon />
-            <span className="text-[13px] font-bold text-[#dc2626]/90 uppercase tracking-wide">Rejected Appointment</span>
+            <span className="text-xs font-bold text-[#dc2626]/90 uppercase tracking-wider">Rejected Appointment</span>
           </div>
           <p className="text-3xl font-extrabold text-[#dc2626] text-center mt-2.5 tracking-tight">
             {loading ? '...' : tabCounts.rejected.toString().padStart(2, '0')}
@@ -310,10 +310,10 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
 
         {/* Completed */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between cursor-default min-h-[120px]">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
           <div className="flex items-center justify-center gap-2">
             <PurpleClipboardIcon />
-            <span className="text-[13px] font-bold text-[#7c3aed]/90 uppercase tracking-wide">Completed Appointment</span>
+            <span className="text-xs font-bold text-[#7c3aed]/90 uppercase tracking-wider">Completed Appointment</span>
           </div>
           <p className="text-3xl font-extrabold text-[#7c3aed] text-center mt-2.5 tracking-tight">
             {loading ? '...' : tabCounts.completed.toString().padStart(2, '0')}
@@ -322,7 +322,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
       </div>
 
       {/* ── Main content Card (Tabs + Filters + Table) ── */}
-      <div className="bg-white border border-gray-200/80 rounded-xl shadow-2xs overflow-hidden flex flex-col">
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         
         {/* Tabs Bar */}
         <div className="overflow-x-auto border-b border-gray-200">
@@ -406,13 +406,13 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
           <div className="flex items-center gap-2">
             <button
               onClick={resetFilters}
-              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer h-9 shadow-3xs"
+              className="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
             >
               Filter
             </button>
             <button
               onClick={handleExportCSV}
-              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors cursor-pointer h-9 shadow-3xs"
+              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
             >
               Export CSV
             </button>

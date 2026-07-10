@@ -260,10 +260,10 @@ const AssetOverviewPage: React.FC = () => {
             Real-time monitoring of public assets, infrastructure records, and GIS mapping for the Pradeshiya Sabha jurisdiction.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#A31736] hover:bg-[#801028] text-white text-sm font-semibold px-4.5 py-2.5 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
             <AddIcon />
             <span>Add Digital Record</span>
@@ -271,7 +271,7 @@ const AssetOverviewPage: React.FC = () => {
 
           <button
             onClick={() => alert('PDF Export triggered (Simulated)')}
-            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4.5 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
             <ExportIcon />
             <span>Export PDF</span>
@@ -279,7 +279,7 @@ const AssetOverviewPage: React.FC = () => {
 
           <button
             onClick={() => window.print()}
-            className="bg-[#A31736] hover:bg-[#801028] text-white text-sm font-semibold px-4.5 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
             <PrintIcon />
             <span>Print Summary</span>
@@ -288,96 +288,96 @@ const AssetOverviewPage: React.FC = () => {
       </div>
 
       {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* Card 1: Municipal Lands */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Municipal Lands</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Municipal Lands</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.municipalLands.value, stats.municipalLands.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200/50">
+              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 {stats.municipalLands.change}
               </span>
-              <div className="p-1.5 bg-blue-50/50 rounded-lg">
+              <div className="p-1.5 bg-blue-50 rounded">
                 <LandsCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#1e3a8a] h-1.5 rounded-full transition-all duration-1000" style={{ width: '70%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#1e3a8a] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '70%' }} />
           </div>
         </div>
 
         {/* Card 2: Road Infrastructure */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Road Infrastructure</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Road Infrastructure</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.roadInfrastructure.value, stats.roadInfrastructure.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 {stats.roadInfrastructure.change}
               </span>
-              <div className="p-1.5 bg-emerald-50/50 rounded-lg">
+              <div className="p-1.5 bg-emerald-50 rounded">
                 <RoadCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#22c55e] h-1.5 rounded-full transition-all duration-1000" style={{ width: '60%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#22c55e] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '60%' }} />
           </div>
         </div>
 
         {/* Card 3: Building Units */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Building Units</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Building Units</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.buildingUnits.value, stats.buildingUnits.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-blue-800 bg-blue-50/60 px-2 py-0.5 rounded-full border border-blue-200/50">
+              <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 {stats.buildingUnits.change}
               </span>
-              <div className="p-1.5 bg-blue-50/50 rounded-lg">
+              <div className="p-1.5 bg-blue-50 rounded">
                 <BuildingCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#1e40af] h-1.5 rounded-full transition-all duration-1000" style={{ width: '75%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#1e40af] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '75%' }} />
           </div>
         </div>
 
         {/* Card 4: Material Assets */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Material Assets</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Material Assets</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.materialAssets.value, stats.materialAssets.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-300/40">
+              <span className="text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
                 {stats.materialAssets.change}
               </span>
-              <div className="p-1.5 bg-slate-50/50 rounded-lg">
+              <div className="p-1.5 bg-slate-50 rounded">
                 <MaterialCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-[#1f2937] h-1.5 rounded-full transition-all duration-1000" style={{ width: '45%' }} />
           </div>
         </div>
