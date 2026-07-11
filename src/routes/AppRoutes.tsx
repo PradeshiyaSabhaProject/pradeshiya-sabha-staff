@@ -6,6 +6,7 @@ import assetRoutes from '../features/asset-management/assetRoutes'
 import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
+import attendanceRoutes from '../features/attendance/attendanceRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -56,6 +57,7 @@ export const AppRoutes: React.FC = () => {
       >
         {/* Import feature routes */}
         {overviewRoutes}
+        {attendanceRoutes}
 
         {/* Appointment Management Routes */}
         {appointmentRoutes}

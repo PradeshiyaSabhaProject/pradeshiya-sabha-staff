@@ -37,6 +37,12 @@ const LetterIcon = () => (
     <polyline points="22,4 12,13 2,4" />
   </svg>
 )
+const AttendanceIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+)
 const ProfileIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -93,6 +99,19 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: 'Overview', path: '/overview', icon: <GridIcon /> },
   {
+    label: 'Staff Attendance & Leave',
+    path: '/attendance',
+    icon: <AttendanceIcon />,
+    children: [
+      { label: 'Daily Biometric Dashboard', path: '/attendance/dashboard' },
+      { label: 'Employee Timecards', path: '/attendance/timecards' },
+      { label: 'My Leave & Applications', path: '/attendance/my-leave' },
+      { label: 'My Attendance Corrections', path: '/attendance/my-corrections' },
+      { label: 'Manager Approvals Queue', path: '/attendance/approvals' },
+      { label: 'Monthly Duty Rosters', path: '/attendance/rosters' },
+    ],
+  },
+  {
     label: 'Appointment Management',
     path: '/appointments',
     icon: <CalendarIcon />,
@@ -144,6 +163,7 @@ const Sidebar: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
+    '/attendance': true,
     '/appointments': false,
     '/letters': false,
     '/assets': false,
