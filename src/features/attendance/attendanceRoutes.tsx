@@ -1,4 +1,3 @@
-import React from 'react'
 import { Route, Navigate } from 'react-router-dom'
 import { AttendanceDashboardPage } from './AttendanceDashboardPage'
 import { TimecardsPage } from './TimecardsPage'

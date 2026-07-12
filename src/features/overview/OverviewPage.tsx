@@ -282,6 +282,31 @@ const OverviewPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Fleet Management Quick Access Card */}
+          <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 border border-slate-700 rounded p-6 shadow-md text-white flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 px-2.5 py-0.5 rounded border border-amber-400/30">
+                  New Module
+                </span>
+                <span className="text-xs text-slate-400">Pradeshiya Sabha Fleet</span>
+              </div>
+              <h3 className="text-lg font-bold text-white">Fleet Management System</h3>
+              <p className="text-xs text-slate-300 mt-1">
+                Maintain municipal vehicles, assign drivers, monitor live ward dispatches, put vehicles into workshop maintenance, and track route permits.
+              </p>
+            </div>
+            <div className="mt-5 pt-4 border-t border-slate-700 flex items-center justify-between">
+              <span className="text-xs text-slate-300">Council Transport</span>
+              <a
+                href="/fleet/overview"
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded transition-all shadow-sm"
+              >
+                Open Fleet Dashboard →
+              </a>
+            </div>
+          </div>
+
         </div>
 
       </div>

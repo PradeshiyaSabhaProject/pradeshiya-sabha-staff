@@ -26,6 +26,14 @@ const AssetIcon = () => (
     <line x1="12" y1="17" x2="12" y2="21" />
   </svg>
 )
+const FleetIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <rect x="1" y="3" width="22" height="13" rx="2" />
+    <circle cx="6" cy="20" r="2" />
+    <circle cx="18" cy="20" r="2" />
+    <path d="M14 9h5v4h-5z" />
+  </svg>
+)
 const ComplainIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -132,6 +140,19 @@ const navItems: NavItem[] = [
     ]
   },
   {
+    label: 'Fleet Management',
+    path: '/fleet',
+    icon: <FleetIcon />,
+    children: [
+      { label: 'Fleet Dashboard', path: '/fleet/overview' },
+      { label: 'Vehicle Registry', path: '/fleet/vehicles' },
+      { label: 'Live Dispatch & Location', path: '/fleet/dispatch' },
+      { label: 'Maintenance Workshop', path: '/fleet/maintenance' },
+      { label: 'Drivers & Operators', path: '/fleet/drivers' },
+      { label: 'Authorizations Desk', path: '/fleet/approvals' },
+    ]
+  },
+  {
     label: 'Complain Management',
     path: '/complaints',
     icon: <ComplainIcon />,
@@ -167,6 +188,7 @@ const Sidebar: React.FC = () => {
     '/appointments': false,
     '/letters': false,
     '/assets': false,
+    '/fleet': false,
   })
 
   const toggleMenu = (path: string) => {

@@ -6,7 +6,7 @@ import { BiometricSyncModal } from './components/BiometricSyncModal'
 export const AttendanceDashboardPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState('2026-07-10')
-  const [logs, setLogs] = useState<BiometricLog[]>(MOCK_BIOMETRIC_LOGS)
+  const [logs] = useState<BiometricLog[]>(MOCK_BIOMETRIC_LOGS)
   const [activeFilter, setActiveFilter] = useState<string>('All')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)

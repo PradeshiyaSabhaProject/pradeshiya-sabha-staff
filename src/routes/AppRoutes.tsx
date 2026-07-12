@@ -7,6 +7,7 @@ import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
 import attendanceRoutes from '../features/attendance/attendanceRoutes'
+import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -65,6 +66,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Other Feature Routes */}
         {assetRoutes}
+        {fleetRoutes}
         {complainRoutes}
         {letterRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />

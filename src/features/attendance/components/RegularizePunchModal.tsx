@@ -14,7 +14,7 @@ interface RegularizePunchModalProps {
 }
 
 export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [employeeName, setEmployeeName] = useState('Kasun Perera (PS-EMP-0012)')
+  const [employeeName] = useState('Kasun Perera (PS-EMP-0012)')
   const [date, setDate] = useState('2026-07-10')
   const [reasonType, setReasonType] = useState('Forgot to Punch Out')
   const [requestedCheckIn, setRequestedCheckIn] = useState('08:30')
