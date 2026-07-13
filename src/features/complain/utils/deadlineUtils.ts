@@ -22,32 +22,80 @@ export const getDeadlineStatus = (
   complaint: ComplaintDeadline,
   _isAssignedToCurrentTO: boolean
 ): string => {
-  switch (complaint.status) {
-    case 'PENDING':
-      return '01 day left'
-    case 'REVIEWING':
-      return '04 days left'
-    case 'IN PROGRESS':
-      return '05 days left'
-    default:
-      return ''
+  // Don't show deadline status for these statuses
+  const hiddenStatuses = ['APPROVED', 'REJECTED', 'COMPLETED', 'NO-SHOW', 'RESCHEDULED']
+  if (hiddenStatuses.includes(complaint.status)) {
+    return ''
   }
+  return getDeadlineStatusLabel(complaint.dueDate)
 }
 
 /**
- * Returns the styling classes for deadline status badges.
+ * Calculates the number of days remaining until the deadline
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns The number of days remaining (can be negative if deadline has passed)
  */
-export const getDeadlineStatusStyleClasses = (status: string): string => {
-  switch (status) {
-    case 'PENDING':
-      return 'text-black bg-red-100 border-red-200'
-    case 'REVIEWING':
-      return 'text-black bg-orange-100 border-orange-200'
-    case 'IN PROGRESS':
-      return 'text-black bg-green-100 border-green-200'
-    default:
-      return 'text-black bg-gray-50 border-gray-200'
+export const calculateDaysRemaining = (dueDate: string): number => {
+  const today = new Date('2026-06-11') // Fixed today's date
+  today.setHours(0, 0, 0, 0)
+  
+  const deadline = new Date(dueDate)
+  deadline.setHours(0, 0, 0, 0)
+  
+  const timeDiff = deadline.getTime() - today.getTime()
+  const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+  
+  return daysRemaining
+}
+
+/**
+ * Determines the deadline status indicator based on days remaining
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns The deadline status string or empty string if deadline has passed
+ */
+export const getDeadlineStatusLabel = (dueDate: string): string => {
+  if (!dueDate) return ''
+  
+  const daysRemaining = calculateDaysRemaining(dueDate)
+  
+  if (daysRemaining <= 0) return '' // Deadline passed
+  if (daysRemaining === 1) return '01 day left'
+  if (daysRemaining === 2) return '02 days left'
+  if (daysRemaining === 3) return '03 days left'
+  if (daysRemaining === 4) return '04 days left'
+  if (daysRemaining === 5) return '05 days left'
+  if (daysRemaining === 6) return '06 days left'
+  if (daysRemaining === 7) return '07 days left'
+  
+  return '' // More than 7 days
+}
+
+/**
+ * Returns the styling classes for deadline status badges based on days remaining
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns CSS classes for styling the badge
+ */
+export const getDeadlineStatusStyleClasses = (dueDate: string): string => {
+  if (!dueDate) return ''
+  
+  const daysRemaining = calculateDaysRemaining(dueDate)
+  
+  // 1-2 days: Red label with white text
+  if (daysRemaining >= 1 && daysRemaining <= 2) {
+    return 'text-white bg-red-600 border-red-700'
   }
+  
+  // 3-4 days: Orange label with white text
+  if (daysRemaining >= 3 && daysRemaining <= 4) {
+    return 'text-white bg-orange-500 border-orange-600'
+  }
+  
+  // 5-7 days: Green label with white text
+  if (daysRemaining >= 5 && daysRemaining <= 7) {
+    return 'text-white bg-green-600 border-green-700'
+  }
+  
+  return ''
 }
 
 /**
