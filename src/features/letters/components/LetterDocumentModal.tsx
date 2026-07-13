@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import type { SentLetter } from '../hooks/useWriteLetterData'
 
 interface LetterDocumentModalProps {
@@ -98,7 +98,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
     <p>Yours faithfully,</p>
     <br/><br/>
     <div class="name">${letter.senderName}</div>
-    <div class="title">Staff Officer • Homagama Pradeshiya Sabha</div>
+    <div class="title">Staff Officer â€¢ Homagama Pradeshiya Sabha</div>
     <div class="title">ID: ${letter.senderId}</div>
   </div>
   <div class="footer">
@@ -175,7 +175,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               Official Municipal Correspondence &amp; Departmental Dispatch
             </p>
             <p className="text-xs text-gray-400 font-sans mt-0.5">
-              Court Road, Homagama • Tel: +94 11 285 5230 • Email: homagamapradeshiyasabawa@gmail.com
+              Court Road, Homagama â€¢ Tel: +94 11 285 5230 â€¢ Email: homagamapradeshiyasabawa@gmail.com
             </p>
           </div>
 
@@ -230,7 +230,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               <div className="flex flex-wrap gap-2">
                 {letter.attachments.map(att => (
                   <span key={att.id} className="inline-flex items-center gap-2 bg-gray-100 border border-gray-300 text-gray-800 text-xs font-medium px-3 py-1.5 rounded-lg">
-                    <span>📄</span>
+                    <span>ðŸ“„</span>
                     <span className="font-bold">{att.name}</span>
                     <span className="text-gray-400">({att.size})</span>
                   </span>
@@ -245,7 +245,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               <p className="text-sm font-serif italic text-gray-600 mb-6">Yours faithfully,</p>
               <div className="w-48 border-b-2 border-gray-900 mb-2"></div>
               <p className="font-extrabold text-gray-900 text-base">{letter.senderName}</p>
-              <p className="text-xs font-semibold text-gray-500">Staff Officer • Homagama Pradeshiya Sabha</p>
+              <p className="text-xs font-semibold text-gray-500">Staff Officer â€¢ Homagama Pradeshiya Sabha</p>
               <p className="text-xs text-gray-400">Employee ID: {letter.senderId}</p>
             </div>
             <div className="hidden sm:block text-right">
@@ -265,7 +265,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
         {/* Modal Footer Toolbar (Hidden when printing) */}
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between shrink-0 print:hidden font-sans">
           <span className="text-xs text-gray-500 font-medium">
-            💡 Click <strong>Download Letter</strong> to save a standalone HTML document or <strong>Print</strong> for PDF save.
+            ðŸ’¡ Click <strong>Download Letter</strong> to save a standalone HTML document or <strong>Print</strong> for PDF save.
           </span>
           <button
             onClick={onClose}
@@ -281,3 +281,4 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
 }
 
 export default LetterDocumentModal
+

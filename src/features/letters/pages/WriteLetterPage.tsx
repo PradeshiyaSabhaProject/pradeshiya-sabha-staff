@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import { useWriteLetterData, type SentLetter } from '../hooks/useWriteLetterData'
 import WriteLetterModal from '../components/WriteLetterModal'
 import LetterDocumentModal from '../components/LetterDocumentModal'
@@ -310,7 +310,7 @@ const WriteLetterPage: React.FC = () => {
           {/* Table Footer */}
           <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/30 flex items-center justify-between text-xs text-gray-500 font-semibold">
             <span>Showing {filteredLetters.length} of {sentLetters.length} sent letters</span>
-            <span>✓ All correspondence auto-logged with sender ID: EMP-2023-042</span>
+            <span>âœ“ All correspondence auto-logged with sender ID: EMP-2026-042</span>
           </div>
         </div>
       )}
@@ -333,3 +333,4 @@ const WriteLetterPage: React.FC = () => {
 }
 
 export default WriteLetterPage
+

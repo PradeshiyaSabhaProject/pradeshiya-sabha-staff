@@ -1,4 +1,4 @@
-import { Route } from 'react-router-dom';
+﻿import { Route } from 'react-router-dom';
 import AppointmentPage from './AppointmentPage';
 
 // Feature-scoped routes for Appointment Management
@@ -10,3 +10,4 @@ export const appointmentRoutes = (
 );
 
 export default appointmentRoutes;
+

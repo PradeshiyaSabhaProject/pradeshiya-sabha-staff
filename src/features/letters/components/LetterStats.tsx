@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 const ClockIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-orange-500 shrink-0">
@@ -102,3 +102,4 @@ const LetterStats: React.FC<LetterStatsProps> = ({ stats }) => {
 }
 
 export default LetterStats
+

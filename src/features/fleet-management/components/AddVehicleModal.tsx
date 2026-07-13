@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import type { VehicleCategory, VehicleStatus, DriverRecord } from '../data/initialFleetData'
 
 interface AddVehicleModalProps {
@@ -34,7 +34,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
   const [department, setDepartment] = useState('Solid Waste Management')
   const [fuelType, setFuelType] = useState<'Diesel' | 'Petrol' | 'EV'>('Diesel')
   const [odometerKm, setOdometerKm] = useState(12000)
-  const [yearOfManufacture, setYearOfManufacture] = useState(2023)
+  const [yearOfManufacture, setYearOfManufacture] = useState(2026)
   const [currentLocation, setCurrentLocation] = useState('Municipal Central Depot - Bay 01')
   const [status] = useState<VehicleStatus>('Available')
   const [assignedDriverId, setAssignedDriverId] = useState<string>('')
@@ -59,7 +59,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
       department,
       fuelType,
       odometerKm: Number(odometerKm) || 0,
-      yearOfManufacture: Number(yearOfManufacture) || 2023,
+      yearOfManufacture: Number(yearOfManufacture) || 2026,
       status,
       currentLocation,
       assignedDriverId: assignedDriverId ? assignedDriverId : null,
@@ -100,7 +100,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             type="button"
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
           >
-            ×
+            Ã—
           </button>
         </div>
 
@@ -235,7 +235,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
                   min="1990"
                   max="2030"
                   value={yearOfManufacture}
-                  onChange={(e) => setYearOfManufacture(Number(e.target.value) || 2023)}
+                  onChange={(e) => setYearOfManufacture(Number(e.target.value) || 2026)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
                 />
               </div>
@@ -346,3 +346,4 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
     </div>
   )
 }
+

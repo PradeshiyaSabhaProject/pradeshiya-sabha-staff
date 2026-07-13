@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 
 export type LetterStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW' | 'RESCHEDULED'
 
@@ -29,13 +29,13 @@ export interface Letter {
 const DUMMY_LETTERS: Letter[] = [
   {
     id: '1',
-    refId: '#PS-2023-0842',
+    refId: '#PS-2026-0842',
     citizenName: 'Kamal Silva',
     citizenNic: '196523456789',
     citizenPhone: '0713451689',
     citizenEmail: 'kamalsilva65@gmail.com',
     category: 'Type 1',
-    date: '2023-06-05',
+    date: '2026-06-05',
     time: '10:30 AM',
     assignedOfficer: 'M.Perera',
     status: 'PENDING',
@@ -49,13 +49,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '2',
-    refId: '#PS-2023-0843',
+    refId: '#PS-2026-0843',
     citizenName: 'Sampath Bandara',
     citizenNic: '198234567812',
     citizenPhone: '0775642312',
     citizenEmail: 'sampath.b@example.com',
     category: 'Type 2',
-    date: '2023-06-05',
+    date: '2026-06-05',
     time: '11:00 AM',
     assignedOfficer: 'L.D.Silva',
     status: 'APPROVED',
@@ -66,13 +66,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '3',
-    refId: '#PS-2023-0850',
+    refId: '#PS-2026-0850',
     citizenName: 'Nimal Perera',
     citizenNic: '199023456745',
     citizenPhone: '0763456789',
     citizenEmail: 'nimalp@example.com',
     category: 'Type 3',
-    date: '2023-06-05',
+    date: '2026-06-05',
     time: '02:45 PM',
     assignedOfficer: 'N.Fernando',
     status: 'RESCHEDULED',
@@ -81,13 +81,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '4',
-    refId: '#PS-2023-0855',
+    refId: '#PS-2026-0855',
     citizenName: 'Lasantha Wijesiri',
     citizenNic: '198512345678',
     citizenPhone: '0763408997',
     citizenEmail: 'lasantha.w@example.com',
     category: 'Type 4',
-    date: '2023-07-02',
+    date: '2026-07-02',
     time: '08:30 AM',
     assignedOfficer: 'K.Perera',
     status: 'REJECTED',
@@ -96,13 +96,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '5',
-    refId: '#PS-2023-0876',
+    refId: '#PS-2026-0876',
     citizenName: 'Dilrukshi Pathirana',
     citizenNic: '199256789123',
     citizenPhone: '0705308777',
     citizenEmail: 'dilrukshi.p@example.com',
     category: 'Type 1',
-    date: '2023-07-16',
+    date: '2026-07-16',
     time: '09:55 AM',
     assignedOfficer: 'M.Perera',
     status: 'PENDING',
@@ -111,13 +111,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '6',
-    refId: '#PS-2023-0860',
+    refId: '#PS-2026-0860',
     citizenName: 'S.Pathum',
     citizenNic: '198912345678',
     citizenPhone: '0754326768',
     citizenEmail: 's.pathum@example.com',
     category: 'Type 2',
-    date: '2023-08-13',
+    date: '2026-08-13',
     time: '03:48 PM',
     assignedOfficer: 'L.D.Silva',
     status: 'COMPLETED',
@@ -128,13 +128,13 @@ const DUMMY_LETTERS: Letter[] = [
   },
   {
     id: '7',
-    refId: '#PS-2023-0877',
+    refId: '#PS-2026-0877',
     citizenName: 'Dilrukshi Pathirana',
     citizenNic: '199256789123',
     citizenPhone: '0705308777',
     citizenEmail: 'dilrukshi.p@example.com',
     category: 'Type 3',
-    date: '2023-07-16',
+    date: '2026-07-16',
     time: '09:55 AM',
     assignedOfficer: 'N.Fernando',
     status: 'PENDING',
@@ -186,3 +186,4 @@ export const useLetterData = () => {
     updateLetter: updateLetterInStore
   }
 }
+

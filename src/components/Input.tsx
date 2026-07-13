@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
@@ -24,3 +24,4 @@ export const Input: React.FC<InputProps> = ({ label, error, className = '', ...p
   )
 }
 export default Input
+

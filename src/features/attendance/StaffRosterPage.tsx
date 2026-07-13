@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface ShiftTemplate {
   id: string
@@ -14,7 +14,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-day',
     code: 'GEN',
     name: 'General Office Shift',
-    timing: '08:30 AM – 04:30 PM',
+    timing: '08:30 AM â€“ 04:30 PM',
     colorClass: 'border-blue-200 bg-blue-50/70 text-blue-800',
     badgeClass: 'bg-blue-600 text-white'
   },
@@ -22,7 +22,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-morn',
     code: 'MRN',
     name: 'Early Morning Sanitation',
-    timing: '06:00 AM – 02:00 PM',
+    timing: '06:00 AM â€“ 02:00 PM',
     colorClass: 'border-emerald-200 bg-emerald-50/70 text-emerald-800',
     badgeClass: 'bg-emerald-600 text-white'
   },
@@ -30,7 +30,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-eve',
     code: 'EVE',
     name: 'Evening Patrol / Works',
-    timing: '02:00 PM – 10:00 PM',
+    timing: '02:00 PM â€“ 10:00 PM',
     colorClass: 'border-amber-200 bg-amber-50/70 text-amber-800',
     badgeClass: 'bg-amber-600 text-white'
   },
@@ -38,7 +38,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-ngt',
     code: 'NGT',
     name: 'Night Security / Desk',
-    timing: '10:00 PM – 06:00 AM',
+    timing: '10:00 PM â€“ 06:00 AM',
     colorClass: 'border-purple-200 bg-purple-50/70 text-purple-800',
     badgeClass: 'bg-purple-600 text-white'
   },
@@ -251,7 +251,7 @@ export const StaffRosterPage: React.FC = () => {
 
         <div className="flex items-center space-x-3">
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-            {selectedMonth} Roster • Published ✅
+            {selectedMonth} Roster â€¢ Published âœ…
           </span>
           <span className="text-xs text-gray-500 font-medium hidden md:inline">
             Click any cell to edit shift
@@ -298,7 +298,7 @@ export const StaffRosterPage: React.FC = () => {
                       <div className="truncate max-w-[145px]">
                         <div className="font-bold text-gray-900 truncate">{row.employeeName}</div>
                         <div className="text-[10px] text-gray-500 truncate">
-                          {row.employeeId} • {row.department}
+                          {row.employeeId} â€¢ {row.department}
                         </div>
                       </div>
                     </div>
@@ -364,14 +364,14 @@ export const StaffRosterPage: React.FC = () => {
                   Monthly Roster Generator
                 </span>
                 <h2 className="text-lg font-bold text-gray-900 mt-0.5">
-                  Generate 31-Day Roster • {selectedMonth}
+                  Generate 31-Day Roster â€¢ {selectedMonth}
                 </h2>
               </div>
               <button
                 onClick={() => setIsGenerateModalOpen(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -459,3 +459,4 @@ export const StaffRosterPage: React.FC = () => {
     </div>
   )
 }
+

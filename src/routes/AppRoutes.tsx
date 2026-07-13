@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
@@ -82,3 +82,4 @@ export const AppRoutes: React.FC = () => {
   )
 }
 export default AppRoutes
+

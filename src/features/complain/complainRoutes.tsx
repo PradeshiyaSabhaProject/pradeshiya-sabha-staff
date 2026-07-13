@@ -1,4 +1,4 @@
-import { Route, Navigate } from 'react-router-dom'
+﻿import { Route, Navigate } from 'react-router-dom'
 import ComplainPage from './ComplainPage'
 import AssignedOfficersPage from './AssignedOfficersPage'
 import MyComplaintsPage from './pages/MyComplaintsPage'
@@ -15,3 +15,4 @@ export const complainRoutes = (
   </>
 )
 export default complainRoutes
+

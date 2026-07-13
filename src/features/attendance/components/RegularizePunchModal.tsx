@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface RegularizePunchModalProps {
   isOpen: boolean
@@ -165,3 +165,4 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
     </div>
   )
 }
+

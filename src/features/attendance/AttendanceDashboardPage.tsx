@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MOCK_BIOMETRIC_LOGS, type BiometricLog } from './data/mockAttendanceData'
 import { BiometricSyncModal } from './components/BiometricSyncModal'
@@ -175,7 +175,7 @@ export const AttendanceDashboardPage: React.FC = () => {
             <div>
               <h2 className="text-lg font-bold text-gray-900">Daily Biometric Attendance Roster</h2>
               <p className="text-xs text-gray-500">
-                Live fingerprint punch records • Last synced: {lastSyncText}
+                Live fingerprint punch records â€¢ Last synced: {lastSyncText}
               </p>
             </div>
             <div className="flex items-center space-x-1.5 bg-gray-100 px-3 py-1.5 rounded-xl border border-gray-200">
@@ -254,7 +254,7 @@ export const AttendanceDashboardPage: React.FC = () => {
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">{log.employeeName}</div>
-                        <div className="text-xs text-gray-500">{log.employeeId} • {log.designation}</div>
+                        <div className="text-xs text-gray-500">{log.employeeId} â€¢ {log.designation}</div>
                       </div>
                     </div>
                   </td>
@@ -302,3 +302,4 @@ export const AttendanceDashboardPage: React.FC = () => {
     </div>
   )
 }
+

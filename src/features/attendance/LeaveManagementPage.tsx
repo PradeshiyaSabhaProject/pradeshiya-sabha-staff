@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { MOCK_LEAVE_REQUESTS, MOCK_LEAVE_BALANCES, type LeaveRequest } from './data/mockAttendanceData'
 import { ApplyLeaveModal } from './components/ApplyLeaveModal'
 
@@ -109,7 +109,7 @@ export const LeaveManagementPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-xs text-gray-500">
-                      {req.designation} • {req.department} • Applied on {req.appliedOn}
+                      {req.designation} â€¢ {req.department} â€¢ Applied on {req.appliedOn}
                     </p>
                   </div>
                 </div>
@@ -221,7 +221,7 @@ export const LeaveManagementPage: React.FC = () => {
                   <tr key={bal.employeeId} className="hover:bg-gray-50/60 transition">
                     <td className="py-4 px-5">
                       <div className="font-bold text-gray-900">{bal.employeeName}</div>
-                      <div className="text-xs text-gray-500">{bal.employeeId} • {bal.designation}</div>
+                      <div className="text-xs text-gray-500">{bal.employeeId} â€¢ {bal.designation}</div>
                     </td>
                     <td className="py-4 px-4 text-gray-700 font-medium">{bal.department}</td>
 
@@ -268,3 +268,4 @@ export const LeaveManagementPage: React.FC = () => {
     </div>
   )
 }
+

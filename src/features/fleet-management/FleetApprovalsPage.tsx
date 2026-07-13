@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { FleetApprovalRequest, ApprovalStatus } from './data/initialFleetData'
@@ -92,7 +92,7 @@ export const FleetApprovalsPage: React.FC = () => {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
-            Pradeshiya Sabha Administration • Fleet Management
+            Pradeshiya Sabha Administration â€¢ Fleet Management
           </div>
           <h1 className="text-2xl font-extrabold text-[#0f172a] tracking-tight">
             Fleet Governance & Management Approvals
@@ -200,7 +200,7 @@ export const FleetApprovalsPage: React.FC = () => {
             <span className="text-2xl font-extrabold text-emerald-600">{approvedCount}</span>
           </div>
           <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-            ✓
+            âœ“
           </div>
         </div>
 
@@ -212,7 +212,7 @@ export const FleetApprovalsPage: React.FC = () => {
             <span className="text-2xl font-extrabold text-[#A31736]">{rejectedCount}</span>
           </div>
           <div className="w-10 h-10 rounded-xl bg-red-50 text-[#A31736] flex items-center justify-center font-bold">
-            ×
+            Ã—
           </div>
         </div>
       </div>
@@ -381,7 +381,7 @@ export const FleetApprovalsPage: React.FC = () => {
               Decline Authorization Request
             </h3>
             <p className="text-xs text-gray-500 mb-4 font-mono">
-              {rejectModalReq.requestNumber} • {rejectModalReq.title}
+              {rejectModalReq.requestNumber} â€¢ {rejectModalReq.title}
             </p>
 
             <form onSubmit={handleRejectConfirm} className="space-y-4">
@@ -440,7 +440,7 @@ export const FleetApprovalsPage: React.FC = () => {
                 onClick={() => setSelectedRequest(null)}
                 className="text-gray-400 hover:text-gray-700 font-bold text-lg cursor-pointer"
               >
-                ×
+                Ã—
               </button>
             </div>
 
@@ -489,3 +489,4 @@ export const FleetApprovalsPage: React.FC = () => {
     </div>
   )
 }
+

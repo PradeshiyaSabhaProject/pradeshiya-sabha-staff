@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+﻿import { useState, useEffect, useMemo } from 'react'
 import {
   INITIAL_VEHICLES,
   INITIAL_DRIVERS,
@@ -60,7 +60,7 @@ export function getVehicleComplianceInfo(vehicle: VehicleRecord): FleetComplianc
     if (permitOverdue) items.push('Route Permit Overdue')
     if (revenueOverdue) items.push('Revenue License Overdue')
     if (insuranceOverdue) items.push('Insurance Overdue')
-    alertMessage = items.join(' • ')
+    alertMessage = items.join(' â€¢ ')
   } else if (permitSoon || revenueSoon || insuranceSoon) {
     alertMessage = 'Permit / License renewal due shortly'
   }
@@ -529,3 +529,4 @@ export function useFleetData() {
     rejectRequest,
   }
 }
+

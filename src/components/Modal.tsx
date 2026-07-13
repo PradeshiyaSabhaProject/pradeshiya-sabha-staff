@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 export interface ModalProps {
   isOpen: boolean
@@ -19,7 +19,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
             onClick={onClose}
             className="text-gray-500 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-100 font-bold"
           >
-            ✕
+            âœ•
           </button>
         </div>
         <div className="py-4">{children}</div>
@@ -28,3 +28,4 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   )
 }
 export default Modal
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface ApplyLeaveModalProps {
   isOpen: boolean
@@ -164,3 +164,4 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
     </div>
   )
 }
+

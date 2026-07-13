@@ -1,4 +1,4 @@
-import { Route, Navigate } from 'react-router-dom'
+﻿import { Route, Navigate } from 'react-router-dom'
 import { AttendanceDashboardPage } from './AttendanceDashboardPage'
 import { TimecardsPage } from './TimecardsPage'
 import { MyLeavePage } from './MyLeavePage'
@@ -22,3 +22,4 @@ const attendanceRoutes = (
 )
 
 export default attendanceRoutes
+

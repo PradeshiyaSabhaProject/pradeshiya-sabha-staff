@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { MOCK_REGULARIZATIONS, type RegularizationRequest } from './data/mockAttendanceData'
 import { RegularizePunchModal } from './components/RegularizePunchModal'
 
@@ -99,17 +99,17 @@ export const AttendanceRegularizationPage: React.FC = () => {
               <div>
                 {item.supervisorStatus === 'Approved' && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-                    Approved & Synced to Timecard ✅
+                    Approved & Synced to Timecard âœ…
                   </span>
                 )}
                 {item.supervisorStatus === 'Pending' && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                    Pending Supervisor Action ⏳
+                    Pending Supervisor Action â³
                   </span>
                 )}
                 {item.supervisorStatus === 'Rejected' && (
                   <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200">
-                    Rejected ❌
+                    Rejected âŒ
                   </span>
                 )}
               </div>
@@ -143,3 +143,4 @@ export const AttendanceRegularizationPage: React.FC = () => {
     </div>
   )
 }
+

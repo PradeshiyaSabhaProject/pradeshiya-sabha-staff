@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFleetData, getVehicleComplianceInfo } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
@@ -76,7 +76,7 @@ export const FleetOverviewPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Page Header matching Letter/Asset Management ── */}
+      {/* â”€â”€ Page Header matching Letter/Asset Management â”€â”€ */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
@@ -106,7 +106,7 @@ export const FleetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── KPI Cards Bar matching Asset/Letter Overview ── */}
+      {/* â”€â”€ KPI Cards Bar matching Asset/Letter Overview â”€â”€ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Fleet */}
         <div
@@ -232,7 +232,7 @@ export const FleetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Interactive Legal Compliance Banner ── */}
+      {/* â”€â”€ Interactive Legal Compliance Banner â”€â”€ */}
       {stats.permitAlerts > 0 && (
         <div className="p-4 bg-red-50 border border-red-300 rounded shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -257,7 +257,7 @@ export const FleetOverviewPage: React.FC = () => {
         </div>
       )}
 
-      {/* ── Navigation Tabs Matching Module Structure ── */}
+      {/* â”€â”€ Navigation Tabs Matching Module Structure â”€â”€ */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-3">
         <div className="flex flex-wrap items-center gap-2">
           <Link
@@ -310,7 +310,7 @@ export const FleetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Search & Filter Toolbar ── */}
+      {/* â”€â”€ Search & Filter Toolbar â”€â”€ */}
       <div className="bg-white p-4 border border-gray-300 rounded shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
           <input
@@ -354,7 +354,7 @@ export const FleetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Main Content Area ── */}
+      {/* â”€â”€ Main Content Area â”€â”€ */}
       {filteredVehicles.length === 0 ? (
         <div className="bg-white rounded border border-gray-300 p-12 text-center space-y-3">
           <p className="text-sm font-bold text-gray-700">No Municipal Vehicles Found</p>
@@ -405,7 +405,7 @@ export const FleetOverviewPage: React.FC = () => {
                       >
                         {v.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-0.5">{v.category} • {v.department}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{v.category} â€¢ {v.department}</p>
                     </div>
 
                     <button
@@ -563,7 +563,7 @@ export const FleetOverviewPage: React.FC = () => {
                         >
                           {v.name}
                         </div>
-                        <div className="text-xs text-gray-500">{v.category} • {v.department}</div>
+                        <div className="text-xs text-gray-500">{v.category} â€¢ {v.department}</div>
                       </td>
                       <td className="py-3.5 px-6 font-medium text-gray-800 max-w-xs truncate">
                         {v.currentLocation}
@@ -760,10 +760,11 @@ export const FleetOverviewPage: React.FC = () => {
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
-            ×
+            Ã—
           </button>
         </div>
       )}
     </div>
   )
 }
+

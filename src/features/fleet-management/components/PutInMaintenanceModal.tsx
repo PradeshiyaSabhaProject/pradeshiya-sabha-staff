@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import type { VehicleRecord } from '../data/initialFleetData'
 
 interface PutInMaintenanceModalProps {
@@ -71,7 +71,7 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
             <div>
               <h3 className="text-lg font-bold text-gray-900">Schedule Vehicle Maintenance</h3>
               <p className="text-xs text-gray-500 font-mono">
-                {vehicle.registrationNumber} • {vehicle.name}
+                {vehicle.registrationNumber} â€¢ {vehicle.name}
               </p>
             </div>
           </div>
@@ -80,7 +80,7 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
             type="button"
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
           >
-            ×
+            Ã—
           </button>
         </div>
 
@@ -200,3 +200,4 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
     </div>
   )
 }
+

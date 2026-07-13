@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, DUMMY_USERS, type User } from '../../context/AuthContext'
 import TopBar from '../../components/layout/TopBar'
@@ -242,7 +242,7 @@ export const LoginPage: React.FC = () => {
                     onClick={() => setStep(1)}
                     className="w-full text-center text-xs font-semibold text-gray-600 hover:text-gray-900 py-1 transition-colors uppercase tracking-wider"
                   >
-                    ← Back to credentials
+                    â† Back to credentials
                   </button>
                 </div>
               </form>
@@ -258,3 +258,4 @@ export const LoginPage: React.FC = () => {
 }
 
 export default LoginPage
+

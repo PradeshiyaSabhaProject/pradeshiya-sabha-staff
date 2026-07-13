@@ -1,4 +1,4 @@
-import { Route, Navigate } from 'react-router-dom'
+﻿import { Route, Navigate } from 'react-router-dom'
 import AssetOverviewPage from './AssetOverviewPage'
 import AssetDirectoryPage from './AssetDirectoryPage'
 import InteractiveGISMappingPage from './InteractiveGISMappingPage'
@@ -14,3 +14,4 @@ export const assetRoutes = (
 )
 
 export default assetRoutes
+

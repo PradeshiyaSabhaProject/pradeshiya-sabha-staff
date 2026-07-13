@@ -1,4 +1,4 @@
-import { Route, Navigate } from 'react-router-dom'
+﻿import { Route, Navigate } from 'react-router-dom'
 import AllLettersPage from './pages/AllLettersPage'
 import MyLettersPage from './pages/MyLettersPage'
 import InwardLettersPage from './pages/InwardLettersPage'
@@ -19,3 +19,4 @@ export const letterRoutes = (
 )
 
 export default letterRoutes
+

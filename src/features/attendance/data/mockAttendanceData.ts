@@ -1,4 +1,4 @@
-export interface BiometricLog {
+﻿export interface BiometricLog {
   id: string
   employeeId: string
   employeeName: string
@@ -374,3 +374,4 @@ export const MOCK_HOLIDAYS: HolidayItem[] = [
   { id: 'HOL-3', date: '2026-08-27', name: 'Nikini Full Moon Poya Day', type: 'Poya Day', dayOfWeek: 'Thursday' },
   { id: 'HOL-4', date: '2026-09-25', name: 'Binara Full Moon Poya Day', type: 'Poya Day', dayOfWeek: 'Friday' }
 ]
+

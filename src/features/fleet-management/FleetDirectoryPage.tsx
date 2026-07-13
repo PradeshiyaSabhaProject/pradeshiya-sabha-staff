@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFleetData, getVehicleComplianceInfo } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
@@ -64,7 +64,7 @@ export const FleetDirectoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Page Header ── */}
+      {/* â”€â”€ Page Header â”€â”€ */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -100,7 +100,7 @@ export const FleetDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Filter and Search Toolbar ── */}
+      {/* â”€â”€ Filter and Search Toolbar â”€â”€ */}
       <div className="bg-white p-4 border border-gray-300 rounded shadow-sm flex flex-col lg:flex-row items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <input
@@ -145,7 +145,7 @@ export const FleetDirectoryPage: React.FC = () => {
                 : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
             }`}
           >
-            {showOnlyPermitAlerts ? '✓ Permits Due Only' : 'Filter Permits Due'}
+            {showOnlyPermitAlerts ? 'âœ“ Permits Due Only' : 'Filter Permits Due'}
           </button>
         </div>
 
@@ -154,7 +154,7 @@ export const FleetDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Directory Table Matching Asset/Letter Management ── */}
+      {/* â”€â”€ Directory Table Matching Asset/Letter Management â”€â”€ */}
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
@@ -186,7 +186,7 @@ export const FleetDirectoryPage: React.FC = () => {
                       >
                         {v.name}
                       </div>
-                      <div className="text-xs text-gray-500">Year {v.yearOfManufacture} • {v.fuelType}</div>
+                      <div className="text-xs text-gray-500">Year {v.yearOfManufacture} â€¢ {v.fuelType}</div>
                     </td>
                     <td className="py-3.5 px-6">
                       <div className="font-semibold text-gray-800">{v.category}</div>
@@ -433,10 +433,11 @@ export const FleetDirectoryPage: React.FC = () => {
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
-            ×
+            Ã—
           </button>
         </div>
       )}
     </div>
   )
 }
+

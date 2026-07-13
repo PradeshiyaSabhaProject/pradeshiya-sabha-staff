@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import type { DepartmentOption, SentLetterAttachment } from '../hooks/useWriteLetterData'
 
 interface WriteLetterModalProps {
@@ -151,7 +151,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           <div className="bg-gray-50 border border-gray-300 rounded p-4 text-xs md:text-sm text-gray-800 space-y-3">
             <div className="flex items-center justify-between border-b border-gray-200 pb-2">
               <span className="font-bold text-gray-900 flex items-center gap-1.5 uppercase tracking-wider text-xs">
-                <span>⚡</span> SYSTEM AUTO-FILLED METADATA
+                <span>âš¡</span> SYSTEM AUTO-FILLED METADATA
               </span>
               <span className="text-[10px] bg-gray-200 text-gray-800 font-bold px-2 py-0.5 rounded uppercase">
                 Verified Sender
@@ -176,7 +176,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
               </div>
               <div className="sm:col-span-2">
                 <span className="text-gray-500 block text-[10px] uppercase font-bold">Sender ID &amp; Role:</span>
-                <span className="font-semibold text-gray-800">EMP-2023-042 (Staff Administration Officer)</span>
+                <span className="font-semibold text-gray-800">EMP-2026-042 (Staff Administration Officer)</span>
               </div>
             </div>
           </div>
@@ -214,7 +214,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                 ))}
               </select>
               <p className="text-[11px] text-gray-500 mt-1.5">
-                ℹ️ Recipient information is dynamically routed to the selected departmental officer.
+                â„¹ï¸ Recipient information is dynamically routed to the selected departmental officer.
               </p>
             </div>
           </div>
@@ -270,7 +270,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                 className="cursor-pointer flex flex-col items-center justify-center text-gray-600 hover:text-[#801028]"
               >
                 <div className="w-10 h-10 rounded bg-white border border-gray-300 flex items-center justify-center mb-2 text-lg">
-                  📎
+                  ðŸ“Ž
                 </div>
                 <span className="text-xs font-semibold">Click to attach supporting documents</span>
                 <span className="text-[11px] text-gray-500 mt-0.5">Maximum file size: 10MB</span>
@@ -282,7 +282,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
               <div className="flex flex-wrap gap-2 pt-2">
                 {attachments.map(att => (
                   <div key={att.id} className="flex items-center gap-2 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs font-medium text-gray-800">
-                    <span>{att.type === 'pdf' ? '📕' : '🖼️'}</span>
+                    <span>{att.type === 'pdf' ? 'ðŸ“•' : 'ðŸ–¼ï¸'}</span>
                     <span className="font-bold">{att.name}</span>
                     <span className="text-gray-400">({att.size})</span>
                     <button
@@ -290,7 +290,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                       onClick={() => handleRemoveAttachment(att.id)}
                       className="text-gray-400 hover:text-red-600 ml-1 font-bold cursor-pointer"
                     >
-                      ×
+                      Ã—
                     </button>
                   </div>
                 ))}
@@ -319,7 +319,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                 </>
               ) : (
                 <>
-                  <span>📨</span>
+                  <span>ðŸ“¨</span>
                   <span>Submit Letter</span>
                 </>
               )}
@@ -334,3 +334,4 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
 }
 
 export default WriteLetterModal
+

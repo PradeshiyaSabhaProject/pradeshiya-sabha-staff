@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { fetchOverviewStats, type OverviewStatItem } from '../services/overviewApi'
 
 export function useOverviewStats() {
@@ -30,3 +30,4 @@ export function useOverviewStats() {
 
   return { stats, loading, error }
 }
+

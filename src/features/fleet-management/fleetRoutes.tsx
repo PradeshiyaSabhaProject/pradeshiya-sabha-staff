@@ -1,4 +1,4 @@
-import { Route, Navigate } from 'react-router-dom'
+﻿import { Route, Navigate } from 'react-router-dom'
 import { FleetOverviewPage } from './FleetOverviewPage'
 import { FleetDirectoryPage } from './FleetDirectoryPage'
 import { FleetDispatchPage } from './FleetDispatchPage'
@@ -19,3 +19,4 @@ export const fleetRoutes = (
 )
 
 export default fleetRoutes
+

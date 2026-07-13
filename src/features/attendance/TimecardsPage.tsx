@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const TimecardsPage: React.FC = () => {
@@ -127,7 +127,7 @@ export const TimecardsPage: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5">
-                PS-EMP-0012 • Revenue & Finance Department • Shift: Council Standard (08:30 AM – 04:30 PM)
+                PS-EMP-0012 â€¢ Revenue & Finance Department â€¢ Shift: Council Standard (08:30 AM â€“ 04:30 PM)
               </p>
             </div>
           </div>
@@ -210,3 +210,4 @@ export const TimecardsPage: React.FC = () => {
     </div>
   )
 }
+

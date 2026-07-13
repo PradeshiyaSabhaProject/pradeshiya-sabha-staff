@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { Outlet } from 'react-router-dom'
 import TopBar from '../components/layout/TopBar'
 import Sidebar from '../components/layout/Sidebar'
@@ -6,15 +6,15 @@ import Sidebar from '../components/layout/Sidebar'
 const DashboardLayout: React.FC = () => {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-gray-50">
-      {/* ── Sticky Top Header (two-row) ── */}
+      {/* â”€â”€ Sticky Top Header (two-row) â”€â”€ */}
       <TopBar />
 
-      {/* ── Body: Sidebar + Main Content (fills remaining height) ── */}
+      {/* â”€â”€ Body: Sidebar + Main Content (fills remaining height) â”€â”€ */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar — fixed height, only middle nav scrolls */}
+        {/* Sidebar â€” fixed height, only middle nav scrolls */}
         <Sidebar />
 
-        {/* Main content — scrolls independently */}
+        {/* Main content â€” scrolls independently */}
         <main className="flex-1 overflow-y-auto p-6">
           <Outlet />
         </main>
@@ -24,3 +24,4 @@ const DashboardLayout: React.FC = () => {
 }
 
 export default DashboardLayout
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useComplainData, type Complaint } from './hooks/useComplainData'
 import ComplainStats from './components/ComplainStats'
 import ComplainTable from './components/ComplainTable'
@@ -67,3 +67,4 @@ const ComplainPage: React.FC = () => {
 }
 
 export default ComplainPage
+

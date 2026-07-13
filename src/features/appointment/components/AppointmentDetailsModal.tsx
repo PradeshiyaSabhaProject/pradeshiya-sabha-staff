@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
 interface AppointmentDetailsModalProps {
@@ -10,7 +10,7 @@ interface AppointmentDetailsModalProps {
   onReschedule: (id: string, newDateTime: string) => void;
 }
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -374,3 +374,4 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     </div>
   );
 };
+

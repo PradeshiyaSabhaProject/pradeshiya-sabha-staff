@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface TimelineStep {
   level: string
@@ -41,7 +41,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 • 09:15 AM',
+        timestamp: '2026-07-09 â€¢ 09:15 AM',
         comments: 'Application submitted with acting officer handover details.'
       },
       {
@@ -82,7 +82,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-06-24 • 10:30 AM',
+        timestamp: '2026-06-24 â€¢ 10:30 AM',
         comments: 'Application submitted.'
       },
       {
@@ -90,7 +90,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-06-24 • 02:15 PM',
+        timestamp: '2026-06-24 â€¢ 02:15 PM',
         comments: 'Handover officer confirmed.'
       },
       {
@@ -98,7 +98,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-06-25 • 09:00 AM',
+        timestamp: '2026-06-25 â€¢ 09:00 AM',
         comments: 'Department quota verified.'
       },
       {
@@ -106,7 +106,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-06-25 • 11:45 AM',
+        timestamp: '2026-06-25 â€¢ 11:45 AM',
         comments: 'Final authorization locked into timecard.'
       }
     ]
@@ -128,7 +128,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-05-11 • 08:30 AM',
+        timestamp: '2026-05-11 â€¢ 08:30 AM',
         comments: 'Medical certificate uploaded.'
       },
       {
@@ -136,7 +136,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-05-11 • 10:10 AM',
+        timestamp: '2026-05-11 â€¢ 10:10 AM',
         comments: 'Medical leave noted.'
       },
       {
@@ -144,14 +144,14 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-05-11 • 11:30 AM'
+        timestamp: '2026-05-11 â€¢ 11:30 AM'
       },
       {
         level: 'Level 3',
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-05-11 • 02:00 PM',
+        timestamp: '2026-05-11 â€¢ 02:00 PM',
         comments: 'Medical certificate verified.'
       }
     ]
@@ -173,28 +173,28 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-02-25 • 09:00 AM'
+        timestamp: '2026-02-25 â€¢ 09:00 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-02-25 • 01:20 PM'
+        timestamp: '2026-02-25 â€¢ 01:20 PM'
       },
       {
         level: 'Level 2',
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-02-26 • 10:00 AM'
+        timestamp: '2026-02-26 â€¢ 10:00 AM'
       },
       {
         level: 'Level 3',
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-02-26 • 03:15 PM'
+        timestamp: '2026-02-26 â€¢ 03:15 PM'
       }
     ]
   }
@@ -321,7 +321,7 @@ export const MyLeavePage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              ID: PS-EMP-0012 • Senior Revenue Inspector • Revenue & Finance Department
+              ID: PS-EMP-0012 â€¢ Senior Revenue Inspector â€¢ Revenue & Finance Department
             </p>
           </div>
         </div>
@@ -410,7 +410,7 @@ export const MyLeavePage: React.FC = () => {
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -632,14 +632,14 @@ export const MyLeavePage: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-lg font-bold text-gray-900 mt-1.5">
-                  Approval Timeline • {selectedRecordForTimeline.id}
+                  Approval Timeline â€¢ {selectedRecordForTimeline.id}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -683,7 +683,7 @@ export const MyLeavePage: React.FC = () => {
                   <div className="bg-white rounded-xl border border-gray-200 p-3.5 shadow-2xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gray-900">
-                        {step.level} • {step.roleName}
+                        {step.level} â€¢ {step.roleName}
                       </span>
                       <span
                         className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
@@ -726,3 +726,4 @@ export const MyLeavePage: React.FC = () => {
     </div>
   )
 }
+

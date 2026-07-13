@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 
 export interface SentLetterAttachment {
   id: string
@@ -57,14 +57,14 @@ export const DEPARTMENTS_DATA: DepartmentOption[] = [
 const INITIAL_SENT_LETTERS: SentLetter[] = [
   {
     id: '1',
-    refNo: '#PS-OUT-2023-0891',
-    dateTime: '2023-08-10 | 09:30 AM',
+    refNo: '#PS-OUT-2026-0891',
+    dateTime: '2026-08-10 | 09:30 AM',
     senderName: 'Anuradha Wijesinghe',
-    senderId: 'EMP-2023-042',
+    senderId: 'EMP-2026-042',
     department: 'Administration & HR',
     recipientOfficer: 'M. Perera (Administrative Officer)',
     subject: 'Request for Annual Leave & Shift Replacement Notice',
-    body: 'I am writing to formally request annual leave from August 20th to August 25th, 2023. I have coordinated with Mr. S. Kumara to cover my shift responsibilities during this duration. All ongoing departmental reports have been handed over accordingly.',
+    body: 'I am writing to formally request annual leave from August 20th to August 25th, 2026. I have coordinated with Mr. S. Kumara to cover my shift responsibilities during this duration. All ongoing departmental reports have been handed over accordingly.',
     status: 'DELIVERED',
     attachments: [
       { id: 'a1', name: 'Leave_Application_Form.pdf', size: '450 KB', type: 'pdf', url: '#' }
@@ -72,10 +72,10 @@ const INITIAL_SENT_LETTERS: SentLetter[] = [
   },
   {
     id: '2',
-    refNo: '#PS-OUT-2023-0895',
-    dateTime: '2023-08-12 | 02:15 PM',
+    refNo: '#PS-OUT-2026-0895',
+    dateTime: '2026-08-12 | 02:15 PM',
     senderName: 'Anuradha Wijesinghe',
-    senderId: 'EMP-2023-042',
+    senderId: 'EMP-2026-042',
     department: 'Engineering & Works',
     recipientOfficer: 'S. Kumara (Chief Engineer)',
     subject: 'Urgent Maintenance Required for Sector 4 Drainage System',
@@ -88,14 +88,14 @@ const INITIAL_SENT_LETTERS: SentLetter[] = [
   },
   {
     id: '3',
-    refNo: '#PS-OUT-2023-0899',
-    dateTime: '2023-08-14 | 11:00 AM',
+    refNo: '#PS-OUT-2026-0899',
+    dateTime: '2026-08-14 | 11:00 AM',
     senderName: 'Anuradha Wijesinghe',
-    senderId: 'EMP-2023-042',
+    senderId: 'EMP-2026-042',
     department: 'Revenue & Finance',
     recipientOfficer: 'N. Fernando (Chief Accountant)',
-    subject: 'Submission of Monthly Procurement Expense Receipts - July 2023',
-    body: 'Please find attached the finalized expense receipts, vendor invoices, and procurement log for the municipal office supplies and hardware equipment purchased during the month of July 2023. Kindly verify and initiate the budget reconciliation process.',
+    subject: 'Submission of Monthly Procurement Expense Receipts - July 2026',
+    body: 'Please find attached the finalized expense receipts, vendor invoices, and procurement log for the municipal office supplies and hardware equipment purchased during the month of July 2026. Kindly verify and initiate the budget reconciliation process.',
     status: 'APPROVED',
     attachments: [
       { id: 'a4', name: 'July_Expenses_Summary.pdf', size: '890 KB', type: 'pdf', url: '#' }
@@ -103,10 +103,10 @@ const INITIAL_SENT_LETTERS: SentLetter[] = [
   },
   {
     id: '4',
-    refNo: '#PS-OUT-2023-0902',
-    dateTime: '2023-08-15 | 04:45 PM',
+    refNo: '#PS-OUT-2026-0902',
+    dateTime: '2026-08-15 | 04:45 PM',
     senderName: 'Anuradha Wijesinghe',
-    senderId: 'EMP-2023-042',
+    senderId: 'EMP-2026-042',
     department: 'Health & Sanitation',
     recipientOfficer: 'Dr. R. de Silva (MOH Officer)',
     subject: 'Community Dengue Prevention & Fogging Campaign Schedule',
@@ -136,10 +136,10 @@ export const useWriteLetterData = () => {
     
     const letterEntry: SentLetter = {
       id: Date.now().toString(),
-      refNo: `#PS-OUT-2023-${randomNum}`,
+      refNo: `#PS-OUT-2026-${randomNum}`,
       dateTime: `${formattedDate} | ${formattedTime}`,
       senderName: 'Anuradha Wijesinghe',
-      senderId: 'EMP-2023-042',
+      senderId: 'EMP-2026-042',
       status: 'SENT',
       ...newLetter
     }
@@ -163,3 +163,4 @@ export const useWriteLetterData = () => {
     stats
   }
 }
+

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface TimelineStep {
   level: string
@@ -37,7 +37,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 • 08:45 AM',
+        timestamp: '2026-07-09 â€¢ 08:45 AM',
         comments: 'Correction request submitted with CCTV security desk reference.'
       },
       {
@@ -70,7 +70,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-06-20 • 09:10 AM',
+        timestamp: '2026-06-20 â€¢ 09:10 AM',
         comments: 'Submitted duty pass letter.'
       },
       {
@@ -78,7 +78,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-06-20 • 11:15 AM',
+        timestamp: '2026-06-20 â€¢ 11:15 AM',
         comments: 'Field duty attendance verified.'
       },
       {
@@ -86,7 +86,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-06-21 • 10:00 AM',
+        timestamp: '2026-06-21 â€¢ 10:00 AM',
         comments: 'Timecard regularized.'
       }
     ]
@@ -106,14 +106,14 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-05-04 • 10:00 AM'
+        timestamp: '2026-05-04 â€¢ 10:00 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-05-04 • 01:30 PM',
+        timestamp: '2026-05-04 â€¢ 01:30 PM',
         comments: 'Security guard logbook confirmed arrival at 08:22 AM.'
       },
       {
@@ -121,7 +121,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-05-05 • 09:20 AM'
+        timestamp: '2026-05-05 â€¢ 09:20 AM'
       }
     ]
   }
@@ -230,7 +230,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              ID: PS-EMP-0012 • Senior Revenue Inspector • Revenue & Finance Department
+              ID: PS-EMP-0012 â€¢ Senior Revenue Inspector â€¢ Revenue & Finance Department
             </p>
           </div>
         </div>
@@ -260,7 +260,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -466,14 +466,14 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-lg font-bold text-gray-900 mt-1.5">
-                  Approval Timeline • {selectedRecordForTimeline.id}
+                  Approval Timeline â€¢ {selectedRecordForTimeline.id}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -483,7 +483,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 <strong className="text-gray-900">Target Date:</strong> {selectedRecordForTimeline.targetDate}
               </div>
               <div>
-                <strong className="text-gray-900">Proposed Times:</strong> In ({selectedRecordForTimeline.proposedIn}) — Out ({selectedRecordForTimeline.proposedOut})
+                <strong className="text-gray-900">Proposed Times:</strong> In ({selectedRecordForTimeline.proposedIn}) â€” Out ({selectedRecordForTimeline.proposedOut})
               </div>
               <div>
                 <strong className="text-gray-900">Reason:</strong> {selectedRecordForTimeline.reason}
@@ -517,7 +517,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                   <div className="bg-white rounded-xl border border-gray-200 p-3.5 shadow-2xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gray-900">
-                        {step.level} • {step.roleName}
+                        {step.level} â€¢ {step.roleName}
                       </span>
                       <span
                         className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
@@ -560,3 +560,4 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
     </div>
   )
 }
+

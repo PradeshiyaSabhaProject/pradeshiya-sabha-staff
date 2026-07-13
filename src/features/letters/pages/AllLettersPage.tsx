@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useLetterData, type Letter } from '../hooks/useLetterData'
 import LetterStats from '../components/LetterStats'
 import LetterTable from '../components/LetterTable'
@@ -65,3 +65,4 @@ const AllLettersPage: React.FC = () => {
 }
 
 export default AllLettersPage
+

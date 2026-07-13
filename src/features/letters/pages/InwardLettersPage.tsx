@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useLetterData, type Letter } from '../hooks/useLetterData'
 import LetterTable from '../components/LetterTable'
 import LetterDetailModal from '../components/LetterDetailModal'
@@ -56,3 +56,4 @@ const InwardLettersPage: React.FC = () => {
 }
 
 export default InwardLettersPage
+

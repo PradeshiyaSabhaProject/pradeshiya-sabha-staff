@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 
 interface ApprovalTimelineStep {
   level: string
@@ -57,7 +57,7 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
     daysCount: 2,
     reason: 'Family personal commitments in outstation',
     handoverOfficer: 'Ruwan Kumara (Accountant)',
-    appliedOn: '2026-07-09 • 09:15 AM',
+    appliedOn: '2026-07-09 â€¢ 09:15 AM',
     currentLevel: 1,
     status: 'Pending',
     timelineSteps: [
@@ -66,7 +66,7 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 • 09:15 AM'
+        timestamp: '2026-07-09 â€¢ 09:15 AM'
       },
       {
         level: 'Level 1',
@@ -101,7 +101,7 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
     daysCount: 1,
     reason: 'Personal banking and legal work',
     handoverOfficer: 'Chaminda Rathnayake (Clerk)',
-    appliedOn: '2026-07-08 • 02:40 PM',
+    appliedOn: '2026-07-08 â€¢ 02:40 PM',
     currentLevel: 2,
     status: 'Pending',
     timelineSteps: [
@@ -110,14 +110,14 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
         roleName: 'Applicant Officer',
         approverName: 'Nimali Fernando (PS-EMP-0019)',
         status: 'Approved',
-        timestamp: '2026-07-08 • 02:40 PM'
+        timestamp: '2026-07-08 â€¢ 02:40 PM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Admin Officer',
         status: 'Approved',
-        timestamp: '2026-07-08 • 04:10 PM',
+        timestamp: '2026-07-08 â€¢ 04:10 PM',
         comments: 'Handover clerk verified. Recommended.'
       },
       {
@@ -146,7 +146,7 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
     daysCount: 2,
     reason: 'Attending Provincial Road Development workshop at Uva Province HQ',
     handoverOfficer: 'Tech Officer Silva',
-    appliedOn: '2026-07-07 • 10:15 AM',
+    appliedOn: '2026-07-07 â€¢ 10:15 AM',
     currentLevel: 3,
     status: 'Pending',
     timelineSteps: [
@@ -155,21 +155,21 @@ const INITIAL_LEAVE_QUEUE: LeaveApprovalItem[] = [
         roleName: 'Applicant Officer',
         approverName: 'Eng. Samantha Bandara',
         status: 'Approved',
-        timestamp: '2026-07-07 • 10:15 AM'
+        timestamp: '2026-07-07 â€¢ 10:15 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Works Superintendent',
         status: 'Approved',
-        timestamp: '2026-07-07 • 11:30 AM'
+        timestamp: '2026-07-07 â€¢ 11:30 AM'
       },
       {
         level: 'Level 2',
         roleName: 'Head of Department',
         approverName: 'Chief Engineer',
         status: 'Approved',
-        timestamp: '2026-07-08 • 09:00 AM',
+        timestamp: '2026-07-08 â€¢ 09:00 AM',
         comments: 'Official workshop invitation attached.'
       },
       {
@@ -194,7 +194,7 @@ const INITIAL_CORRECTION_QUEUE: CorrectionApprovalItem[] = [
     proposedIn: '08:24 AM',
     proposedOut: '04:35 PM',
     reason: 'Biometric scanner screen froze during evening exit at 4:35 PM',
-    appliedOn: '2026-07-09 • 08:45 AM',
+    appliedOn: '2026-07-09 â€¢ 08:45 AM',
     currentLevel: 1,
     status: 'Pending',
     timelineSteps: [
@@ -203,7 +203,7 @@ const INITIAL_CORRECTION_QUEUE: CorrectionApprovalItem[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 • 08:45 AM'
+        timestamp: '2026-07-09 â€¢ 08:45 AM'
       },
       {
         level: 'Level 1',
@@ -231,7 +231,7 @@ const INITIAL_CORRECTION_QUEUE: CorrectionApprovalItem[] = [
     proposedIn: '08:30 AM',
     proposedOut: '04:30 PM',
     reason: 'Emergency dengue outbreak inspection team visit in South Ward 4',
-    appliedOn: '2026-07-08 • 09:00 AM',
+    appliedOn: '2026-07-08 â€¢ 09:00 AM',
     currentLevel: 2,
     status: 'Pending',
     timelineSteps: [
@@ -240,14 +240,14 @@ const INITIAL_CORRECTION_QUEUE: CorrectionApprovalItem[] = [
         roleName: 'Applicant Officer',
         approverName: 'Chaminda Rathnayake',
         status: 'Approved',
-        timestamp: '2026-07-08 • 09:00 AM'
+        timestamp: '2026-07-08 â€¢ 09:00 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / MOH',
         approverName: 'Medical Officer of Health',
         status: 'Approved',
-        timestamp: '2026-07-08 • 11:15 AM',
+        timestamp: '2026-07-08 â€¢ 11:15 AM',
         comments: 'Field duty verified via inspection logbook.'
       },
       {
@@ -491,7 +491,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                       <span className="text-xs font-bold text-gray-800">
                         {item.daysCount} {item.daysCount === 1 ? 'Day' : 'Days'} ({item.startDate} to {item.endDate})
                       </span>
-                      <span className="text-xs text-gray-400">• Applied: {item.appliedOn}</span>
+                      <span className="text-xs text-gray-400">â€¢ Applied: {item.appliedOn}</span>
                     </div>
 
                     <p className="text-xs text-gray-600 font-medium pt-1">
@@ -509,7 +509,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                     onClick={() =>
                       setSelectedTimelineItem({
                         id: item.id,
-                        title: `${item.employeeName} • ${item.leaveType}`,
+                        title: `${item.employeeName} â€¢ ${item.leaveType}`,
                         steps: item.timelineSteps
                       })
                     }
@@ -528,13 +528,13 @@ export const AttendanceApprovalsPage: React.FC = () => {
                         onClick={() => handleRejectLeave(item.id)}
                         className="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 transition"
                       >
-                        ✕ Reject
+                        âœ• Reject
                       </button>
                       <button
                         onClick={() => handleApproveLeave(item.id)}
                         className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
                       >
-                        ✓ Approve Request
+                        âœ“ Approve Request
                       </button>
                     </>
                   ) : (
@@ -544,7 +544,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                           : 'bg-rose-100 text-rose-800 border border-rose-200'
                         }`}
                     >
-                      {item.status === 'Approved' ? '✓ Authorized' : '✕ Rejected'}
+                      {item.status === 'Approved' ? 'âœ“ Authorized' : 'âœ• Rejected'}
                     </span>
                   )}
                 </div>
@@ -593,11 +593,11 @@ export const AttendanceApprovalsPage: React.FC = () => {
                         {item.correctionType}
                       </span>
                       <span className="text-xs font-bold text-gray-800">Date: {item.targetDate}</span>
-                      <span className="text-xs text-gray-400">• Applied: {item.appliedOn}</span>
+                      <span className="text-xs text-gray-400">â€¢ Applied: {item.appliedOn}</span>
                     </div>
 
                     <div className="text-xs font-semibold text-gray-800 pt-1">
-                      Proposed Punches: <span className="text-emerald-700">In ({item.proposedIn})</span> —{' '}
+                      Proposed Punches: <span className="text-emerald-700">In ({item.proposedIn})</span> â€”{' '}
                       <span className="text-blue-700">Out ({item.proposedOut})</span>
                     </div>
 
@@ -613,7 +613,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                     onClick={() =>
                       setSelectedTimelineItem({
                         id: item.id,
-                        title: `${item.employeeName} • ${item.correctionType}`,
+                        title: `${item.employeeName} â€¢ ${item.correctionType}`,
                         steps: item.timelineSteps
                       })
                     }
@@ -632,13 +632,13 @@ export const AttendanceApprovalsPage: React.FC = () => {
                         onClick={() => handleRejectCorrection(item.id)}
                         className="px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 transition"
                       >
-                        ✕ Reject
+                        âœ• Reject
                       </button>
                       <button
                         onClick={() => handleApproveCorrection(item.id)}
                         className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition"
                       >
-                        ✓ Authorize Correction
+                        âœ“ Authorize Correction
                       </button>
                     </>
                   ) : (
@@ -648,7 +648,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                           : 'bg-rose-100 text-rose-800 border border-rose-200'
                         }`}
                     >
-                      {item.status === 'Approved' ? '✓ Regularized' : '✕ Rejected'}
+                      {item.status === 'Approved' ? 'âœ“ Regularized' : 'âœ• Rejected'}
                     </span>
                   )}
                 </div>
@@ -675,7 +675,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                 onClick={() => setSelectedTimelineItem(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                ✕
+                âœ•
               </button>
             </div>
 
@@ -703,7 +703,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                   <div className="bg-white rounded-xl border border-gray-200 p-3.5 shadow-2xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gray-900">
-                        {step.level} • {step.roleName}
+                        {step.level} â€¢ {step.roleName}
                       </span>
                       <span
                         className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${step.status === 'Approved'
@@ -745,3 +745,4 @@ export const AttendanceApprovalsPage: React.FC = () => {
     </div>
   )
 }
+

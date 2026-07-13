@@ -1,4 +1,4 @@
-export type VehicleCategory =
+﻿export type VehicleCategory =
   | 'Garbage Compactor'
   | 'Water Bowser'
   | 'Heavy Equipment (JCB)'
@@ -292,7 +292,7 @@ export const INITIAL_VEHICLES: VehicleRecord[] = [
     department: 'Chairman & Council Administration',
     fuelType: 'Diesel',
     odometerKm: 52100,
-    yearOfManufacture: 2023,
+    yearOfManufacture: 2026,
     status: 'Permit Due',
     currentLocation: 'Pradeshiya Sabha Head Office Parking',
     assignedDriverId: 'DRV-04',
@@ -472,4 +472,5 @@ export const INITIAL_APPROVAL_REQUESTS: FleetApprovalRequest[] = [
     },
   },
 ]
+
 

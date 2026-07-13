@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { type AssetRecord, type AssetAttachment } from '../hooks/useAssetData'
 
 interface AddAssetWizardModalProps {
@@ -7,9 +7,9 @@ interface AddAssetWizardModalProps {
   onSubmit: (assetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => void
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Icons
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -91,11 +91,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   const [name, setName] = useState('')
   const [category, setCategory] = useState<AssetRecord['category']>('Land')
   const [location, setLocation] = useState('')
-  const [assetIdPreview, setAssetIdPreview] = useState('PS-AST-2023-8821')
+  const [assetIdPreview, setAssetIdPreview] = useState('PS-AST-2026-8821')
 
   // Stage 2 State
   const [valuation, setValuation] = useState<string>('45250000.00')
-  const [acquisitionDate, setAcquisitionDate] = useState<string>('2023-10-14')
+  const [acquisitionDate, setAcquisitionDate] = useState<string>('2026-10-14')
   const [fundingSource, setFundingSource] = useState<string>('Municipal Grant #882')
   const [depreciation] = useState<string>('Straight Line (5%)')
 
@@ -109,9 +109,9 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
   // Stage 4 State
   const [attachments, setAttachments] = useState<AssetAttachment[]>([
-    { name: 'Site_Deed_Registry_2023.pdf', size: '4.2 MB • Uploaded 2 mins ago', type: 'pdf', status: 'Verified' },
-    { name: 'Site_Boundary_North_View.jpg', size: '1.8 MB • Uploaded 1 min ago', type: 'image', status: 'Image' },
-    { name: 'Structural_Survey_Final.docx', size: '2.4 MB • Uploaded just now', type: 'doc', status: 'Document' },
+    { name: 'Site_Deed_Registry_2026.pdf', size: '4.2 MB â€¢ Uploaded 2 mins ago', type: 'pdf', status: 'Verified' },
+    { name: 'Site_Boundary_North_View.jpg', size: '1.8 MB â€¢ Uploaded 1 min ago', type: 'image', status: 'Image' },
+    { name: 'Structural_Survey_Final.docx', size: '2.4 MB â€¢ Uploaded just now', type: 'doc', status: 'Document' },
   ])
 
   const getCategoryDefaults = (cat: string) => {
@@ -156,7 +156,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     if (e.target.files && e.target.files.length > 0) {
       const newFiles: AssetAttachment[] = Array.from(e.target.files).map((file) => ({
         name: file.name,
-        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB • Uploaded just now`,
+        size: `${(file.size / (1024 * 1024)).toFixed(1)} MB â€¢ Uploaded just now`,
         type: file.name.endsWith('.jpg') || file.name.endsWith('.png') ? 'image' : 'pdf',
         status: 'Verified',
       }))
@@ -314,7 +314,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
         {/* Form Body - Scrollable */}
         <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6 bg-white">
           
-          {/* ── STAGE 1: GENERAL INFO ─────────────────────────────────────── */}
+          {/* â”€â”€ STAGE 1: GENERAL INFO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {step === 1 && (
             <div className="space-y-5 animate-fade-in">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -416,7 +416,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
             </div>
           )}
 
-          {/* ── STAGE 2: FINANCIAL DETAILS ────────────────────────────────── */}
+          {/* â”€â”€ STAGE 2: FINANCIAL DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {step === 2 && (
             <div className="space-y-5 animate-fade-in">
               <div>
@@ -501,7 +501,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
             </div>
           )}
 
-          {/* ── STAGE 3: TECHNICAL SPECS ──────────────────────────────────── */}
+          {/* â”€â”€ STAGE 3: TECHNICAL SPECS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {step === 3 && (
             <div className="space-y-5 animate-fade-in">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -631,7 +631,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
             </div>
           )}
 
-          {/* ── STAGE 4: DOCUMENT ATTACHMENTS ─────────────────────────────── */}
+          {/* â”€â”€ STAGE 4: DOCUMENT ATTACHMENTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {step === 4 && (
             <div className="space-y-6 animate-fade-in">
               {/* Drag and Drop Box */}
@@ -724,7 +724,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
             </div>
           )}
 
-          {/* ── STAGE 5: REVIEW ASSET DETAILS ─────────────────────────────── */}
+          {/* â”€â”€ STAGE 5: REVIEW ASSET DETAILS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           {step === 5 && (
             <div className="space-y-4 animate-fade-in">
               {/* Card 1: General Info */}
@@ -864,7 +864,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     <div key={i} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
                       <FileDocIcon />
                       <span className="font-semibold text-gray-800 truncate flex-1">{file.name}</span>
-                      <span className="text-[11px] text-gray-500">{file.size.split('•')[0]}</span>
+                      <span className="text-[11px] text-gray-500">{file.size.split('â€¢')[0]}</span>
                     </div>
                   ))}
                 </div>
@@ -891,7 +891,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                 onClick={handleBack}
                 className="px-5 py-2 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                ← Back
+                â† Back
               </button>
             )}
 
@@ -901,7 +901,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                 onClick={handleNext}
                 className="px-6 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
               >
-                Continue →
+                Continue â†’
               </button>
             ) : (
               <button
@@ -909,7 +909,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                 onClick={handleFinalSubmit}
                 className="px-6 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
               >
-                Save Asset ➢
+                Save Asset âž¢
               </button>
             )}
           </div>
@@ -920,3 +920,4 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   )
 }
 export default AddAssetWizardModal
+

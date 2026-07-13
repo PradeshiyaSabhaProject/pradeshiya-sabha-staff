@@ -1,6 +1,6 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import type { Complaint } from '../hooks/useComplainData'
-import { getDeadlineStatus, isComplaintAssignedToCurrentTO } from '../utils/deadlineUtils'
+import { getDeadlineStatus, getDeadlineStatusStyleClasses, isComplaintAssignedToCurrentTO } from '../utils/deadlineUtils'
 import { useAuth } from '../../../context/AuthContext'
 
 interface ComplainTableProps {
@@ -90,19 +90,6 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       case 'COMPLETED': return 'text-purple-600 border-purple-300'
       case 'RESCHEDULED': return 'text-blue-600 border-blue-300'
       default: return 'text-gray-600 border-gray-300'
-    }
-  }
-
-  const getDeadlineStatusStyle = (status: string) => {
-    switch (status) {
-      case 'PENDING':
-        return 'text-red-700 bg-red-400 border-red-500'
-      case 'REVIEWING':
-        return 'text-orange-700 bg-orange-400 border-orange-500'
-      case 'IN PROGRESS':
-        return 'text-green-700 bg-green-400 border-green-500'
-      default:
-        return 'text-gray-700 bg-gray-50 border-gray-200'
     }
   }
 
@@ -260,7 +247,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
           <tbody className="divide-y divide-gray-100 text-sm">
             {filteredComplaints.map((complaint) => {
               const isAssignedToCurrentTO = isComplaintAssignedToCurrentTO(complaint, currentTOName)
-              const computedDueDate = computeDeadlineFromReceivedDate(complaint.date)
+              const computedDueDate = complaint.dueDate || computeDeadlineFromReceivedDate(complaint.date)
               const deadlineStatus = getDeadlineStatus({ status: complaint.status, dueDate: computedDueDate }, isAssignedToCurrentTO)
 
               return (
@@ -280,7 +267,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
                       <td className="py-4 px-6 whitespace-nowrap font-semibold text-gray-700">{formatDeadline(computedDueDate)}</td>
                       <td className="py-4 px-6 whitespace-nowrap">
                         {deadlineStatus ? (
-                          <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getDeadlineStatusStyle(complaint.status)}`}>
+                          <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getDeadlineStatusStyleClasses(computedDueDate)}`}>
                             {deadlineStatus}
                           </span>
                         ) : null}
@@ -332,4 +319,5 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
 }
 
 export default ComplainTable
+
 

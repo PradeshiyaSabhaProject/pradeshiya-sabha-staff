@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useAssignedOfficersData, type AssignedOfficer } from '../hooks/useAssignedOfficersData'
 import AssignedOfficersTable from '../components/AssignedOfficersTable'
 import OfficerDetailModal from '../components/OfficerDetailModal'
@@ -56,3 +56,4 @@ const AssignedOfficersPage: React.FC = () => {
 }
 
 export default AssignedOfficersPage
+

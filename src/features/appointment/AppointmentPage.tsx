@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { useAppointmentData } from './hooks/useAppointmentData';
 import { AppointmentDetailsModal } from './components/AppointmentDetailsModal';
 import { type AppointmentItem } from './services/appointmentApi';
@@ -7,7 +7,7 @@ interface AppointmentPageProps {
   mode: 'all' | 'my';
 }
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const OrangeClockIcon = () => (
   <div className="p-2 bg-orange-50 rounded border border-orange-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-orange-500">
@@ -257,7 +257,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Header ── */}
+      {/* â”€â”€ Header â”€â”€ */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -274,7 +274,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
       </div>
 
-      {/* ── Stats Cards Grid ── */}
+      {/* â”€â”€ Stats Cards Grid â”€â”€ */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pending */}
         <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
@@ -321,7 +321,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
       </div>
 
-      {/* ── Main content Card (Tabs + Filters + Table) ── */}
+      {/* â”€â”€ Main content Card (Tabs + Filters + Table) â”€â”€ */}
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         
         {/* Tabs Bar */}
@@ -568,3 +568,4 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 };
 
 export default AppointmentPage;
+

@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+﻿import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import L from 'leaflet'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord, VehicleStatus } from './data/initialFleetData'
 import { DispatchVehicleModal } from './components/DispatchVehicleModal'
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Icons matching Interactive GIS Mapping
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
     <circle cx="11" cy="11" r="8" />
@@ -235,7 +235,7 @@ export const FleetDispatchPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-white overflow-hidden animate-fade-in">
-      {/* ── Top GIS Toolbar matching Interactive GIS Mapping ── */}
+      {/* â”€â”€ Top GIS Toolbar matching Interactive GIS Mapping â”€â”€ */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0 gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -271,7 +271,7 @@ export const FleetDispatchPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Main GIS Layout (Map Left/Center + Sidebar Right) ── */}
+      {/* â”€â”€ Main GIS Layout (Map Left/Center + Sidebar Right) â”€â”€ */}
       <div className="flex flex-1 min-h-0 relative overflow-hidden">
         {/* Map Area */}
         <div className="flex-1 relative bg-blue-50/30 overflow-hidden">
@@ -513,10 +513,11 @@ export const FleetDispatchPage: React.FC = () => {
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
-            ×
+            Ã—
           </button>
         </div>
       )}
     </div>
   )
 }
+
