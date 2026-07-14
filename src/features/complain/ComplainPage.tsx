@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useComplainData, type Complaint } from './hooks/useComplainData'
 import ComplainStats from './components/ComplainStats'
 import ComplainTable from './components/ComplainTable'
@@ -25,8 +25,12 @@ const ComplainPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">My Complaints</h1>
           <p className="text-sm text-gray-500 mt-1">Manage and review all complaints have for you</p>
         </div>
-        <div>
-          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-xs font-semibold px-3.5 py-2 rounded-lg shadow-xs">
+            <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse block"></span>
+            <span className="text-red-800 font-bold uppercase tracking-wider">Deadlines Active</span>
+          </div>
+          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
             <span className="text-gray-700">Quick Stats</span>
             <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-orange-200">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block"></span>

@@ -1,4 +1,4 @@
-﻿export interface BiometricLog {
+export interface BiometricLog {
   id: string
   employeeId: string
   employeeName: string
@@ -13,6 +13,9 @@
   deviceLocation: string
   lateMinutes?: number
   isRegularized?: boolean
+  shiftCode?: string
+  shiftTiming?: string
+  rosterCheckNote?: string
 }
 
 export interface LeaveRequest {
@@ -84,7 +87,10 @@ export const MOCK_BIOMETRIC_LOGS: BiometricLog[] = [
     date: '2026-07-10',
     status: 'Present',
     workingHours: '8h 13m',
-    deviceLocation: 'Main Gate ZKTeco F18 #1'
+    deviceLocation: 'Main Gate ZKTeco F18 #1',
+    shiftCode: 'GEN',
+    shiftTiming: '08:30 AM - 04:30 PM',
+    rosterCheckNote: 'On time against General Office Roster'
   },
   {
     id: 'BIO-102',
@@ -98,50 +104,94 @@ export const MOCK_BIOMETRIC_LOGS: BiometricLog[] = [
     status: 'Late Entry',
     workingHours: '7h 38m',
     deviceLocation: 'Main Gate ZKTeco F18 #1',
-    lateMinutes: 22
+    lateMinutes: 22,
+    shiftCode: 'GEN',
+    shiftTiming: '08:30 AM - 04:30 PM',
+    rosterCheckNote: '+22m late against 08:30 AM GEN Roster'
   },
   {
     id: 'BIO-103',
-    employeeId: 'PS-EMP-0034',
-    employeeName: 'Eng. Samantha Bandara',
-    designation: 'Technical Officer',
-    department: 'Works & Engineering',
-    checkIn: '08:15 AM',
-    checkOut: '05:10 PM',
-    date: '2026-07-10',
-    status: 'Present',
-    workingHours: '8h 55m',
-    deviceLocation: 'Annex Building Biometric #2'
-  },
-  {
-    id: 'BIO-104',
     employeeId: 'PS-EMP-0041',
     employeeName: 'Chaminda Rathnayake',
     designation: 'Public Health Inspector (PHI)',
-    department: 'Public Health & Environment',
-    checkIn: '08:28 AM',
-    checkOut: '--:--',
+    department: 'Public Health & Sanitation',
+    checkIn: '06:14 AM',
+    checkOut: '02:05 PM',
     date: '2026-07-10',
-    status: 'Official Duty',
-    workingHours: 'Field Duty',
-    deviceLocation: 'Main Gate ZKTeco F18 #1',
-    isRegularized: true
+    status: 'Late Entry',
+    workingHours: '7h 51m',
+    deviceLocation: 'Sanitation Depot Bio #3',
+    lateMinutes: 14,
+    shiftCode: 'MRN',
+    shiftTiming: '06:00 AM - 02:00 PM',
+    rosterCheckNote: '+14m late against 06:00 AM MRN Sanitation Roster'
+  },
+  {
+    id: 'BIO-104',
+    employeeId: 'PS-EMP-0084',
+    employeeName: 'Ajith Kumara',
+    designation: 'Health Overseer',
+    department: 'Public Health & Sanitation',
+    checkIn: '05:53 AM',
+    checkOut: '02:08 PM',
+    date: '2026-07-10',
+    status: 'Present',
+    workingHours: '8h 15m',
+    deviceLocation: 'Sanitation Depot Bio #3',
+    shiftCode: 'MRN',
+    shiftTiming: '06:00 AM - 02:00 PM',
+    rosterCheckNote: 'On time against MRN Early Morning Roster'
   },
   {
     id: 'BIO-105',
-    employeeId: 'PS-EMP-0055',
-    employeeName: 'Dilani Jayawardena',
-    designation: 'Management Assistant',
-    department: 'Administration & HR',
+    employeeId: 'PS-EMP-0063',
+    employeeName: 'Sunil Ariyaratne',
+    designation: 'Security Supervisor',
+    department: 'Municipal Security Desk',
+    checkIn: '09:48 PM',
+    checkOut: '06:02 AM',
+    date: '2026-07-10',
+    status: 'Present',
+    workingHours: '8h 14m',
+    deviceLocation: 'Main Gate ZKTeco F18 #1',
+    shiftCode: 'NGT',
+    shiftTiming: '10:00 PM - 06:00 AM',
+    rosterCheckNote: 'On time against NGT Overnight Security Roster'
+  },
+  {
+    id: 'BIO-106',
+    employeeId: 'PS-EMP-0078',
+    employeeName: 'W. D. Jayasinghe',
+    designation: 'Water Works Engineer',
+    department: 'Water Works & Engineering',
+    checkIn: '01:54 PM',
+    checkOut: '10:10 PM',
+    date: '2026-07-10',
+    status: 'Present',
+    workingHours: '8h 16m',
+    deviceLocation: 'Annex Building Biometric #2',
+    shiftCode: 'EVE',
+    shiftTiming: '02:00 PM - 10:00 PM',
+    rosterCheckNote: 'On time against EVE Evening Patrol Roster'
+  },
+  {
+    id: 'BIO-107',
+    employeeId: 'PS-EMP-0092',
+    employeeName: 'Sanduni Silva',
+    designation: 'Accounts Assistant',
+    department: 'Revenue & Finance',
     checkIn: '--:--',
     checkOut: '--:--',
     date: '2026-07-10',
     status: 'Approved Leave',
     workingHours: '0h 00m',
-    deviceLocation: 'N/A (Leave System)'
+    deviceLocation: 'N/A (Scheduled Day Off)',
+    shiftCode: 'OFF',
+    shiftTiming: 'Rest Day Off',
+    rosterCheckNote: 'Verified OFF against Monthly Duty Roster'
   },
   {
-    id: 'BIO-106',
+    id: 'BIO-108',
     employeeId: 'PS-EMP-0062',
     employeeName: 'Upul Dissanayake',
     designation: 'Works Overseer',
@@ -151,34 +201,10 @@ export const MOCK_BIOMETRIC_LOGS: BiometricLog[] = [
     date: '2026-07-10',
     status: 'Missed Punch',
     workingHours: 'Pending Out Punch',
-    deviceLocation: 'Main Gate ZKTeco F18 #1'
-  },
-  {
-    id: 'BIO-107',
-    employeeId: 'PS-EMP-0078',
-    employeeName: 'Anushka Senanayake',
-    designation: 'Planning Assistant',
-    department: 'Town Planning',
-    checkIn: '08:48 AM',
-    checkOut: '04:32 PM',
-    date: '2026-07-10',
-    status: 'Late Entry',
-    workingHours: '7h 44m',
-    deviceLocation: 'Annex Building Biometric #2',
-    lateMinutes: 18
-  },
-  {
-    id: 'BIO-108',
-    employeeId: 'PS-EMP-0081',
-    employeeName: 'Ruwan Kumara',
-    designation: 'Accountant',
-    department: 'Revenue & Finance',
-    checkIn: '08:18 AM',
-    checkOut: '04:45 PM',
-    date: '2026-07-10',
-    status: 'Present',
-    workingHours: '8h 27m',
-    deviceLocation: 'Main Gate ZKTeco F18 #1'
+    deviceLocation: 'Main Gate ZKTeco F18 #1',
+    shiftCode: 'GEN',
+    shiftTiming: '08:30 AM - 04:30 PM',
+    rosterCheckNote: 'Out punch missing for GEN Roster'
   }
 ]
 

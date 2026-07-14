@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { MOCK_BIOMETRIC_LOGS, type BiometricLog } from './data/mockAttendanceData'
 import { BiometricSyncModal } from './components/BiometricSyncModal'
@@ -218,8 +218,8 @@ export const AttendanceDashboardPage: React.FC = () => {
                   key={filter}
                   onClick={() => setActiveFilter(filter)}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeFilter === filter
-                      ? 'bg-white text-gray-900 shadow-xs'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white text-gray-900 shadow-xs'
+                    : 'text-gray-600 hover:text-gray-900'
                     }`}
                 >
                   {filter}
@@ -236,6 +236,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               <tr className="bg-gray-50/80 border-b border-gray-200 text-xs font-semibold uppercase text-gray-500">
                 <th className="py-3.5 px-5">Employee</th>
                 <th className="py-3.5 px-4">Department</th>
+                <th className="py-3.5 px-4">Scheduled Roster Shift</th>
                 <th className="py-3.5 px-4">Check-In (Fingerprint)</th>
                 <th className="py-3.5 px-4">Check-Out</th>
                 <th className="py-3.5 px-4">Working Hours</th>
@@ -260,6 +261,22 @@ export const AttendanceDashboardPage: React.FC = () => {
                   </td>
 
                   <td className="py-4 px-4 text-gray-700 font-medium">{log.department}</td>
+
+                  <td className="py-4 px-4">
+                    {log.shiftCode ? (
+                      <div>
+                        <div className="flex items-center space-x-1.5">
+                          <span className="px-2 py-0.5 rounded text-[11px] font-extrabold bg-blue-600 text-white">
+                            {log.shiftCode}
+                          </span>
+                          <span className="text-xs font-bold text-gray-900">{log.shiftTiming}</span>
+                        </div>
+
+                      </div>
+                    ) : (
+                      <span className="text-xs text-gray-400 font-medium">Standard (08:30-04:30)</span>
+                    )}
+                  </td>
 
                   <td className="py-4 px-4">
                     <div className="font-bold text-gray-900">{log.checkIn}</div>

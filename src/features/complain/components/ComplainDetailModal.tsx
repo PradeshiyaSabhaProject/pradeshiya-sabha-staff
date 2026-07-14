@@ -1,5 +1,6 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { Complaint, ComplaintStatus, OfficerRemark } from '../hooks/useComplainData'
+import { getDeadlineStatus, getDeadlineStatusStyleClasses } from '../utils/deadlineUtils'
 
 interface ComplainDetailModalProps {
   complaint: Complaint | null
@@ -254,6 +255,25 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     </span>
                   </div>
                 )}
+                <div className="grid grid-cols-3 items-center">
+                  <span className="text-sm text-gray-500">Deadline</span>
+                  <span className="col-span-2 text-sm font-bold text-gray-900">: {complaint.dueDate || '—'}</span>
+                </div>
+                {(() => {
+                  const dlStatus = getDeadlineStatus({ status: currentStatus, dueDate: complaint.dueDate || '' }, false)
+                  return dlStatus ? (
+                    <div className="grid grid-cols-3 items-center">
+                      <span className="text-sm text-gray-500">Deadline Status</span>
+                      <div className="col-span-2 flex items-center gap-1.5">
+                        <span>: </span>
+                        <span className={`px-2.5 py-0.5 rounded-full border text-[10px] font-bold uppercase tracking-wider inline-flex items-center gap-1 ${getDeadlineStatusStyleClasses(complaint.dueDate || '')}`}>
+                          <span className="w-1.5 h-1.5 rounded-full bg-white block"></span>
+                          {dlStatus}
+                        </span>
+                      </div>
+                    </div>
+                  ) : null
+                })()}
               </div>
             </div>
 

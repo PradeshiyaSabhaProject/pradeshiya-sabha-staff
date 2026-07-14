@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface ShiftTemplate {
   id: string
@@ -14,7 +14,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-day',
     code: 'GEN',
     name: 'General Office Shift',
-    timing: '08:30 AM â€“ 04:30 PM',
+    timing: '08:30 AM - 04:30 PM',
     colorClass: 'border-blue-200 bg-blue-50/70 text-blue-800',
     badgeClass: 'bg-blue-600 text-white'
   },
@@ -22,7 +22,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-morn',
     code: 'MRN',
     name: 'Early Morning Sanitation',
-    timing: '06:00 AM â€“ 02:00 PM',
+    timing: '06:00 AM - 02:00 PM',
     colorClass: 'border-emerald-200 bg-emerald-50/70 text-emerald-800',
     badgeClass: 'bg-emerald-600 text-white'
   },
@@ -30,7 +30,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-eve',
     code: 'EVE',
     name: 'Evening Patrol / Works',
-    timing: '02:00 PM â€“ 10:00 PM',
+    timing: '02:00 PM - 10:00 PM',
     colorClass: 'border-amber-200 bg-amber-50/70 text-amber-800',
     badgeClass: 'bg-amber-600 text-white'
   },
@@ -38,7 +38,7 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-ngt',
     code: 'NGT',
     name: 'Night Security / Desk',
-    timing: '10:00 PM â€“ 06:00 AM',
+    timing: '10:00 PM - 06:00 AM',
     colorClass: 'border-purple-200 bg-purple-50/70 text-purple-800',
     badgeClass: 'bg-purple-600 text-white'
   },
@@ -52,24 +52,149 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
   }
 ]
 
+const UNASSIGNED_TEMPLATE: ShiftTemplate = {
+  id: 's-null',
+  code: '-',
+  name: 'Unassigned (Null)',
+  timing: 'Not Assigned',
+  colorClass: 'border-dashed border-gray-300 bg-gray-50/60 text-gray-400 hover:border-gray-400 hover:text-gray-600',
+  badgeClass: 'bg-gray-300 text-gray-700'
+}
+
+export const ALL_MONTHS = [
+  'January 2026',
+  'February 2026',
+  'March 2026',
+  'April 2026',
+  'May 2026',
+  'June 2026',
+  'July 2026',
+  'August 2026',
+  'September 2026',
+  'October 2026',
+  'November 2026',
+  'December 2026'
+]
+
+const CURRENT_MONTH_INDEX = 6 // July 2026 is current active month (0-indexed: Jan=0...Jun=5, Jul=6)
+
+const getMonthIndex = (monthStr: string) => {
+  const name = monthStr.split(' ')[0]
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+  const idx = months.indexOf(name)
+  return idx >= 0 ? idx : 6 // Default July
+}
+
+const isPastMonth = (monthStr: string) => {
+  return getMonthIndex(monthStr) < CURRENT_MONTH_INDEX
+}
+
+export const getDaysInMonth = (monthStr: string) => {
+  const yearStr = monthStr.split(' ')[1] || '2026'
+  const year = parseInt(yearStr, 10) || 2026
+  const idx = getMonthIndex(monthStr)
+  return new Date(year, idx + 1, 0).getDate()
+}
+
+const getDayOfWeekChar = (monthStr: string, dayNum: number) => {
+  const yearStr = monthStr.split(' ')[1] || '2026'
+  const year = parseInt(yearStr, 10) || 2026
+  const idx = getMonthIndex(monthStr)
+  const date = new Date(year, idx, dayNum)
+  return ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.getDay()]
+}
+
+const isWeekendDay = (monthStr: string, dayNum: number) => {
+  const yearStr = monthStr.split(' ')[1] || '2026'
+  const year = parseInt(yearStr, 10) || 2026
+  const idx = getMonthIndex(monthStr)
+  const date = new Date(year, idx, dayNum)
+  const day = date.getDay()
+  return day === 0 || day === 6
+}
+
+interface CouncilEmployee {
+  employeeId: string
+  employeeName: string
+  department: string
+  avatarInitials: string
+  defaultPattern: 'office' | 'morning' | 'night' | 'water'
+}
+
+const ALL_COUNCIL_EMPLOYEES: CouncilEmployee[] = [
+  {
+    employeeId: 'PS-EMP-0012',
+    employeeName: 'Kasun Perera',
+    department: 'Revenue & Finance',
+    avatarInitials: 'KP',
+    defaultPattern: 'office'
+  },
+  {
+    employeeId: 'PS-EMP-0041',
+    employeeName: 'Chaminda Rathnayake',
+    department: 'Public Health & Sanitation',
+    avatarInitials: 'CR',
+    defaultPattern: 'morning'
+  },
+  {
+    employeeId: 'PS-EMP-0063',
+    employeeName: 'Sunil Ariyaratne',
+    department: 'Municipal Security Desk',
+    avatarInitials: 'SA',
+    defaultPattern: 'night'
+  },
+  {
+    employeeId: 'PS-EMP-0078',
+    employeeName: 'W. D. Jayasinghe',
+    department: 'Water Works & Engineering',
+    avatarInitials: 'WJ',
+    defaultPattern: 'water'
+  },
+  {
+    employeeId: 'PS-EMP-0019',
+    employeeName: 'Nimali Fernando',
+    department: 'Administration',
+    avatarInitials: 'NF',
+    defaultPattern: 'office'
+  },
+  {
+    employeeId: 'PS-EMP-0084',
+    employeeName: 'Ajith Kumara',
+    department: 'Public Health & Sanitation',
+    avatarInitials: 'AK',
+    defaultPattern: 'morning'
+  },
+  {
+    employeeId: 'PS-EMP-0092',
+    employeeName: 'Sanduni Silva',
+    department: 'Revenue & Finance',
+    avatarInitials: 'SS',
+    defaultPattern: 'office'
+  }
+]
+
 interface MonthlyRosterRow {
   employeeId: string
   employeeName: string
   department: string
   avatarInitials: string
+  month: string
   days: Record<number, string> // day (1 to 31) -> shiftCode
 }
 
-// Generate default 31-day shifts for initial rows
-const generatePattern = (patternType: 'office' | 'morning' | 'night' | 'water') => {
+// Generate default shifts for any given month
+const generatePattern = (
+  patternType: 'office' | 'morning' | 'night' | 'water',
+  monthStr: string = 'July 2026'
+) => {
+  const totalDays = getDaysInMonth(monthStr)
   const days: Record<number, string> = {}
-  for (let d = 1; d <= 31; d++) {
-    // Let's assume July 2026: July 1 is Wed. Weekend dates: July 4,5, 11,12, 18,19, 25,26
-    const isWeekend = (d % 7 === 4 || d % 7 === 5)
+  for (let d = 1; d <= totalDays; d++) {
+    const weekend = isWeekendDay(monthStr, d)
     if (patternType === 'office') {
-      days[d] = isWeekend ? 'OFF' : 'GEN'
+      days[d] = weekend ? 'OFF' : 'GEN'
     } else if (patternType === 'morning') {
-      days[d] = (d % 7 === 5) ? 'OFF' : 'MRN'
+      days[d] = (d % 7 === 5 || weekend) ? 'OFF' : 'MRN'
     } else if (patternType === 'night') {
       const cycle = d % 6
       days[d] = cycle < 4 ? 'NGT' : 'OFF'
@@ -81,42 +206,26 @@ const generatePattern = (patternType: 'office' | 'morning' | 'night' | 'water') 
   return days
 }
 
+const createFullCouncilRosterForMonth = (monthStr: string): MonthlyRosterRow[] =>
+  ALL_COUNCIL_EMPLOYEES.map((emp) => ({
+    employeeId: emp.employeeId,
+    employeeName: emp.employeeName,
+    department: emp.department,
+    avatarInitials: emp.avatarInitials,
+    month: monthStr,
+    days: generatePattern(emp.defaultPattern, monthStr)
+  }))
+
 const INITIAL_MONTHLY_ROSTER: MonthlyRosterRow[] = [
-  {
-    employeeId: 'PS-EMP-0012',
-    employeeName: 'Kasun Perera',
-    department: 'Revenue & Finance',
-    avatarInitials: 'KP',
-    days: generatePattern('office')
-  },
-  {
-    employeeId: 'PS-EMP-0041',
-    employeeName: 'Chaminda Rathnayake',
-    department: 'Public Health & Sanitation',
-    avatarInitials: 'CR',
-    days: generatePattern('morning')
-  },
-  {
-    employeeId: 'PS-EMP-0063',
-    employeeName: 'Sunil Ariyaratne',
-    department: 'Municipal Security Desk',
-    avatarInitials: 'SA',
-    days: generatePattern('night')
-  },
-  {
-    employeeId: 'PS-EMP-0078',
-    employeeName: 'W. D. Jayasinghe',
-    department: 'Water Works & Engineering',
-    avatarInitials: 'WJ',
-    days: generatePattern('water')
-  }
+  ...createFullCouncilRosterForMonth('July 2026'),
+  ...createFullCouncilRosterForMonth('August 2026'),
+  ...createFullCouncilRosterForMonth('June 2026')
 ]
 
 export const StaffRosterPage: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState('July 2026')
   const [rosterData, setRosterData] = useState<MonthlyRosterRow[]>(INITIAL_MONTHLY_ROSTER)
   const [selectedDept, setSelectedDept] = useState('All')
-  const [isGenerateModalOpen, setIsGenerateModalOpen] = useState(false)
 
   // Quick cell editor state
   const [editingCell, setEditingCell] = useState<{
@@ -124,55 +233,68 @@ export const StaffRosterPage: React.FC = () => {
     day: number
   } | null>(null)
 
-  // Modal form state
-  const [genEmpName, setGenEmpName] = useState('Nimali Fernando')
-  const [genEmpId, setGenEmpId] = useState('PS-EMP-0019')
-  const [genDept, setGenDept] = useState('Administration')
-  const [genPattern, setGenPattern] = useState<'office' | 'morning' | 'night' | 'water'>('office')
+  const isCurrentMonthLocked = isPastMonth(selectedMonth)
 
   const handleCellChange = (empId: string, dayNum: number, newCode: string) => {
-    setRosterData(
-      rosterData.map((row) => {
-        if (row.employeeId !== empId) return row
-        return {
-          ...row,
-          days: {
-            ...row.days,
-            [dayNum]: newCode
+    if (isCurrentMonthLocked) return // Prevent edit if past month
+    const existingRow = rosterData.find((r) => r.employeeId === empId && r.month === selectedMonth)
+    if (existingRow) {
+      setRosterData(
+        rosterData.map((row) => {
+          if (row.employeeId !== empId || row.month !== selectedMonth) return row
+          return {
+            ...row,
+            days: {
+              ...row.days,
+              [dayNum]: newCode
+            }
           }
+        })
+      )
+    } else {
+      const emp = ALL_COUNCIL_EMPLOYEES.find((e) => e.employeeId === empId)
+      if (!emp) return
+      const newRow: MonthlyRosterRow = {
+        employeeId: emp.employeeId,
+        employeeName: emp.employeeName,
+        department: emp.department,
+        avatarInitials: emp.avatarInitials,
+        month: selectedMonth,
+        days: {
+          [dayNum]: newCode
         }
-      })
-    )
+      }
+      setRosterData([...rosterData, newRow])
+    }
     setEditingCell(null)
   }
 
-  const handleGenerateMonthlyRoster = (e: React.FormEvent) => {
-    e.preventDefault()
-    const newRow: MonthlyRosterRow = {
-      employeeId: genEmpId,
-      employeeName: genEmpName,
-      department: genDept,
-      avatarInitials: genEmpName
-        .split(' ')
-        .map((n) => n[0])
-        .join(''),
-      days: generatePattern(genPattern)
-    }
-    setRosterData([...rosterData, newRow])
-    setIsGenerateModalOpen(false)
+  const handleInitializeMonthRoster = (monthStr: string) => {
+    if (isPastMonth(monthStr)) return
+    const existingIds = new Set(
+      rosterData.filter((r) => r.month === monthStr).map((r) => r.employeeId)
+    )
+    const newStaffRows = createFullCouncilRosterForMonth(monthStr).filter(
+      (r) => !existingIds.has(r.employeeId)
+    )
+    setRosterData([...rosterData, ...newStaffRows])
   }
 
-  const filteredRoster = rosterData.filter((row) => {
+  const filteredEmployees = ALL_COUNCIL_EMPLOYEES.filter((emp) => {
     if (selectedDept === 'All') return true
-    return row.department.includes(selectedDept)
+    return emp.department.includes(selectedDept)
   })
 
-  // Days 1 to 31 array
-  const monthDays = Array.from({ length: 31 }, (_, i) => i + 1)
+  const daysInCurrentMonth = getDaysInMonth(selectedMonth)
+  const monthDays = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1)
 
   const getShiftDetails = (code: string): ShiftTemplate => {
-    return SHIFT_TEMPLATES.find((t) => t.code === code) || SHIFT_TEMPLATES[0]
+    if (!code || code === '-' || code === 'NULL') return UNASSIGNED_TEMPLATE
+    return SHIFT_TEMPLATES.find((t) => t.code === code) || UNASSIGNED_TEMPLATE
   }
+
+  // Check if month has any generated roster rows
+  const monthHasAnyRoster = rosterData.some((r) => r.month === selectedMonth)
 
   return (
     <div className="space-y-6 text-left pb-12 animate-fade-in">
@@ -181,7 +303,7 @@ export const StaffRosterPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Monthly Duty Rosters & Scheduling</h1>
           <p className="text-sm text-gray-500">
-            Plan, publish, and manage 31-day monthly duty rosters for office, field, and emergency staff.
+            Select a month to view all Council employees and edit their shifts individually.
           </p>
         </div>
 
@@ -190,28 +312,31 @@ export const StaffRosterPage: React.FC = () => {
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800 shadow-xs"
+            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800 shadow-xs cursor-pointer"
           >
-            <option value="July 2026">July 2026 (31 Days)</option>
-            <option value="August 2026">August 2026 (31 Days)</option>
-            <option value="June 2026">June 2026 (30 Days)</option>
+            {ALL_MONTHS.map((m) => {
+              const past = isPastMonth(m)
+              return (
+                <option key={m} value={m}>
+                  {m} ({getDaysInMonth(m)} Days) {past ? '🔒 Locked' : ''}
+                </option>
+              )
+            })}
           </select>
 
-          <button
-            onClick={() => setIsGenerateModalOpen(true)}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-md transition flex items-center space-x-2"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            <span>Generate Monthly Roster</span>
-          </button>
+          {!monthHasAnyRoster && !isCurrentMonthLocked && (
+            <button
+              onClick={() => handleInitializeMonthRoster(selectedMonth)}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
+            >
+              <span>+ Initialize All Staff Roster</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Monthly Summary & Shift Legend */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
         {SHIFT_TEMPLATES.map((tpl) => (
           <div
             key={tpl.id}
@@ -226,237 +351,170 @@ export const StaffRosterPage: React.FC = () => {
             <div className="text-xs font-bold mt-2 truncate">{tpl.name}</div>
           </div>
         ))}
+        {/* Unassigned Legend Badge */}
+        <div className={`rounded-xl border p-3 flex flex-col justify-between ${UNASSIGNED_TEMPLATE.colorClass} transition`}>
+          <div className="flex items-center justify-between">
+            <span className={`px-2 py-0.5 rounded text-[11px] font-extrabold ${UNASSIGNED_TEMPLATE.badgeClass}`}>
+              {UNASSIGNED_TEMPLATE.code}
+            </span>
+            <span className="text-[11px] font-semibold opacity-80">{UNASSIGNED_TEMPLATE.timing}</span>
+          </div>
+          <div className="text-xs font-bold mt-2 truncate">{UNASSIGNED_TEMPLATE.name}</div>
+        </div>
       </div>
 
-      {/* Filter & Toolbar */}
+      {/* Filter & Toolbar with Department Dropdown */}
       <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
           <span className="text-xs font-bold text-gray-500 uppercase">Department:</span>
-          <div className="flex bg-gray-100 p-1 rounded-xl">
-            {['All', 'Revenue', 'Sanitation', 'Security', 'Water Works'].map((d) => (
-              <button
-                key={d}
-                onClick={() => setSelectedDept(d)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                  selectedDept === d
-                    ? 'bg-white text-gray-900 shadow-2xs'
-                    : 'text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                {d === 'All' ? 'All Departments' : d}
-              </button>
-            ))}
-          </div>
+          <select
+            value={selectedDept}
+            onChange={(e) => setSelectedDept(e.target.value)}
+            className="px-3.5 py-2 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-800 shadow-2xs cursor-pointer"
+          >
+            <option value="All">All Departments</option>
+            <option value="Revenue">Revenue & Finance</option>
+            <option value="Sanitation">Public Health & Sanitation</option>
+            <option value="Security">Municipal Security Desk</option>
+            <option value="Water Works">Water Works & Engineering</option>
+            <option value="Administration">Administration</option>
+          </select>
         </div>
 
         <div className="flex items-center space-x-3">
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
-            {selectedMonth} Roster â€¢ Published âœ…
-          </span>
+          {isCurrentMonthLocked ? (
+            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 flex items-center space-x-1.5">
+              <span>🔒 Past Month - Read Only (Locked)</span>
+            </span>
+          ) : (
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+              {selectedMonth} Roster - Active & Editable
+            </span>
+          )}
           <span className="text-xs text-gray-500 font-medium hidden md:inline">
-            Click any cell to edit shift
+            {isCurrentMonthLocked
+              ? 'Past months cannot be modified'
+              : 'Click any day cell to assign or edit shift individually'}
           </span>
         </div>
       </div>
 
-      {/* 31-Day Monthly Roster Grid Table */}
+      {/* Monthly Roster Grid Table */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase text-gray-500">
-                <th className="py-3.5 px-4 min-w-[210px] sticky left-0 bg-gray-50 z-10 border-r border-gray-200">
+                <th className="py-3.5 px-4 min-w-[230px] sticky left-0 bg-gray-50 z-10 border-r border-gray-200">
                   Officer & Department
                 </th>
                 {monthDays.map((d) => {
-                  const isWeekend = (d % 7 === 4 || d % 7 === 5)
+                  const weekend = isWeekendDay(selectedMonth, d)
+                  const char = getDayOfWeekChar(selectedMonth, d)
                   return (
                     <th
                       key={d}
                       className={`py-3 px-1.5 text-center min-w-[42px] border-r border-gray-100 ${
-                        isWeekend ? 'bg-amber-50/70 text-amber-800' : ''
+                        weekend ? 'bg-amber-50/70 text-amber-800' : ''
                       }`}
                     >
                       <div>{d}</div>
-                      <div className="text-[9px] font-normal opacity-70">
-                        {['W', 'T', 'F', 'S', 'S', 'M', 'T'][(d - 1) % 7]}
-                      </div>
+                      <div className="text-[9px] font-normal opacity-70">{char}</div>
                     </th>
                   )
                 })}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 text-xs">
-              {filteredRoster.map((row) => (
-                <tr key={row.employeeId} className="hover:bg-gray-50/60 transition">
-                  {/* Sticky Officer Info Column */}
-                  <td className="py-3.5 px-4 sticky left-0 bg-white z-10 border-r border-gray-200 shadow-xs">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 font-bold flex items-center justify-center text-xs border border-blue-100 shrink-0">
-                        {row.avatarInitials}
-                      </div>
-                      <div className="truncate max-w-[145px]">
-                        <div className="font-bold text-gray-900 truncate">{row.employeeName}</div>
-                        <div className="text-[10px] text-gray-500 truncate">
-                          {row.employeeId} â€¢ {row.department}
+              {filteredEmployees.map((emp) => {
+                const existingRow = rosterData.find(
+                  (r) => r.employeeId === emp.employeeId && r.month === selectedMonth
+                )
+
+                return (
+                  <tr key={`${selectedMonth}-${emp.employeeId}`} className="hover:bg-gray-50/60 transition group">
+                    {/* Sticky Officer Info Column */}
+                    <td className="py-3.5 px-4 sticky left-0 bg-white z-10 border-r border-gray-200 shadow-xs">
+                      <div className="flex items-center space-x-2.5">
+                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 font-bold flex items-center justify-center text-xs border border-blue-100 shrink-0">
+                          {emp.avatarInitials}
+                        </div>
+                        <div className="truncate max-w-[145px]">
+                          <div className="font-bold text-gray-900 truncate">{emp.employeeName}</div>
+                          <div className="text-[10px] text-gray-500 truncate">
+                            {emp.employeeId} • {emp.department}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* 31 Daily Shift Cells */}
-                  {monthDays.map((d) => {
-                    const shiftCode = row.days[d] || 'OFF'
-                    const shiftTpl = getShiftDetails(shiftCode)
-                    const isEditing = editingCell?.empId === row.employeeId && editingCell?.day === d
-                    const isWeekend = (d % 7 === 4 || d % 7 === 5)
+                    {/* Daily Shift Cells (Defaults to null '-' if roster not made) */}
+                    {monthDays.map((d) => {
+                      const shiftCode = existingRow && existingRow.days[d] !== undefined ? existingRow.days[d] : ''
+                      const shiftTpl = getShiftDetails(shiftCode)
+                      const isEditing = editingCell?.empId === emp.employeeId && editingCell?.day === d
+                      const weekend = isWeekendDay(selectedMonth, d)
 
-                    return (
-                      <td
-                        key={d}
-                        className={`py-2 px-1 text-center relative border-r border-gray-100 ${
-                          isWeekend ? 'bg-amber-50/30' : ''
-                        }`}
-                      >
-                        {isEditing ? (
-                          <div className="absolute inset-0 z-20 bg-white border-2 border-blue-600 rounded-lg p-1 shadow-xl flex items-center justify-center">
-                            <select
-                              autoFocus
-                              value={shiftCode}
-                              onChange={(e) => handleCellChange(row.employeeId, d, e.target.value)}
-                              onBlur={() => setEditingCell(null)}
-                              className="text-[10px] font-extrabold bg-blue-50 text-blue-800 rounded px-1 py-0.5 border border-blue-300 outline-none"
+                      return (
+                        <td
+                          key={d}
+                          className={`py-2 px-1 text-center relative border-r border-gray-100 ${
+                            weekend ? 'bg-amber-50/30' : ''
+                          }`}
+                        >
+                          {isEditing && !isCurrentMonthLocked ? (
+                            <div className="absolute inset-0 z-20 bg-white border-2 border-blue-600 rounded-lg p-1 shadow-xl flex items-center justify-center">
+                              <select
+                                autoFocus
+                                value={shiftCode}
+                                onChange={(e) => handleCellChange(emp.employeeId, d, e.target.value)}
+                                onBlur={() => setEditingCell(null)}
+                                className="text-[10px] font-extrabold bg-blue-50 text-blue-800 rounded px-1 py-0.5 border border-blue-300 outline-none cursor-pointer"
+                              >
+                                <option value="">- (Null / Unassigned)</option>
+                                {SHIFT_TEMPLATES.map((t) => (
+                                  <option key={t.code} value={t.code}>
+                                    {t.code}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled={isCurrentMonthLocked}
+                              onClick={() => {
+                                if (!isCurrentMonthLocked) {
+                                  setEditingCell({ empId: emp.employeeId, day: d })
+                                }
+                              }}
+                              className={`w-full py-1 px-1 rounded-lg border text-[10px] font-extrabold transition ${
+                                isCurrentMonthLocked
+                                  ? 'cursor-not-allowed opacity-80'
+                                  : 'hover:scale-110 shadow-2xs cursor-pointer'
+                              } ${shiftTpl.colorClass}`}
+                              title={
+                                isCurrentMonthLocked
+                                  ? `Past Month Locked (${selectedMonth})`
+                                  : `Day ${d}: ${shiftTpl.name} (Click to assign/edit)`
+                              }
                             >
-                              {SHIFT_TEMPLATES.map((t) => (
-                                <option key={t.code} value={t.code}>
-                                  {t.code}
-                                </option>
-                              ))}
-                            </select>
-                          </div>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={() => setEditingCell({ empId: row.employeeId, day: d })}
-                            className={`w-full py-1 px-1 rounded-lg border text-[10px] font-extrabold transition hover:scale-110 shadow-2xs ${shiftTpl.colorClass}`}
-                            title={`Day ${d} (${selectedMonth}): ${shiftTpl.name}`}
-                          >
-                            {shiftTpl.code}
-                          </button>
-                        )}
-                      </td>
-                    )
-                  })}
-                </tr>
-              ))}
+                              {shiftTpl.code}
+                            </button>
+                          )}
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
       </div>
-
-      {/* Generate Monthly Roster Schedule Modal */}
-      {isGenerateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-2xl max-w-lg w-full space-y-5">
-            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
-                  Monthly Roster Generator
-                </span>
-                <h2 className="text-lg font-bold text-gray-900 mt-0.5">
-                  Generate 31-Day Roster â€¢ {selectedMonth}
-                </h2>
-              </div>
-              <button
-                onClick={() => setIsGenerateModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
-              >
-                âœ•
-              </button>
-            </div>
-
-            <form onSubmit={handleGenerateMonthlyRoster} className="space-y-4">
-              <div>
-                <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
-                  Employee Name
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={genEmpName}
-                  onChange={(e) => setGenEmpName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-800"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
-                    Employee ID
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={genEmpId}
-                    onChange={(e) => setGenEmpId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-800"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
-                    Department
-                  </label>
-                  <select
-                    value={genDept}
-                    onChange={(e) => setGenDept(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800"
-                  >
-                    <option value="Administration">Administration</option>
-                    <option value="Revenue & Finance">Revenue & Finance</option>
-                    <option value="Public Health & Sanitation">Public Health & Sanitation</option>
-                    <option value="Water Works & Engineering">Water Works & Engineering</option>
-                    <option value="Municipal Security Desk">Municipal Security Desk</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
-                  Monthly Rotation Pattern
-                </label>
-                <select
-                  value={genPattern}
-                  onChange={(e) => setGenPattern(e.target.value as any)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800"
-                >
-                  <option value="office">Standard Office Pattern (Mon-Fri GEN, Weekends OFF)</option>
-                  <option value="morning">Sanitation Morning Rotation (MRN Shift + Rotating OFF)</option>
-                  <option value="night">24/7 Security Rotation (4 Days NGT + 2 Days OFF)</option>
-                  <option value="water">Mixed Utility Rotation (MRN / EVE / GEN / OFF)</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-end space-x-3 pt-3 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={() => setIsGenerateModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-gray-300 text-xs font-semibold text-gray-700 hover:bg-gray-100"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold shadow-md transition"
-                >
-                  Generate 31-Day Roster
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
+
+
 

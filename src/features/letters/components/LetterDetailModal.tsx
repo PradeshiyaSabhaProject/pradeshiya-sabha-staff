@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { type Letter, type LetterStatus, updateLetterInStore } from '../hooks/useLetterData'
 
 interface LetterDetailModalProps {
@@ -88,7 +88,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">
-            Letter Details â€“ {letter.refId}
+            Letter Details - {letter.refId}
           </h2>
           <button 
             onClick={onClose}

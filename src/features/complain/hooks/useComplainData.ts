@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export type ComplaintStatus = 'PENDING' | 'REVIEWING' | 'IN PROGRESS' | 'APPROVED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW' | 'RESCHEDULED'
 
@@ -38,7 +38,13 @@ export interface Complaint {
   dueDate?: string
 }
 
-const DUMMY_COMPLAINTS: Complaint[] = [
+const formatRelativeDate = (daysOffset: number): string => {
+  const d = new Date()
+  d.setDate(d.getDate() + daysOffset)
+  return d.toISOString().slice(0, 10)
+}
+
+const getRealisticComplaints = (): Complaint[] => [
   {
     id: '1',
     refId: '#PS-2026-0842',
@@ -47,7 +53,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0713451689',
     citizenEmail: 'kamalsilva65@gmail.com',
     category: 'Waste Management',
-    date: '2026-06-05',
+    date: formatRelativeDate(-3),
     time: '10:30 AM',
     assignedOfficer: 'M.Perera',
     assignedTechnician: 'M.Perera',
@@ -59,7 +65,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
       { id: 'a3', name: 'Site Photo.jpg', size: '2.1 MB', type: 'image', url: '#' },
       { id: 'a4', name: 'Waste Management Request.pdf', size: '1.4 MB', type: 'pdf', url: '#' },
     ],
-    dueDate: '2026-07-14'
+    dueDate: formatRelativeDate(0) // Due Today
   },
   {
     id: '2',
@@ -69,7 +75,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0775642312',
     citizenEmail: 'sampath.b@example.com',
     category: 'Public Roads',
-    date: '2026-06-05',
+    date: formatRelativeDate(-2),
     time: '11:00 AM',
     assignedOfficer: 'L.D.Silva',
     assignedTechnician: 'L.D.Silva',
@@ -78,7 +84,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     attachments: [
       { id: 'a5', name: 'Road_Damage.jpg', size: '3.4 MB', type: 'image', url: '#' },
     ],
-    dueDate: '2026-07-05'
+    dueDate: formatRelativeDate(4) // 04 days left
   },
   {
     id: '6',
@@ -88,7 +94,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0719876543',
     citizenEmail: 'ayesha.f@example.com',
     category: 'Water Supply',
-    date: '2026-06-08',
+    date: formatRelativeDate(-4),
     time: '01:20 PM',
     assignedOfficer: 'P.Kumara',
     assignedTechnician: 'P.Kumara',
@@ -97,7 +103,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     attachments: [
       { id: 'a6', name: 'Water_Pipe.jpg', size: '1.2 MB', type: 'image', url: '#' },
     ],
-    dueDate: '2026-06-15'
+    dueDate: formatRelativeDate(1) // 01 day left
   },
   {
     id: '7',
@@ -107,14 +113,14 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0773344556',
     citizenEmail: 'ruwan.j@example.com',
     category: 'Public Roads',
-    date: '2026-06-09',
+    date: formatRelativeDate(-1),
     time: '08:00 AM',
     assignedOfficer: 'L.D.Silva',
     assignedTechnician: 'L.D.Silva',
     status: 'IN PROGRESS',
     description: 'Road resurfacing work is scheduled, but the barriers are not placed correctly and traffic is getting blocked.',
     attachments: [],
-    dueDate: '2026-06-16'
+    dueDate: formatRelativeDate(6) // 06 days left
   },
   {
     id: '3',
@@ -124,14 +130,14 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0763456789',
     citizenEmail: 'nimalp@example.com',
     category: 'Street Lighting',
-    date: '2026-06-05',
+    date: formatRelativeDate(-10),
     time: '02:45 PM',
     assignedOfficer: 'N.Fernando',
     assignedTechnician: 'N.Fernando',
     status: 'RESCHEDULED',
     description: 'Street light pole #45 is not working.',
     attachments: [],
-    dueDate: '2026-07-10'
+    dueDate: formatRelativeDate(-2) // Overdue
   },
   {
     id: '4',
@@ -141,14 +147,14 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0712345678',
     citizenEmail: 'sunil.sh@example.com',
     category: 'Waste Management',
-    date: '2026-06-06',
+    date: formatRelativeDate(-14),
     time: '09:15 AM',
     assignedOfficer: 'M.Perera',
     assignedTechnician: 'M.Perera',
     status: 'COMPLETED',
     description: 'Garbage not collected last week.',
     attachments: [],
-    dueDate: '2026-07-06'
+    dueDate: formatRelativeDate(-4)
   },
   {
     id: '5',
@@ -158,21 +164,30 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     citizenPhone: '0771234567',
     citizenEmail: 'priyanka.k@example.com',
     category: 'Public Roads',
-    date: '2026-06-07',
+    date: formatRelativeDate(-12),
     time: '10:00 AM',
     assignedOfficer: 'L.D.Silva',
     status: 'REJECTED',
     description: 'Request for new road construction (out of budget).',
     attachments: [],
-    dueDate: '2026-07-08'
+    dueDate: formatRelativeDate(-5)
   },
 ]
+
+const CURRENT_SEED_VERSION = 'v4_realistic_live_deadlines'
 
 export const useComplainData = () => {
   const [loading, setLoading] = useState(true)
   const [complaints, setComplaints] = useState<Complaint[]>(() => {
+    const seedVer = localStorage.getItem('pradeshiya_complaints_seed_ver')
+    if (seedVer !== CURRENT_SEED_VERSION) {
+      const realisticData = getRealisticComplaints()
+      localStorage.setItem('pradeshiya_complaints', JSON.stringify(realisticData))
+      localStorage.setItem('pradeshiya_complaints_seed_ver', CURRENT_SEED_VERSION)
+      return realisticData
+    }
     const saved = localStorage.getItem('pradeshiya_complaints')
-    return saved ? JSON.parse(saved) : DUMMY_COMPLAINTS
+    return saved ? JSON.parse(saved) : getRealisticComplaints()
   })
 
   useEffect(() => {

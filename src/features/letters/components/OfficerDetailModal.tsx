@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import type { AssignedOfficer } from '../hooks/useAssignedOfficersData'
 
 interface OfficerDetailModalProps {
@@ -23,7 +23,7 @@ const OfficerDetailModal: React.FC<OfficerDetailModalProps> = ({ officer, onClos
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">
-            Officer Details â€“ {officer.refId}
+            Officer Details - {officer.refId}
           </h2>
           <button 
             onClick={onClose}

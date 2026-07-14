@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Dummy Data
@@ -135,9 +135,9 @@ const COMPLAINTS: Complaint[] = [
 
 const NOTICES: Notice[] = [
   { id: 'n1', title: 'Annual Performance Review', body: 'All staff are required to submit their annual performance self-assessment forms by July 15, 2024.', type: 'circular', postedAt: 'Today, 9:00 AM' },
-  { id: 'n2', title: 'Public Holiday â€” Poson Poya', body: 'The office will remain closed on June 22, 2024 in observance of Poson Poya Day.', type: 'general', postedAt: 'Yesterday' },
-  { id: 'n3', title: 'Urgent: Water Supply Interruption', body: 'Scheduled maintenance will interrupt water supply in Wards 4, 7 and 9 from 08:00â€“16:00 on July 5.', type: 'urgent', postedAt: '2 days ago' },
-  { id: 'n4', title: 'Gazette â€” Local Government Amendment', body: 'The Local Government (Amendment) Act No. 15 of 2024 has been gazetted. Review provisions applicable to Pradeshiya Sabhas.', type: 'gazette', postedAt: '3 days ago' },
+  { id: 'n2', title: 'Public Holiday - Poson Poya', body: 'The office will remain closed on June 22, 2024 in observance of Poson Poya Day.', type: 'general', postedAt: 'Yesterday' },
+  { id: 'n3', title: 'Urgent: Water Supply Interruption', body: 'Scheduled maintenance will interrupt water supply in Wards 4, 7 and 9 from 08:00-16:00 on July 5.', type: 'urgent', postedAt: '2 days ago' },
+  { id: 'n4', title: 'Gazette - Local Government Amendment', body: 'The Local Government (Amendment) Act No. 15 of 2024 has been gazetted. Review provisions applicable to Pradeshiya Sabhas.', type: 'gazette', postedAt: '3 days ago' },
 ]
 
 const ACTIVITY_LOGS: ActivityLog[] = [

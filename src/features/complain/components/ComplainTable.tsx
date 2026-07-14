@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import type { Complaint } from '../hooks/useComplainData'
 import { getDeadlineStatus, getDeadlineStatusStyleClasses, isComplaintAssignedToCurrentTO } from '../utils/deadlineUtils'
 import { useAuth } from '../../../context/AuthContext'
@@ -101,10 +101,8 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
 
   const { user } = useAuth()
   const currentTOName = user?.name ?? ''
-  // Determine whether to show deadline columns based on the active tab's status
-  const tabObj = TABS.find(t => t.id === activeTab)
-  const hiddenStatuses = ['APPROVED', 'REJECTED', 'COMPLETED', 'NO-SHOW']
-  const showDeadline = !(tabObj && tabObj.status && hiddenStatuses.includes(tabObj.status))
+  // Always show deadline columns across all tabs
+  const showDeadline = true
 
   const tableColumnCount = 6 + (showOfficer ? 1 : 0) + (showDeadline ? 2 : 0)
 
@@ -116,10 +114,8 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   }
 
   const formatDeadline = (dueDate?: string) => {
-    if (!dueDate) return ''
-    const parsed = new Date(dueDate)
-    if (Number.isNaN(parsed.getTime())) return dueDate
-    return parsed.toLocaleDateString('en-US')
+    if (!dueDate) return '—'
+    return dueDate
   }
 
   return (
@@ -267,10 +263,13 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
                       <td className="py-4 px-6 whitespace-nowrap font-semibold text-gray-700">{formatDeadline(computedDueDate)}</td>
                       <td className="py-4 px-6 whitespace-nowrap">
                         {deadlineStatus ? (
-                          <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-block ${getDeadlineStatusStyleClasses(computedDueDate)}`}>
+                          <span className={`px-3 py-1 rounded-full border text-[11px] font-bold uppercase tracking-wider inline-flex items-center gap-1.5 shadow-xs ${getDeadlineStatusStyleClasses(computedDueDate)}`}>
+                            <span className="w-1.5 h-1.5 rounded-full bg-white block"></span>
                             {deadlineStatus}
                           </span>
-                        ) : null}
+                        ) : (
+                          <span className="text-xs text-gray-400 font-medium">—</span>
+                        )}
                       </td>
                     </>
                   )}
