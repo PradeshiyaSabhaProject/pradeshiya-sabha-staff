@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+﻿import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { getAppointments, type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
@@ -123,7 +123,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   // 4. Apply search control filters
   const fullyFiltered = useMemo(() => {
     return tabFiltered.filter((app) => {
-      // Date Filter: checking starting sequence (e.g. 2023-06-05)
+      // Date Filter: checking starting sequence (e.g. 2026-06-05)
       if (selectedDate && !app.dateTime.startsWith(selectedDate)) {
         return false;
       }
@@ -199,3 +199,4 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     endIndex: Math.min(currentPage * itemsPerPage, fullyFiltered.length),
   };
 }
+

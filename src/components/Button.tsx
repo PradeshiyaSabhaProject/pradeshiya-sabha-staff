@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger'
@@ -12,18 +12,18 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none'
+  const baseStyles = 'inline-flex items-center justify-center font-semibold rounded transition-colors focus:outline-none focus:ring-1 focus:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none uppercase tracking-wider'
   
   const variantStyles = {
-    primary: 'bg-cyan-600 hover:bg-cyan-500 text-white focus:ring-cyan-500',
-    secondary: 'bg-slate-700 hover:bg-slate-600 text-slate-200 focus:ring-slate-500',
-    danger: 'bg-rose-600 hover:bg-rose-500 text-white focus:ring-rose-500',
+    primary: 'bg-[#A31736] hover:bg-[#801028] text-white focus:ring-[#A31736]',
+    secondary: 'bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 focus:ring-gray-400 shadow-xs',
+    danger: 'bg-red-700 hover:bg-red-800 text-white focus:ring-red-600',
   }
 
   const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-base',
-    lg: 'px-6 py-3 text-lg',
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-4 py-2 text-xs',
+    lg: 'px-6 py-2.5 text-sm',
   }
 
   return (
@@ -36,3 +36,4 @@ export const Button: React.FC<ButtonProps> = ({
   )
 }
 export default Button
+

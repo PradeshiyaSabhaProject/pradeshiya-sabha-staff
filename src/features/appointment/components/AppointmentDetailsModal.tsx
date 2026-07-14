@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+﻿import React, { useState } from 'react';
 import { type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
 interface AppointmentDetailsModalProps {
@@ -11,7 +10,7 @@ interface AppointmentDetailsModalProps {
   onReschedule: (id: string, newDateTime: string) => void;
 }
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -44,8 +43,8 @@ const BellIcon = () => (
   </svg>
 );
 
-const CheckCircleIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-green-600">
+const CheckCircleIcon = ({ className = 'w-6 h-6 text-[#A31736]' }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={className}>
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
     <polyline points="22 4 12 14.01 9 11.01" />
   </svg>
@@ -59,7 +58,6 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   onUpdateStatus,
   onReschedule,
 }) => {
-  const { user } = useAuth();
   const [isRescheduling, setIsRescheduling] = useState(false);
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
@@ -68,7 +66,6 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   if (!isOpen || !appointment) return null;
 
-  const isAssignedToCurrentUser = appointment.assignedOfficer.toLowerCase() === user?.name?.toLowerCase();
   const isMyMode = mode === 'my';
   const showPendingActions = isMyMode && appointment.status === 'PENDING';
   const showApprovedActions = isMyMode && appointment.status === 'APPROVED';
@@ -179,16 +176,6 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 <span className={`font-bold uppercase ${getStatusBadge(appointment.status)}`}>
                   {appointment.status}
                 </span>
-                {appointment.status === 'APPROVED' && showApprovedActions && (
-                  <button
-                    onClick={() => setShowNotificationModal(true)}
-                    title="Notify client about approval"
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 hover:bg-blue-200 text-blue-700 text-xs font-bold rounded-lg transition-all hover:scale-105 active:scale-95 cursor-pointer border border-blue-300 shadow-xs"
-                  >
-                    <BellIcon />
-                    <span>Notify</span>
-                  </button>
-                )}
               </div>
             </div>
 
@@ -309,13 +296,24 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               </>
             )}
             {showApprovedActions && (
-              <button
-                type="button"
-                onClick={() => setIsRescheduling(true)}
-                className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
-              >
-                Reschedule
-              </button>
+              <>
+                <button
+                  type="button"
+                  onClick={() => setShowNotificationModal(true)}
+                  title="Notify client about approval"
+                  className="flex items-center justify-center gap-2 border-2 border-[#A31736] hover:bg-[#A31736] hover:text-white text-[#A31736] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center shadow-sm"
+                >
+                  <BellIcon />
+                  <span>Notify</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsRescheduling(true)}
+                  className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
+                >
+                  Reschedule
+                </button>
+              </>
             )}
           </div>
         )}
@@ -324,20 +322,20 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
         {showNotificationModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-50 to-green-50 p-6 flex flex-col items-center">
-                <div className="mb-4">
+              <div className="bg-gradient-to-r from-[#A31736]/10 via-white to-[#A31736]/5 p-6 flex flex-col items-center">
+                <div className="mb-4 rounded-full bg-[#A31736]/10 p-3">
                   <CheckCircleIcon />
                 </div>
-                <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
+                <h3 className="text-lg font-bold text-[#A31736] text-center mb-2">
                   Notification Sent Successfully
                 </h3>
-                <p className="text-sm text-gray-600 text-center">
+                <p className="text-sm text-gray-700 text-center">
                   The client has been notified about the appointment approval.
                 </p>
               </div>
               <div className="p-6 space-y-4">
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <p className="text-xs font-bold text-blue-900 mb-2">Appointment Details:</p>
+                <div className="bg-[#A31736]/5 border border-[#A31736]/20 rounded-lg p-4">
+                  <p className="text-xs font-bold text-[#A31736] mb-2">Appointment Details:</p>
                   <div className="space-y-1.5 text-xs text-gray-700">
                     <p>
                       <span className="font-semibold text-gray-900">Client:</span> {appointment.citizenName}
@@ -353,8 +351,8 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                     </p>
                   </div>
                 </div>
-                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                  <p className="text-xs font-bold text-green-900 mb-1">Notification Message:</p>
+                <div className="bg-[#A31736]/5 border border-[#A31736]/20 rounded-lg p-4">
+                  <p className="text-xs font-bold text-[#A31736] mb-1">Notification Message:</p>
                   <p className="text-xs text-gray-700 italic leading-relaxed">
                     "Dear {appointment.citizenName}, Your appointment for {appointment.service} has been approved by {appointment.assignedOfficer}. Your scheduled appointment is on {appointment.dateTime}. Please come prepared with the necessary documents. If you have any questions, please contact us at the Pradeshiya Sabha office."
                   </p>
@@ -363,7 +361,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               <div className="bg-gray-50 border-t border-gray-100 p-4 flex justify-end gap-3">
                 <button
                   onClick={() => setShowNotificationModal(false)}
-                  className="px-6 py-2.5 border border-gray-300 text-gray-700 text-sm font-bold rounded-lg bg-white hover:bg-gray-50 transition-all cursor-pointer"
+                  className="px-6 py-2.5 border border-[#A31736]/20 text-white text-sm font-bold rounded-lg bg-[#A31736] hover:bg-[#801028] transition-all cursor-pointer shadow-sm"
                 >
                   Close
                 </button>
@@ -376,3 +374,4 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     </div>
   );
 };
+

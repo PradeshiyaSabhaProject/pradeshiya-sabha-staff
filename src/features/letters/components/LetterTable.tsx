@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import type { Letter } from '../hooks/useLetterData'
 
 interface LetterTableProps {
@@ -272,3 +272,4 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
 }
 
 export default LetterTable
+

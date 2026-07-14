@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import type { Complaint, ComplaintStatus, OfficerRemark } from '../hooks/useComplainData'
 
 interface ComplainDetailModalProps {
@@ -307,8 +307,8 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
             <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 relative overflow-hidden">
               {notification && (
                 <div className="mb-3 p-2.5 bg-green-100 border border-green-300 text-green-800 rounded-lg text-xs font-bold flex items-center justify-between animate-fade-in">
-                  <span>✓ {notification}</span>
-                  <button onClick={() => setNotification(null)} className="text-green-800 hover:text-green-950 font-bold cursor-pointer">✕</button>
+                  <span>âœ“ {notification}</span>
+                  <button onClick={() => setNotification(null)} className="text-green-800 hover:text-green-950 font-bold cursor-pointer">âœ•</button>
                 </div>
               )}
 
@@ -339,7 +339,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                       <polyline points="22,6 12,13 2,6" />
                     </svg>
-                    <span>{citizenNotified ? '✓ Citizen Notified' : 'Notify Citizen'}</span>
+                    <span>{citizenNotified ? 'âœ“ Citizen Notified' : 'Notify Citizen'}</span>
                   </button>
                 </div>
               )}
@@ -388,7 +388,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       {remarksList.map((rem) => (
                         <div key={rem.id} className="p-2.5 bg-white border border-gray-200 rounded-lg text-xs space-y-1 shadow-sm">
                           <div className="flex items-center justify-between font-bold text-gray-700">
-                            <span className="text-[#801028]">{rem.author} → {complaint.assignedOfficer}</span>
+                            <span className="text-[#801028]">{rem.author} â†’ {complaint.assignedOfficer}</span>
                             <span className="text-[10px] text-gray-400 font-normal">{rem.date} {rem.time}</span>
                           </div>
                           <p className="text-gray-800 font-normal">{rem.text}</p>
@@ -426,7 +426,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       }`}
                     >
                       <span>Assign Technician</span>
-                      <span className="text-xs opacity-80">{isAssigningTech ? '▲' : '▼'}</span>
+                      <span className="text-xs opacity-80">{isAssigningTech ? 'â–²' : 'â–¼'}</span>
                     </button>
                     <button 
                       onClick={() => { setIsChangingState(!isChangingState); setIsAssigningTech(false); }}
@@ -435,7 +435,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       }`}
                     >
                       <span>Change State</span>
-                      <span className="text-xs opacity-80">{isChangingState ? '▲' : '▼'}</span>
+                      <span className="text-xs opacity-80">{isChangingState ? 'â–²' : 'â–¼'}</span>
                     </button>
                   </div>
 
@@ -444,7 +444,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     <div className="mt-4 border-t border-gray-200 pt-3 space-y-2 animate-fade-in">
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                         <span>Select Field Technician</span>
-                        <button onClick={() => setIsAssigningTech(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+                        <button onClick={() => setIsAssigningTech(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">âœ•</button>
                       </div>
                       <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
                         {TECHNICIANS.map((tech) => {
@@ -464,7 +464,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                                   <span>{tech.name}</span>
                                   {isSelected && <span className="text-[10px] bg-[#801028] text-white px-1.5 py-0.2 rounded font-extrabold">ASSIGNED</span>}
                                 </div>
-                                <div className="text-xs text-gray-500 font-normal mt-0.5">{tech.role} • {tech.dept}</div>
+                                <div className="text-xs text-gray-500 font-normal mt-0.5">{tech.role} â€¢ {tech.dept}</div>
                               </div>
                               <div className="flex items-center gap-2">
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
@@ -485,7 +485,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     <div className="mt-4 border-t border-gray-200 pt-3 space-y-2 animate-fade-in">
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                         <span>Select New Complaint State</span>
-                        <button onClick={() => setIsChangingState(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+                        <button onClick={() => setIsChangingState(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">âœ•</button>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
                         {STATUS_OPTIONS.map((opt) => {
@@ -502,7 +502,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                             >
                               <span className={`w-2.5 h-2.5 rounded-full ${opt.color} shrink-0`}></span>
                               <span className="text-xs font-semibold">{opt.label}</span>
-                              {isSelected && <span className="ml-auto text-xs text-[#801028]">✓</span>}
+                              {isSelected && <span className="ml-auto text-xs text-[#801028]">âœ“</span>}
                             </button>
                           )
                         })}
@@ -545,3 +545,4 @@ const ClockIcon = () => (
 )
 
 export default ComplainDetailModal
+

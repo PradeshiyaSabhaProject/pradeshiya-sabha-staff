@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
 import logo from '../../assets/logo.png'
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -42,20 +42,20 @@ const CheckBadgeIcon = () => (
   </svg>
 )
 
-// ── Types ──────────────────────────────────────────────────────────────────
+// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface TopBarProps {
   activePage?: string
   hideNav?: boolean
 }
 
-// ── Component ──────────────────────────────────────────────────────────────
+// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
   const { user } = useAuth()
   const [lang, setLang] = useState<'en' | 'si' | 'ta'>('en')
 
   return (
     <header className="w-full shadow-sm sticky top-0 z-50">
-      {/* ── Row 1: Branding + Social + Language + Phone ── */}
+      {/* â”€â”€ Row 1: Branding + Social + Language + Phone â”€â”€ */}
       <div className="bg-white border-b border-gray-200 px-6 py-3">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between gap-4">
           {/* Logo & Name */}
@@ -96,7 +96,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
                     key={label}
                     href={href}
                     aria-label={label}
-                    className="w-7 h-7 rounded-full bg-gray-700 hover:bg-[#A31736] text-white flex items-center justify-center transition-colors"
+                    className="w-7 h-7 rounded bg-gray-700 hover:bg-[#A31736] text-white flex items-center justify-center transition-colors"
                   >
                     <Icon />
                   </a>
@@ -106,7 +106,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Phone */}
               <a
                 href="tel:+94112855230"
-                className="flex items-center gap-1.5 bg-gray-800 hover:bg-[#A31736] text-white text-sm px-3 py-1.5 rounded-full transition-colors"
+                className="flex items-center gap-1.5 bg-gray-800 hover:bg-[#A31736] text-white text-sm px-3 py-1.5 rounded transition-colors"
               >
                 <WhatsAppIcon />
                 <span className="font-medium">+94 11 285 5230</span>
@@ -116,22 +116,22 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
         </div>
       </div>
 
-      {/* ── Row 2: Main Nav Bar (dark red) ── */}
+      {/* â”€â”€ Row 2: Main Nav Bar (dark red) â”€â”€ */}
       {!hideNav && user && (
-        <div className="bg-[#A31736] text-white px-6 py-0">
+        <div className="bg-[#A31736] text-white px-6 py-0 border-b border-[#801028]">
           <div className="max-w-screen-2xl mx-auto flex items-center justify-between h-14">
             {/* Title */}
-            <span className="text-lg font-bold tracking-wide whitespace-nowrap">
-              Homagama Pradeshiya Sabha
+            <span className="text-base font-bold tracking-wide uppercase whitespace-nowrap">
+              Homagama Pradeshiya Sabha - Administrative Portal
             </span>
 
             {/* Nav links + separator + actions */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {/* Topbar Nav links */}
 
 
               {/* Verified badge */}
-              <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-3 py-1 text-sm font-medium">
+              <div className="flex items-center gap-1.5 bg-white/10 border border-white/30 rounded px-3 py-1 text-xs font-semibold uppercase tracking-wider">
                 <CheckBadgeIcon />
                 <span>Verified Staff Member</span>
               </div>
@@ -139,7 +139,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Help */}
               <button
                 aria-label="Help"
-                className="ml-2 p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="ml-2 p-2 rounded hover:bg-white/10 transition-colors"
               >
                 <HelpIcon />
               </button>
@@ -147,7 +147,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               {/* Profile */}
               <button
                 aria-label="My profile"
-                className="p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="p-2 rounded hover:bg-white/10 transition-colors"
               >
                 <UserIcon />
               </button>
@@ -160,3 +160,4 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
 }
 
 export default TopBar
+

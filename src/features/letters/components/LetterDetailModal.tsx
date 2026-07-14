@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { type Letter, type LetterStatus, updateLetterInStore } from '../hooks/useLetterData'
 
 interface LetterDetailModalProps {
@@ -88,7 +88,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">
-            Letter Details – {letter.refId}
+            Letter Details â€“ {letter.refId}
           </h2>
           <button 
             onClick={onClose}
@@ -171,7 +171,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
           {allowStatusChange && (
             <div className="bg-amber-50/80 border border-amber-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
               <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
-                <span>🔄 Update Correspondence Status</span>
+                <span>ðŸ”„ Update Correspondence Status</span>
               </h3>
               <p className="text-xs text-amber-800">
                 Modify the processing status of this citizen letter to reflect current administrative progress.
@@ -199,12 +199,12 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                     isStatusUpdated ? 'bg-green-600' : 'bg-amber-700 hover:bg-amber-800'
                   }`}
                 >
-                  <span>{isStatusUpdated ? '✓ Status Updated!' : 'Update Status'}</span>
+                  <span>{isStatusUpdated ? 'âœ“ Status Updated!' : 'Update Status'}</span>
                 </button>
               </div>
               {isStatusUpdated && (
                 <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
-                  <span>✓ Letter status changed to {status}!</span>
+                  <span>âœ“ Letter status changed to {status}!</span>
                   <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Saved</span>
                 </div>
               )}
@@ -215,7 +215,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
           {allowForwardToSuperior && (
             <div className="bg-purple-50/80 border border-purple-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
               <h3 className="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-                <span>⬆️ Escalate: Forward to Official Above Designation</span>
+                <span>â¬†ï¸ Escalate: Forward to Official Above Designation</span>
               </h3>
               <p className="text-xs text-purple-700">
                 Forward this correspondence to a superior municipal authority or executive officer for higher-level review and action.
@@ -242,12 +242,12 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                     isForwarded ? 'bg-green-600' : 'bg-[#801028] hover:bg-[#600a1c]'
                   }`}
                 >
-                  <span>{isForwarded ? '✓ Escalated!' : 'Forward to Superior'}</span>
+                  <span>{isForwarded ? 'âœ“ Escalated!' : 'Forward to Superior'}</span>
                 </button>
               </div>
               {isForwarded && (
                 <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
-                  <span>✓ Correspondence forwarded to {superiorOfficer}!</span>
+                  <span>âœ“ Correspondence forwarded to {superiorOfficer}!</span>
                   <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Transferred</span>
                 </div>
               )}
@@ -275,4 +275,5 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
 }
 
 export default LetterDetailModal
+
 

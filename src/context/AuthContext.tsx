@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+﻿/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from 'react'
 
 export interface User {
@@ -75,3 +75,4 @@ export const useAuth = () => {
   }
   return context
 }
+

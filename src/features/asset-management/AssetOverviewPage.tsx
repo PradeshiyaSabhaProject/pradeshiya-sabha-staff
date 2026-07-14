@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 import AddAssetModal from './components/AddAssetModal'
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Icons
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -121,9 +121,9 @@ const EditIcon = () => (
   </svg>
 )
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Component
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const AssetOverviewPage: React.FC = () => {
   const {
     loading,
@@ -147,7 +147,7 @@ const AssetOverviewPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [activeAssetDetails, setActiveAssetDetails] = useState<AssetRecord | null>(null)
 
-  // ── NEW: edit mode state for the detail popup ──
+  // â”€â”€ NEW: edit mode state for the detail popup â”€â”€
   const [isEditingDetails, setIsEditingDetails] = useState(false)
   const [editFormData, setEditFormData] = useState<AssetRecord | null>(null)
 
@@ -252,7 +252,7 @@ const AssetOverviewPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
 
-      {/* ── Page Header ── */}
+      {/* â”€â”€ Page Header â”€â”€ */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">Asset Overview</h1>
@@ -260,10 +260,10 @@ const AssetOverviewPage: React.FC = () => {
             Real-time monitoring of public assets, infrastructure records, and GIS mapping for the Pradeshiya Sabha jurisdiction.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="bg-[#A31736] hover:bg-[#801028] text-white text-sm font-semibold px-4.5 py-2.5 rounded-xl shadow-xs hover:shadow-md transition-all flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
             <AddIcon />
             <span>Add Digital Record</span>
@@ -271,7 +271,7 @@ const AssetOverviewPage: React.FC = () => {
 
           <button
             onClick={() => alert('PDF Export triggered (Simulated)')}
-            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-semibold px-4.5 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-2xs"
+            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
             <ExportIcon />
             <span>Export PDF</span>
@@ -279,7 +279,7 @@ const AssetOverviewPage: React.FC = () => {
 
           <button
             onClick={() => window.print()}
-            className="bg-[#A31736] hover:bg-[#801028] text-white text-sm font-semibold px-4.5 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-xs"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
             <PrintIcon />
             <span>Print Summary</span>
@@ -287,104 +287,104 @@ const AssetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4.5">
+      {/* â”€â”€ KPI Cards â”€â”€ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* Card 1: Municipal Lands */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Municipal Lands</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Municipal Lands</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.municipalLands.value, stats.municipalLands.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200/50">
+              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 {stats.municipalLands.change}
               </span>
-              <div className="p-1.5 bg-blue-50/50 rounded-lg">
+              <div className="p-1.5 bg-blue-50 rounded">
                 <LandsCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#1e3a8a] h-1.5 rounded-full transition-all duration-1000" style={{ width: '70%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#1e3a8a] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '70%' }} />
           </div>
         </div>
 
         {/* Card 2: Road Infrastructure */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Road Infrastructure</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Road Infrastructure</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.roadInfrastructure.value, stats.roadInfrastructure.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/50">
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                 {stats.roadInfrastructure.change}
               </span>
-              <div className="p-1.5 bg-emerald-50/50 rounded-lg">
+              <div className="p-1.5 bg-emerald-50 rounded">
                 <RoadCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#22c55e] h-1.5 rounded-full transition-all duration-1000" style={{ width: '60%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#22c55e] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '60%' }} />
           </div>
         </div>
 
         {/* Card 3: Building Units */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Building Units</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Building Units</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.buildingUnits.value, stats.buildingUnits.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-blue-800 bg-blue-50/60 px-2 py-0.5 rounded-full border border-blue-200/50">
+              <span className="text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 {stats.buildingUnits.change}
               </span>
-              <div className="p-1.5 bg-blue-50/50 rounded-lg">
+              <div className="p-1.5 bg-blue-50 rounded">
                 <BuildingCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
-            <div className="bg-[#1e40af] h-1.5 rounded-full transition-all duration-1000" style={{ width: '75%' }} />
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
+            <div className="bg-[#1e40af] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '75%' }} />
           </div>
         </div>
 
         {/* Card 4: Material Assets */}
-        <div className="bg-white border border-gray-200/80 rounded-xl p-5 shadow-xs flex flex-col justify-between cursor-default hover:shadow-sm transition-all duration-300">
+        <div className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-default hover:shadow transition-all">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block">Material Assets</span>
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider block">Material Assets</span>
               <p className="text-2xl font-black text-gray-900 tracking-tight mt-1.5">
                 {formatStatValue(stats.materialAssets.value, stats.materialAssets.label)}
               </p>
             </div>
             <div className="flex flex-col items-end gap-1.5">
-              <span className="text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-300/40">
+              <span className="text-[10px] font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-300">
                 {stats.materialAssets.change}
               </span>
-              <div className="p-1.5 bg-slate-50/50 rounded-lg">
+              <div className="p-1.5 bg-slate-50 rounded">
                 <MaterialCardIcon />
               </div>
             </div>
           </div>
-          <div className="w-full bg-gray-100/80 h-1.5 rounded-full mt-5 overflow-hidden">
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-[#1f2937] h-1.5 rounded-full transition-all duration-1000" style={{ width: '45%' }} />
           </div>
         </div>
 
       </div>
 
-      {/* ── Recent Digital Records Table Card ── */}
+      {/* â”€â”€ Recent Digital Records Table Card â”€â”€ */}
       <div className="bg-white border border-gray-200/80 rounded-xl shadow-xs overflow-hidden flex flex-col">
 
         {/* Table Header Section */}
@@ -463,7 +463,7 @@ const AssetOverviewPage: React.FC = () => {
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-sm font-bold"
                   >
-                    ×
+                    Ã—
                   </button>
                 )}
               </div>
@@ -557,7 +557,7 @@ const AssetOverviewPage: React.FC = () => {
           </table>
         </div>
 
-        {/* ── Table Pagination Footer (matches 1st image exactly) ── */}
+        {/* â”€â”€ Table Pagination Footer (matches 1st image exactly) â”€â”€ */}
         <div className="px-6 py-4.5 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
 
           {/* Display Items Range */}
@@ -624,7 +624,7 @@ const AssetOverviewPage: React.FC = () => {
 
       </div>
 
-      {/* ── Asset Details Overlay Panel (now with Edit + Update) ── */}
+      {/* â”€â”€ Asset Details Overlay Panel (now with Edit + Update) â”€â”€ */}
       {activeAssetDetails && editFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={closeAssetDetails} />
@@ -639,11 +639,11 @@ const AssetOverviewPage: React.FC = () => {
                 onClick={closeAssetDetails}
                 className="text-gray-400 hover:text-gray-600 font-extrabold text-lg cursor-pointer"
               >
-                ×
+                Ã—
               </button>
             </div>
 
-            {/* ── READ-ONLY VIEW ── */}
+            {/* â”€â”€ READ-ONLY VIEW â”€â”€ */}
             {!isEditingDetails && (
               <>
                 <div className="space-y-3.5 text-sm">
@@ -698,7 +698,7 @@ const AssetOverviewPage: React.FC = () => {
               </>
             )}
 
-            {/* ── EDIT VIEW ── */}
+            {/* â”€â”€ EDIT VIEW â”€â”€ */}
             {isEditingDetails && (
               <>
                 <div className="space-y-4 text-sm">
@@ -830,7 +830,7 @@ const AssetOverviewPage: React.FC = () => {
         </div>
       )}
 
-      {/* ── Create Record Modal ── */}
+      {/* â”€â”€ Create Record Modal â”€â”€ */}
       <AddAssetModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
@@ -846,3 +846,4 @@ const AssetOverviewPage: React.FC = () => {
 }
 
 export default AssetOverviewPage
+

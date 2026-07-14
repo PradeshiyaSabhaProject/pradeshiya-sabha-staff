@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import type { AssignedOfficer } from '../hooks/useAssignedOfficersData'
 
 interface OfficerDetailModalProps {
@@ -23,7 +23,7 @@ const OfficerDetailModal: React.FC<OfficerDetailModalProps> = ({ officer, onClos
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
           <h2 className="text-lg font-bold text-gray-900">
-            Officer Details – {officer.refId}
+            Officer Details â€“ {officer.refId}
           </h2>
           <button 
             onClick={onClose}
@@ -42,7 +42,7 @@ const OfficerDetailModal: React.FC<OfficerDetailModalProps> = ({ officer, onClos
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">{officer.name}</h3>
-              <p className="text-xs font-semibold text-gray-500">{officer.role} • {officer.phone}</p>
+              <p className="text-xs font-semibold text-gray-500">{officer.role} â€¢ {officer.phone}</p>
             </div>
           </div>
 
@@ -95,3 +95,4 @@ const OfficerDetailModal: React.FC<OfficerDetailModalProps> = ({ officer, onClos
 }
 
 export default OfficerDetailModal
+

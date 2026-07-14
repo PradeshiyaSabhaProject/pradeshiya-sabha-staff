@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
-// ── Icons ──────────────────────────────────────────────────────────────────
+// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const GridIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -26,6 +26,14 @@ const AssetIcon = () => (
     <line x1="12" y1="17" x2="12" y2="21" />
   </svg>
 )
+const FleetIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <rect x="1" y="3" width="22" height="13" rx="2" />
+    <circle cx="6" cy="20" r="2" />
+    <circle cx="18" cy="20" r="2" />
+    <path d="M14 9h5v4h-5z" />
+  </svg>
+)
 const ComplainIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -35,6 +43,12 @@ const LetterIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <rect x="2" y="4" width="20" height="16" rx="2" />
     <polyline points="22,4 12,13 2,4" />
+  </svg>
+)
+const AttendanceIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 const ProfileIcon = () => (
@@ -75,7 +89,7 @@ const ChevronDownIcon = ({ open }: { open: boolean }) => (
   </svg>
 )
 
-// ── Nav data ───────────────────────────────────────────────────────────────
+// â”€â”€ Nav data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface NavChild {
   label: string
   path: string
@@ -92,6 +106,19 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { label: 'Overview', path: '/overview', icon: <GridIcon /> },
+  {
+    label: 'Staff Attendance & Leave',
+    path: '/attendance',
+    icon: <AttendanceIcon />,
+    children: [
+      { label: 'Daily Biometric Dashboard', path: '/attendance/dashboard' },
+      { label: 'Employee Timecards', path: '/attendance/timecards' },
+      { label: 'My Leave & Applications', path: '/attendance/my-leave' },
+      { label: 'My Attendance Corrections', path: '/attendance/my-corrections' },
+      { label: 'Manager Approvals Queue', path: '/attendance/approvals' },
+      { label: 'Monthly Duty Rosters', path: '/attendance/rosters' },
+    ],
+  },
   {
     label: 'Appointment Management',
     path: '/appointments',
@@ -110,6 +137,19 @@ const navItems: NavItem[] = [
       { label: 'Asset Overview', path: '/assets/overview' },
       { label: 'Asset Directory', path: '/assets/directory' },
       { label: 'Interactive GIS Mapping', path: '/assets/gis-mapping' },
+    ]
+  },
+  {
+    label: 'Fleet Management',
+    path: '/fleet',
+    icon: <FleetIcon />,
+    children: [
+      { label: 'Fleet Dashboard', path: '/fleet/overview' },
+      { label: 'Vehicle Registry', path: '/fleet/vehicles' },
+      { label: 'Live Dispatch & Location', path: '/fleet/dispatch' },
+      { label: 'Maintenance Workshop', path: '/fleet/maintenance' },
+      { label: 'Drivers & Operators', path: '/fleet/drivers' },
+      { label: 'Authorizations Desk', path: '/fleet/approvals' },
     ]
   },
   {
@@ -138,15 +178,17 @@ const navItems: NavItem[] = [
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
 ]
 
-// ── Component ──────────────────────────────────────────────────────────────
+// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
+    '/attendance': true,
     '/appointments': false,
     '/letters': false,
     '/assets': false,
+    '/fleet': false,
   })
 
   const toggleMenu = (path: string) => {
@@ -293,3 +335,4 @@ const Sidebar: React.FC = () => {
 }
 
 export default Sidebar
+

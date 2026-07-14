@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+﻿import React, { useState, useEffect, useRef, useMemo } from 'react'
 import L from 'leaflet'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Icons
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
     <circle cx="11" cy="11" r="8" />
@@ -55,9 +55,9 @@ const InfoIcon = () => (
   </svg>
 )
 
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Layer Definitions to match screenshot
-// ─────────────────────────────────────────────────────────────────────────────
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 interface LayerOption {
   id: string
   label: string
@@ -295,7 +295,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
             placeholder="Search jurisdiction assets..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#A31736]/20 focus:border-[#A31736] transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] transition-all shadow-sm"
           />
         </div>
       </div>
@@ -308,7 +308,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
 
           {/* Custom Zoom & Center controls overlay */}
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
-            <div className="bg-white rounded-lg shadow-md border border-gray-200 divide-y divide-gray-100 overflow-hidden">
+            <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
               <button
                 onClick={handleZoomIn}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center"
@@ -326,7 +326,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
             </div>
             <button
               onClick={handleCenterMap}
-              className="bg-white p-2.5 rounded-lg shadow-md border border-gray-200 hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center"
+              className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center"
               title="Center Map to Colombo/Homagama"
             >
               <LocateIcon />
@@ -334,7 +334,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           </div>
 
           {/* Bottom Center Priority Legend Overlay */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-gray-200/80 flex items-center gap-6 text-xs font-semibold text-gray-700 select-none">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-6 py-2.5 rounded shadow-sm border border-gray-300 flex items-center gap-6 text-xs font-semibold text-gray-700 select-none uppercase tracking-wider">
             <button
               onClick={() => togglePriority('High Priority')}
               className={`flex items-center gap-2.5 transition-opacity ${
@@ -366,9 +366,9 @@ export const InteractiveGISMappingPage: React.FC = () => {
         </div>
 
         {/* Right Side Panel */}
-        <div className="w-80 bg-white border-l border-gray-200 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
+        <div className="w-80 bg-white border-l border-gray-300 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
           {/* Card 1: ASSET LAYERS */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-xs font-bold text-gray-600 tracking-wider uppercase">
               <LayersIcon />
               <span>ASSET LAYERS</span>
@@ -400,21 +400,21 @@ export const InteractiveGISMappingPage: React.FC = () => {
           </div>
 
           {/* Card 2: ACTIVE VIEW STATS */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold text-gray-600 tracking-wider uppercase">ACTIVE VIEW STATS</span>
-              <span className="px-2.5 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded animate-pulse">
+              <span className="px-2.5 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded">
                 Live
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
+              <div className="bg-gray-50 rounded p-3.5 border border-gray-200">
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                   VISIBLE ASSETS
                 </div>
                 <div className="text-2xl font-black text-gray-800">{visibleAssetsCount.toLocaleString()}</div>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
+              <div className="bg-gray-50 rounded p-3.5 border border-gray-200">
                 <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                   RISK ALERTS
                 </div>
@@ -424,7 +424,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           </div>
 
           {/* Card 3: Selected Asset Quick Details / Instructions */}
-          <div className="bg-gray-50 rounded-xl border border-gray-200/80 p-5">
+          <div className="bg-gray-50 rounded border border-gray-300 p-5">
             <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
               <InfoIcon />
               <span>{selectedAsset ? 'Asset Inspector' : 'Interactive Guide'}</span>
@@ -462,7 +462,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
                 </div>
                 <button
                   onClick={() => setSelectedAsset(null)}
-                  className="w-full mt-2 py-1.5 px-3 bg-white border border-gray-300 rounded-lg text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
+                  className="w-full mt-2 py-1.5 px-3 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors uppercase tracking-wider"
                 >
                   Clear Selection
                 </button>
@@ -480,3 +480,4 @@ export const InteractiveGISMappingPage: React.FC = () => {
 }
 
 export default InteractiveGISMappingPage
+

@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { useOfficerData } from './hooks/useOfficerData'
 import OfficerTable from './components/OfficerTable'
 
@@ -38,3 +38,4 @@ const AssignedOfficersPage: React.FC = () => {
 }
 
 export default AssignedOfficersPage
+

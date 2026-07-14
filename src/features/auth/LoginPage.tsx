@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, DUMMY_USERS, type User } from '../../context/AuthContext'
 import TopBar from '../../components/layout/TopBar'
@@ -77,7 +77,7 @@ export const LoginPage: React.FC = () => {
 
       {/* Main Container */}
       <main className="flex-1 flex items-center justify-center p-4 sm:p-8 md:p-12">
-        <div className="w-full max-w-5xl bg-white rounded-3xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-12 border border-gray-100 min-h-[560px]">
+        <div className="w-full max-w-5xl bg-white rounded border border-gray-300 shadow-md overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[560px]">
           {/* Left Column: Branding / Banner */}
           <div className="md:col-span-6 bg-[#801028] text-white p-8 md:p-12 flex flex-col justify-between relative overflow-hidden min-h-[480px]">
             {/* Background Image */}
@@ -106,8 +106,8 @@ export const LoginPage: React.FC = () => {
           <div className="md:col-span-6 p-8 md:p-12 flex flex-col justify-center bg-white relative">
             {/* Tab Header */}
             <div className="mb-6">
-              <span className="text-sm font-bold text-[#003366] pb-2 border-b-2 border-[#003366] inline-block">
-                Staff Login
+              <span className="text-xs font-bold uppercase tracking-wider text-[#003366] pb-2 border-b-2 border-[#003366] inline-block">
+                Staff Authentication Portal
               </span>
             </div>
 
@@ -115,22 +115,22 @@ export const LoginPage: React.FC = () => {
             <h1 className="text-2xl font-bold text-gray-900 mb-1">
               Staff Login
             </h1>
-            <p className="text-sm text-gray-500 mb-6">
-              Please provide your details to receive an authentication code.
+            <p className="text-sm text-gray-600 mb-6">
+              Please provide your credentials to access authorized government administrative systems.
             </p>
 
             {/* Quick Test Demo Selector */}
-            <div className="mb-6 bg-red-50/80 border border-red-100 rounded-xl p-3">
+            <div className="mb-6 bg-gray-50 border border-gray-300 rounded p-3">
               <p className="text-xs font-bold text-[#A31736] mb-2 uppercase tracking-wide flex items-center gap-1.5">
-                <span>⚡ Quick Test Account Selector</span>
+                <span>Demonstration Access Selector</span>
               </p>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => selectQuickUser('admin')}
-                  className={`py-1.5 px-3 rounded-lg text-xs font-semibold border transition-all text-left flex flex-col ${selectedUser.role === 'admin'
-                    ? 'bg-[#A31736] text-white border-[#A31736] shadow-sm'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-red-300'
+                  className={`py-2 px-3 rounded text-xs font-semibold border transition-all text-left flex flex-col ${selectedUser.role === 'admin'
+                    ? 'bg-[#A31736] text-white border-[#A31736]'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                     }`}
                 >
                   <span>Admin User</span>
@@ -141,9 +141,9 @@ export const LoginPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => selectQuickUser('staff')}
-                  className={`py-1.5 px-3 rounded-lg text-xs font-semibold border transition-all text-left flex flex-col ${selectedUser.role === 'staff'
-                    ? 'bg-[#A31736] text-white border-[#A31736] shadow-sm'
-                    : 'bg-white text-gray-700 border-gray-200 hover:border-red-300'
+                  className={`py-2 px-3 rounded text-xs font-semibold border transition-all text-left flex flex-col ${selectedUser.role === 'staff'
+                    ? 'bg-[#A31736] text-white border-[#A31736]'
+                    : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
                     }`}
                 >
                   <span>Staff Member</span>
@@ -158,7 +158,7 @@ export const LoginPage: React.FC = () => {
             {step === 1 ? (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Organization ID
                   </label>
                   <input
@@ -167,12 +167,12 @@ export const LoginPage: React.FC = () => {
                     onChange={(e) => setOrgId(e.target.value)}
                     placeholder="Ex:1999703"
                     required
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A31736] focus:border-transparent text-sm transition-all bg-gray-50/50 focus:bg-white"
+                    className="w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Password
                   </label>
                   <div className="relative">
@@ -182,12 +182,12 @@ export const LoginPage: React.FC = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Ex:1999@Thuhina"
                       required
-                      className="w-full pl-4 pr-11 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A31736] focus:border-transparent text-sm transition-all bg-gray-50/50 focus:bg-white"
+                      className="w-full pl-4 pr-11 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none p-1 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none p-1 transition-colors"
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                       {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -198,7 +198,7 @@ export const LoginPage: React.FC = () => {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full bg-[#A31736] hover:bg-[#801028] active:bg-[#600b1d] text-white font-medium py-3.5 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md hover:shadow-lg text-sm"
+                    className="w-full bg-[#A31736] hover:bg-[#801028] active:bg-[#600b1d] text-white font-semibold py-3 px-6 rounded flex items-center justify-center gap-2.5 transition-all text-sm uppercase tracking-wide"
                   >
                     <span>Send OTP</span>
                     <SendIcon />
@@ -208,12 +208,12 @@ export const LoginPage: React.FC = () => {
             ) : (
               /* Step 2: OTP Form */
               <form onSubmit={handleLogin} className="space-y-4 animate-fade-in">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 mb-4 text-xs text-gray-600">
+                <div className="bg-gray-50 border border-gray-300 rounded p-3 mb-4 text-xs text-gray-700">
                   <span>OTP dispatched for <strong>{selectedUser.name}</strong> ({selectedUser.email}).</span>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Enter OTP
                   </label>
                   <input
@@ -223,15 +223,15 @@ export const LoginPage: React.FC = () => {
                     placeholder="Ex:1999703"
                     required
                     maxLength={6}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#A31736] focus:border-transparent text-sm transition-all bg-gray-50/50 focus:bg-white tracking-widest font-mono font-semibold"
+                    className="w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white tracking-widest font-mono font-semibold"
                   />
-                  <p className="text-xs text-gray-400 mt-1">Use dummy OTP: 123456</p>
+                  <p className="text-xs text-gray-500 mt-1">Use dummy OTP: 123456</p>
                 </div>
 
                 <div className="pt-2 space-y-3">
                   <button
                     type="submit"
-                    className="w-full bg-[#A31736] hover:bg-[#801028] active:bg-[#600b1d] text-white font-medium py-3.5 px-6 rounded-full flex items-center justify-center gap-2.5 transition-all shadow-md hover:shadow-lg text-sm"
+                    className="w-full bg-[#A31736] hover:bg-[#801028] active:bg-[#600b1d] text-white font-semibold py-3 px-6 rounded flex items-center justify-center gap-2.5 transition-all text-sm uppercase tracking-wide"
                   >
                     <span>Login</span>
                     <SendIcon />
@@ -240,9 +240,9 @@ export const LoginPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="w-full text-center text-xs font-semibold text-gray-500 hover:text-gray-800 py-1 transition-colors"
+                    className="w-full text-center text-xs font-semibold text-gray-600 hover:text-gray-900 py-1 transition-colors uppercase tracking-wider"
                   >
-                    ← Back to credentials
+                    â† Back to credentials
                   </button>
                 </div>
               </form>
@@ -258,3 +258,4 @@ export const LoginPage: React.FC = () => {
 }
 
 export default LoginPage
+

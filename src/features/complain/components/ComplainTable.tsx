@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import type { Complaint } from '../hooks/useComplainData'
 import { getDeadlineStatus, getDeadlineStatusStyleClasses, isComplaintAssignedToCurrentTO } from '../utils/deadlineUtils'
 import { useAuth } from '../../../context/AuthContext'
@@ -319,4 +319,5 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
 }
 
 export default ComplainTable
+
 

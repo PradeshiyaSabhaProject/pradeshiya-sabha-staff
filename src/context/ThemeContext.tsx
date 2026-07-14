@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+﻿/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useContext, useState } from 'react'
 
 type Theme = 'light' | 'dark'
@@ -31,3 +31,4 @@ export const useTheme = () => {
   }
   return context
 }
+

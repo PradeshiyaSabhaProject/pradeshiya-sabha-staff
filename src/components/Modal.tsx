@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 export interface ModalProps {
   isOpen: boolean
@@ -11,15 +11,15 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative w-full max-w-lg bg-slate-900 border border-slate-800 rounded-xl shadow-2xl p-6 text-white">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-          <h3 className="text-lg font-semibold text-slate-100">{title || 'Modal'}</h3>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-fade-in">
+      <div className="relative w-full max-w-lg bg-white border border-gray-300 rounded shadow-lg p-6 text-gray-900">
+        <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <h3 className="text-base font-bold uppercase tracking-wide text-gray-800">{title || 'Modal'}</h3>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-slate-800"
+            className="text-gray-500 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-100 font-bold"
           >
-            ✕
+            âœ•
           </button>
         </div>
         <div className="py-4">{children}</div>
@@ -28,3 +28,4 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }
   )
 }
 export default Modal
+

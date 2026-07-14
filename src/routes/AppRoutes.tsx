@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
@@ -6,6 +6,8 @@ import assetRoutes from '../features/asset-management/assetRoutes'
 import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
+import attendanceRoutes from '../features/attendance/attendanceRoutes'
+import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -56,6 +58,7 @@ export const AppRoutes: React.FC = () => {
       >
         {/* Import feature routes */}
         {overviewRoutes}
+        {attendanceRoutes}
 
         {/* Appointment Management Routes */}
         {appointmentRoutes}
@@ -63,6 +66,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Other Feature Routes */}
         {assetRoutes}
+        {fleetRoutes}
         {complainRoutes}
         {letterRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />
@@ -78,3 +82,4 @@ export const AppRoutes: React.FC = () => {
   )
 }
 export default AppRoutes
+

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import type { Officer } from '../hooks/useOfficerData'
 
 interface OfficerTableProps {
@@ -229,3 +229,4 @@ const OfficerTable: React.FC<OfficerTableProps> = ({ officers }) => {
 }
 
 export default OfficerTable
+

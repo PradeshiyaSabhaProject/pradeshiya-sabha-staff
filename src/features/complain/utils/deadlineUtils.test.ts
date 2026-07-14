@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+﻿import { describe, expect, it } from 'vitest'
 import { getDeadlineStatus, getDeadlineStatusStyleClasses, isComplaintAssignedToCurrentTO } from './deadlineUtils'
 
 const formatDate = (date: Date) => date.toISOString().split('T')[0]
@@ -30,3 +30,4 @@ describe('deadlineUtils', () => {
     expect(isComplaintAssignedToCurrentTO({ assignedTechnician: 'John Doe', assignedOfficer: 'Jane Doe' }, 'alice')).toBe(false)
   })
 })
+

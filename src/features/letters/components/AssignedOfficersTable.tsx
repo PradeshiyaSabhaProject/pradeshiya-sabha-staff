@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+﻿import React, { useState, useMemo } from 'react'
 import type { AssignedOfficer } from '../hooks/useAssignedOfficersData'
 
 interface AssignedOfficersTableProps {
@@ -121,9 +121,9 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
             className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-9 pr-8 cursor-pointer"
           >
             <option value="">All Dates</option>
-            <option value="2023-06-05">2023-06-05</option>
-            <option value="2023-07-02">2023-07-02</option>
-            <option value="2023-07-16">2023-07-16</option>
+            <option value="2026-06-05">2026-06-05</option>
+            <option value="2026-07-02">2026-07-02</option>
+            <option value="2026-07-16">2026-07-16</option>
           </select>
           <div className="absolute right-3 pointer-events-none">
             <ChevronDownIcon />
@@ -256,3 +256,4 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
 }
 
 export default AssignedOfficersTable
+

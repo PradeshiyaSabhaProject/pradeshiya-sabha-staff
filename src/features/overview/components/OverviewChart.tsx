@@ -1,4 +1,4 @@
-import React from 'react'
+﻿import React from 'react'
 
 export const OverviewChart: React.FC = () => {
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
@@ -38,3 +38,4 @@ export const OverviewChart: React.FC = () => {
   )
 }
 export default OverviewChart
+

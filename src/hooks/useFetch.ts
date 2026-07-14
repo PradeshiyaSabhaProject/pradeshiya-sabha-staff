@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 
 interface UseFetchResult<T> {
   data: T | null
@@ -45,3 +45,4 @@ export function useFetch<T>(url: string): UseFetchResult<T> {
 
   return { data, loading, error }
 }
+

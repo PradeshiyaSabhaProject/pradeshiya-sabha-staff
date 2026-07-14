@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+﻿import React, { useState, useEffect } from 'react'
 import { type AssetRecord } from '../hooks/useAssetData'
 
 interface AddAssetModalProps {
@@ -239,3 +239,4 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
   )
 }
 export default AddAssetModal
+
