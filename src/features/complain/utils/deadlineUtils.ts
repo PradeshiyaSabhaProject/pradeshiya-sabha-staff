@@ -62,10 +62,59 @@ export const getDeadlineStatus = (
   complaint: ComplaintDeadline,
   _isAssignedToCurrentTO: boolean
 ): string => {
+  // Don't show deadline status for these statuses
+  const hiddenStatuses = ['APPROVED', 'REJECTED', 'COMPLETED', 'NO-SHOW', 'RESCHEDULED']
+  if (hiddenStatuses.includes(complaint.status)) {
+    return ''
+  }
   return getDeadlineStatusLabel(complaint.dueDate)
 }
 
 /**
+ * Calculates the number of days remaining until the deadline
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns The number of days remaining (can be negative if deadline has passed)
+ */
+export const calculateDaysRemaining = (dueDate: string): number => {
+  const today = new Date('2026-06-11') // Fixed today's date
+  today.setHours(0, 0, 0, 0)
+  
+  const deadline = new Date(dueDate)
+  deadline.setHours(0, 0, 0, 0)
+  
+  const timeDiff = deadline.getTime() - today.getTime()
+  const daysRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24))
+  
+  return daysRemaining
+}
+
+/**
+ * Determines the deadline status indicator based on days remaining
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns The deadline status string or empty string if deadline has passed
+ */
+export const getDeadlineStatusLabel = (dueDate: string): string => {
+  if (!dueDate) return ''
+  
+  const daysRemaining = calculateDaysRemaining(dueDate)
+  
+  if (daysRemaining <= 0) return '' // Deadline passed
+  if (daysRemaining === 1) return '01 day left'
+  if (daysRemaining === 2) return '02 days left'
+  if (daysRemaining === 3) return '03 days left'
+  if (daysRemaining === 4) return '04 days left'
+  if (daysRemaining === 5) return '05 days left'
+  if (daysRemaining === 6) return '06 days left'
+  if (daysRemaining === 7) return '07 days left'
+  
+  return '' // More than 7 days
+}
+
+/**
+ * Returns the styling classes for deadline status badges based on days remaining
+ * @param dueDate - The deadline date in YYYY-MM-DD format
+ * @returns CSS classes for styling the badge
+ */
  * Returns the styling classes for deadline status badges based on days remaining
  * @param dueDate - The deadline date in YYYY-MM-DD format
  * @returns CSS classes for styling the badge

@@ -59,7 +59,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
       { id: 'a3', name: 'Site Photo.jpg', size: '2.1 MB', type: 'image', url: '#' },
       { id: 'a4', name: 'Waste Management Request.pdf', size: '1.4 MB', type: 'pdf', url: '#' },
     ],
-    dueDate: '2026-07-14'
+    dueDate: '2026-06-12'
   },
   {
     id: '2',
@@ -78,7 +78,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     attachments: [
       { id: 'a5', name: 'Road_Damage.jpg', size: '3.4 MB', type: 'image', url: '#' },
     ],
-    dueDate: '2026-07-05'
+    dueDate: '2026-06-14'
   },
   {
     id: '6',
@@ -131,7 +131,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     status: 'RESCHEDULED',
     description: 'Street light pole #45 is not working.',
     attachments: [],
-    dueDate: '2026-07-10'
+    dueDate: '2026-06-18'
   },
   {
     id: '4',
@@ -148,7 +148,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     status: 'COMPLETED',
     description: 'Garbage not collected last week.',
     attachments: [],
-    dueDate: '2026-07-06'
+    dueDate: '2026-06-13'
   },
   {
     id: '5',
@@ -164,7 +164,7 @@ const DUMMY_COMPLAINTS: Complaint[] = [
     status: 'REJECTED',
     description: 'Request for new road construction (out of budget).',
     attachments: [],
-    dueDate: '2026-07-08'
+    dueDate: '2026-06-17'
   },
 ]
 
