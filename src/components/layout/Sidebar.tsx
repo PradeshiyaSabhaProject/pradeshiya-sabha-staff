@@ -45,6 +45,15 @@ const LetterIcon = () => (
     <polyline points="22,4 12,13 2,4" />
   </svg>
 )
+const ApplicationIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <path d="M16 13H8" />
+    <path d="M16 17H8" />
+    <path d="M10 9H8" />
+  </svg>
+)
 const AttendanceIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <circle cx="12" cy="12" r="10" />
@@ -183,6 +192,16 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Application Management',
+    path: '/applications',
+    icon: <ApplicationIcon />,
+    children: [
+      { label: 'All Applications', path: '/applications/all', roles: ['admin', 'manager'] },
+      { label: 'My Applications', path: '/applications/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
+      { label: 'Assigned Officers', path: '/applications/officers', roles: ['admin', 'manager', 'superadmin'] },
+    ],
+  },
+  {
     label: 'User Management',
     path: '/users',
     icon: <UsersIcon />,
@@ -204,6 +223,7 @@ const Sidebar: React.FC = () => {
     '/attendance': true,
     '/appointments': false,
     '/letters': false,
+    '/applications': false,
     '/assets': false,
     '/fleet': false,
     '/users': false,

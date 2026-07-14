@@ -6,6 +6,7 @@ import assetRoutes from '../features/asset-management/assetRoutes'
 import appointmentRoutes from '../features/appointment/appointmentRoutes'
 import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
+import applicationRoutes from '../features/application-management/applicationRoutes'
 import attendanceRoutes from '../features/attendance/attendanceRoutes'
 import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
@@ -70,6 +71,7 @@ export const AppRoutes: React.FC = () => {
         {fleetRoutes}
         {complainRoutes}
         {letterRoutes}
+        {applicationRoutes}
         {userRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />
         <Route path="archive" element={<DummySection title="Data Archive" desc="Historical council records, closed complaints, and archived resolutions." />} />
