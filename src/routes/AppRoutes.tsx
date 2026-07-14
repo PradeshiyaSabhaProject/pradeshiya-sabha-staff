@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import DashboardLayout from '../layouts/DashboardLayout'
 import overviewRoutes from '../features/overview/overviewRoutes'
@@ -8,6 +8,7 @@ import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
 import attendanceRoutes from '../features/attendance/attendanceRoutes'
 import fleetRoutes from '../features/fleet-management/fleetRoutes'
+import userRoutes from '../features/user-management/userRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -69,6 +70,7 @@ export const AppRoutes: React.FC = () => {
         {fleetRoutes}
         {complainRoutes}
         {letterRoutes}
+        {userRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />
         <Route path="archive" element={<DummySection title="Data Archive" desc="Historical council records, closed complaints, and archived resolutions." />} />
 
