@@ -65,6 +65,7 @@ export const getDeadlineStatus = (
   complaint: ComplaintDeadline,
   _isAssignedToCurrentTO: boolean
 ): string => {
+  void _isAssignedToCurrentTO
   if (!complaint) return ''
   const inactiveStatuses = ['COMPLETED', 'REJECTED', 'NO-SHOW']
   if (inactiveStatuses.includes(complaint.status?.toUpperCase())) {

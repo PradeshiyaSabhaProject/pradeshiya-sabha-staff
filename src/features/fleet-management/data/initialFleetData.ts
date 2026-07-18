@@ -1,4 +1,4 @@
-﻿export type VehicleCategory =
+export type VehicleCategory =
   | 'Garbage Compactor'
   | 'Water Bowser'
   | 'Heavy Equipment (JCB)'
@@ -396,6 +396,7 @@ export interface FleetApprovalRequest {
   targetVehicleReg?: string
   targetDriverName?: string
   status: ApprovalStatus
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any
   requiredApproverRole: string
   approverName?: string

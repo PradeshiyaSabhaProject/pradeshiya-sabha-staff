@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { AVAILABLE_FEATURES } from '../types'
 import type { AppUser } from '../types'
 
@@ -38,12 +38,16 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
     letters: true,
     'user-management': true,
   })
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  const [prevUserId, setPrevUserId] = useState(user?.id)
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || user?.id !== prevUserId) {
+    setPrevIsOpen(isOpen)
+    setPrevUserId(user?.id)
     if (user && isOpen) {
       setSelectedFeatures([...user.allowedFeatures])
     }
-  }, [user, isOpen])
+  }
 
   if (!isOpen || !user) return null
 

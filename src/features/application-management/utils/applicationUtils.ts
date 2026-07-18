@@ -47,6 +47,7 @@ export const getDeadlineStatus = (
   application: ApplicationDeadline,
   _isAssignedToCurrentTO: boolean
 ): string => {
+  void _isAssignedToCurrentTO
   if (!application) return ''
   const inactiveStatuses = ['APPROVED', 'REJECTED', 'RETURNED']
   if (inactiveStatuses.includes(application.status?.toUpperCase())) {

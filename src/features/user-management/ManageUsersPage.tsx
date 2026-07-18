@@ -415,7 +415,7 @@ export const ManageUsersPage: React.FC = () => {
                             />
                             <select
                               value={u.status}
-                              onChange={(e) => updateStatus(u.id, e.target.value as any)}
+                              onChange={(e) => updateStatus(u.id, e.target.value as AppUser['status'])}
                               className="text-xs font-semibold bg-transparent border-0 text-gray-800 focus:ring-0 cursor-pointer pr-4 py-0"
                             >
                               <option value="Active">Active</option>

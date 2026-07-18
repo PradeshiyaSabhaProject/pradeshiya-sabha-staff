@@ -33,7 +33,7 @@ export const LeaveManagementPage: React.FC = () => {
         return {
           ...r,
           approvalLevels: updatedLevels,
-          overallStatus: (allApproved ? 'Approved' : `Pending Level ${levelNum + 1}`) as any
+          overallStatus: (allApproved ? 'Approved' : `Pending Level ${levelNum + 1}`) as LeaveRequest['overallStatus']
         }
       })
     )

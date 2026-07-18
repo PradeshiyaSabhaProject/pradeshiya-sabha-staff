@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { VehicleRecord } from '../data/initialFleetData'
 
 interface RenewPermitModalProps {
@@ -24,14 +24,18 @@ export const RenewPermitModal: React.FC<RenewPermitModalProps> = ({
   const [permitExpiryDate, setPermitExpiryDate] = useState('')
   const [revenueLicenseExpiryDate, setRevenueLicenseExpiryDate] = useState('')
   const [insuranceExpiryDate, setInsuranceExpiryDate] = useState('')
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  const [prevVehicleId, setPrevVehicleId] = useState(vehicle?.id)
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || vehicle?.id !== prevVehicleId) {
+    setPrevIsOpen(isOpen)
+    setPrevVehicleId(vehicle?.id)
     if (isOpen && vehicle) {
       setPermitExpiryDate(vehicle.permitExpiryDate)
       setRevenueLicenseExpiryDate(vehicle.revenueLicenseExpiryDate)
       setInsuranceExpiryDate(vehicle.insuranceExpiryDate)
     }
-  }, [isOpen, vehicle])
+  }
 
   if (!isOpen || !vehicle) return null
 

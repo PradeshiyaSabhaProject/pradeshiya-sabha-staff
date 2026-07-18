@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { VehicleRecord, DriverRecord } from '../data/initialFleetData'
 
 interface AssignDriverModalProps {
@@ -17,12 +17,16 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
   onAssign,
 }) => {
   const [selectedDriverId, setSelectedDriverId] = useState<string>('')
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  const [prevVehicleId, setPrevVehicleId] = useState(vehicle?.id)
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || vehicle?.id !== prevVehicleId) {
+    setPrevIsOpen(isOpen)
+    setPrevVehicleId(vehicle?.id)
     if (isOpen && vehicle) {
       setSelectedDriverId(vehicle.assignedDriverId || '')
     }
-  }, [isOpen, vehicle])
+  }
 
   if (!isOpen || !vehicle) return null
 

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   INITIAL_VEHICLES,
   INITIAL_DRIVERS,
@@ -405,6 +405,7 @@ export function useFleetData() {
     actionType: FleetActionType,
     title: string,
     description: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload: any,
     options?: {
       targetVehicleId?: string

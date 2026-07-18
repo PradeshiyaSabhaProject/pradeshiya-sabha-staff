@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import type { FacilityBooking, BookingStatus } from '../types'
+import type { FacilityBooking } from '../types'
 
 const formatRelativeDate = (daysOffset: number): string => {
   const d = new Date()

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { VehicleRecord, DriverRecord } from '../data/initialFleetData'
 
 interface DispatchVehicleModalProps {
@@ -33,8 +33,12 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
   const [returnDate, setReturnDate] = useState(() => new Date().toISOString().split('T')[0])
   const [returnTime, setReturnTime] = useState('16:30')
   const [selectedDriverId, setSelectedDriverId] = useState<string>('')
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
+  const [prevVehicleId, setPrevVehicleId] = useState(vehicle?.id)
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen || vehicle?.id !== prevVehicleId) {
+    setPrevIsOpen(isOpen)
+    setPrevVehicleId(vehicle?.id)
     if (isOpen && vehicle) {
       setDestinationWard('Ward 01 - Town Center & Market Area')
       setPurpose('Routine Municipal Solid Waste Collection')
@@ -42,7 +46,7 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
       setReturnTime('16:30')
       setSelectedDriverId(vehicle.assignedDriverId || '')
     }
-  }, [isOpen, vehicle])
+  }
 
   if (!isOpen || !vehicle) return null
 

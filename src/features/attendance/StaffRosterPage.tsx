@@ -85,7 +85,7 @@ const UNASSIGNED_TEMPLATE: ShiftTemplate = {
   badgeClass: 'bg-gray-300 text-gray-700'
 }
 
-export const ALL_MONTHS = [
+const ALL_MONTHS = [
   'January 2026',
   'February 2026',
   'March 2026',
@@ -113,7 +113,7 @@ const isPastMonth = (monthStr: string) => {
   return getMonthIndex(monthStr) < CURRENT_MONTH_INDEX
 }
 
-export const getDaysInMonth = (monthStr: string) => {
+const getDaysInMonth = (monthStr: string) => {
   const yearStr = monthStr.split(' ')[1] || '2026'
   const year = parseInt(yearStr, 10) || 2026
   const idx = getMonthIndex(monthStr)

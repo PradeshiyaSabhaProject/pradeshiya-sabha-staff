@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type { VehicleRecord } from '../data/initialFleetData'
 
 interface PutInMaintenanceModalProps {
@@ -26,10 +26,13 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
   const [estimatedCompletionDate, setEstimatedCompletionDate] = useState('')
   const [maintenanceType, setMaintenanceType] = useState('Routine Engine & Mechanical Service')
   const [estimatedCostLKR, setEstimatedCostLKR] = useState<number>(45000)
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
 
-  useEffect(() => {
+  if (isOpen !== prevIsOpen) {
+    setPrevIsOpen(isOpen)
     if (isOpen) {
       const today = new Date().toISOString().split('T')[0]
+      // eslint-disable-next-line react-hooks/purity
       const nextWeek = new Date(Date.now() + 7 * 24 * 3600 * 1000).toISOString().split('T')[0]
       setStartDate(today)
       setEstimatedCompletionDate(nextWeek)
@@ -37,7 +40,7 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
       setMaintenanceType('Routine Engine & Mechanical Service')
       setEstimatedCostLKR(45000)
     }
-  }, [isOpen])
+  }
 
   if (!isOpen || !vehicle) return null
 
