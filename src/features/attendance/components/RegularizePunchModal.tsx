@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface RegularizePunchModalProps {
   isOpen: boolean
@@ -97,6 +97,8 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
                 <option value="Forgot to Punch In">Forgot to Punch In</option>
                 <option value="Official Field Duty">Official Field Duty Outside</option>
                 <option value="Biometric Machine Fault">Biometric Machine Fault / Offline</option>
+                <option value="Weekend Duty Regularization">Weekend Duty Regularization (Sat/Sun Work)</option>
+                <option value="Overtime Authorization">Overtime Authorization (&gt;04:30 PM)</option>
               </select>
             </div>
           </div>

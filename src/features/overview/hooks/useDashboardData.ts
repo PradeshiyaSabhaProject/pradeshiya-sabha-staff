@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Dummy Data
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 
 export interface KpiStat {
   id: string
@@ -145,7 +145,7 @@ const ACTIVITY_LOGS: ActivityLog[] = [
   { id: 'l2', user: 'Staff Member', action: 'Updated status on', target: 'Complaint CPL-2024-0188', timestamp: '25 mins ago' },
   { id: 'l3', user: 'Dev Admin', action: 'Scheduled appointment for', target: 'Ruwan Weerasekara (15:30)', timestamp: '1 hour ago' },
   { id: 'l4', user: 'Staff Member', action: 'Sent letter to', target: 'Ministry of Local Government', timestamp: '2 hours ago' },
-  { id: 'l5', user: 'Dev Admin', action: 'Created asset issue report for', target: 'Road Crack â€” Main St Ward 3', timestamp: '3 hours ago' },
+  { id: 'l5', user: 'Dev Admin', action: 'Created asset issue report for', target: 'Road Crack — Main St Ward 3', timestamp: '3 hours ago' },
 ]
 
 const TASK_INBOX: TaskInboxItem[] = [
@@ -168,9 +168,9 @@ const QUICK_REPORTS: QuickReportItem[] = [
   { id: 'qr2', title: 'Monthly Financial Review', subtitle: 'Available for Download', icon: 'review' },
 ]
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Hook
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function useDashboardData() {
   const [loading, setLoading] = useState(true)

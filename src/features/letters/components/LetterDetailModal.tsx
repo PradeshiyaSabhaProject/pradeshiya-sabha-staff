@@ -199,12 +199,12 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                     isStatusUpdated ? 'bg-green-600' : 'bg-amber-700 hover:bg-amber-800'
                   }`}
                 >
-                  <span>{isStatusUpdated ? 'âœ“ Status Updated!' : 'Update Status'}</span>
+                  <span>{isStatusUpdated ? '✓ Status Updated!' : 'Update Status'}</span>
                 </button>
               </div>
               {isStatusUpdated && (
                 <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
-                  <span>âœ“ Letter status changed to {status}!</span>
+                  <span>✓ Letter status changed to {status}!</span>
                   <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Saved</span>
                 </div>
               )}
@@ -215,7 +215,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
           {allowForwardToSuperior && (
             <div className="bg-purple-50/80 border border-purple-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
               <h3 className="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
-                <span>â¬†ï¸ Escalate: Forward to Official Above Designation</span>
+                <span>⬆️¸ Escalate: Forward to Official Above Designation</span>
               </h3>
               <p className="text-xs text-purple-700">
                 Forward this correspondence to a superior municipal authority or executive officer for higher-level review and action.
@@ -242,12 +242,12 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                     isForwarded ? 'bg-green-600' : 'bg-[#801028] hover:bg-[#600a1c]'
                   }`}
                 >
-                  <span>{isForwarded ? 'âœ“ Escalated!' : 'Forward to Superior'}</span>
+                  <span>{isForwarded ? '✓ Escalated!' : 'Forward to Superior'}</span>
                 </button>
               </div>
               {isForwarded && (
                 <div className="text-xs font-semibold text-green-800 bg-green-100 border border-green-300 px-3 py-2 rounded-lg flex items-center justify-between animate-fade-in mt-2">
-                  <span>âœ“ Correspondence forwarded to {superiorOfficer}!</span>
+                  <span>✓ Correspondence forwarded to {superiorOfficer}!</span>
                   <span className="text-[10px] uppercase bg-green-200 text-green-900 px-2 py-0.5 rounded font-extrabold">Transferred</span>
                 </div>
               )}

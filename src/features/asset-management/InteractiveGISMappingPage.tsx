@@ -1,10 +1,10 @@
-﻿import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import L from 'leaflet'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Icons
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
     <circle cx="11" cy="11" r="8" />
@@ -55,9 +55,9 @@ const InfoIcon = () => (
   </svg>
 )
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Layer Definitions to match screenshot
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 interface LayerOption {
   id: string
   label: string
@@ -284,9 +284,9 @@ export const InteractiveGISMappingPage: React.FC = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-white overflow-hidden">
       {/* Top Header Bar */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0 gap-3">
         <h1 className="text-xl font-bold text-[#800000] tracking-tight">View Location</h1>
-        <div className="relative w-80">
+        <div className="relative w-full sm:w-80">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
             <SearchIcon />
           </span>
@@ -301,9 +301,9 @@ export const InteractiveGISMappingPage: React.FC = () => {
       </div>
 
       {/* Main Body Layout */}
-      <div className="flex flex-1 min-h-0 relative overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 min-h-[650px] lg:min-h-0 relative overflow-auto lg:overflow-hidden">
         {/* Map Area (Left / Center) */}
-        <div className="flex-1 relative bg-blue-50/30 overflow-hidden">
+        <div className="h-[400px] lg:h-auto lg:flex-1 relative bg-blue-50/30 overflow-hidden shrink-0">
           <div ref={mapContainerRef} className="w-full h-full z-0" />
 
           {/* Custom Zoom & Center controls overlay */}
@@ -334,7 +334,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           </div>
 
           {/* Bottom Center Priority Legend Overlay */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-6 py-2.5 rounded shadow-sm border border-gray-300 flex items-center gap-6 text-xs font-semibold text-gray-700 select-none uppercase tracking-wider">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-700 select-none uppercase tracking-wider w-[92%] sm:w-auto max-w-full">
             <button
               onClick={() => togglePriority('High Priority')}
               className={`flex items-center gap-2.5 transition-opacity ${
@@ -366,7 +366,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
         </div>
 
         {/* Right Side Panel */}
-        <div className="w-80 bg-white border-l border-gray-300 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
+        <div className="w-full lg:w-80 bg-white border-t lg:border-t-0 lg:border-l border-gray-300 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
           {/* Card 1: ASSET LAYERS */}
           <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-xs font-bold text-gray-600 tracking-wider uppercase">

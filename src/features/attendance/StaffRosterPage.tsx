@@ -43,6 +43,30 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     badgeClass: 'bg-purple-600 text-white'
   },
   {
+    id: 's-wkd',
+    code: 'WKD',
+    name: 'Weekend Special Duty',
+    timing: '08:30 AM - 02:30 PM (Sat/Sun)',
+    colorClass: 'border-indigo-200 bg-indigo-50/70 text-indigo-800',
+    badgeClass: 'bg-indigo-600 text-white'
+  },
+  {
+    id: 's-ot',
+    code: 'OT+',
+    name: 'Extended Overtime Shift',
+    timing: '08:30 AM - 07:30 PM (+3h OT)',
+    colorClass: 'border-orange-200 bg-orange-50/70 text-orange-800',
+    badgeClass: 'bg-orange-600 text-white'
+  },
+  {
+    id: 's-emg',
+    code: 'EMG',
+    name: 'Emergency Callout',
+    timing: 'On-Call 2.0x Rate',
+    colorClass: 'border-rose-200 bg-rose-50/70 text-rose-800',
+    badgeClass: 'bg-rose-600 text-white'
+  },
+  {
     id: 's-off',
     code: 'OFF',
     name: 'Weekly / Rest Day Off',
@@ -192,15 +216,31 @@ const generatePattern = (
   for (let d = 1; d <= totalDays; d++) {
     const weekend = isWeekendDay(monthStr, d)
     if (patternType === 'office') {
-      days[d] = weekend ? 'OFF' : 'GEN'
+      if (d === 4 || d === 11 || d === 18) {
+        days[d] = 'WKD' // Saturday special work
+      } else if (d === 9 || d === 23) {
+        days[d] = 'OT+' // Overtime weekday
+      } else {
+        days[d] = weekend ? 'OFF' : 'GEN'
+      }
     } else if (patternType === 'morning') {
-      days[d] = (d % 7 === 5 || weekend) ? 'OFF' : 'MRN'
+      if (d === 5 || d === 12 || d === 26) {
+        days[d] = 'EMG' // Sunday emergency callout
+      } else if (d === 11 || d === 25) {
+        days[d] = 'WKD' // Saturday duty
+      } else {
+        days[d] = (d % 7 === 5 || weekend) ? 'OFF' : 'MRN'
+      }
     } else if (patternType === 'night') {
       const cycle = d % 6
       days[d] = cycle < 4 ? 'NGT' : 'OFF'
     } else {
-      const cycle = d % 4
-      days[d] = cycle === 0 ? 'OFF' : cycle === 1 ? 'MRN' : cycle === 2 ? 'EVE' : 'GEN'
+      if (d === 11 || d === 19) {
+        days[d] = 'OT+'
+      } else {
+        const cycle = d % 4
+        days[d] = cycle === 0 ? 'OFF' : cycle === 1 ? 'MRN' : cycle === 2 ? 'EVE' : 'GEN'
+      }
     }
   }
   return days
@@ -301,18 +341,18 @@ export const StaffRosterPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Monthly Duty Rosters & Scheduling</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Monthly Duty Rosters & Scheduling</h1>
+          <p className="text-xs sm:text-sm text-gray-500">
             Select a month to view all Council employees and edit their shifts individually.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
           {/* Month Selector */}
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800 shadow-xs cursor-pointer"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm font-bold text-gray-800 shadow-xs cursor-pointer"
           >
             {ALL_MONTHS.map((m) => {
               const past = isPastMonth(m)
@@ -327,7 +367,7 @@ export const StaffRosterPage: React.FC = () => {
           {!monthHasAnyRoster && !isCurrentMonthLocked && (
             <button
               onClick={() => handleInitializeMonthRoster(selectedMonth)}
-              className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
             >
               <span>+ Initialize All Staff Roster</span>
             </button>
@@ -336,7 +376,7 @@ export const StaffRosterPage: React.FC = () => {
       </div>
 
       {/* Monthly Summary & Shift Legend */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3">
         {SHIFT_TEMPLATES.map((tpl) => (
           <div
             key={tpl.id}
@@ -365,12 +405,12 @@ export const StaffRosterPage: React.FC = () => {
 
       {/* Filter & Toolbar with Department Dropdown */}
       <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
           <span className="text-xs font-bold text-gray-500 uppercase">Department:</span>
           <select
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value)}
-            className="px-3.5 py-2 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-800 shadow-2xs cursor-pointer"
+            className="w-full sm:w-auto px-3.5 py-2 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-800 shadow-2xs cursor-pointer"
           >
             <option value="All">All Departments</option>
             <option value="Revenue">Revenue & Finance</option>
@@ -381,13 +421,13 @@ export const StaffRosterPage: React.FC = () => {
           </select>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 w-full sm:w-auto justify-start sm:justify-end">
           {isCurrentMonthLocked ? (
-            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 flex items-center space-x-1.5">
+            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 flex items-center space-x-1.5 w-full sm:w-auto text-center justify-center">
               <span>🔒 Past Month - Read Only (Locked)</span>
             </span>
           ) : (
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
+            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 w-full sm:w-auto text-center justify-center">
               {selectedMonth} Roster - Active & Editable
             </span>
           )}
@@ -401,8 +441,8 @@ export const StaffRosterPage: React.FC = () => {
 
       {/* Monthly Roster Grid Table */}
       <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[1200px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase text-gray-500">
                 <th className="py-3.5 px-4 min-w-[230px] sticky left-0 bg-gray-50 z-10 border-r border-gray-200">

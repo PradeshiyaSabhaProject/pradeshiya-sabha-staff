@@ -10,6 +10,7 @@ import applicationRoutes from '../features/application-management/applicationRou
 import attendanceRoutes from '../features/attendance/attendanceRoutes'
 import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
+import bookingRoutes from '../features/booking-management/bookingRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -72,6 +73,7 @@ export const AppRoutes: React.FC = () => {
         {complainRoutes}
         {letterRoutes}
         {applicationRoutes}
+        {bookingRoutes}
         {userRoutes}
         <Route path="profile" element={<DummySection title="User Profile" desc="Manage your account settings, security credentials, and department assignment." />} />
         <Route path="archive" element={<DummySection title="Data Archive" desc="Historical council records, closed complaints, and archived resolutions." />} />

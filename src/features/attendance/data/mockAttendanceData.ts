@@ -8,8 +8,10 @@ export interface BiometricLog {
   checkIn: string
   checkOut: string
   date: string
-  status: 'Present' | 'Late Entry' | 'Approved Leave' | 'Official Duty' | 'Missed Punch' | 'Absent'
+  status: 'Present' | 'Late Entry' | 'Approved Leave' | 'Official Duty' | 'Missed Punch' | 'Absent' | 'Weekend Duty' | 'Overtime'
   workingHours: string
+  overtimeHours?: string
+  isWeekend?: boolean
   deviceLocation: string
   lateMinutes?: number
   isRegularized?: boolean
@@ -24,7 +26,7 @@ export interface LeaveRequest {
   employeeName: string
   designation: string
   department: string
-  leaveType: 'Annual Leave' | 'Casual Leave' | 'Medical Leave' | 'Duty Leave' | 'Maternity Leave'
+  leaveType: 'Annual Leave' | 'Casual Leave' | 'Medical Leave' | 'Duty Leave' | 'Maternity Leave' | 'Compensatory Leave (Comp-Off)'
   startDate: string
   endDate: string
   daysCount: number
@@ -50,6 +52,7 @@ export interface LeaveBalance {
   annual: { total: number; used: number; remaining: number }
   medical: { total: number; used: number; remaining: number }
   duty: { total: number; used: number; remaining: number }
+  compOff?: { total: number; used: number; remaining: number }
 }
 
 export interface RegularizationRequest {
@@ -58,7 +61,7 @@ export interface RegularizationRequest {
   employeeName: string
   department: string
   date: string
-  reasonType: 'Forgot to Punch Out' | 'Forgot to Punch In' | 'Official Field Duty' | 'Biometric Machine Fault'
+  reasonType: 'Forgot to Punch Out' | 'Forgot to Punch In' | 'Official Field Duty' | 'Biometric Machine Fault' | 'Weekend Duty Regularization' | 'Overtime Authorization'
   requestedCheckIn: string
   requestedCheckOut: string
   justification: string
@@ -83,14 +86,15 @@ export const MOCK_BIOMETRIC_LOGS: BiometricLog[] = [
     designation: 'Senior Revenue Inspector',
     department: 'Revenue & Finance',
     checkIn: '08:22 AM',
-    checkOut: '04:35 PM',
+    checkOut: '06:35 PM',
     date: '2026-07-10',
-    status: 'Present',
-    workingHours: '8h 13m',
+    status: 'Overtime',
+    workingHours: '10h 13m',
+    overtimeHours: '2h 00m',
     deviceLocation: 'Main Gate ZKTeco F18 #1',
     shiftCode: 'GEN',
     shiftTiming: '08:30 AM - 04:30 PM',
-    rosterCheckNote: 'On time against General Office Roster'
+    rosterCheckNote: 'On time + 2h Overtime (Budget Preparation)'
   },
   {
     id: 'BIO-102',
@@ -205,6 +209,74 @@ export const MOCK_BIOMETRIC_LOGS: BiometricLog[] = [
     shiftCode: 'GEN',
     shiftTiming: '08:30 AM - 04:30 PM',
     rosterCheckNote: 'Out punch missing for GEN Roster'
+  },
+  {
+    id: 'BIO-109',
+    employeeId: 'PS-EMP-0012',
+    employeeName: 'Kasun Perera',
+    designation: 'Senior Revenue Inspector',
+    department: 'Revenue & Finance',
+    checkIn: '08:25 AM',
+    checkOut: '02:35 PM',
+    date: '2026-07-11',
+    status: 'Weekend Duty',
+    workingHours: '6h 10m',
+    isWeekend: true,
+    deviceLocation: 'Main Gate ZKTeco F18 #1',
+    shiftCode: 'WKD',
+    shiftTiming: '08:30 AM - 02:30 PM (Saturday)',
+    rosterCheckNote: 'Saturday Weekend Duty - Tax Collection Drive & Budget Reconciliation'
+  },
+  {
+    id: 'BIO-110',
+    employeeId: 'PS-EMP-0041',
+    employeeName: 'Chaminda Rathnayake',
+    designation: 'Public Health Inspector (PHI)',
+    department: 'Public Health & Sanitation',
+    checkIn: '06:05 AM',
+    checkOut: '01:15 PM',
+    date: '2026-07-12',
+    status: 'Weekend Duty',
+    workingHours: '7h 10m',
+    isWeekend: true,
+    deviceLocation: 'Sanitation Depot Bio #3',
+    shiftCode: 'EMG',
+    shiftTiming: '06:00 AM - 01:00 PM (Sunday)',
+    rosterCheckNote: 'Sunday Emergency Weekend Duty - District Dengue Fogging Campaign'
+  },
+  {
+    id: 'BIO-111',
+    employeeId: 'PS-EMP-0034',
+    employeeName: 'Eng. Samantha Bandara',
+    designation: 'Technical Officer',
+    department: 'Works & Engineering',
+    checkIn: '08:30 AM',
+    checkOut: '07:30 PM',
+    date: '2026-07-09',
+    status: 'Overtime',
+    workingHours: '11h 00m',
+    overtimeHours: '3h 00m',
+    deviceLocation: 'Main Gate ZKTeco F18 #1',
+    shiftCode: 'OT+',
+    shiftTiming: '08:30 AM - 04:30 PM (+3h OT)',
+    rosterCheckNote: '+3h Authorized Overtime - Urgent Culvert & Drainage Inspection'
+  },
+  {
+    id: 'BIO-112',
+    employeeId: 'PS-EMP-0084',
+    employeeName: 'Ajith Kumara',
+    designation: 'Health Overseer',
+    department: 'Public Health & Sanitation',
+    checkIn: '05:55 AM',
+    checkOut: '11:45 AM',
+    date: '2026-07-04',
+    status: 'Weekend Duty',
+    workingHours: '5h 50m',
+    isWeekend: true,
+    deviceLocation: 'Sanitation Depot Bio #3',
+    shiftCode: 'WKD',
+    shiftTiming: '06:00 AM - 12:00 PM (Saturday)',
+    rosterCheckNote: 'Saturday Half-Day Weekend Duty - Market Sanitation Supervision'
   }
 ]
 
@@ -317,6 +389,81 @@ export const MOCK_LEAVE_REQUESTS: LeaveRequest[] = [
         status: 'Waiting'
       }
     ]
+  },
+  {
+    id: 'LV-2026-096',
+    employeeId: 'PS-EMP-0012',
+    employeeName: 'Kasun Perera',
+    designation: 'Senior Revenue Inspector',
+    department: 'Revenue & Finance',
+    leaveType: 'Compensatory Leave (Comp-Off)',
+    startDate: '2026-07-20',
+    endDate: '2026-07-20',
+    daysCount: 1,
+    reason: 'Taking Compensatory Off in lieu of Saturday Weekend Duty worked on 2026-07-11 for Council Budget Preparation.',
+    appliedOn: '2026-07-13',
+    overallStatus: 'Approved',
+    approvalLevels: [
+      {
+        levelNumber: 1,
+        roleName: 'Chief Revenue Officer',
+        approverName: 'Mr. H. Dissanayake',
+        status: 'Approved',
+        timestamp: '2026-07-13 11:30',
+        comments: 'Saturday biometric check-in verified. Comp-off granted.'
+      },
+      {
+        levelNumber: 2,
+        roleName: 'Department Head',
+        approverName: 'Director of Finance',
+        status: 'Approved',
+        timestamp: '2026-07-13 14:15'
+      },
+      {
+        levelNumber: 3,
+        roleName: 'Secretary / HR',
+        approverName: 'Mrs. K. Weerasinghe',
+        status: 'Approved',
+        timestamp: '2026-07-13 16:00',
+        comments: 'Comp-off ledger updated.'
+      }
+    ]
+  },
+  {
+    id: 'LV-2026-097',
+    employeeId: 'PS-EMP-0041',
+    employeeName: 'Chaminda Rathnayake',
+    designation: 'Public Health Inspector (PHI)',
+    department: 'Public Health & Environment',
+    leaveType: 'Compensatory Leave (Comp-Off)',
+    startDate: '2026-07-24',
+    endDate: '2026-07-24',
+    daysCount: 1,
+    reason: 'Compensatory leave claimed for Sunday Emergency Dengue Fogging duty performed on 2026-07-12.',
+    appliedOn: '2026-07-14',
+    overallStatus: 'Pending Level 2',
+    approvalLevels: [
+      {
+        levelNumber: 1,
+        roleName: 'Medical Officer of Health',
+        approverName: 'Dr. R. Silva',
+        status: 'Approved',
+        timestamp: '2026-07-14 09:20',
+        comments: 'Sunday emergency attendance confirmed.'
+      },
+      {
+        levelNumber: 2,
+        roleName: 'Department Head',
+        approverName: 'Chief PHI',
+        status: 'Pending'
+      },
+      {
+        levelNumber: 3,
+        roleName: 'Secretary / HR',
+        approverName: 'Mrs. K. Weerasinghe',
+        status: 'Waiting'
+      }
+    ]
   }
 ]
 
@@ -329,7 +476,8 @@ export const MOCK_LEAVE_BALANCES: LeaveBalance[] = [
     casual: { total: 14, used: 4, remaining: 10 },
     annual: { total: 14, used: 5, remaining: 9 },
     medical: { total: 21, used: 2, remaining: 19 },
-    duty: { total: 10, used: 3, remaining: 7 }
+    duty: { total: 10, used: 3, remaining: 7 },
+    compOff: { total: 6, used: 1, remaining: 5 }
   },
   {
     employeeId: 'PS-EMP-0019',
@@ -339,7 +487,8 @@ export const MOCK_LEAVE_BALANCES: LeaveBalance[] = [
     casual: { total: 14, used: 6, remaining: 8 },
     annual: { total: 14, used: 4, remaining: 10 },
     medical: { total: 21, used: 5, remaining: 16 },
-    duty: { total: 10, used: 0, remaining: 10 }
+    duty: { total: 10, used: 0, remaining: 10 },
+    compOff: { total: 4, used: 0, remaining: 4 }
   },
   {
     employeeId: 'PS-EMP-0034',
@@ -349,7 +498,8 @@ export const MOCK_LEAVE_BALANCES: LeaveBalance[] = [
     casual: { total: 14, used: 2, remaining: 12 },
     annual: { total: 14, used: 3, remaining: 11 },
     medical: { total: 21, used: 1, remaining: 20 },
-    duty: { total: 10, used: 4, remaining: 6 }
+    duty: { total: 10, used: 4, remaining: 6 },
+    compOff: { total: 8, used: 2, remaining: 6 }
   },
   {
     employeeId: 'PS-EMP-0041',
@@ -359,7 +509,8 @@ export const MOCK_LEAVE_BALANCES: LeaveBalance[] = [
     casual: { total: 14, used: 5, remaining: 9 },
     annual: { total: 14, used: 6, remaining: 8 },
     medical: { total: 21, used: 0, remaining: 21 },
-    duty: { total: 10, used: 6, remaining: 4 }
+    duty: { total: 10, used: 6, remaining: 4 },
+    compOff: { total: 5, used: 0, remaining: 5 }
   }
 ]
 
@@ -391,6 +542,34 @@ export const MOCK_REGULARIZATIONS: RegularizationRequest[] = [
     supervisorStatus: 'Approved',
     supervisorName: 'Chief PHI',
     appliedDate: '2026-07-08'
+  },
+  {
+    id: 'REG-2026-045',
+    employeeId: 'PS-EMP-0012',
+    employeeName: 'Kasun Perera',
+    department: 'Revenue & Finance',
+    date: '2026-07-04',
+    reasonType: 'Weekend Duty Regularization',
+    requestedCheckIn: '08:30 AM',
+    requestedCheckOut: '02:30 PM',
+    justification: 'Saturday Special Weekend Duty for emergency assessment rate calculation and audit preparation. Biometric punch verified.',
+    supervisorStatus: 'Approved',
+    supervisorName: 'Chief Revenue Officer',
+    appliedDate: '2026-07-05'
+  },
+  {
+    id: 'REG-2026-048',
+    employeeId: 'PS-EMP-0034',
+    employeeName: 'Eng. Samantha Bandara',
+    department: 'Works & Engineering',
+    date: '2026-07-09',
+    reasonType: 'Overtime Authorization',
+    requestedCheckIn: '08:30 AM',
+    requestedCheckOut: '07:30 PM',
+    justification: 'Supervising urgent flood drainage culvert repair at Kandy Road until 7:30 PM (+3 hours Authorized Overtime).',
+    supervisorStatus: 'Approved',
+    supervisorName: 'Director of Engineering',
+    appliedDate: '2026-07-10'
   }
 ]
 

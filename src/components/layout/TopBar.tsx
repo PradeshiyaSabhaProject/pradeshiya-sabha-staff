@@ -1,8 +1,9 @@
-﻿import React, { useState } from 'react'
+import React from 'react'
 import { useAuth } from '../../context/AuthContext'
+
 import logo from '../../assets/logo.png'
 
-// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Icons ──────────────────────────────────────────────────────────────────
 const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -42,46 +43,36 @@ const CheckBadgeIcon = () => (
   </svg>
 )
 
-// â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Types ──────────────────────────────────────────────────────────────────
 interface TopBarProps {
   activePage?: string
   hideNav?: boolean
 }
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Component ──────────────────────────────────────────────────────────────
 const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
   const { user } = useAuth()
-  const [lang, setLang] = useState<'en' | 'si' | 'ta'>('en')
+
+
 
   return (
     <header className="w-full shadow-sm sticky top-0 z-50">
-      {/* â”€â”€ Row 1: Branding + Social + Language + Phone â”€â”€ */}
-      <div className="bg-white border-b border-gray-200 px-6 py-3">
-        <div className="max-w-screen-2xl mx-auto flex items-center justify-between gap-4">
-          {/* Logo & Name */}
+      {/* ── Row 1: Branding + Social + Language + Phone ── */}
+      <div className="bg-white border-b border-gray-200 px-4 md:px-6 py-2.5">
+        <div className="max-w-screen-2xl mx-auto flex flex-wrap items-center justify-between gap-3">
+          {/* Logo & Name + Mobile Menu Toggle */}
           <div className="flex items-center gap-3">
-            {/* Real logo */}
-            <img src={logo} alt="Homagama Pradeshiya Sabha Logo" className="h-14 w-auto shrink-0" />
+            {/* Mobile Sidebar Reveal Toggle in Row 1 */}
 
+
+            {/* Real logo */}
+            <img src={logo} alt="Homagama Pradeshiya Sabha Logo" className="h-11 sm:h-12 md:h-14 w-auto shrink-0" />
           </div>
 
           {/* Right side: language + social + phone */}
           <div className="flex flex-col items-end gap-1.5">
             {/* Language switcher */}
-            <div className="flex items-center gap-1 text-sm">
-              {(['en', 'si', 'ta'] as const).map((l, i) => (
-                <React.Fragment key={l}>
-                  <button
-                    onClick={() => setLang(l)}
-                    className={`px-1 transition-colors ${lang === l ? 'font-bold text-[#A31736]' : 'text-gray-500 hover:text-gray-800'
-                      }`}
-                  >
-                    {l === 'en' ? 'English' : l === 'si' ? 'Sinhala' : 'Tamil'}
-                  </button>
-                  {i < 2 && <span className="text-gray-300">|</span>}
-                </React.Fragment>
-              ))}
-            </div>
+
 
             {/* Social + Phone */}
             <div className="flex items-center gap-2">
@@ -116,22 +107,25 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
         </div>
       </div>
 
-      {/* â”€â”€ Row 2: Main Nav Bar (dark red) â”€â”€ */}
+      {/* ── Row 2: Main Nav Bar (dark red) ── */}
       {!hideNav && user && (
-        <div className="bg-[#A31736] text-white px-6 py-0 border-b border-[#801028]">
-          <div className="max-w-screen-2xl mx-auto flex items-center justify-between h-14">
-            {/* Title */}
-            <span className="text-base font-bold tracking-wide uppercase whitespace-nowrap">
-              Homagama Pradeshiya Sabha - Administrative Portal
-            </span>
+        <div className="bg-[#A31736] text-white px-4 md:px-6 py-0 border-b border-[#801028]">
+          <div className="max-w-screen-2xl mx-auto flex items-center justify-between h-14 gap-3">
+            {/* Left side: Hamburger/Cascade toggle + Title */}
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+
+              <span className="text-xs sm:text-sm md:text-base font-bold tracking-wide uppercase truncate">
+                Homagama Pradeshiya Sabha <span className="hidden md:inline">- Administrative Portal</span>
+              </span>
+            </div>
 
             {/* Nav links + separator + actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               {/* Topbar Nav links */}
 
 
               {/* Verified badge */}
-              <div className="flex items-center gap-1.5 bg-white/10 border border-white/30 rounded px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+              <div className="hidden lg:flex items-center gap-1.5 bg-white/10 border border-white/30 rounded px-3 py-1 text-xs font-semibold uppercase tracking-wider">
                 <CheckBadgeIcon />
                 <span>Verified Staff Member</span>
               </div>

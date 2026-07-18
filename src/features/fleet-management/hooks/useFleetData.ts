@@ -60,7 +60,7 @@ export function getVehicleComplianceInfo(vehicle: VehicleRecord): FleetComplianc
     if (permitOverdue) items.push('Route Permit Overdue')
     if (revenueOverdue) items.push('Revenue License Overdue')
     if (insuranceOverdue) items.push('Insurance Overdue')
-    alertMessage = items.join(' â€¢ ')
+    alertMessage = items.join(' • ')
   } else if (permitSoon || revenueSoon || insuranceSoon) {
     alertMessage = 'Permit / License renewal due shortly'
   }

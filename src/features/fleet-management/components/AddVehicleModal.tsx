@@ -100,7 +100,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             type="button"
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
           >
-            Ã—
+            ×
           </button>
         </div>
 

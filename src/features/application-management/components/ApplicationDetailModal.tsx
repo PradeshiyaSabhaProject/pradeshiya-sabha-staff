@@ -432,7 +432,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-3">
+        <div className="px-6 py-4 border-t border-gray-100 bg-gray-50 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="text-xs text-gray-500">
             Currently assigned officer: <span className="font-bold text-gray-800">{application.assignedOfficer}</span>
             {application.assignedInspector && (

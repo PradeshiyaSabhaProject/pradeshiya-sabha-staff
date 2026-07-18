@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFleetData, getVehicleComplianceInfo } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
@@ -64,7 +64,7 @@ export const FleetDirectoryPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* â”€â”€ Page Header â”€â”€ */}
+      {/* ── Page Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -100,9 +100,9 @@ export const FleetDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ Filter and Search Toolbar â”€â”€ */}
+      {/* ── Filter and Search Toolbar ── */}
       <div className="bg-white p-4 border border-gray-300 rounded shadow-sm flex flex-col lg:flex-row items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full lg:w-auto">
           <input
             type="text"
             placeholder="Search reg number, name, department..."
@@ -114,7 +114,7 @@ export const FleetDirectoryPage: React.FC = () => {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
+            className="w-full sm:w-auto px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
           >
             <option value="All">All Categories ({vehicles.length})</option>
             <option value="Garbage Compactor">Garbage Compactor</option>
@@ -128,7 +128,7 @@ export const FleetDirectoryPage: React.FC = () => {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
+            className="w-full sm:w-auto px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
           >
             <option value="All">All Statuses</option>
             <option value="Available">Available</option>
@@ -139,25 +139,25 @@ export const FleetDirectoryPage: React.FC = () => {
 
           <button
             onClick={() => setShowOnlyPermitAlerts(!showOnlyPermitAlerts)}
-            className={`px-4 py-2 rounded border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
+            className={`w-full sm:w-auto px-4 py-2 rounded border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer text-center ${
               showOnlyPermitAlerts
                 ? 'bg-[#A31736] border-[#A31736] text-white shadow-sm'
                 : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
             }`}
           >
-            {showOnlyPermitAlerts ? 'âœ“ Permits Due Only' : 'Filter Permits Due'}
+            {showOnlyPermitAlerts ? '✓ Permits Due Only' : 'Filter Permits Due'}
           </button>
         </div>
 
-        <div className="text-xs text-gray-500 font-semibold">
+        <div className="text-xs text-gray-500 font-semibold w-full lg:w-auto text-left lg:text-right">
           Showing <span className="text-gray-900 font-bold">{filteredVehicles.length}</span> vehicles
         </div>
       </div>
 
-      {/* â”€â”€ Directory Table Matching Asset/Letter Management â”€â”€ */}
+      {/* ── Directory Table Matching Asset/Letter Management ── */}
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">REGISTRATION #</th>
@@ -186,7 +186,7 @@ export const FleetDirectoryPage: React.FC = () => {
                       >
                         {v.name}
                       </div>
-                      <div className="text-xs text-gray-500">Year {v.yearOfManufacture} â€¢ {v.fuelType}</div>
+                      <div className="text-xs text-gray-500">Year {v.yearOfManufacture} • {v.fuelType}</div>
                     </td>
                     <td className="py-3.5 px-6">
                       <div className="font-semibold text-gray-800">{v.category}</div>
@@ -433,7 +433,7 @@ export const FleetDirectoryPage: React.FC = () => {
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
-            Ã—
+            ×
           </button>
         </div>
       )}

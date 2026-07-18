@@ -42,7 +42,7 @@ const OfficerDetailModal: React.FC<OfficerDetailModalProps> = ({ officer, onClos
             </div>
             <div>
               <h3 className="text-lg font-bold text-gray-900">{officer.name}</h3>
-              <p className="text-xs font-semibold text-gray-500">{officer.role} â€¢ {officer.phone}</p>
+              <p className="text-xs font-semibold text-gray-500">{officer.role} • {officer.phone}</p>
             </div>
           </div>
 

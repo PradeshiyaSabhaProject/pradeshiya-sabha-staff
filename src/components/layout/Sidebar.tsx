@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { useSidebar } from '../../context/SidebarContext'
 
-// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Icons ──────────────────────────────────────────────────────────────────
 const GridIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -52,6 +53,15 @@ const ApplicationIcon = () => (
     <path d="M16 13H8" />
     <path d="M16 17H8" />
     <path d="M10 9H8" />
+  </svg>
+)
+const BookingIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+    <path d="M9 16l2 2 4-4" />
   </svg>
 )
 const AttendanceIcon = () => (
@@ -106,7 +116,7 @@ const ChevronDownIcon = ({ open }: { open: boolean }) => (
   </svg>
 )
 
-// â”€â”€ Nav data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Nav data ───────────────────────────────────────────────────────────────
 interface NavChild {
   label: string
   path: string
@@ -202,6 +212,16 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Booking Management',
+    path: '/bookings',
+    icon: <BookingIcon />,
+    children: [
+      { label: 'All Facility Bookings', path: '/bookings/all' },
+      { label: 'Approvals Queue', path: '/bookings/approvals' },
+      { label: 'Facility Schedule', path: '/bookings/schedule' },
+    ],
+  },
+  {
     label: 'User Management',
     path: '/users',
     icon: <UsersIcon />,
@@ -214,9 +234,16 @@ const navItems: NavItem[] = [
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
 ]
 
-// â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Component ──────────────────────────────────────────────────────────────
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth()
+  const {
+    isMobileOpen,
+    setIsMobileOpen,
+    isDesktopCollapsed,
+    setIsDesktopCollapsed,
+    toggleDesktopSidebar,
+  } = useSidebar()
   const location = useLocation()
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
@@ -228,6 +255,12 @@ const Sidebar: React.FC = () => {
     '/fleet': false,
     '/users': false,
   })
+
+  useEffect(() => {
+    if (isMobileOpen) {
+      setIsMobileOpen(false)
+    }
+  }, [location.pathname])
 
   const toggleMenu = (path: string) => {
     setOpenMenus((prev) => ({ ...prev, [path]: !prev[path] }))
@@ -249,6 +282,9 @@ const Sidebar: React.FC = () => {
   })
 
   const handleMainItemClick = (item: NavItem, visibleChildren: NavChild[]) => {
+    if (isDesktopCollapsed && window.innerWidth >= 1024) {
+      setIsDesktopCollapsed(false)
+    }
     if (visibleChildren.length > 0) {
       const firstChild = visibleChildren[0]
       if (location.pathname === firstChild.path) {
@@ -265,14 +301,88 @@ const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="w-56 shrink-0 bg-white border-r border-gray-200 flex flex-col h-full overflow-hidden">
-      {/* Admin Portal label */}
-      <div className="px-5 pt-5 pb-3 border-b border-gray-100">
-        <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase">Staff Portal</p>
-        <p className="text-[10px] text-gray-400">Authorized Personnel Only</p>
-      </div>
+    <>
+      {/* Mobile Backdrop */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
 
-      {/* Nav items */}
+      {/* Floating Edge Button to Reveal Sidebar on Mobile when hidden */}
+      {!isMobileOpen && (
+        <button
+          onClick={() => setIsMobileOpen(true)}
+          aria-label="Reveal Sidebar Menu"
+          title="Reveal / Open Navigation Menu"
+          className="fixed left-0 top-1/2 -translate-y-1/2 z-40 lg:hidden bg-[#A31736] text-white py-3 px-2 rounded-r-xl shadow-2xl border border-l-0 border-[#801028] flex items-center justify-center hover:bg-[#801028] active:scale-95 transition-all cursor-pointer group"
+        >
+          <div className="flex flex-col items-center gap-1.5">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-5 h-5 group-hover:translate-x-0.5 transition-transform">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+            <span className="text-[10px] font-bold uppercase tracking-wider [writing-mode:vertical-lr] rotate-180">Menu</span>
+          </div>
+        </button>
+      )}
+
+      {/* Sidebar Container */}
+      <aside
+        className={`fixed lg:static inset-y-0 left-0 z-50 bg-white border-r border-gray-200 flex flex-col h-full shrink-0 transition-all duration-300 ease-in-out ${
+          isMobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full lg:translate-x-0 lg:shadow-none'
+        } ${isDesktopCollapsed ? 'w-64 lg:w-16' : 'w-64 lg:w-56'}`}
+      >
+        {/* Admin Portal label & Toggle Buttons */}
+        <div
+          className={`px-4 py-4 border-b border-gray-100 flex items-center justify-between min-h-[58px] ${
+            isDesktopCollapsed ? 'lg:justify-center lg:px-2' : ''
+          }`}
+        >
+          <div className={`${isDesktopCollapsed ? 'lg:hidden' : 'block'} overflow-hidden`}>
+            <p className="text-[10px] font-bold text-gray-500 tracking-widest uppercase whitespace-nowrap">
+              Staff Portal
+            </p>
+            <p className="text-[10px] text-gray-400 whitespace-nowrap">Authorized Personnel Only</p>
+          </div>
+
+          {/* Mobile close button */}
+          <button
+            onClick={() => setIsMobileOpen(false)}
+            aria-label="Close Sidebar"
+            title="Hide / Close menu"
+            className="px-2.5 py-1 rounded-lg text-gray-600 hover:text-red-700 hover:bg-red-50 lg:hidden transition-colors shrink-0 flex items-center gap-1 font-bold text-xs bg-gray-100 border border-gray-200"
+          >
+            <span>Close</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          {/* Desktop collapse / expand button right on sidebar */}
+          <button
+            onClick={toggleDesktopSidebar}
+            title={isDesktopCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
+            className={`hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#A31736] hover:bg-gray-100 transition-colors shrink-0 ${
+              isDesktopCollapsed ? '' : 'ml-auto'
+            }`}
+          >
+            {isDesktopCollapsed ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+                <polyline points="13 17 18 12 13 7" />
+                <polyline points="6 17 11 12 6 7" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+                <polyline points="11 17 6 12 11 7" />
+                <polyline points="18 17 13 12 18 7" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        {/* Nav items */}
       <nav className="flex-1 overflow-y-auto py-2 min-h-0">
         {visibleNavItems.map((item) => {
           const active = isActive(item.path)
@@ -281,25 +391,26 @@ const Sidebar: React.FC = () => {
           const isOpen = openMenus[item.path]
 
           return (
-            <div key={item.path}>
+            <div key={item.path} className="relative group">
               {hasChildren ? (
                 // Expandable item
                 <button
                   onClick={() => handleMainItemClick(item, visibleChildren)}
-                  className={`w-full flex items-center gap-3 px-5 py-3 text-sm font-medium transition-all text-left ${active
-                      ? 'bg-[#A31736] text-white shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                  title={isDesktopCollapsed ? item.label : undefined}
+                  className={`w-full flex items-center gap-3 py-3 text-sm font-medium transition-all text-left ${
+                    active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+                  } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
                 >
                   <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                  <span className="flex-1">{item.label}</span>
+                  <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                   <span
                     onClick={(e) => {
                       e.stopPropagation()
                       toggleMenu(item.path)
                     }}
-                    className={`p-1 rounded transition-colors ${active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
-                      }`}
+                    className={`p-1 rounded transition-colors ${
+                      active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
+                    } ${isDesktopCollapsed ? 'lg:hidden' : ''}`}
                   >
                     <ChevronDownIcon open={isOpen} />
                   </span>
@@ -308,35 +419,76 @@ const Sidebar: React.FC = () => {
                 // Plain link
                 <Link
                   to={item.path}
-                  className={`flex items-center gap-3 px-5 py-3 text-sm font-medium transition-all ${active
-                      ? 'bg-[#A31736] text-white shadow-sm'
-                      : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                  onClick={() => setIsMobileOpen(false)}
+                  title={isDesktopCollapsed ? item.label : undefined}
+                  className={`flex items-center gap-3 py-3 text-sm font-medium transition-all ${
+                    active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+                  } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
                 >
                   <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                  {item.label}
+                  <span className={isDesktopCollapsed ? 'lg:hidden' : ''}>{item.label}</span>
                 </Link>
               )}
 
-              {/* Sub-items */}
+              {/* Sub-items drawer when expanded */}
               {hasChildren && isOpen && (
-                <div className="bg-gray-50 border-t border-b border-gray-100 py-1">
+                <div className={`bg-gray-50 border-t border-b border-gray-100 py-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>
                   {visibleChildren.map((child) => {
                     const childActive = location.pathname === child.path
                     return (
                       <Link
                         key={child.path}
                         to={child.path}
-                        className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${childActive
+                        onClick={() => setIsMobileOpen(false)}
+                        className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
+                          childActive
                             ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
                             : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
-                          }`}
+                        }`}
                       >
                         <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
                         {child.label}
                       </Link>
                     )
                   })}
+                </div>
+              )}
+
+              {/* Flyout menu / tooltip when collapsed on desktop */}
+              {isDesktopCollapsed && (
+                <div className="hidden lg:group-hover:block absolute left-full top-0 ml-1 z-[60] bg-gray-900 text-white rounded-lg shadow-xl py-2 px-3 min-w-[200px] pointer-events-auto transition-opacity duration-150">
+                  <div className="font-semibold text-xs pb-1.5 border-b border-gray-700 text-gray-100">
+                    {item.label}
+                  </div>
+                  {hasChildren ? (
+                    <div className="mt-1 flex flex-col gap-1 pt-1">
+                      {visibleChildren.map((child) => {
+                        const childActive = location.pathname === child.path
+                        return (
+                          <Link
+                            key={child.path}
+                            to={child.path}
+                            onClick={() => setIsMobileOpen(false)}
+                            className={`text-xs py-1.5 px-2.5 rounded transition-colors block ${
+                              childActive
+                                ? 'bg-[#A31736] text-white font-semibold'
+                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                            }`}
+                          >
+                            {child.label}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  ) : (
+                    <Link
+                      to={item.path}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="text-xs text-gray-300 hover:text-white block pt-1.5"
+                    >
+                      Go to {item.label}
+                    </Link>
+                  )}
                 </div>
               )}
             </div>
@@ -348,27 +500,45 @@ const Sidebar: React.FC = () => {
       <div className="border-t border-gray-200 py-2">
         <Link
           to="/archive"
-          className={`flex items-center gap-3 px-5 py-3 text-sm font-medium transition-all ${isActive('/archive')
-              ? 'bg-[#A31736] text-white shadow-sm'
-              : 'text-gray-700 hover:bg-gray-50'
-            }`}
+          onClick={() => setIsMobileOpen(false)}
+          title={isDesktopCollapsed ? 'Archive' : undefined}
+          className={`flex items-center gap-3 py-3 text-sm font-medium transition-all relative group ${
+            isActive('/archive') ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+          } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0' : 'px-5'}`}
         >
           <span className={isActive('/archive') ? 'text-white' : 'text-gray-500'}>
             <ArchiveIcon />
           </span>
-          Archive
+          <span className={isDesktopCollapsed ? 'lg:hidden' : ''}>Archive</span>
+          {isDesktopCollapsed && (
+            <div className="hidden lg:group-hover:block absolute left-full top-1/2 -translate-y-1/2 ml-1 z-[60] bg-gray-900 text-white text-xs font-semibold px-2.5 py-1.5 rounded shadow-lg whitespace-nowrap">
+              Archive
+            </div>
+          )}
         </Link>
         <button
-          onClick={logout}
-          className="w-full flex items-center gap-3 px-5 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors"
+          onClick={() => {
+            setIsMobileOpen(false)
+            logout()
+          }}
+          title={isDesktopCollapsed ? 'Logout' : undefined}
+          className={`w-full flex items-center gap-3 py-3 text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors relative group ${
+            isDesktopCollapsed ? 'lg:justify-center lg:px-0' : 'px-5'
+          }`}
         >
-          <span className="text-gray-500">
+          <span className="text-gray-500 group-hover:text-red-700 transition-colors">
             <LogoutIcon />
           </span>
-          Logout
+          <span className={isDesktopCollapsed ? 'lg:hidden' : ''}>Logout</span>
+          {isDesktopCollapsed && (
+            <div className="hidden lg:group-hover:block absolute left-full top-1/2 -translate-y-1/2 ml-1 z-[60] bg-gray-900 text-white text-xs font-semibold px-2.5 py-1.5 rounded shadow-lg whitespace-nowrap">
+              Logout
+            </div>
+          )}
         </button>
       </div>
     </aside>
+    </>
   )
 }
 

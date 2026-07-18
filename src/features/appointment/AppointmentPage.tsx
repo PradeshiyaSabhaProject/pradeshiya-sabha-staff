@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAppointmentData } from './hooks/useAppointmentData';
 import { AppointmentDetailsModal } from './components/AppointmentDetailsModal';
 import { type AppointmentItem } from './services/appointmentApi';
@@ -7,7 +7,7 @@ interface AppointmentPageProps {
   mode: 'all' | 'my';
 }
 
-// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Icons ──────────────────────────────────────────────────────────────────
 const OrangeClockIcon = () => (
   <div className="p-2 bg-orange-50 rounded border border-orange-200 shrink-0">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5 text-orange-500">
@@ -257,7 +257,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* â”€â”€ Header â”€â”€ */}
+      {/* ── Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -274,7 +274,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
       </div>
 
-      {/* â”€â”€ Stats Cards Grid â”€â”€ */}
+      {/* ── Stats Cards Grid ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Pending */}
         <div className="bg-white border border-gray-300 rounded p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default min-h-[120px]">
@@ -321,7 +321,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
       </div>
 
-      {/* â”€â”€ Main content Card (Tabs + Filters + Table) â”€â”€ */}
+      {/* ── Main content Card (Tabs + Filters + Table) ── */}
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         
         {/* Tabs Bar */}
@@ -350,15 +350,15 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
 
         {/* Filters Panel */}
-        <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-3">
+        <div className="p-4 bg-gray-50/50 border-b border-gray-100 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 w-full lg:w-auto">
             {/* Date Input */}
-            <div className="relative flex items-center">
+            <div className="relative flex items-center w-full sm:w-auto">
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-40 cursor-pointer"
+                className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-full sm:w-40 cursor-pointer"
                 placeholder="Date"
               />
             </div>
@@ -367,7 +367,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             <select
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-44 cursor-pointer"
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-full sm:w-44 cursor-pointer"
             >
               {services.map((s) => (
                 <option key={s} value={s}>
@@ -380,7 +380,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-40 cursor-pointer"
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-full sm:w-40 cursor-pointer"
             >
               {statuses.map((s) => (
                 <option key={s} value={s}>
@@ -393,7 +393,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             <select
               value={selectedOfficer}
               onChange={(e) => setSelectedOfficer(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-40 cursor-pointer"
+              className="border border-gray-300 rounded-lg px-3 py-1.5 text-xs bg-white text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 w-full sm:w-40 cursor-pointer"
             >
               {officers.map((o) => (
                 <option key={o} value={o}>
@@ -403,16 +403,16 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             </select>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               onClick={resetFilters}
-              className="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
+              className="flex-1 sm:flex-initial border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider text-center justify-center"
             >
               Filter
             </button>
             <button
               onClick={handleExportCSV}
-              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
+              className="flex-1 sm:flex-initial bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider text-center justify-center"
             >
               Export CSV
             </button>
@@ -420,7 +420,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
         </div>
 
         {/* Table Content */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[10px] font-bold text-gray-500 uppercase tracking-wider">

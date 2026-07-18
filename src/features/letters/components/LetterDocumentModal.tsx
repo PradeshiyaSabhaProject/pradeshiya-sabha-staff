@@ -98,7 +98,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
     <p>Yours faithfully,</p>
     <br/><br/>
     <div class="name">${letter.senderName}</div>
-    <div class="title">Staff Officer â€¢ Homagama Pradeshiya Sabha</div>
+    <div class="title">Staff Officer • Homagama Pradeshiya Sabha</div>
     <div class="title">ID: ${letter.senderId}</div>
   </div>
   <div class="footer">
@@ -175,7 +175,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               Official Municipal Correspondence &amp; Departmental Dispatch
             </p>
             <p className="text-xs text-gray-400 font-sans mt-0.5">
-              Court Road, Homagama â€¢ Tel: +94 11 285 5230 â€¢ Email: homagamapradeshiyasabawa@gmail.com
+              Court Road, Homagama • Tel: +94 11 285 5230 • Email: homagamapradeshiyasabawa@gmail.com
             </p>
           </div>
 
@@ -245,7 +245,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               <p className="text-sm font-serif italic text-gray-600 mb-6">Yours faithfully,</p>
               <div className="w-48 border-b-2 border-gray-900 mb-2"></div>
               <p className="font-extrabold text-gray-900 text-base">{letter.senderName}</p>
-              <p className="text-xs font-semibold text-gray-500">Staff Officer â€¢ Homagama Pradeshiya Sabha</p>
+              <p className="text-xs font-semibold text-gray-500">Staff Officer • Homagama Pradeshiya Sabha</p>
               <p className="text-xs text-gray-400">Employee ID: {letter.senderId}</p>
             </div>
             <div className="hidden sm:block text-right">

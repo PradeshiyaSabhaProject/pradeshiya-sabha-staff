@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
@@ -24,7 +24,7 @@ export const FleetMaintenancePage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* â”€â”€ Page Header matching Letter/Asset Management â”€â”€ */}
+      {/* ── Page Header matching Letter/Asset Management ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -49,7 +49,7 @@ export const FleetMaintenancePage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ Active Maintenance Workshop Orders â”€â”€ */}
+      {/* ── Active Maintenance Workshop Orders ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-gray-200">
           <h2 className="text-base font-bold text-gray-900">Vehicles Currently In Workshop</h2>
@@ -73,7 +73,7 @@ export const FleetMaintenancePage: React.FC = () => {
                       {v.registrationNumber}
                     </span>
                     <h3 className="text-base font-bold text-gray-900 mt-1">{v.name}</h3>
-                    <p className="text-xs text-gray-600">{v.category} â€¢ {v.department}</p>
+                    <p className="text-xs text-gray-600">{v.category} • {v.department}</p>
                   </div>
                   <span className="text-[11px] px-2.5 py-1 bg-orange-100 text-orange-800 font-bold rounded border border-orange-300 uppercase tracking-wider">
                     In Workshop
@@ -115,7 +115,7 @@ export const FleetMaintenancePage: React.FC = () => {
         )}
       </div>
 
-      {/* â”€â”€ Quick Action: Put Operational Vehicle Into Maintenance â”€â”€ */}
+      {/* ── Quick Action: Put Operational Vehicle Into Maintenance ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-gray-200">
           <h2 className="text-base font-bold text-gray-900">Put Operational Vehicle Into Maintenance</h2>
@@ -149,15 +149,15 @@ export const FleetMaintenancePage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ Comprehensive Service History Log â”€â”€ */}
+      {/* ── Comprehensive Service History Log ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-gray-200">
           <h2 className="text-base font-bold text-gray-900">Comprehensive Council Maintenance History</h2>
           <p className="text-xs text-gray-500">Historical log of all workshop repairs and routine services</p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">REGISTRATION #</th>

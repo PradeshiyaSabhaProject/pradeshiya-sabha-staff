@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import type { Letter } from '../hooks/useLetterData'
 
 interface LetterTableProps {
@@ -121,8 +121,8 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
       )}
 
       {/* Filters */}
-      <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+      <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
+        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white w-full sm:w-auto sm:flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
           <div className="absolute left-3">
             <CalendarIcon />
           </div>
@@ -139,7 +139,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
           </div>
         </div>
 
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white w-full sm:w-auto sm:flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
           <select 
             value={filters.category} 
             onChange={(e) => setFilters({...filters, category: e.target.value})}
@@ -153,7 +153,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
           </div>
         </div>
 
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white w-full sm:w-auto sm:flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
           <select 
             value={filters.status} 
             onChange={(e) => setFilters({...filters, status: e.target.value})}
@@ -168,7 +168,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
         </div>
 
         {showOfficer && (
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white w-full sm:w-auto sm:flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
             <select 
               value={filters.officer} 
               onChange={(e) => setFilters({...filters, officer: e.target.value})}
@@ -183,10 +183,10 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
           </div>
         )}
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
           <button 
             onClick={handleFilter}
-            className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            className="flex-1 sm:flex-initial bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer text-center"
           >
             Filter
           </button>
@@ -202,7 +202,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto flex-1">
+      <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -256,7 +256,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
       </div>
 
       {/* Pagination Footer */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-white">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-gray-200 bg-white">
         <span className="text-sm text-gray-500">
           Showing {filteredLetters.length > 0 ? 1 : 0}-{Math.min(filteredLetters.length, 8)} of {filteredLetters.length} results
         </span>

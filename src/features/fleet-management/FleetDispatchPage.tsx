@@ -1,13 +1,13 @@
-﻿import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import L from 'leaflet'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord, VehicleStatus } from './data/initialFleetData'
 import { DispatchVehicleModal } from './components/DispatchVehicleModal'
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Icons matching Interactive GIS Mapping
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
     <circle cx="11" cy="11" r="8" />
@@ -235,7 +235,7 @@ export const FleetDispatchPage: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-white overflow-hidden animate-fade-in">
-      {/* â”€â”€ Top GIS Toolbar matching Interactive GIS Mapping â”€â”€ */}
+      {/* ── Top GIS Toolbar matching Interactive GIS Mapping ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0 gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -250,8 +250,8 @@ export const FleetDispatchPage: React.FC = () => {
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="relative w-72">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+          <div className="relative w-full sm:w-72">
             <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
               <SearchIcon />
             </span>
@@ -264,17 +264,17 @@ export const FleetDispatchPage: React.FC = () => {
             />
           </div>
 
-          <span className="px-3.5 py-2 rounded bg-blue-50 border border-blue-200 text-[#1e3a8a] text-xs font-bold uppercase tracking-wider flex items-center gap-2 whitespace-nowrap">
+          <span className="px-3.5 py-2 rounded bg-blue-50 border border-blue-200 text-[#1e3a8a] text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 whitespace-nowrap">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
             <span>{activeMissionVehicles.length} Dispatched</span>
           </span>
         </div>
       </div>
 
-      {/* â”€â”€ Main GIS Layout (Map Left/Center + Sidebar Right) â”€â”€ */}
-      <div className="flex flex-1 min-h-0 relative overflow-hidden">
+      {/* ── Main GIS Layout (Map Left/Center + Sidebar Right) ── */}
+      <div className="flex flex-col lg:flex-row flex-1 min-h-[650px] lg:min-h-0 relative overflow-auto lg:overflow-hidden">
         {/* Map Area */}
-        <div className="flex-1 relative bg-blue-50/30 overflow-hidden">
+        <div className="h-[400px] lg:h-auto lg:flex-1 relative bg-blue-50/30 overflow-hidden shrink-0">
           <div ref={mapContainerRef} className="w-full h-full z-0" />
 
           {/* Custom Zoom & Center controls */}
@@ -305,7 +305,7 @@ export const FleetDispatchPage: React.FC = () => {
           </div>
 
           {/* Bottom Center Status Legend Overlay */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-6 py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center gap-6 text-xs font-semibold text-gray-700 select-none uppercase tracking-wider">
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-700 select-none uppercase tracking-wider w-[92%] sm:w-auto max-w-full">
             <button
               onClick={() => toggleLayer('Available')}
               className={`flex items-center gap-2 transition-opacity cursor-pointer ${
@@ -337,7 +337,7 @@ export const FleetDispatchPage: React.FC = () => {
         </div>
 
         {/* Right Side Panel matching Interactive GIS Mapping */}
-        <div className="w-88 bg-white border-l border-gray-300 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
+        <div className="w-full lg:w-88 bg-white border-t lg:border-t-0 lg:border-l border-gray-300 p-6 flex flex-col gap-6 overflow-y-auto shrink-0 z-10 shadow-sm">
           {/* Card 1: SELECTED VEHICLE TELEMETRY */}
           {selectedVehicle ? (
             <div className="bg-white border border-gray-300 rounded p-4 shadow-sm space-y-3">
@@ -513,7 +513,7 @@ export const FleetDispatchPage: React.FC = () => {
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
-            Ã—
+            ×
           </button>
         </div>
       )}

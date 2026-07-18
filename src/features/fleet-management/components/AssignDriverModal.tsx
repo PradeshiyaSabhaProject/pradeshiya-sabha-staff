@@ -49,7 +49,7 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
             <div>
               <h3 className="text-lg font-bold text-gray-900">Assign Driver & Operator</h3>
               <p className="text-xs text-gray-500 font-mono">
-                {vehicle.registrationNumber} â€¢ {vehicle.name}
+                {vehicle.registrationNumber} • {vehicle.name}
               </p>
             </div>
           </div>
@@ -58,7 +58,7 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
             type="button"
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
           >
-            Ã—
+            ×
           </button>
         </div>
 
@@ -86,7 +86,7 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
                   drv.assignedVehicleId && drv.assignedVehicleId !== vehicle.id
                 return (
                   <option key={drv.id} value={drv.id}>
-                    {drv.name} â€” {drv.licenseGrade} ({drv.phone})
+                    {drv.name} — {drv.licenseGrade} ({drv.phone})
                     {isAssignedElsewhere ? ` [Currently on ${drv.assignedVehicleReg}]` : ''}
                   </option>
                 )

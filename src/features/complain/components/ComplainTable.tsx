@@ -146,7 +146,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       )}
 
       {/* Filters */}
-      <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
+      <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
         <div className="flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028] px-3">
           <CalendarIcon />
           <input 
@@ -202,7 +202,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
           </div>
         )}
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <button 
             onClick={handleFilter}
             className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
@@ -221,8 +221,8 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto flex-1">
-        <table className="w-full text-left border-collapse min-w-[800px]">
+      <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
+        <table className="w-full text-left border-collapse min-w-[950px]">
           <thead>
             <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
               <th className="py-4 px-6">ID</th>
@@ -302,7 +302,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       </div>
 
       {/* Pagination Footer */}
-      <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-white">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-6 py-4 border-t border-gray-200 bg-white">
         <span className="text-sm text-gray-500">
           Showing {filteredComplaints.length > 0 ? 1 : 0}-{Math.min(filteredComplaints.length, 8)} of {filteredComplaints.length} results
         </span>

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
 interface AppointmentDetailsModalProps {
@@ -10,7 +10,7 @@ interface AppointmentDetailsModalProps {
   onReschedule: (id: string, newDateTime: string) => void;
 }
 
-// â”€â”€ Icons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ── Icons ──────────────────────────────────────────────────────────────────
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -265,7 +265,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
         {/* Action Buttons at the Bottom */}
         {!isRescheduling && (showPendingActions || showApprovedActions) && (
-          <div className="flex flex-wrap items-center justify-center gap-4 mt-4 pt-6 border-t border-gray-100">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-center gap-3 mt-4 pt-6 border-t border-gray-100">
             {showPendingActions && (
               <>
                 <button
@@ -273,7 +273,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                     onUpdateStatus(appointment.id, 'APPROVED');
                     onClose();
                   }}
-                  className="bg-[#16a34a] hover:bg-[#15803d] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
+                  className="w-full sm:w-auto bg-[#16a34a] hover:bg-[#15803d] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px] text-center"
                 >
                   Approve
                 </button>
@@ -282,14 +282,14 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                     onUpdateStatus(appointment.id, 'REJECTED');
                     onClose();
                   }}
-                  className="bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px]"
+                  className="w-full sm:w-auto bg-[#dc2626] hover:bg-[#b91c1c] text-white font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 shadow-sm cursor-pointer min-w-[120px] text-center"
                 >
                   Reject
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsRescheduling(true)}
-                  className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
+                  className="w-full sm:w-auto border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
                 >
                   Reschedule
                 </button>
@@ -301,7 +301,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                   type="button"
                   onClick={() => setShowNotificationModal(true)}
                   title="Notify client about approval"
-                  className="flex items-center justify-center gap-2 border-2 border-[#A31736] hover:bg-[#A31736] hover:text-white text-[#A31736] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center shadow-sm"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 border-2 border-[#A31736] hover:bg-[#A31736] hover:text-white text-[#A31736] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center shadow-sm"
                 >
                   <BellIcon />
                   <span>Notify</span>
@@ -309,7 +309,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 <button
                   type="button"
                   onClick={() => setIsRescheduling(true)}
-                  className="border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
+                  className="w-full sm:w-auto border-2 border-[#2563eb] hover:bg-blue-50 text-[#2563eb] font-bold px-7 py-2.5 rounded-lg transition-all hover:scale-102 active:scale-98 cursor-pointer min-w-[120px] bg-white text-center"
                 >
                   Reschedule
                 </button>

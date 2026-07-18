@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { MOCK_LEAVE_REQUESTS, MOCK_LEAVE_BALANCES, type LeaveRequest } from './data/mockAttendanceData'
 import { ApplyLeaveModal } from './components/ApplyLeaveModal'
 
@@ -109,7 +109,7 @@ export const LeaveManagementPage: React.FC = () => {
                       </span>
                     </div>
                     <p className="text-xs text-gray-500">
-                      {req.designation} â€¢ {req.department} â€¢ Applied on {req.appliedOn}
+                      {req.designation} • {req.department} • Applied on {req.appliedOn}
                     </p>
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export const LeaveManagementPage: React.FC = () => {
             <div>
               <h3 className="text-base font-bold text-gray-900">2026 Annual Staff Leave Quotas & Balances</h3>
               <p className="text-xs text-gray-500">
-                Track Casual (14), Annual (14), Medical (21), and Duty Leave quotas per staff member
+                Track Casual (14), Annual (14), Medical (21), Duty Leave (10), and Compensatory Off earned from Saturday/Sunday weekend duty and overtime.
               </p>
             </div>
           </div>
@@ -214,6 +214,7 @@ export const LeaveManagementPage: React.FC = () => {
                   <th className="py-3.5 px-4 text-center">Annual Leave (14)</th>
                   <th className="py-3.5 px-4 text-center">Medical Leave (21)</th>
                   <th className="py-3.5 px-4 text-center">Duty Leave (10)</th>
+                  <th className="py-3.5 px-4 text-center">Comp-Off (Weekend/OT)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-sm">
@@ -221,7 +222,7 @@ export const LeaveManagementPage: React.FC = () => {
                   <tr key={bal.employeeId} className="hover:bg-gray-50/60 transition">
                     <td className="py-4 px-5">
                       <div className="font-bold text-gray-900">{bal.employeeName}</div>
-                      <div className="text-xs text-gray-500">{bal.employeeId} â€¢ {bal.designation}</div>
+                      <div className="text-xs text-gray-500">{bal.employeeId} • {bal.designation}</div>
                     </td>
                     <td className="py-4 px-4 text-gray-700 font-medium">{bal.department}</td>
 
@@ -251,6 +252,17 @@ export const LeaveManagementPage: React.FC = () => {
                         <span className="font-extrabold text-amber-900">{bal.duty.remaining}</span>
                         <span className="text-xs text-amber-600">left of {bal.duty.total}</span>
                       </div>
+                    </td>
+
+                    <td className="py-4 px-4 text-center">
+                      {bal.compOff ? (
+                        <div className="inline-flex items-center space-x-2 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-200">
+                          <span className="font-extrabold text-indigo-900">{bal.compOff.remaining}</span>
+                          <span className="text-xs text-indigo-600">left of {bal.compOff.total}</span>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400 font-medium">0 Earned</span>
+                      )}
                     </td>
                   </tr>
                 ))}

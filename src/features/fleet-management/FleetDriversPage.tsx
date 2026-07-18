@@ -23,7 +23,7 @@ export const FleetDriversPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* â”€â”€ Page Header matching Letter/Asset Management â”€â”€ */}
+      {/* ── Page Header matching Letter/Asset Management ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
@@ -48,7 +48,7 @@ export const FleetDriversPage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ Search Toolbar â”€â”€ */}
+      {/* ── Search Toolbar ── */}
       <div className="bg-white p-4 border border-gray-300 rounded shadow-sm flex items-center justify-between">
         <input
           type="text"
@@ -63,7 +63,7 @@ export const FleetDriversPage: React.FC = () => {
         </span>
       </div>
 
-      {/* â”€â”€ Driver Cards Grid â”€â”€ */}
+      {/* ── Driver Cards Grid ── */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredDrivers.map((drv) => {
           const assignedVehicle = vehicles.find((v) => v.id === drv.assignedVehicleId)
@@ -94,7 +94,7 @@ export const FleetDriversPage: React.FC = () => {
 
                 <div className="mt-3">
                   <h3 className="text-base font-bold text-gray-900">{drv.name}</h3>
-                  <p className="text-xs font-mono text-gray-500">{drv.employeeId} â€¢ {drv.phone}</p>
+                  <p className="text-xs font-mono text-gray-500">{drv.employeeId} • {drv.phone}</p>
                 </div>
 
                 <div className="mt-3 pt-3 border-t border-gray-100 space-y-1 text-xs">
@@ -138,7 +138,7 @@ export const FleetDriversPage: React.FC = () => {
         })}
       </div>
 
-      {/* â”€â”€ Quick Vehicle Assignment Board â”€â”€ */}
+      {/* ── Quick Vehicle Assignment Board ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
         <div className="p-5 border-b border-gray-200">
           <h2 className="text-base font-bold text-gray-900">Vehicle Assignment Matrix</h2>

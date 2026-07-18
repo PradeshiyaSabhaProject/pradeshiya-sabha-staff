@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface TimelineStep {
   level: string
@@ -37,7 +37,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 â€¢ 08:45 AM',
+        timestamp: '2026-07-09 • 08:45 AM',
         comments: 'Correction request submitted with CCTV security desk reference.'
       },
       {
@@ -56,6 +56,77 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
     ]
   },
   {
+    id: 'COR-2026-085',
+    targetDate: '2026-07-04',
+    correctionType: 'Weekend Duty Regularization (Sat/Sun Work)',
+    proposedIn: '08:30 AM',
+    proposedOut: '02:30 PM',
+    reason: 'Saturday Special Weekend Duty for emergency rate assessment & council budget preparation',
+    appliedOn: '2026-07-05',
+    status: 'Approved',
+    timelineSteps: [
+      {
+        level: 'Submission',
+        roleName: 'Applicant Officer',
+        approverName: 'Kasun Perera (PS-EMP-0012)',
+        status: 'Approved',
+        timestamp: '2026-07-05 • 09:15 AM',
+        comments: 'Submitted with Chairman approval note for Saturday duty.'
+      },
+      {
+        level: 'Level 1',
+        roleName: 'Chief Revenue Officer',
+        approverName: 'Mr. H. Dissanayake',
+        status: 'Approved',
+        timestamp: '2026-07-05 • 11:30 AM',
+        comments: 'Saturday attendance verified.'
+      },
+      {
+        level: 'Level 2',
+        roleName: 'Secretary / HR',
+        approverName: 'Municipal Secretary',
+        status: 'Approved',
+        timestamp: '2026-07-05 • 02:00 PM',
+        comments: 'Comp-off eligibility recorded.'
+      }
+    ]
+  },
+  {
+    id: 'COR-2026-088',
+    targetDate: '2026-07-06',
+    correctionType: 'Overtime Authorization (>04:30 PM)',
+    proposedIn: '08:18 AM',
+    proposedOut: '06:00 PM',
+    reason: 'Authorized Overtime (+1h 30m) for finalizing monthly tax revenue report before deadline',
+    appliedOn: '2026-07-07',
+    status: 'Approved',
+    timelineSteps: [
+      {
+        level: 'Submission',
+        roleName: 'Applicant Officer',
+        approverName: 'Kasun Perera (PS-EMP-0012)',
+        status: 'Approved',
+        timestamp: '2026-07-07 • 08:30 AM'
+      },
+      {
+        level: 'Level 1',
+        roleName: 'Chief Revenue Officer',
+        approverName: 'Mr. H. Dissanayake',
+        status: 'Approved',
+        timestamp: '2026-07-07 • 10:15 AM',
+        comments: 'Overtime hours confirmed.'
+      },
+      {
+        level: 'Level 2',
+        roleName: 'Secretary / HR',
+        approverName: 'Municipal Secretary',
+        status: 'Approved',
+        timestamp: '2026-07-07 • 11:00 AM',
+        comments: 'Added to overtime payroll calculation.'
+      }
+    ]
+  },
+  {
     id: 'COR-2026-052',
     targetDate: '2026-06-19',
     correctionType: 'Official Field Duty / Outside Duty',
@@ -70,7 +141,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-06-20 â€¢ 09:10 AM',
+        timestamp: '2026-06-20 • 09:10 AM',
         comments: 'Submitted duty pass letter.'
       },
       {
@@ -78,7 +149,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-06-20 â€¢ 11:15 AM',
+        timestamp: '2026-06-20 • 11:15 AM',
         comments: 'Field duty attendance verified.'
       },
       {
@@ -86,7 +157,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-06-21 â€¢ 10:00 AM',
+        timestamp: '2026-06-21 • 10:00 AM',
         comments: 'Timecard regularized.'
       }
     ]
@@ -106,14 +177,14 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-05-04 â€¢ 10:00 AM'
+        timestamp: '2026-05-04 • 10:00 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-05-04 â€¢ 01:30 PM',
+        timestamp: '2026-05-04 • 01:30 PM',
         comments: 'Security guard logbook confirmed arrival at 08:22 AM.'
       },
       {
@@ -121,7 +192,7 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-05-05 â€¢ 09:20 AM'
+        timestamp: '2026-05-05 • 09:20 AM'
       }
     ]
   }
@@ -196,18 +267,18 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">My Attendance Corrections</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">My Attendance Corrections</h1>
+          <p className="text-xs sm:text-sm text-gray-500">
             Request regularization for missed biometric punches, machine malfunctions, or official field duties.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
           <button
             onClick={() => setIsApplying(true)}
-            className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-md transition flex items-center space-x-2"
+            className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4 shrink-0">
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
@@ -230,7 +301,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              ID: PS-EMP-0012 â€¢ Senior Revenue Inspector â€¢ Revenue & Finance Department
+              ID: PS-EMP-0012 • Senior Revenue Inspector • Revenue & Finance Department
             </p>
           </div>
         </div>
@@ -260,7 +331,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
-                âœ•
+                ✕
               </button>
             </div>
 
@@ -291,6 +362,8 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                     <option value="Missed Check-In Punch">Missed Check-In Punch</option>
                     <option value="Biometric Scanner Malfunction">Biometric Scanner Malfunction</option>
                     <option value="Official Field Duty / Outside Duty">Official Field Duty / Outside Duty</option>
+                    <option value="Weekend Duty Regularization (Sat/Sun Work)">Weekend Duty Regularization (Sat/Sun Work)</option>
+                    <option value="Overtime Authorization (>04:30 PM)">Overtime Authorization (&gt;04:30 PM)</option>
                   </select>
                 </div>
               </div>
@@ -381,8 +454,8 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[850px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase text-gray-500">
                 <th className="py-3.5 px-5">Request ID & Submitted</th>
@@ -466,14 +539,14 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-lg font-bold text-gray-900 mt-1.5">
-                  Approval Timeline â€¢ {selectedRecordForTimeline.id}
+                  Approval Timeline • {selectedRecordForTimeline.id}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                âœ•
+                ✕
               </button>
             </div>
 
@@ -483,7 +556,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 <strong className="text-gray-900">Target Date:</strong> {selectedRecordForTimeline.targetDate}
               </div>
               <div>
-                <strong className="text-gray-900">Proposed Times:</strong> In ({selectedRecordForTimeline.proposedIn}) â€” Out ({selectedRecordForTimeline.proposedOut})
+                <strong className="text-gray-900">Proposed Times:</strong> In ({selectedRecordForTimeline.proposedIn}) — Out ({selectedRecordForTimeline.proposedOut})
               </div>
               <div>
                 <strong className="text-gray-900">Reason:</strong> {selectedRecordForTimeline.reason}
@@ -517,7 +590,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                   <div className="bg-white rounded-xl border border-gray-200 p-3.5 shadow-2xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gray-900">
-                        {step.level} â€¢ {step.roleName}
+                        {step.level} • {step.roleName}
                       </span>
                       <span
                         className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${

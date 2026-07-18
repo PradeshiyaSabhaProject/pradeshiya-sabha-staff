@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 import AddAssetWizardModal from './components/AddAssetWizardModal'
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Icons
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -126,7 +126,7 @@ export const AssetDirectoryPage: React.FC = () => {
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in pb-16">
       
-      {/* â”€â”€ PAGE HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── PAGE HEADER ─────────────────────────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-[#800020] tracking-tight">
@@ -146,7 +146,7 @@ export const AssetDirectoryPage: React.FC = () => {
         </button>
       </div>
 
-      {/* â”€â”€ 3 SUMMARY KPI CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── 3 SUMMARY KPI CARDS ─────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
         {/* Card 1: Total Assets */}
@@ -201,7 +201,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
       </div>
 
-      {/* â”€â”€ ADVANCED FILTERS BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── ADVANCED FILTERS BAR ────────────────────────────────────────── */}
       <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs">
         <div className="flex items-center justify-between pb-4 border-b border-gray-100">
           <div className="flex items-center gap-2">
@@ -318,10 +318,10 @@ export const AssetDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ ASSETS DIRECTORY TABLE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── ASSETS DIRECTORY TABLE ──────────────────────────────────────── */}
       <div className="bg-white border border-gray-200/80 rounded-2xl shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
               <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">ASSET ID</th>
@@ -493,14 +493,14 @@ export const AssetDirectoryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ 5-STAGE ADD ASSET WIZARD MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── 5-STAGE ADD ASSET WIZARD MODAL ─────────────────────────────── */}
       <AddAssetWizardModal
         isOpen={isWizardOpen}
         onClose={() => setIsWizardOpen(false)}
         onSubmit={handleAddAssetSubmit}
       />
 
-      {/* â”€â”€ SIMPLE ASSET DETAILS VIEW MODAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── SIMPLE ASSET DETAILS VIEW MODAL ─────────────────────────────── */}
       {selectedAssetForView && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -514,7 +514,7 @@ export const AssetDirectoryPage: React.FC = () => {
                 onClick={() => setSelectedAssetForView(null)}
                 className="text-gray-400 hover:text-gray-700 font-bold"
               >
-                âœ•
+                ✕
               </button>
             </div>
             <div className="space-y-2.5 text-sm">

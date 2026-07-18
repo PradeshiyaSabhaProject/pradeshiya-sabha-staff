@@ -70,7 +70,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
                 </span>
               </div>
               <h3 className="text-lg font-extrabold text-[#0f172a] tracking-tight">
-                {vehicle.name} â€” Vehicle Inspection Dossier
+                {vehicle.name} — Vehicle Inspection Dossier
               </h3>
             </div>
           </div>
@@ -79,7 +79,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
             onClick={onClose}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all font-bold text-lg cursor-pointer"
           >
-            Ã—
+            ×
           </button>
         </div>
 

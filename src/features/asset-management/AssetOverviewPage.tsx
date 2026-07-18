@@ -1,10 +1,10 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 import AddAssetModal from './components/AddAssetModal'
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Icons
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -121,9 +121,9 @@ const EditIcon = () => (
   </svg>
 )
 
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 // Component
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 const AssetOverviewPage: React.FC = () => {
   const {
     loading,
@@ -147,7 +147,7 @@ const AssetOverviewPage: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [activeAssetDetails, setActiveAssetDetails] = useState<AssetRecord | null>(null)
 
-  // â”€â”€ NEW: edit mode state for the detail popup â”€â”€
+  // ── NEW: edit mode state for the detail popup ──
   const [isEditingDetails, setIsEditingDetails] = useState(false)
   const [editFormData, setEditFormData] = useState<AssetRecord | null>(null)
 
@@ -252,7 +252,7 @@ const AssetOverviewPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
 
-      {/* â”€â”€ Page Header â”€â”€ */}
+      {/* ── Page Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">Asset Overview</h1>
@@ -287,7 +287,7 @@ const AssetOverviewPage: React.FC = () => {
         </div>
       </div>
 
-      {/* â”€â”€ KPI Cards â”€â”€ */}
+      {/* ── KPI Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
         {/* Card 1: Municipal Lands */}
@@ -384,7 +384,7 @@ const AssetOverviewPage: React.FC = () => {
 
       </div>
 
-      {/* â”€â”€ Recent Digital Records Table Card â”€â”€ */}
+      {/* ── Recent Digital Records Table Card ── */}
       <div className="bg-white border border-gray-200/80 rounded-xl shadow-xs overflow-hidden flex flex-col">
 
         {/* Table Header Section */}
@@ -463,7 +463,7 @@ const AssetOverviewPage: React.FC = () => {
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-sm font-bold"
                   >
-                    Ã—
+                    ×
                   </button>
                 )}
               </div>
@@ -474,8 +474,8 @@ const AssetOverviewPage: React.FC = () => {
         </div>
 
         {/* Responsive Data Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[750px]">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
                 <th className="py-3 px-6">Asset ID</th>
@@ -557,7 +557,7 @@ const AssetOverviewPage: React.FC = () => {
           </table>
         </div>
 
-        {/* â”€â”€ Table Pagination Footer (matches 1st image exactly) â”€â”€ */}
+        {/* ── Table Pagination Footer (matches 1st image exactly) ── */}
         <div className="px-6 py-4.5 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
 
           {/* Display Items Range */}
@@ -624,7 +624,7 @@ const AssetOverviewPage: React.FC = () => {
 
       </div>
 
-      {/* â”€â”€ Asset Details Overlay Panel (now with Edit + Update) â”€â”€ */}
+      {/* ── Asset Details Overlay Panel (now with Edit + Update) ── */}
       {activeAssetDetails && editFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={closeAssetDetails} />
@@ -639,11 +639,11 @@ const AssetOverviewPage: React.FC = () => {
                 onClick={closeAssetDetails}
                 className="text-gray-400 hover:text-gray-600 font-extrabold text-lg cursor-pointer"
               >
-                Ã—
+                ×
               </button>
             </div>
 
-            {/* â”€â”€ READ-ONLY VIEW â”€â”€ */}
+            {/* ── READ-ONLY VIEW ── */}
             {!isEditingDetails && (
               <>
                 <div className="space-y-3.5 text-sm">
@@ -698,7 +698,7 @@ const AssetOverviewPage: React.FC = () => {
               </>
             )}
 
-            {/* â”€â”€ EDIT VIEW â”€â”€ */}
+            {/* ── EDIT VIEW ── */}
             {isEditingDetails && (
               <>
                 <div className="space-y-4 text-sm">
@@ -830,7 +830,7 @@ const AssetOverviewPage: React.FC = () => {
         </div>
       )}
 
-      {/* â”€â”€ Create Record Modal â”€â”€ */}
+      {/* ── Create Record Modal ── */}
       <AddAssetModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}

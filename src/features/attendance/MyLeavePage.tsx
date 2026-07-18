@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface TimelineStep {
   level: string
@@ -41,7 +41,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-07-09 â€¢ 09:15 AM',
+        timestamp: '2026-07-09 • 09:15 AM',
         comments: 'Application submitted with acting officer handover details.'
       },
       {
@@ -66,6 +66,51 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
     ]
   },
   {
+    id: 'LV-2026-096',
+    leaveType: 'Compensatory Leave (Comp-Off)',
+    startDate: '2026-07-20',
+    endDate: '2026-07-20',
+    daysCount: 1,
+    reason: 'Taking Compensatory Off in lieu of Saturday Weekend Duty worked on 2026-07-11 for Council Budget Preparation.',
+    handoverOfficer: 'Ruwan Kumara (Accountant)',
+    appliedOn: '2026-07-13',
+    status: 'Approved',
+    approvalSummary: 'Authorized by Secretary / HR (Comp-Off Ledger verified)',
+    timelineSteps: [
+      {
+        level: 'Submission',
+        roleName: 'Applicant Officer',
+        approverName: 'Kasun Perera (PS-EMP-0012)',
+        status: 'Approved',
+        timestamp: '2026-07-13 • 11:15 AM',
+        comments: 'Submitted with biometric reference for Saturday duty.'
+      },
+      {
+        level: 'Level 1',
+        roleName: 'Line Supervisor / Engineer',
+        approverName: 'Eng. S. Bandara',
+        status: 'Approved',
+        timestamp: '2026-07-13 • 01:30 PM',
+        comments: 'Saturday work confirmed.'
+      },
+      {
+        level: 'Level 2',
+        roleName: 'Head of Department',
+        approverName: 'Chief Revenue Officer',
+        status: 'Approved',
+        timestamp: '2026-07-13 • 03:00 PM'
+      },
+      {
+        level: 'Level 3',
+        roleName: 'Secretary / HR',
+        approverName: 'Municipal Secretary',
+        status: 'Approved',
+        timestamp: '2026-07-13 • 04:10 PM',
+        comments: 'Comp-off ledger deducted.'
+      }
+    ]
+  },
+  {
     id: 'LV-2026-071',
     leaveType: 'Casual Leave',
     startDate: '2026-06-28',
@@ -82,7 +127,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-06-24 â€¢ 10:30 AM',
+        timestamp: '2026-06-24 • 10:30 AM',
         comments: 'Application submitted.'
       },
       {
@@ -90,7 +135,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-06-24 â€¢ 02:15 PM',
+        timestamp: '2026-06-24 • 02:15 PM',
         comments: 'Handover officer confirmed.'
       },
       {
@@ -98,7 +143,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-06-25 â€¢ 09:00 AM',
+        timestamp: '2026-06-25 • 09:00 AM',
         comments: 'Department quota verified.'
       },
       {
@@ -106,7 +151,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-06-25 â€¢ 11:45 AM',
+        timestamp: '2026-06-25 • 11:45 AM',
         comments: 'Final authorization locked into timecard.'
       }
     ]
@@ -128,7 +173,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-05-11 â€¢ 08:30 AM',
+        timestamp: '2026-05-11 • 08:30 AM',
         comments: 'Medical certificate uploaded.'
       },
       {
@@ -136,7 +181,7 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-05-11 â€¢ 10:10 AM',
+        timestamp: '2026-05-11 • 10:10 AM',
         comments: 'Medical leave noted.'
       },
       {
@@ -144,14 +189,14 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-05-11 â€¢ 11:30 AM'
+        timestamp: '2026-05-11 • 11:30 AM'
       },
       {
         level: 'Level 3',
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-05-11 â€¢ 02:00 PM',
+        timestamp: '2026-05-11 • 02:00 PM',
         comments: 'Medical certificate verified.'
       }
     ]
@@ -173,28 +218,28 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
         roleName: 'Applicant Officer',
         approverName: 'Kasun Perera (PS-EMP-0012)',
         status: 'Approved',
-        timestamp: '2026-02-25 â€¢ 09:00 AM'
+        timestamp: '2026-02-25 • 09:00 AM'
       },
       {
         level: 'Level 1',
         roleName: 'Line Supervisor / Engineer',
         approverName: 'Eng. S. Bandara',
         status: 'Approved',
-        timestamp: '2026-02-25 â€¢ 01:20 PM'
+        timestamp: '2026-02-25 • 01:20 PM'
       },
       {
         level: 'Level 2',
         roleName: 'Head of Department',
         approverName: 'Chief Revenue Officer',
         status: 'Approved',
-        timestamp: '2026-02-26 â€¢ 10:00 AM'
+        timestamp: '2026-02-26 • 10:00 AM'
       },
       {
         level: 'Level 3',
         roleName: 'Secretary / HR',
         approverName: 'Municipal Secretary',
         status: 'Approved',
-        timestamp: '2026-02-26 â€¢ 03:15 PM'
+        timestamp: '2026-02-26 • 03:15 PM'
       }
     ]
   }
@@ -274,22 +319,22 @@ export const MyLeavePage: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">My Leave & Applications</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">My Leave & Applications</h1>
+          <p className="text-xs sm:text-sm text-gray-500">
             View your personal leave entitlement balances, submit new leave applications, and track approval status.
           </p>
         </div>
 
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 w-full sm:w-auto">
           <button
             onClick={() => setIsApplying(!isApplying)}
-            className={`px-5 py-2.5 rounded-xl text-sm font-semibold shadow-md transition flex items-center space-x-2 ${
+            className={`w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer ${
               isApplying
                 ? 'bg-gray-200 hover:bg-gray-300 text-gray-800'
                 : 'bg-blue-600 hover:bg-blue-700 text-white'
             }`}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4 shrink-0">
               {isApplying ? (
                 <>
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -321,7 +366,7 @@ export const MyLeavePage: React.FC = () => {
               </span>
             </div>
             <p className="text-xs text-gray-500 mt-0.5">
-              ID: PS-EMP-0012 â€¢ Senior Revenue Inspector â€¢ Revenue & Finance Department
+              ID: PS-EMP-0012 • Senior Revenue Inspector • Revenue & Finance Department
             </p>
           </div>
         </div>
@@ -337,7 +382,7 @@ export const MyLeavePage: React.FC = () => {
       </div>
 
       {/* Quota Balances Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <div className="bg-white p-5 rounded-2xl border border-blue-200 bg-blue-50/20 shadow-2xs">
           <div className="flex justify-between items-start">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-700">Casual Leave</span>
@@ -393,6 +438,20 @@ export const MyLeavePage: React.FC = () => {
             <div className="bg-amber-600 h-full rounded-full" style={{ width: '80%' }} />
           </div>
         </div>
+
+        <div className="bg-white p-5 rounded-2xl border border-indigo-200 bg-indigo-50/20 shadow-2xs">
+          <div className="flex justify-between items-start">
+            <span className="text-xs font-bold uppercase tracking-wider text-indigo-700">Comp-Off</span>
+            <span className="text-xs font-semibold bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">Earned</span>
+          </div>
+          <div className="flex items-baseline space-x-1.5 mt-2">
+            <span className="text-3xl font-extrabold text-gray-900">5</span>
+            <span className="text-sm font-medium text-gray-500">/ 6 earned left</span>
+          </div>
+          <div className="w-full bg-gray-200 h-1.5 rounded-full mt-3 overflow-hidden">
+            <div className="bg-indigo-600 h-full rounded-full" style={{ width: '83%' }} />
+          </div>
+        </div>
       </div>
 
       {/* Popup Modal Apply for Leave Overlay */}
@@ -410,7 +469,7 @@ export const MyLeavePage: React.FC = () => {
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
-                âœ•
+                ✕
               </button>
             </div>
 
@@ -429,6 +488,7 @@ export const MyLeavePage: React.FC = () => {
                     <option value="Casual Leave">Casual Leave (10 available)</option>
                     <option value="Medical Leave">Medical Leave (19 available)</option>
                     <option value="Duty Leave">Duty Leave</option>
+                    <option value="Compensatory Leave (Comp-Off)">Compensatory Leave (Comp-Off - Earned from Weekend/OT)</option>
                   </select>
                 </div>
                 <div>
@@ -543,8 +603,8 @@ export const MyLeavePage: React.FC = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[850px]">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase text-gray-500">
                 <th className="py-3.5 px-5">Leave ID & Applied Date</th>
@@ -632,14 +692,14 @@ export const MyLeavePage: React.FC = () => {
                   </span>
                 </div>
                 <h2 className="text-lg font-bold text-gray-900 mt-1.5">
-                  Approval Timeline â€¢ {selectedRecordForTimeline.id}
+                  Approval Timeline • {selectedRecordForTimeline.id}
                 </h2>
               </div>
               <button
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
-                âœ•
+                ✕
               </button>
             </div>
 
@@ -683,7 +743,7 @@ export const MyLeavePage: React.FC = () => {
                   <div className="bg-white rounded-xl border border-gray-200 p-3.5 shadow-2xs space-y-1">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gray-900">
-                        {step.level} â€¢ {step.roleName}
+                        {step.level} • {step.roleName}
                       </span>
                       <span
                         className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${

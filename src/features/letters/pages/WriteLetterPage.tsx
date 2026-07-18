@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { useWriteLetterData, type SentLetter } from '../hooks/useWriteLetterData'
 import WriteLetterModal from '../components/WriteLetterModal'
 import LetterDocumentModal from '../components/LetterDocumentModal'
@@ -184,10 +184,10 @@ const WriteLetterPage: React.FC = () => {
       </div>
 
       {/* Filter and Search Toolbar */}
-      <div className="bg-white border border-gray-300 rounded p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-3 flex-1 min-w-[280px]">
+      <div className="bg-white border border-gray-300 rounded p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 flex-1">
           {/* Department Filter */}
-          <div className="relative min-w-[180px]">
+          <div className="relative w-full sm:w-auto min-w-[180px]">
             <select
               value={deptFilter}
               onChange={(e) => setDeptFilter(e.target.value)}
@@ -204,7 +204,7 @@ const WriteLetterPage: React.FC = () => {
           </div>
 
           {/* Status Filter */}
-          <div className="relative min-w-[150px]">
+          <div className="relative w-full sm:w-auto min-w-[150px]">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -224,7 +224,7 @@ const WriteLetterPage: React.FC = () => {
           {(deptFilter || statusFilter || searchQuery) && (
             <button
               onClick={() => { setDeptFilter(''); setStatusFilter(''); setSearchQuery(''); }}
-              className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer uppercase tracking-wider"
+              className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer uppercase tracking-wider text-left sm:text-center"
             >
               Reset Filters
             </button>
@@ -248,7 +248,7 @@ const WriteLetterPage: React.FC = () => {
         <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
       ) : (
         <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
-          <div className="overflow-x-auto flex-1">
+          <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
             <table className="w-full text-left border-collapse min-w-[850px]">
               <thead>
                 <tr className="border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider bg-gray-50">
@@ -308,9 +308,9 @@ const WriteLetterPage: React.FC = () => {
           </div>
 
           {/* Table Footer */}
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/30 flex items-center justify-between text-xs text-gray-500 font-semibold">
+          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500 font-semibold text-center sm:text-left">
             <span>Showing {filteredLetters.length} of {sentLetters.length} sent letters</span>
-            <span>âœ“ All correspondence auto-logged with sender ID: EMP-2026-042</span>
+            <span>✓ All correspondence auto-logged with sender ID: EMP-2026-042</span>
           </div>
         </div>
       )}

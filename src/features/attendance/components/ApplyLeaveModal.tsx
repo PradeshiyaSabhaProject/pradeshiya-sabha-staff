@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface ApplyLeaveModalProps {
   isOpen: boolean
@@ -70,6 +70,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
               <option value="Casual Leave">Casual Leave (Balance: 10 Days)</option>
               <option value="Medical Leave">Medical Leave (Balance: 19 Days)</option>
               <option value="Duty Leave">Duty Leave (Official Outside Work)</option>
+              <option value="Compensatory Leave (Comp-Off)">Compensatory Leave (Comp-Off - Earned from Weekend/OT)</option>
               <option value="No-Pay Leave">No-Pay Leave</option>
             </select>
           </div>

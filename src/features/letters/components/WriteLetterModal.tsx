@@ -151,7 +151,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           <div className="bg-gray-50 border border-gray-300 rounded p-4 text-xs md:text-sm text-gray-800 space-y-3">
             <div className="flex items-center justify-between border-b border-gray-200 pb-2">
               <span className="font-bold text-gray-900 flex items-center gap-1.5 uppercase tracking-wider text-xs">
-                <span>âš¡</span> SYSTEM AUTO-FILLED METADATA
+                <span>⚡</span> SYSTEM AUTO-FILLED METADATA
               </span>
               <span className="text-[10px] bg-gray-200 text-gray-800 font-bold px-2 py-0.5 rounded uppercase">
                 Verified Sender
@@ -214,7 +214,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                 ))}
               </select>
               <p className="text-[11px] text-gray-500 mt-1.5">
-                â„¹ï¸ Recipient information is dynamically routed to the selected departmental officer.
+                ℹ️¸ Recipient information is dynamically routed to the selected departmental officer.
               </p>
             </div>
           </div>
@@ -290,7 +290,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
                       onClick={() => handleRemoveAttachment(att.id)}
                       className="text-gray-400 hover:text-red-600 ml-1 font-bold cursor-pointer"
                     >
-                      Ã—
+                      ×
                     </button>
                   </div>
                 ))}

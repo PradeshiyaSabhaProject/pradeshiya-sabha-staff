@@ -237,7 +237,7 @@ export const ManageUsersPage: React.FC = () => {
       {/* Filter Bar & Table Container matching LetterTable */}
       <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
         {/* Filters Top Bar */}
-        <div className="p-4 flex flex-wrap items-center gap-4 border-b border-gray-100">
+        <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
           {/* Search Input */}
           <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[200px] hover:border-gray-400 focus-within:border-[#801028]">
             <div className="absolute left-3">
@@ -306,7 +306,7 @@ export const ManageUsersPage: React.FC = () => {
           </div>
 
           {/* Filter Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             {hasActiveFilters && (
               <button
                 onClick={handleResetFilters}
@@ -319,8 +319,8 @@ export const ManageUsersPage: React.FC = () => {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto flex-1">
-          <table className="w-full text-left border-collapse min-w-[800px]">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
+          <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
               <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">USER / EMPLOYEE</th>

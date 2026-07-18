@@ -2,7 +2,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth, DUMMY_USERS, type User } from '../../context/AuthContext'
 import TopBar from '../../components/layout/TopBar'
-import Footer from '../../components/layout/Footer'
 import pradeshiyaSabhaImg from '../../assets/pradeshiyasabha.png'
 
 const SendIcon = () => (
@@ -242,7 +241,7 @@ export const LoginPage: React.FC = () => {
                     onClick={() => setStep(1)}
                     className="w-full text-center text-xs font-semibold text-gray-600 hover:text-gray-900 py-1 transition-colors uppercase tracking-wider"
                   >
-                    â† Back to credentials
+                    ← Back to credentials
                   </button>
                 </div>
               </form>
@@ -250,9 +249,6 @@ export const LoginPage: React.FC = () => {
           </div>
         </div>
       </main>
-
-      {/* Footer */}
-      <Footer />
     </div>
   )
 }

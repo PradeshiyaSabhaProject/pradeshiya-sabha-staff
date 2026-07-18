@@ -61,7 +61,7 @@ export const BiometricSyncModal: React.FC<BiometricSyncModalProps> = ({ isOpen, 
                 <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
                 <div>
                   <div className="text-sm font-bold text-gray-800">Main Building Gate - ZKTeco F18 #1</div>
-                  <div className="text-xs text-gray-500">IP: 192.168.1.201 â€¢ Port: 4370 â€¢ Biometric Template v10.0</div>
+                  <div className="text-xs text-gray-500">IP: 192.168.1.201 • Port: 4370 • Biometric Template v10.0</div>
                 </div>
               </div>
               <span className="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
@@ -74,7 +74,7 @@ export const BiometricSyncModal: React.FC<BiometricSyncModalProps> = ({ isOpen, 
                 <span className="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
                 <div>
                   <div className="text-sm font-bold text-gray-800">Annex Works Dept - ZKTeco F18 #2</div>
-                  <div className="text-xs text-gray-500">IP: 192.168.1.202 â€¢ Port: 4370 â€¢ Biometric Template v10.0</div>
+                  <div className="text-xs text-gray-500">IP: 192.168.1.202 • Port: 4370 • Biometric Template v10.0</div>
                 </div>
               </div>
               <span className="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">
