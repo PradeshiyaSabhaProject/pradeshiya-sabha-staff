@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 import logo from '../../assets/logo.png'
@@ -139,12 +140,13 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
               </button>
 
               {/* Profile */}
-              <button
+              <Link
+                to="/profile"
                 aria-label="My profile"
                 className="p-2 rounded hover:bg-white/10 transition-colors"
               >
                 <UserIcon />
-              </button>
+              </Link>
             </div>
           </div>
         </div>
