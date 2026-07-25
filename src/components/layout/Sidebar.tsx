@@ -228,6 +228,8 @@ const navItems: NavItem[] = [
     children: [
       { label: 'Manage Users', path: '/users/manage' },
       { label: 'Create User', path: '/users/create' },
+      { label: 'Add Staff Member', path: '/users/staff/create' },
+      { label: 'Approve Staff', path: '/users/staff/approve' },
     ],
   },
   { label: 'Profile', path: '/profile', icon: <ProfileIcon /> },

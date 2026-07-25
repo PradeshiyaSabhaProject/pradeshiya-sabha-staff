@@ -1,10 +1,40 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const TimecardsPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedEmp, setSelectedEmp] = useState('PS-EMP-0012')
   const [selectedMonth, setSelectedMonth] = useState('2026-07')
+
+  const employeesList = [
+    { id: 'PS-EMP-0012', name: 'Kasun Perera', title: 'Senior Revenue Inspector', department: 'Revenue & Finance Department' },
+    { id: 'PS-EMP-0019', name: 'Nimali Fernando', title: 'Subject Clerk', department: 'Administration' },
+    { id: 'PS-EMP-0034', name: 'Eng. Samantha Bandara', title: 'Technical Officer', department: 'Engineering Division' },
+    { id: 'PS-EMP-0041', name: 'Chaminda Rathnayake', title: 'Public Health Inspector', department: 'Health & Sanitation' }
+  ]
+
+  const selectedEmpData = employeesList.find(e => e.id === selectedEmp) || employeesList[0]
+
+  const [searchQuery, setSearchQuery] = useState('')
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const searchRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const filteredEmployees = employeesList.filter(
+    (emp) =>
+      emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      emp.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const timecardEntriesByEmp: Record<string, Array<{
     date: string
@@ -172,16 +202,56 @@ export const TimecardsPage: React.FC = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
-          <select
-            value={selectedEmp}
-            onChange={(e) => setSelectedEmp(e.target.value)}
-            className="px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm font-semibold text-gray-800 shadow-2xs w-full sm:w-auto"
-          >
-            <option value="PS-EMP-0012">Kasun Perera - Senior Revenue Inspector</option>
-            <option value="PS-EMP-0019">Nimali Fernando - Subject Clerk</option>
-            <option value="PS-EMP-0034">Eng. Samantha Bandara - Technical Officer</option>
-            <option value="PS-EMP-0041">Chaminda Rathnayake - Public Health Inspector</option>
-          </select>
+          <div className="relative w-full sm:w-[320px]" ref={searchRef}>
+            <div className="relative">
+              <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value)
+                  setIsSearchOpen(true)
+                }}
+                onFocus={() => setIsSearchOpen(true)}
+                placeholder="Search by name or employee no..."
+                className="pl-9 pr-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm font-semibold text-gray-800 shadow-sm w-full focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              />
+            </div>
+            
+            {isSearchOpen && (
+              <div className="absolute z-10 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto py-1">
+                {filteredEmployees.length > 0 ? (
+                  filteredEmployees.map(emp => (
+                    <div
+                      key={emp.id}
+                      onClick={() => {
+                        setSelectedEmp(emp.id)
+                        setSearchQuery('')
+                        setIsSearchOpen(false)
+                      }}
+                      className={`px-4 py-2.5 cursor-pointer transition-colors ${selectedEmp === emp.id ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <div className={`font-bold text-sm ${selectedEmp === emp.id ? 'text-blue-700' : 'text-gray-900'}`}>{emp.name}</div>
+                          <div className="text-xs text-gray-500">{emp.title}</div>
+                        </div>
+                        <div className={`text-[10px] font-mono px-2 py-0.5 rounded ${selectedEmp === emp.id ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'}`}>
+                          {emp.id}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-sm text-gray-500 text-center">
+                    No employees found
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           <input
             type="month"
@@ -196,18 +266,18 @@ export const TimecardsPage: React.FC = () => {
       <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-200 shadow-sm">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg sm:text-xl font-bold border border-blue-100 shrink-0">
-              KP
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center text-lg sm:text-xl font-bold border border-blue-100 shrink-0 uppercase">
+              {selectedEmpData.name.split(' ').map(n => n[0]).join('').substring(0, 2)}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-lg sm:text-xl font-bold text-gray-900">Kasun Perera</h2>
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900">{selectedEmpData.name}</h2>
                 <span className="text-[11px] bg-emerald-100 text-emerald-800 border border-emerald-200 px-2.5 py-0.5 rounded-full font-semibold">
                   Active Officer
                 </span>
               </div>
               <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">
-                PS-EMP-0012 • Revenue & Finance Department • Shift: Council Standard (08:30 AM - 04:30 PM)
+                {selectedEmpData.id} • {selectedEmpData.department} • Shift: Council Standard (08:30 AM - 04:30 PM)
               </p>
             </div>
           </div>
