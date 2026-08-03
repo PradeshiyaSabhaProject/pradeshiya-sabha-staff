@@ -45,16 +45,10 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
-            onClose()
-          }
-        }}
-        tabIndex={-1}
-        role="button"
         aria-label="Close details"
       />
 
