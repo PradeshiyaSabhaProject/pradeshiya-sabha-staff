@@ -75,9 +75,9 @@ const FinancialReportIcon = () => (
 // ─────────────────────────────────────────────────────────────────────────────
 const PRIORITY_BADGES: Record<string, string> = {
   URGENT: 'bg-red-100 text-red-700',
-  HIGH:   'bg-blue-100 text-blue-700',
+  HIGH: 'bg-blue-100 text-blue-700',
   MEDIUM: 'bg-orange-100 text-orange-800',
-  LOW:    'bg-gray-200 text-gray-700',
+  LOW: 'bg-gray-200 text-gray-700',
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -93,10 +93,10 @@ const OverviewPage: React.FC = () => {
   const renderKpiIcon = (iconType: string) => {
     switch (iconType) {
       case 'clipboard': return <ClipboardIcon />
-      case 'gauge':     return <GaugeIcon />
-      case 'smile':     return <SmileIcon />
-      case 'users':     return <UsersIcon />
-      default:          return <ClipboardIcon />
+      case 'gauge': return <GaugeIcon />
+      case 'smile': return <SmileIcon />
+      case 'users': return <UsersIcon />
+      default: return <ClipboardIcon />
     }
   }
 
@@ -166,10 +166,10 @@ const OverviewPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
             <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">Centralized Task Inbox</h2>
             <div className="flex items-center gap-2 self-start sm:self-auto w-full sm:w-auto">
-              <button className="flex-1 sm:flex-initial bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-3.5 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer text-center">
+              <button type="button" className="flex-1 sm:flex-initial bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-3.5 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer text-center">
                 Filter
               </button>
-              <button className="flex-1 sm:flex-initial bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer text-center">
+              <button type="button" className="flex-1 sm:flex-initial bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer text-center">
                 Export CSV
               </button>
             </div>
@@ -205,7 +205,7 @@ const OverviewPage: React.FC = () => {
                         </span>
                       </td>
                       <td className="py-3 px-4 sm:px-6 text-right whitespace-nowrap">
-                        <button className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-3 sm:px-4 py-1 rounded bg-white shadow-xs cursor-pointer uppercase tracking-wider">
+                        <button type="button" className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-3 sm:px-4 py-1 rounded bg-white shadow-xs cursor-pointer uppercase tracking-wider">
                           Assign
                         </button>
                       </td>
