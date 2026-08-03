@@ -442,7 +442,7 @@ export function useFleetData() {
 
   const approveRequest = (requestId: string, approverName = 'Authorized Manager / Secretary') => {
     const req = approvalRequests.find((r) => r.id === requestId)
-    if (!req || req.status !== 'Pending Approval') return
+    if (req?.status !== 'Pending Approval') return
 
     if (req.actionType === 'ADD_VEHICLE' && req.payload) {
       addVehicle(req.payload)
