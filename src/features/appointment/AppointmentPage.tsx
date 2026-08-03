@@ -112,7 +112,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     const rows = appointments
       .map(
         (a) =>
-          `"${a.id}","${a.citizenName}","${a.phone}","${a.email}","${a.service}","${a.dateTime}","${a.assignedOfficer}","${a.status}","${a.remark.replace(/"/g, '""')}"`
+          `"${a.id}","${a.citizenName}","${a.phone}","${a.email}","${a.service}","${a.dateTime}","${a.assignedOfficer}","${a.status}","${a.remark.replaceAll('"', '""')}"`
       )
       .join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
