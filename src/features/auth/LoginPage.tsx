@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth, DUMMY_USERS, type User } from '../../context/AuthContext'
 import TopBar from '../../components/layout/TopBar'
@@ -157,10 +157,11 @@ export const LoginPage: React.FC = () => {
             {step === 1 ? (
               <form onSubmit={handleSendOtp} className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                  <label htmlFor="orgId" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Organization ID
                   </label>
                   <input
+                    id="orgId"
                     type="text"
                     value={orgId}
                     onChange={(e) => setOrgId(e.target.value)}
@@ -171,11 +172,12 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                  <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Password
                   </label>
                   <div className="relative">
                     <input
+                      id="password"
                       type={showPassword ? 'text' : 'password'}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -212,10 +214,11 @@ export const LoginPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-800 mb-1.5">
+                  <label htmlFor="otp" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Enter OTP
                   </label>
                   <input
+                    id="otp"
                     type="text"
                     value={otp}
                     onChange={(e) => setOtp(e.target.value)}
