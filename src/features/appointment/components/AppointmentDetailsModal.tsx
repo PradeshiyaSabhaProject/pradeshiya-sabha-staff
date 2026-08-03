@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
 interface AppointmentDetailsModalProps {
@@ -115,6 +115,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
         
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute right-6 top-6 text-gray-400 hover:text-gray-700 transition-colors p-1.5 rounded-lg hover:bg-gray-100 cursor-pointer"
         >
@@ -269,6 +270,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             {showPendingActions && (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     onUpdateStatus(appointment.id, 'APPROVED');
                     onClose();
@@ -278,6 +280,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                   Approve
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     onUpdateStatus(appointment.id, 'REJECTED');
                     onClose();
@@ -360,6 +363,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               </div>
               <div className="bg-gray-50 border-t border-gray-100 p-4 flex justify-end gap-3">
                 <button
+                  type="button"
                   onClick={() => setShowNotificationModal(false)}
                   className="px-6 py-2.5 border border-[#A31736]/20 text-white text-sm font-bold rounded-lg bg-[#A31736] hover:bg-[#801028] transition-all cursor-pointer shadow-sm"
                 >
