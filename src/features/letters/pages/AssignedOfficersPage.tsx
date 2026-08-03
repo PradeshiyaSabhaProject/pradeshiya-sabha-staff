@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useAssignedOfficersData, type AssignedOfficer } from '../hooks/useAssignedOfficersData'
 import AssignedOfficersTable from '../components/AssignedOfficersTable'
 import OfficerDetailModal from '../components/OfficerDetailModal'
@@ -25,7 +25,7 @@ const AssignedOfficersPage: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">Manage and review all assigned officers</p>
         </div>
         <div>
-          <button className="flex items-center gap-2 bg-white border border-gray-200 text-sm font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
+          <button type="button" className="flex items-center gap-2 bg-white border border-gray-200 text-sm font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors">
             <span className="text-gray-700">QUICK STATS</span>
             <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block"></span>
