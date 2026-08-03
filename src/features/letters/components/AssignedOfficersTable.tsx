@@ -44,9 +44,9 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueCategories = useMemo(() => Array.from(new Set(officers.map(o => o.assignedCategory))).sort(), [officers])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(officers.map(o => o.status))).sort(), [officers])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(officers.map(o => o.name))).sort(), [officers])
+  const uniqueCategories = useMemo(() => Array.from(new Set(officers.map(o => o.assignedCategory))).sort((a, b) => a.localeCompare(b)), [officers])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(officers.map(o => o.status))).sort((a, b) => a.localeCompare(b)), [officers])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(officers.map(o => o.name))).sort((a, b) => a.localeCompare(b)), [officers])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
@@ -61,7 +61,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
   const filteredOfficers = useMemo(() => {
     return officers.filter(o => {
       const tabObj = TABS.find(t => t.id === activeTab)
-      if (tabObj && tabObj.status && o.status !== tabObj.status) return false
+      if (tabObj?.status && o.status !== tabObj.status) return false
       
       if (appliedFilters.category && o.assignedCategory !== appliedFilters.category) return false
       if (appliedFilters.status && o.status !== appliedFilters.status) return false
@@ -94,6 +94,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
           const count = getTabCount(tab.id, tab.status)
           return (
             <button
+              type="button"
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
@@ -174,6 +175,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
         
         <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
           <button 
+            type="button"
             onClick={handleFilter}
             className="flex-1 sm:flex-initial bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer text-center"
           >
@@ -181,6 +183,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
           </button>
           {(appliedFilters.date || appliedFilters.category || appliedFilters.status || appliedFilters.officer || activeTab !== 'all') && (
             <button 
+              type="button"
               onClick={handleReset}
               className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
             >
@@ -220,6 +223,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
                 <td className="py-4 px-6 text-center font-bold text-[#801028] whitespace-nowrap">{officer.remainingLetters}</td>
                 <td className="py-4 px-6 text-center whitespace-nowrap">
                   <button 
+                    type="button"
                     onClick={() => onView(officer)}
                     className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
                   >
@@ -245,9 +249,9 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
           Showing {filteredOfficers.length > 0 ? 1 : 0}-{Math.min(filteredOfficers.length, 8)} of 63 results
         </span>
         <div className="flex items-center gap-1 text-sm font-semibold text-gray-600">
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
-          <button className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
+          <button type="button" className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
         </div>
       </div>
 

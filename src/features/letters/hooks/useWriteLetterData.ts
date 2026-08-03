@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 export interface SentLetterAttachment {
   id: string
@@ -132,7 +132,9 @@ export const useWriteLetterData = () => {
     const now = new Date()
     const formattedDate = now.toISOString().split('T')[0]
     const formattedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    const randomNum = Math.floor(1000 + Math.random() * 9000)
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    const randomNum = 1000 + (array[0] % 9000)
     
     const letterEntry: SentLetter = {
       id: Date.now().toString(),

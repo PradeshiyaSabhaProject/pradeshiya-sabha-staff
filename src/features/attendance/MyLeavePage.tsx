@@ -245,6 +245,36 @@ const INITIAL_LEAVE_HISTORY: PersonalLeaveRecord[] = [
   }
 ]
 
+const getStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+  }
+  if (status.includes('Pending')) {
+    return 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse'
+  }
+  return 'bg-rose-100 text-rose-800 border border-rose-200'
+}
+
+const getTimelineCircleClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-500 border-emerald-600 text-white'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-400 border-amber-500 text-white animate-pulse'
+  }
+  return 'bg-rose-500 border-rose-600 text-white'
+}
+
+const getTimelineStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-100 text-emerald-800'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-100 text-amber-800'
+  }
+  return 'bg-rose-100 text-rose-800'
+}
+
 export const MyLeavePage: React.FC = () => {
   const [history, setHistory] = useState<PersonalLeaveRecord[]>(INITIAL_LEAVE_HISTORY)
   const [isApplying, setIsApplying] = useState(false)
@@ -261,8 +291,12 @@ export const MyLeavePage: React.FC = () => {
 
   const handleApplySubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    const randomSuffix = 100 + (array[0] % 900)
+
     const newRecord: PersonalLeaveRecord = {
-      id: `LV-2026-${Math.floor(100 + Math.random() * 900)}`,
+      id: `LV-2026-${randomSuffix}`,
       leaveType,
       startDate,
       endDate,
@@ -327,6 +361,7 @@ export const MyLeavePage: React.FC = () => {
 
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setIsApplying(!isApplying)}
             className={`w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer ${
               isApplying
@@ -466,6 +501,7 @@ export const MyLeavePage: React.FC = () => {
                 <h2 className="text-lg font-bold text-gray-900 mt-0.5">Submit Application for Approval</h2>
               </div>
               <button
+                type="button"
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
@@ -476,10 +512,11 @@ export const MyLeavePage: React.FC = () => {
             <form onSubmit={handleApplySubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="leave-category" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Leave Category
                   </label>
                   <select
+                    id="leave-category"
                     value={leaveType}
                     onChange={(e) => setLeaveType(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800"
@@ -492,22 +529,24 @@ export const MyLeavePage: React.FC = () => {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="start-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Start Date
                   </label>
                   <input
                     type="date"
+                    id="start-date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-800"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="end-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     End Date
                   </label>
                   <input
                     type="date"
+                    id="end-date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-800"
@@ -517,11 +556,12 @@ export const MyLeavePage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="days-count" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Number of Days
                   </label>
                   <input
                     type="number"
+                    id="days-count"
                     min={0.5}
                     step={0.5}
                     value={daysCount}
@@ -530,11 +570,12 @@ export const MyLeavePage: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="handover-officer" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Acting Officer / Handover Duty
                   </label>
                   <input
                     type="text"
+                    id="handover-officer"
                     value={handoverOfficer}
                     onChange={(e) => setHandoverOfficer(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-800"
@@ -543,10 +584,11 @@ export const MyLeavePage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                <label htmlFor="leave-reason" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                   Reason for Leave
                 </label>
                 <textarea
+                  id="leave-reason"
                   rows={3}
                   required
                   value={reason}
@@ -589,6 +631,7 @@ export const MyLeavePage: React.FC = () => {
           <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
             {['All', 'Pending', 'Approved'].map((f) => (
               <button
+                type="button"
                 key={f}
                 onClick={() => setFilterType(f)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
@@ -645,13 +688,7 @@ export const MyLeavePage: React.FC = () => {
 
                   <td className="py-4 px-4 text-center">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                        rec.status === 'Approved'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                          : rec.status.includes('Pending')
-                          ? 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse'
-                          : 'bg-rose-100 text-rose-800 border border-rose-200'
-                      }`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(rec.status)}`}
                     >
                       {rec.status}
                     </span>
@@ -659,6 +696,7 @@ export const MyLeavePage: React.FC = () => {
 
                   <td className="py-4 px-5 text-right">
                     <button
+                      type="button"
                       onClick={() => setSelectedRecordForTimeline(rec)}
                       className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200 transition shadow-2xs"
                       title="View Multi-Level Approval Timeline"
@@ -696,6 +734,7 @@ export const MyLeavePage: React.FC = () => {
                 </h2>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
@@ -718,17 +757,11 @@ export const MyLeavePage: React.FC = () => {
 
             {/* Vertical Multi-Level Timeline */}
             <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
-              {selectedRecordForTimeline.timelineSteps.map((step, idx) => (
-                <div key={idx} className="relative">
+              {selectedRecordForTimeline.timelineSteps.map((step) => (
+                <div key={`${step.level}-${step.roleName}`} className="relative">
                   {/* Circle Indicator */}
                   <div
-                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      step.status === 'Approved'
-                        ? 'bg-emerald-500 border-emerald-600 text-white'
-                        : step.status === 'Pending'
-                        ? 'bg-amber-400 border-amber-500 text-white animate-pulse'
-                        : 'bg-rose-500 border-rose-600 text-white'
-                    }`}
+                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${getTimelineCircleClass(step.status)}`}
                   >
                     {step.status === 'Approved' ? (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="w-3 h-3">
@@ -746,13 +779,7 @@ export const MyLeavePage: React.FC = () => {
                         {step.level} • {step.roleName}
                       </span>
                       <span
-                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                          step.status === 'Approved'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : step.status === 'Pending'
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-rose-100 text-rose-800'
-                        }`}
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${getTimelineStatusBadgeClass(step.status)}`}
                       >
                         {step.status}
                       </span>
@@ -774,6 +801,7 @@ export const MyLeavePage: React.FC = () => {
 
             <div className="flex justify-end pt-2 border-t border-gray-200">
               <button
+                type="button"
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="px-5 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold transition shadow-sm"
               >

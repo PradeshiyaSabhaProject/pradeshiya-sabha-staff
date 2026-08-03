@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import type { SentLetter } from '../hooks/useWriteLetterData'
 
 interface LetterDocumentModalProps {
@@ -115,7 +115,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
     link.download = `Official_Letter_${letter.refNo.replace('#', '')}.html`
     document.body.appendChild(link)
     link.click()
-    document.body.removeChild(link)
+    link.remove()
     URL.revokeObjectURL(url)
   }
 
@@ -133,6 +133,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
           </div>
           <div className="flex items-center gap-3">
             <button
+              type="button"
               onClick={handlePrint}
               className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold px-3.5 py-2 rounded transition-colors cursor-pointer border border-gray-700 shadow-sm uppercase tracking-wider"
               title="Print letter directly"
@@ -141,6 +142,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               <span>Print</span>
             </button>
             <button
+              type="button"
               onClick={handleDownloadFile}
               className="flex items-center gap-2 bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer shadow-md uppercase tracking-wider"
               title="Download formatted document"
@@ -150,6 +152,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             </button>
             <div className="h-5 w-px bg-gray-700 mx-1"></div>
             <button
+              type="button"
               onClick={onClose}
               className="text-gray-400 hover:text-white p-1.5 rounded transition-colors cursor-pointer hover:bg-gray-800"
             >
@@ -268,6 +271,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             ðŸ’¡ Click <strong>Download Letter</strong> to save a standalone HTML document or <strong>Print</strong> for PDF save.
           </span>
           <button
+            type="button"
             onClick={onClose}
             className="px-6 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg transition-colors cursor-pointer shadow-2xs"
           >

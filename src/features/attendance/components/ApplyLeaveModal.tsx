@@ -47,6 +47,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition"
           >
@@ -60,8 +61,9 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-left">
           <div>
-            <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Leave Category</label>
+            <label htmlFor="leave-category" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Leave Category</label>
             <select
+              id="leave-category"
               value={leaveType}
               onChange={(e) => setLeaveType(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -77,27 +79,30 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Start Date</label>
+              <label htmlFor="start-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Start Date</label>
               <input
                 type="date"
+                id="start-date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">End Date</label>
+              <label htmlFor="end-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">End Date</label>
               <input
                 type="date"
+                id="end-date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Working Days</label>
+              <label htmlFor="working-days" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Working Days</label>
               <input
                 type="number"
+                id="working-days"
                 min={0.5}
                 step={0.5}
                 value={daysCount}
@@ -108,8 +113,9 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Reason & Handover Notes</label>
+            <label htmlFor="leave-reason" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Reason & Handover Notes</label>
             <textarea
+              id="leave-reason"
               rows={3}
               required
               placeholder="State clear reason and officer taking over duties..."

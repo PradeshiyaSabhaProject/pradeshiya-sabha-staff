@@ -117,6 +117,7 @@ const WriteLetterPage: React.FC = () => {
         </div>
         <div>
           <button
+            type="button"
             onClick={() => setIsWriteModalOpen(true)}
             className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-5 py-2.5 rounded shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -223,6 +224,7 @@ const WriteLetterPage: React.FC = () => {
 
           {(deptFilter || statusFilter || searchQuery) && (
             <button
+              type="button"
               onClick={() => { setDeptFilter(''); setStatusFilter(''); setSearchQuery(''); }}
               className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer uppercase tracking-wider text-left sm:text-center"
             >
@@ -279,6 +281,7 @@ const WriteLetterPage: React.FC = () => {
                     <td className="py-4 px-6 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
+                          type="button"
                           onClick={() => setSelectedDocLetter(letter)}
                           className="p-1.5 border border-gray-300 bg-white rounded hover:bg-gray-100 transition-colors group cursor-pointer shadow-xs"
                           title="View letter document format"
@@ -286,6 +289,7 @@ const WriteLetterPage: React.FC = () => {
                           <EyeIcon />
                         </button>
                         <button
+                          type="button"
                           onClick={() => setSelectedDocLetter(letter)}
                           className="p-1.5 border border-[#801028]/20 bg-white rounded hover:bg-[#801028]/10 text-[#801028] transition-colors group cursor-pointer shadow-xs"
                           title="Download / Print official letter"

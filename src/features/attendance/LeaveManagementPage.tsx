@@ -2,6 +2,26 @@ import React, { useState } from 'react'
 import { MOCK_LEAVE_REQUESTS, MOCK_LEAVE_BALANCES, type LeaveRequest } from './data/mockAttendanceData'
 import { ApplyLeaveModal } from './components/ApplyLeaveModal'
 
+const getLevelContainerClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-50/70 border-emerald-300'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-50/70 border-amber-300 shadow-xs'
+  }
+  return 'bg-gray-50 border-gray-200 opacity-70'
+}
+
+const getLevelStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-200 text-emerald-900'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-200 text-amber-900 animate-pulse'
+  }
+  return 'bg-gray-200 text-gray-700'
+}
+
 export const LeaveManagementPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'requests' | 'ledger'>('requests')
   const [requests, setRequests] = useState<LeaveRequest[]>(MOCK_LEAVE_REQUESTS)
@@ -53,6 +73,7 @@ export const LeaveManagementPage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => setIsApplyModalOpen(true)}
           className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold shadow-md transition"
         >
@@ -67,6 +88,7 @@ export const LeaveManagementPage: React.FC = () => {
       {/* Tabs */}
       <div className="flex border-b border-gray-200">
         <button
+          type="button"
           onClick={() => setActiveTab('requests')}
           className={`pb-3 px-5 text-sm font-bold border-b-2 transition ${
             activeTab === 'requests'
@@ -77,6 +99,7 @@ export const LeaveManagementPage: React.FC = () => {
           Multi-Level Leave Pipeline ({requests.length})
         </button>
         <button
+          type="button"
           onClick={() => setActiveTab('ledger')}
           className={`pb-3 px-5 text-sm font-bold border-b-2 transition ${
             activeTab === 'ledger'
@@ -141,13 +164,7 @@ export const LeaveManagementPage: React.FC = () => {
                   {req.approvalLevels.map((lvl) => (
                     <div
                       key={lvl.levelNumber}
-                      className={`p-4 rounded-xl border flex flex-col justify-between ${
-                        lvl.status === 'Approved'
-                          ? 'bg-emerald-50/70 border-emerald-300'
-                          : lvl.status === 'Pending'
-                          ? 'bg-amber-50/70 border-amber-300 shadow-xs'
-                          : 'bg-gray-50 border-gray-200 opacity-70'
-                      }`}
+                      className={`p-4 rounded-xl border flex flex-col justify-between ${getLevelContainerClass(lvl.status)}`}
                     >
                       <div>
                         <div className="flex items-center justify-between mb-1.5">
@@ -155,13 +172,7 @@ export const LeaveManagementPage: React.FC = () => {
                             Level {lvl.levelNumber}: {lvl.roleName}
                           </span>
                           <span
-                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
-                              lvl.status === 'Approved'
-                                ? 'bg-emerald-200 text-emerald-900'
-                                : lvl.status === 'Pending'
-                                ? 'bg-amber-200 text-amber-900 animate-pulse'
-                                : 'bg-gray-200 text-gray-700'
-                            }`}
+                            className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${getLevelStatusBadgeClass(lvl.status)}`}
                           >
                             {lvl.status}
                           </span>
@@ -178,6 +189,7 @@ export const LeaveManagementPage: React.FC = () => {
                       {lvl.status === 'Pending' && (
                         <div className="mt-4 pt-3 border-t border-amber-200/80 flex items-center justify-end space-x-2">
                           <button
+                            type="button"
                             onClick={() => handleLevelApprove(req.id, lvl.levelNumber)}
                             className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition"
                           >

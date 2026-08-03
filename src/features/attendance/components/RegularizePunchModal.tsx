@@ -54,6 +54,7 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition"
           >
@@ -67,9 +68,10 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-left">
           <div>
-            <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Employee</label>
+            <label htmlFor="emp-name" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Employee</label>
             <input
               type="text"
+              id="emp-name"
               readOnly
               value={employeeName}
               className="w-full px-3.5 py-2 rounded-xl border border-gray-200 bg-gray-100 text-sm font-medium text-gray-700"
@@ -78,17 +80,19 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Correction Date</label>
+              <label htmlFor="corr-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Correction Date</label>
               <input
                 type="date"
+                id="corr-date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Reason Type</label>
+              <label htmlFor="reason-type" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Reason Type</label>
               <select
+                id="reason-type"
                 value={reasonType}
                 onChange={(e) => setReasonType(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 bg-white text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -105,18 +109,20 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Actual In Time</label>
+              <label htmlFor="actual-in" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Actual In Time</label>
               <input
                 type="time"
+                id="actual-in"
                 value={requestedCheckIn}
                 onChange={(e) => setRequestedCheckIn(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Actual Out Time</label>
+              <label htmlFor="actual-out" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Actual Out Time</label>
               <input
                 type="time"
+                id="actual-out"
                 value={requestedCheckOut}
                 onChange={(e) => setRequestedCheckOut(e.target.value)}
                 className="w-full px-3 py-2 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-amber-500"
@@ -125,8 +131,9 @@ export const RegularizePunchModal: React.FC<RegularizePunchModalProps> = ({ isOp
           </div>
 
           <div>
-            <label className="block text-xs font-semibold uppercase text-gray-600 mb-1">Justification / Memo Reference</label>
+            <label htmlFor="justification" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Justification / Memo Reference</label>
             <textarea
+              id="justification"
               rows={3}
               required
               placeholder="State official duty purpose or explanation for missed scan..."

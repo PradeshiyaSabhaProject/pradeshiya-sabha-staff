@@ -91,6 +91,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
             Letter Details - {letter.refId}
           </h2>
           <button 
+            type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors cursor-pointer"
           >
@@ -193,6 +194,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                   </select>
                 </div>
                 <button 
+                  type="button"
                   onClick={handleUpdateStatus}
                   disabled={isStatusUpdated}
                   className={`px-5 py-2 text-white text-sm font-bold rounded-lg transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
@@ -236,6 +238,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
                   </select>
                 </div>
                 <button 
+                  type="button"
                   onClick={handleForwardToSuperior}
                   disabled={isForwarded}
                   className={`px-5 py-2 text-white text-sm font-bold rounded-lg transition-all shadow-sm cursor-pointer flex items-center justify-center gap-1.5 shrink-0 ${
@@ -262,6 +265,7 @@ const LetterDetailModal: React.FC<LetterDetailModalProps> = ({
             Currently assigned to: <span className="font-bold text-gray-800">{letter.assignedOfficer}</span>
           </div>
           <button 
+            type="button"
             onClick={onClose}
             className="px-5 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
           >

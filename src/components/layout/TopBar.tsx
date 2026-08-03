@@ -46,7 +46,6 @@ const CheckBadgeIcon = () => (
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface TopBarProps {
-  activePage?: string
   hideNav?: boolean
 }
 
@@ -133,6 +132,7 @@ const TopBar: React.FC<TopBarProps> = ({ hideNav }) => {
 
               {/* Help */}
               <button
+                type="button"
                 aria-label="Help"
                 className="ml-2 p-2 rounded hover:bg-white/10 transition-colors"
               >
