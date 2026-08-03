@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useAppointmentData } from './hooks/useAppointmentData';
 import { AppointmentDetailsModal } from './components/AppointmentDetailsModal';
 import { type AppointmentItem } from './services/appointmentApi';
@@ -192,6 +192,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     // Always show page 1
     range.push(
       <button
+        type="button"
         key={1}
         onClick={() => setCurrentPage(1)}
         className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -214,6 +215,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
       range.push(
         <button
+          type="button"
           key={i}
           onClick={() => setCurrentPage(i)}
           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -237,6 +239,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     if (totalPages > 1) {
       range.push(
         <button
+          type="button"
           key={totalPages}
           onClick={() => setCurrentPage(totalPages)}
           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -332,6 +335,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               const isActive = activeTab === cleanedLabel;
               return (
                 <button
+                  type="button"
                   key={tab.label}
                   onClick={() => {
                     setActiveTab(cleanedLabel);
@@ -405,12 +409,14 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
           <div className="flex items-center gap-2">
             <button
+              type="button"
               onClick={resetFilters}
               className="border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
             >
               Filter
             </button>
             <button
+              type="button"
               onClick={handleExportCSV}
               className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider"
             >
@@ -486,6 +492,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
                       <div className="flex items-center justify-center gap-1.5">
                         {/* Eye Button */}
                         <button
+                          type="button"
                           onClick={() => openDetails(app)}
                           className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
                           title="View Details"
@@ -497,6 +504,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
                         {mode === 'my' && app.status === 'PENDING' && (
                           <>
                             <button
+                              type="button"
                               onClick={() => updateStatus(app.id, 'APPROVED')}
                               className="border border-green-200 bg-green-50 hover:bg-green-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
                               title="Approve Appointment"
@@ -504,6 +512,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
                               <CheckIcon />
                             </button>
                             <button
+                              type="button"
                               onClick={() => updateStatus(app.id, 'REJECTED')}
                               className="border border-red-200 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
                               title="Reject Appointment"
@@ -531,6 +540,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             <div className="flex items-center gap-1">
               {/* Prev Button */}
               <button
+                type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((c) => Math.max(1, c - 1))}
                 className="w-8 h-8 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs"
@@ -543,6 +553,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
               {/* Next Button */}
               <button
+                type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((c) => Math.min(totalPages, c + 1))}
                 className="w-8 h-8 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs"
