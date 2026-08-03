@@ -44,9 +44,9 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueCategories = useMemo(() => Array.from(new Set(officers.map(o => o.assignedCategory))).sort(), [officers])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(officers.map(o => o.status))).sort(), [officers])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(officers.map(o => o.name))).sort(), [officers])
+  const uniqueCategories = useMemo(() => Array.from(new Set(officers.map(o => o.assignedCategory))).sort((a, b) => a.localeCompare(b)), [officers])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(officers.map(o => o.status))).sort((a, b) => a.localeCompare(b)), [officers])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(officers.map(o => o.name))).sort((a, b) => a.localeCompare(b)), [officers])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
