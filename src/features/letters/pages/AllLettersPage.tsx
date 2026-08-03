@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useLetterData, type Letter } from '../hooks/useLetterData'
 import LetterStats from '../components/LetterStats'
 import LetterTable from '../components/LetterTable'
@@ -26,11 +26,10 @@ const AllLettersPage: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">Manage and review all citizen-submitted letters</p>
         </div>
         <div>
-          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
+          <button type="button" className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
             <span className="text-gray-700">Quick Stats</span>
             <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-orange-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block"></span>
-              {stats.pending} PENDING
+              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block" /> {stats.pending} PENDING
             </span>
           </button>
         </div>
