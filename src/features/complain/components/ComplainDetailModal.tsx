@@ -131,7 +131,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
 
   const handleSendRemark = () => {
     if (!remarkText.trim() || !complaint) return
-    const timestamp = new Date().getTime()
+    const timestamp = Date.now()
     const newRemark: OfficerRemark = {
       id: `rem-${timestamp}`,
       text: remarkText.trim(),
