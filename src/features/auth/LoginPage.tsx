@@ -159,41 +159,43 @@ export const LoginPage: React.FC = () => {
                 <div>
                   <label htmlFor="orgId" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Organization ID
+                    <input
+                      id="orgId"
+                      name="orgId"
+                      type="text"
+                      value={orgId}
+                      onChange={(e) => setOrgId(e.target.value)}
+                      placeholder="Ex:1999703"
+                      required
+                      className="mt-1.5 block w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white font-normal"
+                    />
                   </label>
-                  <input
-                    id="orgId"
-                    type="text"
-                    value={orgId}
-                    onChange={(e) => setOrgId(e.target.value)}
-                    placeholder="Ex:1999703"
-                    required
-                    className="w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white"
-                  />
                 </div>
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Password
+                    <div className="relative mt-1.5 font-normal">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Ex:1999@Thuhina"
+                        required
+                        className="w-full pl-4 pr-11 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none p-1 transition-colors"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+                    </div>
                   </label>
-                  <div className="relative">
-                    <input
-                      id="password"
-                      type={showPassword ? 'text' : 'password'}
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Ex:1999@Thuhina"
-                      required
-                      className="w-full pl-4 pr-11 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none p-1 transition-colors"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                    </button>
-                  </div>
                 </div>
 
                 <div className="pt-2">
@@ -216,17 +218,18 @@ export const LoginPage: React.FC = () => {
                 <div>
                   <label htmlFor="otp" className="block text-sm font-semibold text-gray-800 mb-1.5">
                     Enter OTP
+                    <input
+                      id="otp"
+                      name="otp"
+                      type="text"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      placeholder="Ex:1999703"
+                      required
+                      maxLength={6}
+                      className="mt-1.5 block w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white tracking-widest font-mono font-semibold"
+                    />
                   </label>
-                  <input
-                    id="otp"
-                    type="text"
-                    value={otp}
-                    onChange={(e) => setOtp(e.target.value)}
-                    placeholder="Ex:1999703"
-                    required
-                    maxLength={6}
-                    className="w-full px-4 py-2.5 rounded border border-gray-300 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] text-sm transition-all bg-white tracking-widest font-mono font-semibold"
-                  />
                   <p className="text-xs text-gray-500 mt-1">Use dummy OTP: 123456</p>
                 </div>
 
