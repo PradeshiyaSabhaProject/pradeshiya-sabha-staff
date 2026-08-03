@@ -258,6 +258,99 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     <div className={`${h} bg-gray-100 rounded-lg animate-pulse w-full`} />
   );
 
+  const getTableBodyContent = () => {
+    if (loading) {
+      return [1, 2, 3, 4, 5].map((i) => (
+        <tr key={i}>
+          <td colSpan={7} className="py-4 px-6">
+            {skeleton('h-10')}
+          </td>
+        </tr>
+      ));
+    }
+
+    if (appointments.length === 0) {
+      return (
+        <tr>
+          <td colSpan={7} className="py-12 text-center text-gray-400 font-medium italic">
+            No appointments found matching the selected filters.
+          </td>
+        </tr>
+      );
+    }
+
+    return appointments.map((app) => (
+      <tr key={app.id} className="hover:bg-gray-50/40 transition-colors">
+        {/* ID */}
+        <td className="py-4.5 px-6 font-bold text-gray-700 whitespace-nowrap">{app.id}</td>
+
+        {/* Citizen Name & Phone */}
+        <td className="py-4.5 px-6 whitespace-nowrap">
+          <div className="font-bold text-gray-900">{app.citizenName}</div>
+          <div className="text-[11px] text-gray-400 mt-0.5 font-medium">{app.phone}</div>
+        </td>
+
+        {/* Service */}
+        <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.service}</td>
+
+        {/* Date & Time */}
+        <td className="py-4.5 px-6 whitespace-nowrap">
+          <div className="font-bold text-gray-900">{app.dateTime.split(' ')[0]}</div>
+          <div className="text-[11px] text-gray-400 mt-0.5 font-medium">
+            {app.dateTime.split(' ').slice(1).join(' ')}
+          </div>
+        </td>
+
+        {/* Assigned Officer */}
+        <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.assignedOfficer}</td>
+
+        {/* Status Pill Badge */}
+        <td className="py-4.5 px-6 text-center whitespace-nowrap">
+          <span className={`text-[10px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wide inline-block ${getStatusBadgeClass(app.status)}`}>
+            {app.status}
+          </span>
+        </td>
+
+        {/* Action buttons */}
+        <td className="py-4.5 px-6 text-center whitespace-nowrap">
+          <div className="flex items-center justify-center gap-1.5">
+            {/* Eye Button */}
+            <button
+              type="button"
+              onClick={() => openDetails(app)}
+              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+              title="View Details"
+            >
+              <EyeIcon />
+            </button>
+
+            {/* Approve and Reject (Only for 'my' mode and status is PENDING) */}
+            {mode === 'my' && app.status === 'PENDING' && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => updateStatus(app.id, 'APPROVED')}
+                  className="border border-green-200 bg-green-50 hover:bg-green-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+                  title="Approve Appointment"
+                >
+                  <CheckIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateStatus(app.id, 'REJECTED')}
+                  className="border border-red-200 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+                  title="Reject Appointment"
+                >
+                  <CrossIcon />
+                </button>
+              </>
+            )}
+          </div>
+        </td>
+      </tr>
+    ));
+  };
+
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       {/* â”€â”€ Header â”€â”€ */}
@@ -440,92 +533,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">
-              {loading ? (
-                [1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i}>
-                    <td colSpan={7} className="py-4 px-6">
-                      {skeleton('h-10')}
-                    </td>
-                  </tr>
-                ))
-              ) : appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-12 text-center text-gray-400 font-medium italic">
-                    No appointments found matching the selected filters.
-                  </td>
-                </tr>
-              ) : (
-                appointments.map((app) => (
-                  <tr key={app.id} className="hover:bg-gray-50/40 transition-colors">
-                    {/* ID */}
-                    <td className="py-4.5 px-6 font-bold text-gray-700 whitespace-nowrap">{app.id}</td>
-
-                    {/* Citizen Name & Phone */}
-                    <td className="py-4.5 px-6 whitespace-nowrap">
-                      <div className="font-bold text-gray-900">{app.citizenName}</div>
-                      <div className="text-[11px] text-gray-400 mt-0.5 font-medium">{app.phone}</div>
-                    </td>
-
-                    {/* Service */}
-                    <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.service}</td>
-
-                    {/* Date & Time */}
-                    <td className="py-4.5 px-6 whitespace-nowrap">
-                      <div className="font-bold text-gray-900">{app.dateTime.split(' ')[0]}</div>
-                      <div className="text-[11px] text-gray-400 mt-0.5 font-medium">
-                        {app.dateTime.split(' ').slice(1).join(' ')}
-                      </div>
-                    </td>
-
-                    {/* Assigned Officer */}
-                    <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.assignedOfficer}</td>
-
-                    {/* Status Pill Badge */}
-                    <td className="py-4.5 px-6 text-center whitespace-nowrap">
-                      <span className={`text-[10px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wide inline-block ${getStatusBadgeClass(app.status)}`}>
-                        {app.status}
-                      </span>
-                    </td>
-
-                    {/* Action buttons */}
-                    <td className="py-4.5 px-6 text-center whitespace-nowrap">
-                      <div className="flex items-center justify-center gap-1.5">
-                        {/* Eye Button */}
-                        <button
-                          type="button"
-                          onClick={() => openDetails(app)}
-                          className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                          title="View Details"
-                        >
-                          <EyeIcon />
-                        </button>
-
-                        {/* Approve and Reject (Only for 'my' mode and status is PENDING) */}
-                        {mode === 'my' && app.status === 'PENDING' && (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => updateStatus(app.id, 'APPROVED')}
-                              className="border border-green-200 bg-green-50 hover:bg-green-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                              title="Approve Appointment"
-                            >
-                              <CheckIcon />
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => updateStatus(app.id, 'REJECTED')}
-                              className="border border-red-200 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                              title="Reject Appointment"
-                            >
-                              <CrossIcon />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+              {getTableBodyContent()}
             </tbody>
           </table>
         </div>
