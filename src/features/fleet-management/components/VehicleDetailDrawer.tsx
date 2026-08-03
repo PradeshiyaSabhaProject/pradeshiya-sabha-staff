@@ -48,6 +48,14 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
       <div
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
         onClick={onClose}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+            onClose()
+          }
+        }}
+        tabIndex={-1}
+        role="button"
+        aria-label="Close details"
       />
 
       {/* Modal Container matching Asset Management Detail Modal */}
