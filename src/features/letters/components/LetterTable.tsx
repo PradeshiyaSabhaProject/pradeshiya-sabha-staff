@@ -65,7 +65,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
     return letters.filter(l => {
       if (showTabs) {
         const tabObj = TABS.find(t => t.id === activeTab)
-        if (tabObj && tabObj.status && l.status !== tabObj.status) return false
+        if (tabObj?.status && l.status !== tabObj.status) return false
       }
       
       if (appliedFilters.date && l.date !== appliedFilters.date) return false
