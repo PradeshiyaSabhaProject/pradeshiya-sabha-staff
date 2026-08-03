@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import type { DepartmentOption, SentLetterAttachment } from '../hooks/useWriteLetterData'
 
 interface WriteLetterModalProps {
@@ -136,6 +136,7 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
               <span className="hidden sm:inline">Auto-Fill Sample</span>
             </button>
             <button
+              type="button"
               onClick={onClose}
               className="text-white/80 hover:text-white p-1.5 rounded transition-colors hover:bg-white/10 cursor-pointer"
             >
@@ -184,10 +185,11 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           {/* Department and Officer Selection */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 bg-gray-50 p-5 rounded border border-gray-300">
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+              <label htmlFor="dept-select" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                 Select Department <span className="text-red-600">*</span>
               </label>
               <select
+                id="dept-select"
                 value={selectedDept}
                 onChange={(e) => setSelectedDept(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#801028] transition-all cursor-pointer"
@@ -200,10 +202,11 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+              <label htmlFor="officer-select" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
                 To Department Person (Officer) <span className="text-red-600">*</span>
               </label>
               <select
+                id="officer-select"
                 value={selectedOfficer}
                 onChange={(e) => setSelectedOfficer(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded px-4 py-2.5 text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#801028] transition-all cursor-pointer"
@@ -221,11 +224,12 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
 
           {/* Subject Line */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+            <label htmlFor="letter-subject" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Letter Subject <span className="text-red-600">*</span>
             </label>
             <input
               type="text"
+              id="letter-subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter official subject line (e.g. Request for Inspection / Submission of Reports)..."
@@ -236,10 +240,11 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
 
           {/* Letter Body */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+            <label htmlFor="letter-body" className="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
               Letter Body <span className="text-red-600">*</span>
             </label>
             <textarea
+              id="letter-body"
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={6}
@@ -252,9 +257,9 @@ const WriteLetterModal: React.FC<WriteLetterModalProps> = ({ isOpen, onClose, de
           {/* Attachments (Optional) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
+              <span className="block text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Attachments (Optional)
-              </label>
+              </span>
               <span className="text-xs text-gray-500">Supported: PDF, JPG, PNG, DOC</span>
             </div>
             
