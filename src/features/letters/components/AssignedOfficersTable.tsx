@@ -61,7 +61,7 @@ const AssignedOfficersTable: React.FC<AssignedOfficersTableProps> = ({ officers,
   const filteredOfficers = useMemo(() => {
     return officers.filter(o => {
       const tabObj = TABS.find(t => t.id === activeTab)
-      if (tabObj && tabObj.status && o.status !== tabObj.status) return false
+      if (tabObj?.status && o.status !== tabObj.status) return false
       
       if (appliedFilters.category && o.assignedCategory !== appliedFilters.category) return false
       if (appliedFilters.status && o.status !== appliedFilters.status) return false
