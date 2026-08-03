@@ -104,6 +104,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
             const count = getTabCount(tab.id, tab.status)
             return (
               <button
+                type="button"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
@@ -185,6 +186,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
         
         <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
           <button 
+            type="button"
             onClick={handleFilter}
             className="flex-1 sm:flex-initial bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer text-center"
           >
@@ -192,6 +194,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
           </button>
           {(appliedFilters.date || appliedFilters.category || appliedFilters.status || appliedFilters.officer || activeTab !== 'all') && (
             <button 
+              type="button"
               onClick={handleReset}
               className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
             >
@@ -236,6 +239,7 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
                 </td>
                 <td className="py-4 px-6 text-center whitespace-nowrap">
                   <button 
+                    type="button"
                     onClick={() => onView(letter)}
                     className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
                   >
@@ -261,9 +265,9 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
           Showing {filteredLetters.length > 0 ? 1 : 0}-{Math.min(filteredLetters.length, 8)} of {filteredLetters.length} results
         </span>
         <div className="flex items-center gap-1 text-sm font-semibold text-gray-600">
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
-          <button className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
+          <button type="button" className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
         </div>
       </div>
 
