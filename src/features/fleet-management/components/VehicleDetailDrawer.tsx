@@ -1,4 +1,4 @@
-﻿import React from 'react'
+import React from 'react'
 import type { VehicleRecord } from '../data/initialFleetData'
 import { getVehicleComplianceInfo } from '../hooks/useFleetData'
 
@@ -76,6 +76,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
           </div>
 
           <button
+            type="button"
             onClick={onClose}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all font-bold text-lg cursor-pointer"
           >
@@ -91,6 +92,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
           <div className="flex flex-wrap items-center gap-2">
             {vehicle.status !== 'In Maintenance' ? (
               <button
+                type="button"
                 onClick={() => onOpenPutInMaintenance(vehicle)}
                 className="px-3.5 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
               >
@@ -98,6 +100,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => onCompleteMaintenance(vehicle.id)}
                 className="px-3.5 py-1.5 rounded bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
               >
@@ -107,6 +110,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
 
             {vehicle.status !== 'On Mission' ? (
               <button
+                type="button"
                 onClick={() => onOpenDispatch(vehicle)}
                 className="px-3.5 py-1.5 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
               >
@@ -114,6 +118,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => onReturnFromMission(vehicle.id)}
                 className="px-3.5 py-1.5 rounded bg-[#1e3a8a] hover:bg-blue-900 text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
               >
@@ -122,6 +127,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
             )}
 
             <button
+              type="button"
               onClick={() => onOpenAssignDriver(vehicle)}
               className="px-3.5 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
             >
@@ -129,6 +135,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
             </button>
 
             <button
+              type="button"
               onClick={() => onOpenRenewPermit(vehicle)}
               className="px-3.5 py-1.5 rounded bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
             >
@@ -154,6 +161,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => onOpenRenewPermit(vehicle)}
                 className="px-4 py-2 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold rounded uppercase tracking-wider shadow-sm shrink-0 cursor-pointer"
               >
@@ -331,6 +339,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
         {/* Modal Footer */}
         <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end gap-2 shrink-0">
           <button
+            type="button"
             onClick={onClose}
             className="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
