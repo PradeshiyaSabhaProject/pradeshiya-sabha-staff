@@ -50,9 +50,9 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueCategories = useMemo(() => Array.from(new Set(complaints.map(c => c.category))).sort(), [complaints])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(complaints.map(c => c.status))).sort(), [complaints])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(complaints.map(c => c.assignedOfficer))).sort(), [complaints])
+  const uniqueCategories = useMemo(() => Array.from(new Set(complaints.map(c => c.category))).sort((a, b) => a.localeCompare(b)), [complaints])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(complaints.map(c => c.status))).sort((a, b) => a.localeCompare(b)), [complaints])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(complaints.map(c => c.assignedOfficer))).sort((a, b) => a.localeCompare(b)), [complaints])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
