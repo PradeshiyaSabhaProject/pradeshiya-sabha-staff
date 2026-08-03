@@ -137,8 +137,7 @@ export function useFleetData() {
         v.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.currentLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (v.assignedDriverName &&
-          v.assignedDriverName.toLowerCase().includes(searchQuery.toLowerCase()))
+        v.assignedDriverName?.toLowerCase().includes(searchQuery.toLowerCase())
 
       const matchCategory = categoryFilter === 'All' || v.category === categoryFilter
       const matchStatus = statusFilter === 'All' || v.status === statusFilter
@@ -253,7 +252,7 @@ export function useFleetData() {
               ...log,
               status: 'Completed' as const,
               completedDate: new Date().toISOString().split('T')[0],
-              costLKR: actualCost !== undefined ? actualCost : log.costLKR,
+              costLKR: actualCost ?? log.costLKR,
               notes: notes ? `${log.notes} | ${notes}` : log.notes,
             }
           }
@@ -415,9 +414,13 @@ export function useFleetData() {
       requestedBy?: string
     }
   ): FleetApprovalRequest => {
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    const randomSuffix = 100 + (array[0] % 900)
+
     const newReq: FleetApprovalRequest = {
       id: `REQ-${Date.now()}`,
-      requestNumber: `FL-REQ-2026-${Math.floor(100 + Math.random() * 900)}`,
+      requestNumber: `FL-REQ-2026-${randomSuffix}`,
       actionType,
       title,
       description,
@@ -442,7 +445,7 @@ export function useFleetData() {
 
   const approveRequest = (requestId: string, approverName = 'Authorized Manager / Secretary') => {
     const req = approvalRequests.find((r) => r.id === requestId)
-    if (!req || req.status !== 'Pending Approval') return
+    if (req?.status !== 'Pending Approval') return
 
     if (req.actionType === 'ADD_VEHICLE' && req.payload) {
       addVehicle(req.payload)
