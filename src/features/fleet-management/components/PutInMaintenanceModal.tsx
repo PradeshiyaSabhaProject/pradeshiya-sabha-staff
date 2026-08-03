@@ -60,9 +60,11 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
+        aria-label="Close modal"
       />
 
       {/* Modal Container matching Asset/Letter Management UI */}
@@ -98,10 +100,11 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="maint-workshop" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Workshop / Service Garage
             </label>
             <select
+              id="maint-workshop"
               value={workshopName}
               onChange={(e) => setWorkshopName(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -120,10 +123,11 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="maint-type" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Maintenance Type / Scope
             </label>
             <select
+              id="maint-type"
               value={maintenanceType}
               onChange={(e) => setMaintenanceType(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -141,11 +145,12 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="maint-start-date" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                 Start Date
               </label>
               <input
                 type="date"
+                id="maint-start-date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -154,11 +159,12 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="maint-completion-date" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                 Est. Completion Date
               </label>
               <input
                 type="date"
+                id="maint-completion-date"
                 value={estimatedCompletionDate}
                 onChange={(e) => setEstimatedCompletionDate(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -168,15 +174,16 @@ export const PutInMaintenanceModal: React.FC<PutInMaintenanceModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="maint-cost" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Estimated Cost (LKR)
             </label>
             <input
               type="number"
+              id="maint-cost"
               min="0"
               step="500"
               value={estimatedCostLKR}
-              onChange={(e) => setEstimatedCostLKR(parseFloat(e.target.value) || 0)}
+              onChange={(e) => setEstimatedCostLKR(Number.parseFloat(e.target.value) || 0)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
               required
             />
