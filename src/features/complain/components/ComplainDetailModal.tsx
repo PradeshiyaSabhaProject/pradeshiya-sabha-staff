@@ -176,6 +176,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
             </h2>
           </div>
           <button 
+            type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-2 rounded-lg transition-colors cursor-pointer"
           >
@@ -314,7 +315,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                           <p className="text-xs text-gray-500">{att.size}</p>
                         </div>
                       </div>
-                      <button className="p-2 bg-white text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors shadow-sm cursor-pointer">
+                      <button type="button" className="p-2 bg-white text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors shadow-sm cursor-pointer">
                         <DownloadIcon />
                       </button>
                     </div>
@@ -328,7 +329,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
               {notification && (
                 <div className="mb-3 p-2.5 bg-green-100 border border-green-300 text-green-800 rounded-lg text-xs font-bold flex items-center justify-between animate-fade-in">
                   <span>✓ {notification}</span>
-                  <button onClick={() => setNotification(null)} className="text-green-800 hover:text-green-950 font-bold cursor-pointer">✕</button>
+                  <button type="button" onClick={() => setNotification(null)} className="text-green-800 hover:text-green-950 font-bold cursor-pointer">✕</button>
                 </div>
               )}
 
@@ -347,6 +348,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     </div>
                   </div>
                   <button
+                    type="button"
                     onClick={handleNotifyCitizen}
                     disabled={citizenNotified}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer shadow-sm ${
@@ -394,6 +396,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       }}
                     />
                     <button
+                      type="button"
                       onClick={handleSendRemark}
                       disabled={!remarkText.trim()}
                       className="bg-[#801028] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#600a1c] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shrink-0 cursor-pointer shadow-sm"
@@ -440,6 +443,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
 
                   <div className="flex gap-3">
                     <button 
+                      type="button"
                       onClick={() => { setIsAssigningTech(!isAssigningTech); setIsChangingState(false); }}
                       className={`flex-1 font-semibold py-2.5 rounded-lg shadow transition-colors cursor-pointer flex items-center justify-center gap-2 text-sm ${
                         isAssigningTech ? 'bg-[#600a1c] text-white ring-2 ring-[#801028]/30' : 'bg-[#801028] text-white hover:bg-[#600a1c]'
@@ -449,6 +453,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                       <span className="text-xs opacity-80">{isAssigningTech ? '▲' : '▼'}</span>
                     </button>
                     <button 
+                      type="button"
                       onClick={() => { setIsChangingState(!isChangingState); setIsAssigningTech(false); }}
                       className={`flex-1 border font-semibold py-2.5 rounded-lg transition-colors cursor-pointer flex items-center justify-center gap-2 text-sm ${
                         isChangingState ? 'bg-red-50 text-[#801028] border-[#801028] ring-2 ring-[#801028]/20' : 'bg-white text-[#801028] border-[#801028] hover:bg-red-50'
@@ -464,13 +469,14 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     <div className="mt-4 border-t border-gray-200 pt-3 space-y-2 animate-fade-in">
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                         <span>Select Field Technician</span>
-                        <button onClick={() => setIsAssigningTech(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+                        <button type="button" onClick={() => setIsAssigningTech(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                       </div>
                       <div className="max-h-56 overflow-y-auto space-y-1.5 pr-1">
                         {TECHNICIANS.map((tech) => {
                           const isSelected = assignedTech === tech.name
                           return (
                             <button
+                              type="button"
                               key={tech.id}
                               onClick={() => handleAssignTechnician(tech.name)}
                               className={`w-full text-left p-2.5 rounded-lg border transition-all flex items-center justify-between cursor-pointer ${
@@ -505,13 +511,14 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
                     <div className="mt-4 border-t border-gray-200 pt-3 space-y-2 animate-fade-in">
                       <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
                         <span>Select New Complaint State</span>
-                        <button onClick={() => setIsChangingState(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
+                        <button type="button" onClick={() => setIsChangingState(false)} className="text-gray-400 hover:text-gray-600 cursor-pointer">✕</button>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
                         {STATUS_OPTIONS.map((opt) => {
                           const isSelected = currentStatus === opt.value
                           return (
                             <button
+                              type="button"
                               key={opt.value}
                               onClick={() => handleChangeState(opt.value)}
                               className={`p-2.5 rounded-lg border text-left flex items-center gap-2.5 transition-all cursor-pointer ${
@@ -544,6 +551,7 @@ const ComplainDetailModal: React.FC<ComplainDetailModalProps> = ({ complaint, on
             Last updated by Administrative Officer at 2.45 PM
           </div>
           <button 
+            type="button"
             onClick={onClose}
             className="bg-gray-900 text-white text-sm font-semibold px-6 py-2.5 rounded-lg hover:bg-gray-800 transition-colors cursor-pointer"
           >
