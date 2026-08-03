@@ -37,6 +37,19 @@ const CheckCircleIcon = () => (
   </svg>
 )
 
+const getPermissionBadgeStyle = (enabled: boolean, permissionLevel?: string): string => {
+  if (!enabled) {
+    return 'bg-gray-200 text-gray-600'
+  }
+  if (permissionLevel === 'Full Admin') {
+    return 'bg-purple-100 text-purple-800 border border-purple-200'
+  }
+  if (permissionLevel === 'Write & Approve') {
+    return 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+  }
+  return 'bg-blue-100 text-blue-800 border border-blue-200'
+}
+
 export const DepartmentAndPermissionsTab: React.FC<DepartmentAndPermissionsTabProps> = ({
   department,
   profile,
@@ -136,44 +149,38 @@ export const DepartmentAndPermissionsTab: React.FC<DepartmentAndPermissionsTabPr
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {department.assignedModules.map((mod) => (
-              <div
-                key={mod.code}
-                className={`p-4 rounded-xl border transition-all flex items-center justify-between ${
-                  mod.enabled
-                    ? 'bg-white border-gray-200 hover:border-gray-300 shadow-2xs'
-                    : 'bg-gray-50 border-gray-200/60 opacity-60'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-3 h-3 rounded-full shrink-0 ${
-                      mod.enabled ? 'bg-[#801028]' : 'bg-gray-300'
-                    }`}
-                  />
-                  <div>
-                    <h4 className="font-bold text-xs text-gray-900">{mod.name}</h4>
-                    <p className="font-mono text-[10px] text-gray-400">{mod.code}</p>
+            {department.assignedModules.map((mod) => {
+              const dotBgClass = mod.enabled ? 'bg-[#801028]' : 'bg-gray-300'
+              return (
+                <div
+                  key={mod.code}
+                  className={`p-4 rounded-xl border transition-all flex items-center justify-between ${
+                    mod.enabled
+                      ? 'bg-white border-gray-200 hover:border-gray-300 shadow-2xs'
+                      : 'bg-gray-50 border-gray-200/60 opacity-60'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-3 h-3 rounded-full shrink-0 ${dotBgClass}`} />
+                    <div>
+                      <h4 className="font-bold text-xs text-gray-900">{mod.name}</h4>
+                      <p className="font-mono text-[10px] text-gray-400">{mod.code}</p>
+                    </div>
+                  </div>
+
+                  <div className="text-right shrink-0">
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${getPermissionBadgeStyle(
+                        mod.enabled,
+                        mod.permissionLevel
+                      )}`}
+                    >
+                      {mod.enabled ? mod.permissionLevel : 'Locked'}
+                    </span>
                   </div>
                 </div>
-
-                <div className="text-right shrink-0">
-                  <span
-                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${
-                      !mod.enabled
-                        ? 'bg-gray-200 text-gray-600'
-                        : mod.permissionLevel === 'Full Admin'
-                        ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                        : mod.permissionLevel === 'Write & Approve'
-                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                        : 'bg-blue-100 text-blue-800 border border-blue-200'
-                    }`}
-                  >
-                    {mod.enabled ? mod.permissionLevel : 'Locked'}
-                  </span>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
