@@ -46,10 +46,10 @@ const LetterTable: React.FC<LetterTableProps> = ({ letters, onView, showTabs = f
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueDates = useMemo(() => Array.from(new Set(letters.map(l => l.date))).sort(), [letters])
-  const uniqueCategories = useMemo(() => Array.from(new Set(letters.map(l => l.category))).sort(), [letters])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(letters.map(l => l.status))).sort(), [letters])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(letters.map(l => l.assignedOfficer))).sort(), [letters])
+  const uniqueDates = useMemo(() => Array.from(new Set(letters.map(l => l.date))).sort((a, b) => a.localeCompare(b)), [letters])
+  const uniqueCategories = useMemo(() => Array.from(new Set(letters.map(l => l.category))).sort((a, b) => a.localeCompare(b)), [letters])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(letters.map(l => l.status))).sort((a, b) => a.localeCompare(b)), [letters])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(letters.map(l => l.assignedOfficer))).sort((a, b) => a.localeCompare(b)), [letters])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
