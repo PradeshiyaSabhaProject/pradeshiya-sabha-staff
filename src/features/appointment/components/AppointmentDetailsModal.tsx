@@ -98,7 +98,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     }
     // Convert 24hr format from input to 12hr AM/PM format
     const [hours24, minutes] = newTime.split(':');
-    const hrs = parseInt(hours24);
+    const hrs = Number.parseInt(hours24, 10);
     const ampm = hrs >= 12 ? 'PM' : 'AM';
     const hrs12 = hrs % 12 || 12;
     const formattedTime = `${hrs12.toString().padStart(2, '0')}.${minutes} ${ampm}`;
@@ -115,6 +115,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
         
         {/* Close Button */}
         <button
+          type="button"
           onClick={onClose}
           className="absolute right-6 top-6 text-gray-400 hover:text-gray-700 transition-colors p-1.5 rounded-lg hover:bg-gray-100 cursor-pointer"
         >
@@ -190,9 +191,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
           {/* Right Column: Attached Documents */}
           <div className="md:col-span-5 space-y-3">
-            {appointment.documents.map((doc, idx) => (
+            {appointment.documents.map((doc) => (
               <div
-                key={idx}
+                key={doc.name}
                 className="flex items-center justify-between border border-gray-200/80 rounded-xl p-3 bg-white hover:bg-gray-50/50 hover:border-gray-300 transition-colors shadow-2xs group"
               >
                 <div className="flex items-center gap-3">
@@ -224,8 +225,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             <h4 className="text-sm font-bold text-[#1e3a8a]">Reschedule Appointment</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">Select New Date</label>
+                <label htmlFor="newDateInput" className="block text-xs font-bold text-gray-600 mb-1">Select New Date</label>
                 <input
+                  id="newDateInput"
                   type="date"
                   required
                   value={newDate}
@@ -234,8 +236,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">Select New Time</label>
+                <label htmlFor="newTimeInput" className="block text-xs font-bold text-gray-600 mb-1">Select New Time</label>
                 <input
+                  id="newTimeInput"
                   type="time"
                   required
                   value={newTime}
@@ -269,6 +272,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             {showPendingActions && (
               <>
                 <button
+                  type="button"
                   onClick={() => {
                     onUpdateStatus(appointment.id, 'APPROVED');
                     onClose();
@@ -278,6 +282,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                   Approve
                 </button>
                 <button
+                  type="button"
                   onClick={() => {
                     onUpdateStatus(appointment.id, 'REJECTED');
                     onClose();
@@ -360,6 +365,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               </div>
               <div className="bg-gray-50 border-t border-gray-100 p-4 flex justify-end gap-3">
                 <button
+                  type="button"
                   onClick={() => setShowNotificationModal(false)}
                   className="px-6 py-2.5 border border-[#A31736]/20 text-white text-sm font-bold rounded-lg bg-[#A31736] hover:bg-[#801028] transition-all cursor-pointer shadow-sm"
                 >
