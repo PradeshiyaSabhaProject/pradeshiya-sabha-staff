@@ -137,8 +137,7 @@ export function useFleetData() {
         v.registrationNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         v.currentLocation.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (v.assignedDriverName &&
-          v.assignedDriverName.toLowerCase().includes(searchQuery.toLowerCase()))
+        v.assignedDriverName?.toLowerCase().includes(searchQuery.toLowerCase())
 
       const matchCategory = categoryFilter === 'All' || v.category === categoryFilter
       const matchStatus = statusFilter === 'All' || v.status === statusFilter
