@@ -46,7 +46,6 @@ const CheckBadgeIcon = () => (
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface TopBarProps {
-  activePage?: string
   hideNav?: boolean
 }
 
