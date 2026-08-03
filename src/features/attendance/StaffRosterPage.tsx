@@ -239,7 +239,15 @@ const generatePattern = (
         days[d] = 'OT+'
       } else {
         const cycle = d % 4
-        days[d] = cycle === 0 ? 'OFF' : cycle === 1 ? 'MRN' : cycle === 2 ? 'EVE' : 'GEN'
+        let shiftCode = 'GEN'
+        if (cycle === 0) {
+          shiftCode = 'OFF'
+        } else if (cycle === 1) {
+          shiftCode = 'MRN'
+        } else if (cycle === 2) {
+          shiftCode = 'EVE'
+        }
+        days[d] = shiftCode
       }
     }
   }
@@ -366,6 +374,7 @@ export const StaffRosterPage: React.FC = () => {
 
           {!monthHasAnyRoster && !isCurrentMonthLocked && (
             <button
+              type="button"
               onClick={() => handleInitializeMonthRoster(selectedMonth)}
               className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
             >
