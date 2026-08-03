@@ -225,8 +225,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             <h4 className="text-sm font-bold text-[#1e3a8a]">Reschedule Appointment</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">Select New Date</label>
+                <label htmlFor="newDateInput" className="block text-xs font-bold text-gray-600 mb-1">Select New Date</label>
                 <input
+                  id="newDateInput"
                   type="date"
                   required
                   value={newDate}
@@ -235,8 +236,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1">Select New Time</label>
+                <label htmlFor="newTimeInput" className="block text-xs font-bold text-gray-600 mb-1">Select New Time</label>
                 <input
+                  id="newTimeInput"
                   type="time"
                   required
                   value={newTime}
