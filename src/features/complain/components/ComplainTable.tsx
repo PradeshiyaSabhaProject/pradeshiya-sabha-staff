@@ -68,7 +68,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
     return complaints.filter(c => {
       // Tab filter
       const tabObj = TABS.find(t => t.id === activeTab)
-      if (tabObj && tabObj.status && c.status !== tabObj.status) return false
+      if (tabObj?.status && c.status !== tabObj.status) return false
       
       // Dropdown filters
       if (appliedFilters.date && c.date !== appliedFilters.date) return false
