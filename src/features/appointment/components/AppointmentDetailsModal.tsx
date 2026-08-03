@@ -98,7 +98,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
     }
     // Convert 24hr format from input to 12hr AM/PM format
     const [hours24, minutes] = newTime.split(':');
-    const hrs = parseInt(hours24);
+    const hrs = Number.parseInt(hours24, 10);
     const ampm = hrs >= 12 ? 'PM' : 'AM';
     const hrs12 = hrs % 12 || 12;
     const formattedTime = `${hrs12.toString().padStart(2, '0')}.${minutes} ${ampm}`;
