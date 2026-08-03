@@ -280,6 +280,16 @@ const getTimelineStatusBadgeClass = (status: string) => {
   return 'bg-rose-100 text-rose-800'
 }
 
+const getItemContainerClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'border-emerald-200 bg-emerald-50/10'
+  }
+  if (status === 'Rejected') {
+    return 'border-rose-200 bg-rose-50/10 opacity-70'
+  }
+  return 'border-gray-200 hover:border-blue-200'
+}
+
 export const AttendanceApprovalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'leaves' | 'corrections'>('leaves')
   const [searchQuery, setSearchQuery] = useState('')
@@ -484,12 +494,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
             filteredLeaveQueue.map((item) => (
               <div
               key={item.id}
-              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${item.status === 'Approved'
-                  ? 'border-emerald-200 bg-emerald-50/10'
-                  : item.status === 'Rejected'
-                    ? 'border-rose-200 bg-rose-50/10 opacity-70'
-                    : 'border-gray-200 hover:border-blue-200'
-                }`}
+              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${getItemContainerClass(item.status)}`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 {/* Employee info & Leave details */}
@@ -591,12 +596,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
             filteredCorrectionQueue.map((item) => (
               <div
               key={item.id}
-              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${item.status === 'Approved'
-                  ? 'border-emerald-200 bg-emerald-50/10'
-                  : item.status === 'Rejected'
-                    ? 'border-rose-200 bg-rose-50/10 opacity-70'
-                    : 'border-gray-200 hover:border-blue-200'
-                }`}
+              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${getItemContainerClass(item.status)}`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 {/* Employee info & Correction details */}
