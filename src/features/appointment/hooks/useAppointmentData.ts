@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../../../context/AuthContext';
 import { getAppointments, type AppointmentItem, type AppointmentStatus } from '../services/appointmentApi';
 
@@ -36,32 +36,32 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   }, []);
 
   // Filters State
-  const [activeTab, setActiveTabState] = useState('All Appointment');
-  const [selectedDate, setSelectedDateState] = useState('');
-  const [selectedService, setSelectedServiceState] = useState('All Services');
-  const [selectedStatus, setSelectedStatusState] = useState('All Statuses');
-  const [selectedOfficer, setSelectedOfficerState] = useState('All Officers');
+  const [activeTab, setActiveTab] = useState('All Appointment');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedService, setSelectedService] = useState('All Services');
+  const [selectedStatus, setSelectedStatus] = useState('All Statuses');
+  const [selectedOfficer, setSelectedOfficer] = useState('All Officers');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
-  const setActiveTab = (tab: string) => {
-    setActiveTabState(tab);
+  const handleActiveTabChange = (tab: string) => {
+    setActiveTab(tab);
     setCurrentPage(1);
   };
-  const setSelectedDate = (date: string) => {
-    setSelectedDateState(date);
+  const handleSelectedDateChange = (date: string) => {
+    setSelectedDate(date);
     setCurrentPage(1);
   };
-  const setSelectedService = (service: string) => {
-    setSelectedServiceState(service);
+  const handleSelectedServiceChange = (service: string) => {
+    setSelectedService(service);
     setCurrentPage(1);
   };
-  const setSelectedStatus = (status: string) => {
-    setSelectedStatusState(status);
+  const handleSelectedStatusChange = (status: string) => {
+    setSelectedStatus(status);
     setCurrentPage(1);
   };
-  const setSelectedOfficer = (officer: string) => {
-    setSelectedOfficerState(officer);
+  const handleSelectedOfficerChange = (officer: string) => {
+    setSelectedOfficer(officer);
     setCurrentPage(1);
   };
 
@@ -180,15 +180,15 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     allAppointmentsCount: fullyFiltered.length,
     tabCounts,
     activeTab,
-    setActiveTab,
+    setActiveTab: handleActiveTabChange,
     selectedDate,
-    setSelectedDate,
+    setSelectedDate: handleSelectedDateChange,
     selectedService,
-    setSelectedService,
+    setSelectedService: handleSelectedServiceChange,
     selectedStatus,
-    setSelectedStatus,
+    setSelectedStatus: handleSelectedStatusChange,
     selectedOfficer,
-    setSelectedOfficer,
+    setSelectedOfficer: handleSelectedOfficerChange,
     currentPage,
     setCurrentPage,
     totalPages,
