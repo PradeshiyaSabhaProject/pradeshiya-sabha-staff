@@ -138,6 +138,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
               <span>{profile.department}</span>
               <span>•</span>
               <button
+                type="button"
                 onClick={handleCopyNfc}
                 title="Click to copy NFC Token ID"
                 className="font-mono text-xs text-gray-600 hover:text-[#801028] underline cursor-pointer"
@@ -150,6 +151,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
 
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
           <button
+            type="button"
             onClick={() => setShowIdModal(true)}
             className="w-full sm:w-auto bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -158,6 +160,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           </button>
 
           <button
+            type="button"
             onClick={onEditClick}
             className={`w-full sm:w-auto text-white text-xs font-semibold px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider ${
               isEditing ? 'bg-gray-700 hover:bg-gray-800' : 'bg-[#801028] hover:bg-[#600a1c]'

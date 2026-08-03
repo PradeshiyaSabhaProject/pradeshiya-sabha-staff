@@ -314,10 +314,12 @@ export const PersonalDetailsTab: React.FC<PersonalDetailsTabProps> = ({
           {isEditing ? (
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
+                <label htmlFor="residentialAddress" className="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">
                   Full Street & City Address
                 </label>
                 <textarea
+                  id="residentialAddress"
+                  name="residentialAddress"
                   rows={3}
                   value={formData.residentialAddress || ''}
                   onChange={(e) => handleChange('residentialAddress', e.target.value)}
