@@ -246,8 +246,12 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
     const formattedIn = proposedIn ? `${proposedIn} AM` : '08:30 AM'
     const formattedOut = proposedOut ? `${proposedOut} PM` : '04:30 PM'
 
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    const randomSuffix = 100 + (array[0] % 900)
+
     const newRec: AttendanceCorrectionRecord = {
-      id: `COR-2026-${Math.floor(100 + Math.random() * 900)}`,
+      id: `COR-2026-${randomSuffix}`,
       targetDate,
       correctionType,
       proposedIn: formattedIn,
