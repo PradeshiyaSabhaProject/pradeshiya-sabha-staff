@@ -1,5 +1,5 @@
-﻿/* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState } from 'react'
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState, useMemo, useCallback } from 'react'
 
 export interface User {
   id: string
@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return null
   })
 
-  const login = (userOrEmail: User | string) => {
+  const login = useCallback((userOrEmail: User | string) => {
     let newUser: User
     if (typeof userOrEmail === 'string') {
       const isStaff = userOrEmail.toLowerCase().includes('staff') || userOrEmail.includes('1999703')
@@ -54,15 +54,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setUser(newUser)
     localStorage.setItem('pradeshiya_user', JSON.stringify(newUser))
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setUser(null)
     localStorage.removeItem('pradeshiya_user')
-  }
+  }, [])
+
+  const value = useMemo(() => ({ user, login, logout }), [user, login, logout])
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   )
