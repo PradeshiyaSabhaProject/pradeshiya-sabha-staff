@@ -105,9 +105,9 @@ export const DepartmentAndPermissionsTab: React.FC<DepartmentAndPermissionsTabPr
           </div>
 
           <div className="space-y-2.5">
-            {department.clearances.map((clearance, idx) => (
+            {department.clearances.map((clearance) => (
               <div
-                key={idx}
+                key={clearance}
                 className="p-3.5 rounded-xl bg-gray-50/80 border border-gray-200 flex items-start gap-3 shadow-2xs"
               >
                 <div className="shrink-0 mt-0.5">
