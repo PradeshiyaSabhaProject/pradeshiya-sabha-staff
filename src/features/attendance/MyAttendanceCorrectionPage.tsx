@@ -603,8 +603,8 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
             {/* Vertical Multi-Level Timeline */}
             <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
-              {selectedRecordForTimeline.timelineSteps.map((step, idx) => (
-                <div key={idx} className="relative">
+              {selectedRecordForTimeline.timelineSteps.map((step) => (
+                <div key={`${step.level}-${step.roleName}`} className="relative">
                   {/* Circle Indicator */}
                   <div
                     className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${getTimelineCircleClass(step.status)}`}
