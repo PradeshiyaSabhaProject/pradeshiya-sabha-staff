@@ -415,9 +415,13 @@ export function useFleetData() {
       requestedBy?: string
     }
   ): FleetApprovalRequest => {
+    const array = new Uint32Array(1)
+    window.crypto.getRandomValues(array)
+    const randomSuffix = 100 + (array[0] % 900)
+
     const newReq: FleetApprovalRequest = {
       id: `REQ-${Date.now()}`,
-      requestNumber: `FL-REQ-2026-${Math.floor(100 + Math.random() * 900)}`,
+      requestNumber: `FL-REQ-2026-${randomSuffix}`,
       actionType,
       title,
       description,
