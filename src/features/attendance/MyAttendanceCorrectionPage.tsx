@@ -198,6 +198,36 @@ const INITIAL_CORRECTIONS: AttendanceCorrectionRecord[] = [
   }
 ]
 
+const getStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+  }
+  if (status.includes('Pending')) {
+    return 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse'
+  }
+  return 'bg-rose-100 text-rose-800 border border-rose-200'
+}
+
+const getTimelineCircleClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-500 border-emerald-600 text-white'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-400 border-amber-500 text-white animate-pulse'
+  }
+  return 'bg-rose-500 border-rose-600 text-white'
+}
+
+const getTimelineStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-100 text-emerald-800'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-100 text-amber-800'
+  }
+  return 'bg-rose-100 text-rose-800'
+}
+
 export const MyAttendanceCorrectionPage: React.FC = () => {
   const [history, setHistory] = useState<AttendanceCorrectionRecord[]>(INITIAL_CORRECTIONS)
   const [isApplying, setIsApplying] = useState(false)
@@ -275,6 +305,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
         <div className="flex items-center space-x-3 w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setIsApplying(true)}
             className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
           >
@@ -328,6 +359,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 <h2 className="text-lg font-bold text-gray-900 mt-0.5">Request Attendance Correction</h2>
               </div>
               <button
+                type="button"
                 onClick={() => setIsApplying(false)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition"
               >
@@ -338,11 +370,12 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
             <form onSubmit={handleApplySubmit} className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="target-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Target Date of Punch
                   </label>
                   <input
                     type="date"
+                    id="target-date"
                     value={targetDate}
                     onChange={(e) => setTargetDate(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-800"
@@ -350,10 +383,11 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="corr-type" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Correction Type
                   </label>
                   <select
+                    id="corr-type"
                     value={correctionType}
                     onChange={(e) => setCorrectionType(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-white text-sm font-bold text-gray-800"
@@ -370,22 +404,24 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="proposed-in" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Proposed Check-In Time
                   </label>
                   <input
                     type="time"
+                    id="proposed-in"
                     value={proposedIn}
                     onChange={(e) => setProposedIn(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-800"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                  <label htmlFor="proposed-out" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                     Proposed Check-Out Time
                   </label>
                   <input
                     type="time"
+                    id="proposed-out"
                     value={proposedOut}
                     onChange={(e) => setProposedOut(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm font-bold text-gray-800"
@@ -394,10 +430,11 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
+                <label htmlFor="reason-explain" className="block text-xs font-semibold uppercase text-gray-600 mb-1.5">
                   Reason / Explanation
                 </label>
                 <textarea
+                  id="reason-explain"
                   rows={3}
                   required
                   value={reason}
@@ -440,6 +477,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
           <div className="flex bg-gray-100 p-1 rounded-xl shrink-0">
             {['All', 'Pending', 'Approved'].map((f) => (
               <button
+                type="button"
                 key={f}
                 onClick={() => setFilterType(f)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
@@ -492,13 +530,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
                   <td className="py-4 px-4 text-center">
                     <span
-                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${
-                        rec.status === 'Approved'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                          : rec.status.includes('Pending')
-                          ? 'bg-amber-100 text-amber-800 border border-amber-200 animate-pulse'
-                          : 'bg-rose-100 text-rose-800 border border-rose-200'
-                      }`}
+                      className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold ${getStatusBadgeClass(rec.status)}`}
                     >
                       {rec.status}
                     </span>
@@ -506,6 +538,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
                   <td className="py-4 px-5 text-right">
                     <button
+                      type="button"
                       onClick={() => setSelectedRecordForTimeline(rec)}
                       className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold border border-blue-200 transition shadow-2xs"
                       title="View Multi-Level Approval Timeline"
@@ -543,6 +576,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 </h2>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
@@ -569,13 +603,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                 <div key={idx} className="relative">
                   {/* Circle Indicator */}
                   <div
-                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      step.status === 'Approved'
-                        ? 'bg-emerald-500 border-emerald-600 text-white'
-                        : step.status === 'Pending'
-                        ? 'bg-amber-400 border-amber-500 text-white animate-pulse'
-                        : 'bg-rose-500 border-rose-600 text-white'
-                    }`}
+                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${getTimelineCircleClass(step.status)}`}
                   >
                     {step.status === 'Approved' ? (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="w-3 h-3">
@@ -593,13 +621,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
                         {step.level} • {step.roleName}
                       </span>
                       <span
-                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
-                          step.status === 'Approved'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : step.status === 'Pending'
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-rose-100 text-rose-800'
-                        }`}
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${getTimelineStatusBadgeClass(step.status)}`}
                       >
                         {step.status}
                       </span>
@@ -621,6 +643,7 @@ export const MyAttendanceCorrectionPage: React.FC = () => {
 
             <div className="flex justify-end pt-2 border-t border-gray-200">
               <button
+                type="button"
                 onClick={() => setSelectedRecordForTimeline(null)}
                 className="px-5 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold transition shadow-sm"
               >
