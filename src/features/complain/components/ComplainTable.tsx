@@ -307,9 +307,9 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
           Showing {filteredComplaints.length > 0 ? 1 : 0}-{Math.min(filteredComplaints.length, 8)} of {filteredComplaints.length} results
         </span>
         <div className="flex items-center gap-1 text-sm font-semibold text-gray-600">
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
-          <button className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
-          <button className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&lt;</button>
+          <button type="button" className="px-3 py-1 rounded bg-[#801028] text-white">1</button>
+          <button type="button" className="px-2 py-1 rounded hover:bg-gray-100 disabled:opacity-50" disabled>&gt;</button>
         </div>
       </div>
 
