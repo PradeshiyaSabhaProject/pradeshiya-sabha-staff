@@ -191,9 +191,9 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
           {/* Right Column: Attached Documents */}
           <div className="md:col-span-5 space-y-3">
-            {appointment.documents.map((doc, idx) => (
+            {appointment.documents.map((doc) => (
               <div
-                key={idx}
+                key={doc.name}
                 className="flex items-center justify-between border border-gray-200/80 rounded-xl p-3 bg-white hover:bg-gray-50/50 hover:border-gray-300 transition-colors shadow-2xs group"
               >
                 <div className="flex items-center gap-3">
