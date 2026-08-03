@@ -26,3 +26,6 @@ dist-ssr
 .env
 screenshots
 docs
+export-sonar-issues.js
+README-*.md
+sonar-*.csv
