@@ -253,7 +253,7 @@ export function useFleetData() {
               ...log,
               status: 'Completed' as const,
               completedDate: new Date().toISOString().split('T')[0],
-              costLKR: actualCost !== undefined ? actualCost : log.costLKR,
+              costLKR: actualCost ?? log.costLKR,
               notes: notes ? `${log.notes} | ${notes}` : log.notes,
             }
           }
