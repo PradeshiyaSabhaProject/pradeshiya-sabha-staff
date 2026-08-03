@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 
 interface BiometricSyncModalProps {
   isOpen: boolean
@@ -43,6 +43,7 @@ export const BiometricSyncModal: React.FC<BiometricSyncModalProps> = ({ isOpen, 
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="text-white/80 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition"
           >
@@ -112,12 +113,14 @@ export const BiometricSyncModal: React.FC<BiometricSyncModalProps> = ({ isOpen, 
 
           <div className="flex items-center justify-end space-x-3 pt-2">
             <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 rounded-xl border border-gray-300 text-sm font-medium text-gray-700 hover:bg-gray-100 transition"
             >
               Close
             </button>
             <button
+              type="button"
               onClick={handleStartSync}
               disabled={syncing}
               className="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-sm font-semibold shadow-md transition disabled:opacity-60"
