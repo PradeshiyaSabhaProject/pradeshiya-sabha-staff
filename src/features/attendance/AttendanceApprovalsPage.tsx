@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 
+type ApprovalStatus = 'Approved' | 'Pending' | 'Rejected'
+
 interface ApprovalTimelineStep {
   level: string
   roleName: string
   approverName: string
-  status: 'Approved' | 'Pending' | 'Rejected'
+  status: ApprovalStatus
   timestamp?: string
   comments?: string
 }
@@ -23,7 +25,7 @@ interface LeaveApprovalItem {
   handoverOfficer: string
   appliedOn: string
   currentLevel: 1 | 2 | 3
-  status: 'Pending' | 'Approved' | 'Rejected'
+  status: ApprovalStatus
   timelineSteps: ApprovalTimelineStep[]
 }
 
@@ -40,7 +42,7 @@ interface CorrectionApprovalItem {
   reason: string
   appliedOn: string
   currentLevel: 1 | 2
-  status: 'Pending' | 'Approved' | 'Rejected'
+  status: ApprovalStatus
   timelineSteps: ApprovalTimelineStep[]
 }
 
