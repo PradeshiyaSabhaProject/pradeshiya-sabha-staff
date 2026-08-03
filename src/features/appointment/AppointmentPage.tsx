@@ -122,7 +122,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     link.setAttribute('download', `${mode === 'my' ? 'My' : 'All'}_Appointments.csv`);
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
   };
 
   // Status Style badge helper
