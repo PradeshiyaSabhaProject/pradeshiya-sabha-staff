@@ -300,13 +300,15 @@ export const CreateUserPage: React.FC = () => {
               const hasAccount = emp.status === 'Has Account'
 
               return (
-                <div
+                <button
+                  type="button"
+                  disabled={hasAccount}
                   key={emp.employeeId}
-                  onClick={() => !hasAccount && setSelectedEmployee(emp)}
-                  className={`p-4 rounded-xl border transition-all flex items-center justify-between ${getEmployeeCardClass(hasAccount, isSelected)}`}
+                  onClick={() => setSelectedEmployee(emp)}
+                  className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${getEmployeeCardClass(hasAccount, isSelected)}`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div
+                  <span className="flex items-center gap-3 min-w-0">
+                    <span
                       className={`w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center shrink-0 ${
                         isSelected
                           ? 'bg-[#801028] text-white shadow-xs'
@@ -314,23 +316,23 @@ export const CreateUserPage: React.FC = () => {
                       }`}
                     >
                       {emp.avatarInitials || 'E'}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 text-sm truncate">{emp.employeeName}</p>
+                    </span>
+                    <span className="min-w-0 block">
+                      <span className="flex items-center gap-2">
+                        <span className="block font-bold text-gray-900 text-sm truncate">{emp.employeeName}</span>
                         <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono text-gray-600 shrink-0">
                           {emp.employeeId}
                         </span>
-                      </div>
-                      <p className="text-xs text-gray-500 truncate">{emp.designation}</p>
-                      <p className="text-[11px] text-gray-400 truncate">{emp.department}</p>
-                    </div>
-                  </div>
+                      </span>
+                      <span className="block text-xs text-gray-500 truncate mt-0.5">{emp.designation}</span>
+                      <span className="block text-[11px] text-gray-400 truncate mt-0.5">{emp.department}</span>
+                    </span>
+                  </span>
 
-                  <div className="shrink-0 ml-3">
+                  <span className="shrink-0 ml-3 block">
                     {renderEmployeeAction(hasAccount, isSelected)}
-                  </div>
-                </div>
+                  </span>
+                </button>
               )
             })}
           </div>
