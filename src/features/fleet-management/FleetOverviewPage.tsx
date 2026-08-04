@@ -404,11 +404,14 @@ export const FleetOverviewPage: React.FC = () => {
                           {v.status}
                         </span>
                       </div>
-                      <h3
-                        onClick={() => setActiveInspectorVehicle(v)}
-                        className="text-base font-bold text-gray-900 hover:text-[#1e3a8a] transition-colors cursor-pointer"
-                      >
-                        {v.name}
+                      <h3 className="text-base font-bold text-gray-900">
+                        <button
+                          type="button"
+                          onClick={() => setActiveInspectorVehicle(v)}
+                          className="hover:text-[#1e3a8a] transition-colors cursor-pointer text-left font-bold"
+                        >
+                          {v.name}
+                        </button>
                       </h3>
                       <p className="text-xs text-gray-500 mt-0.5">{v.category} • {v.department}</p>
                     </div>
@@ -569,12 +572,13 @@ export const FleetOverviewPage: React.FC = () => {
                         {v.registrationNumber}
                       </td>
                       <td className="py-3.5 px-6">
-                        <div
+                        <button
+                          type="button"
                           onClick={() => setActiveInspectorVehicle(v)}
-                          className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer"
+                          className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer text-left"
                         >
                           {v.name}
-                        </div>
+                        </button>
                         <div className="text-xs text-gray-500">{v.category} • {v.department}</div>
                       </td>
                       <td className="py-3.5 px-6 font-medium text-gray-800 max-w-xs truncate">
