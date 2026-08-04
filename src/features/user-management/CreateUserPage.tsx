@@ -461,11 +461,12 @@ export const CreateUserPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+              <label htmlFor="temp-password-input" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
                 Temporary Password <span className="text-[#801028]">*</span>
               </label>
               <div className="relative">
                 <input
+                  id="temp-password-input"
                   type={showPassword ? 'text' : 'password'}
                   value={tempPassword}
                   onChange={(e) => setTempPassword(e.target.value)}
