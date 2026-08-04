@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import type { VehicleCategory, VehicleStatus, DriverRecord } from '../data/initialFleetData'
+import type { VehicleCategory, VehicleStatus, DriverRecord, FuelType } from '../data/initialFleetData'
 
 interface AddVehicleModalProps {
   isOpen: boolean
@@ -9,7 +9,7 @@ interface AddVehicleModalProps {
     name: string
     category: VehicleCategory
     department: string
-    fuelType: 'Diesel' | 'Petrol' | 'EV'
+    fuelType: FuelType
     odometerKm: number
     yearOfManufacture: number
     status: VehicleStatus
@@ -32,7 +32,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
   const [name, setName] = useState('')
   const [category, setCategory] = useState<VehicleCategory>('Garbage Compactor')
   const [department, setDepartment] = useState('Solid Waste Management')
-  const [fuelType, setFuelType] = useState<'Diesel' | 'Petrol' | 'EV'>('Diesel')
+  const [fuelType, setFuelType] = useState<FuelType>('Diesel')
   const [odometerKm, setOdometerKm] = useState(12000)
   const [yearOfManufacture, setYearOfManufacture] = useState(2026)
   const [currentLocation, setCurrentLocation] = useState('Municipal Central Depot - Bay 01')
@@ -210,7 +210,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
                 <select
                   id="add-veh-fuel"
                   value={fuelType}
-                  onChange={(e) => setFuelType(e.target.value as 'Diesel' | 'Petrol' | 'EV')}
+                  onChange={(e) => setFuelType(e.target.value as FuelType)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
                 >
                   <option value="Diesel">Diesel</option>

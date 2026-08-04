@@ -49,13 +49,15 @@ export interface DriverRecord {
   status: 'On Duty' | 'Off Duty' | 'On Leave'
 }
 
+export type FuelType = 'Diesel' | 'Petrol' | 'EV'
+
 export interface VehicleRecord {
   id: string
   registrationNumber: string // e.g. WP LA-4821
   name: string // e.g. Isuzu Forward Compactor 8t
   category: VehicleCategory
   department: string // e.g. Solid Waste Management
-  fuelType: 'Diesel' | 'Petrol' | 'EV'
+  fuelType: FuelType
   odometerKm: number
   yearOfManufacture: number
   status: VehicleStatus
