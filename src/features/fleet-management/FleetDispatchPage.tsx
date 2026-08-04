@@ -75,6 +75,17 @@ function getVehicleCoordinates(v: VehicleRecord, index: number): [number, number
   return [6.8440 + index * 0.002, 79.9960 + index * 0.002]
 }
 
+function getStatusBadgeStyle(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'bg-blue-50 text-blue-700'
+    case 'Available':
+      return 'bg-emerald-50 text-emerald-700'
+    default:
+      return 'bg-orange-50 text-orange-700'
+  }
+}
+
 export const FleetDispatchPage: React.FC = () => {
   const { vehicles, drivers, submitApprovalRequest } = useFleetData()
 
@@ -391,13 +402,7 @@ export const FleetDispatchPage: React.FC = () => {
                   {selectedVehicle.registrationNumber}
                 </span>
                 <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                    selectedVehicle.status === 'On Mission'
-                      ? 'bg-blue-50 text-blue-700'
-                      : selectedVehicle.status === 'Available'
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'bg-orange-50 text-orange-700'
-                  }`}
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusBadgeStyle(selectedVehicle.status)}`}
                 >
                   {selectedVehicle.status}
                 </span>
