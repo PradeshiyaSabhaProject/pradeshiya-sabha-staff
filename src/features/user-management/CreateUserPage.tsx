@@ -35,6 +35,28 @@ function getPresetButtonClass(preset: 'Admin' | 'Manager' | 'Staff' | 'Clear', r
   return 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
 }
 
+const renderEmployeeAction = (hasAccount: boolean, isSelected: boolean) => {
+  if (hasAccount) {
+    return (
+      <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded">
+        Account Exists
+      </span>
+    )
+  }
+  if (isSelected) {
+    return (
+      <span className="w-6 h-6 rounded-full bg-[#801028] text-white flex items-center justify-center shadow-xs">
+        <CheckIcon />
+      </span>
+    )
+  }
+  return (
+    <span className="text-xs font-semibold text-[#801028] border border-[#801028]/30 px-2.5 py-1 rounded-lg hover:bg-[#801028]/10">
+      Select
+    </span>
+  )
+}
+
 export const CreateUserPage: React.FC = () => {
   const navigate = useNavigate()
   const { availableEmployees, createUser } = useUserManagement()
@@ -302,19 +324,7 @@ export const CreateUserPage: React.FC = () => {
                   </div>
 
                   <div className="shrink-0 ml-3">
-                    {hasAccount ? (
-                      <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded">
-                        Account Exists
-                      </span>
-                    ) : isSelected ? (
-                      <span className="w-6 h-6 rounded-full bg-[#801028] text-white flex items-center justify-center shadow-xs">
-                        <CheckIcon />
-                      </span>
-                    ) : (
-                      <span className="text-xs font-semibold text-[#801028] border border-[#801028]/30 px-2.5 py-1 rounded-lg hover:bg-[#801028]/10">
-                        Select
-                      </span>
-                    )}
+                    {renderEmployeeAction(hasAccount, isSelected)}
                   </div>
                 </div>
               )
