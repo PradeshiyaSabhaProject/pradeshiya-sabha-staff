@@ -32,6 +32,7 @@ export const AttendanceRegularizationPage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => setIsModalOpen(true)}
           className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white text-sm font-semibold shadow-md transition"
         >
@@ -117,12 +118,14 @@ export const AttendanceRegularizationPage: React.FC = () => {
               {item.supervisorStatus === 'Pending' && (
                 <div className="flex items-center space-x-2">
                   <button
+                    type="button"
                     onClick={() => handleReject(item.id)}
                     className="px-3.5 py-2 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-xs font-bold transition"
                   >
                     Reject
                   </button>
                   <button
+                    type="button"
                     onClick={() => handleApprove(item.id)}
                     className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition"
                   >

@@ -1,4 +1,4 @@
-﻿// Appointment-specific types and mock API services
+// Appointment-specific types and mock API services
 
 export type AppointmentStatus = 'PENDING' | 'APPROVED' | 'RESCHEDULED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW';
 
@@ -471,7 +471,8 @@ let mockIndex = 0;
 const addRecords = (status: AppointmentStatus, count: number) => {
   for (let i = 0; i < count; i++) {
     const idNum = 930 + mockIndex;
-    const name = namesList[mockIndex % namesList.length] + ' ' + (mockIndex % 3 === 0 ? 'Perera' : (mockIndex % 3 === 1 ? 'Silva' : 'Fernando'));
+    const lastNameSuffix = ['Perera', 'Silva', 'Fernando'][mockIndex % 3];
+    const name = namesList[mockIndex % namesList.length] + ' ' + lastNameSuffix;
     const service = servicesList[mockIndex % servicesList.length];
     const officer = officersList[mockIndex % officersList.length];
     const day = (10 + (mockIndex % 20)).toString().padStart(2, '0');

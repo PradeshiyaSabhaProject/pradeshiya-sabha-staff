@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
 
+type ApprovalStatus = 'Approved' | 'Pending' | 'Rejected'
+
 interface ApprovalTimelineStep {
   level: string
   roleName: string
   approverName: string
-  status: 'Approved' | 'Pending' | 'Rejected'
+  status: ApprovalStatus
   timestamp?: string
   comments?: string
 }
@@ -23,7 +25,7 @@ interface LeaveApprovalItem {
   handoverOfficer: string
   appliedOn: string
   currentLevel: 1 | 2 | 3
-  status: 'Pending' | 'Approved' | 'Rejected'
+  status: ApprovalStatus
   timelineSteps: ApprovalTimelineStep[]
 }
 
@@ -40,7 +42,7 @@ interface CorrectionApprovalItem {
   reason: string
   appliedOn: string
   currentLevel: 1 | 2
-  status: 'Pending' | 'Approved' | 'Rejected'
+  status: ApprovalStatus
   timelineSteps: ApprovalTimelineStep[]
 }
 
@@ -260,6 +262,36 @@ const INITIAL_CORRECTION_QUEUE: CorrectionApprovalItem[] = [
   }
 ]
 
+const getTimelineCircleClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-500 border-emerald-600 text-white'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-400 border-amber-500 text-white animate-pulse'
+  }
+  return 'bg-rose-500 border-rose-600 text-white'
+}
+
+const getTimelineStatusBadgeClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'bg-emerald-100 text-emerald-800'
+  }
+  if (status === 'Pending') {
+    return 'bg-amber-100 text-amber-800'
+  }
+  return 'bg-rose-100 text-rose-800'
+}
+
+const getItemContainerClass = (status: string) => {
+  if (status === 'Approved') {
+    return 'border-emerald-200 bg-emerald-50/10'
+  }
+  if (status === 'Rejected') {
+    return 'border-rose-200 bg-rose-50/10 opacity-70'
+  }
+  return 'border-gray-200 hover:border-blue-200'
+}
+
 export const AttendanceApprovalsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'leaves' | 'corrections'>('leaves')
   const [searchQuery, setSearchQuery] = useState('')
@@ -387,6 +419,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
           <div className="flex bg-gray-100 p-1 rounded-xl overflow-x-auto">
             {(['All', 'Pending', 'Approved', 'Rejected'] as const).map((st) => (
               <button
+                type="button"
                 key={st}
                 onClick={() => setStatusFilter(st)}
                 className={`flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
@@ -418,6 +451,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
       {/* Tabs */}
       <div className="flex border-b border-gray-200 space-x-6 sm:space-x-8 overflow-x-auto [-webkit-overflow-scrolling:touch]">
         <button
+          type="button"
           onClick={() => setActiveTab('leaves')}
           className={`pb-3.5 text-sm font-bold flex items-center space-x-2 transition border-b-2 ${activeTab === 'leaves'
               ? 'border-blue-600 text-blue-600'
@@ -434,6 +468,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
         </button>
 
         <button
+          type="button"
           onClick={() => setActiveTab('corrections')}
           className={`pb-3.5 text-sm font-bold flex items-center space-x-2 transition border-b-2 ${activeTab === 'corrections'
               ? 'border-blue-600 text-blue-600'
@@ -461,12 +496,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
             filteredLeaveQueue.map((item) => (
               <div
               key={item.id}
-              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${item.status === 'Approved'
-                  ? 'border-emerald-200 bg-emerald-50/10'
-                  : item.status === 'Rejected'
-                    ? 'border-rose-200 bg-rose-50/10 opacity-70'
-                    : 'border-gray-200 hover:border-blue-200'
-                }`}
+              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${getItemContainerClass(item.status)}`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 {/* Employee info & Leave details */}
@@ -506,6 +536,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                 {/* Manager actions */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:justify-end shrink-0 border-t lg:border-t-0 pt-4 lg:pt-0 border-gray-100 w-full lg:w-auto">
                   <button
+                    type="button"
                     onClick={() =>
                       setSelectedTimelineItem({
                         id: item.id,
@@ -525,12 +556,14 @@ export const AttendanceApprovalsPage: React.FC = () => {
                   {item.status === 'Pending' ? (
                     <>
                       <button
+                        type="button"
                         onClick={() => handleRejectLeave(item.id)}
                         className="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 transition text-center"
                       >
                         ✕ Reject
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleApproveLeave(item.id)}
                         className="w-full sm:w-auto px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition text-center"
                       >
@@ -565,12 +598,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
             filteredCorrectionQueue.map((item) => (
               <div
               key={item.id}
-              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${item.status === 'Approved'
-                  ? 'border-emerald-200 bg-emerald-50/10'
-                  : item.status === 'Rejected'
-                    ? 'border-rose-200 bg-rose-50/10 opacity-70'
-                    : 'border-gray-200 hover:border-blue-200'
-                }`}
+              className={`bg-white rounded-2xl border p-6 transition shadow-xs ${getItemContainerClass(item.status)}`}
             >
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
                 {/* Employee info & Correction details */}
@@ -610,6 +638,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                 {/* Manager actions */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 lg:justify-end shrink-0 border-t lg:border-t-0 pt-4 lg:pt-0 border-gray-100 w-full lg:w-auto">
                   <button
+                    type="button"
                     onClick={() =>
                       setSelectedTimelineItem({
                         id: item.id,
@@ -629,12 +658,14 @@ export const AttendanceApprovalsPage: React.FC = () => {
                   {item.status === 'Pending' ? (
                     <>
                       <button
+                        type="button"
                         onClick={() => handleRejectCorrection(item.id)}
                         className="w-full sm:w-auto px-4 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold border border-rose-200 transition text-center"
                       >
                         ✕ Reject
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleApproveCorrection(item.id)}
                         className="w-full sm:w-auto px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md transition text-center"
                       >
@@ -672,6 +703,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                 </h2>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedTimelineItem(null)}
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-500 flex items-center justify-center transition font-bold"
               >
@@ -681,15 +713,10 @@ export const AttendanceApprovalsPage: React.FC = () => {
 
             {/* Vertical Timeline */}
             <div className="relative pl-6 space-y-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-200">
-              {selectedTimelineItem.steps.map((step, idx) => (
-                <div key={idx} className="relative">
+              {selectedTimelineItem.steps.map((step) => (
+                <div key={`${step.level}-${step.roleName}`} className="relative">
                   <div
-                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${step.status === 'Approved'
-                        ? 'bg-emerald-500 border-emerald-600 text-white'
-                        : step.status === 'Pending'
-                          ? 'bg-amber-400 border-amber-500 text-white animate-pulse'
-                          : 'bg-rose-500 border-rose-600 text-white'
-                      }`}
+                    className={`absolute -left-[23px] top-0.5 w-5 h-5 rounded-full border-2 flex items-center justify-center ${getTimelineCircleClass(step.status)}`}
                   >
                     {step.status === 'Approved' ? (
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="w-3 h-3">
@@ -706,12 +733,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
                         {step.level} • {step.roleName}
                       </span>
                       <span
-                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${step.status === 'Approved'
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : step.status === 'Pending'
-                              ? 'bg-amber-100 text-amber-800'
-                              : 'bg-rose-100 text-rose-800'
-                          }`}
+                        className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full ${getTimelineStatusBadgeClass(step.status)}`}
                       >
                         {step.status}
                       </span>
@@ -733,6 +755,7 @@ export const AttendanceApprovalsPage: React.FC = () => {
 
             <div className="flex justify-end pt-2 border-t border-gray-200">
               <button
+                type="button"
                 onClick={() => setSelectedTimelineItem(null)}
                 className="px-5 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-bold transition shadow-sm"
               >

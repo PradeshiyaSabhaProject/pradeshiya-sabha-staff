@@ -52,9 +52,11 @@ export const RenewPermitModal: React.FC<RenewPermitModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
+        aria-label="Close modal"
       />
 
       {/* Modal Container matching Asset/Letter Management UI */}
@@ -89,11 +91,12 @@ export const RenewPermitModal: React.FC<RenewPermitModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="permit-expiry" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Route Permit Expiry Date
             </label>
             <input
               type="date"
+              id="permit-expiry"
               value={permitExpiryDate}
               onChange={(e) => setPermitExpiryDate(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -102,11 +105,12 @@ export const RenewPermitModal: React.FC<RenewPermitModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="rev-lic-expiry" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Revenue License Expiry Date
             </label>
             <input
               type="date"
+              id="rev-lic-expiry"
               value={revenueLicenseExpiryDate}
               onChange={(e) => setRevenueLicenseExpiryDate(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -115,11 +119,12 @@ export const RenewPermitModal: React.FC<RenewPermitModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="insurance-expiry" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Insurance Policy Expiry Date
             </label>
             <input
               type="date"
+              id="insurance-expiry"
               value={insuranceExpiryDate}
               onChange={(e) => setInsuranceExpiryDate(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
