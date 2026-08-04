@@ -84,6 +84,7 @@ export const FleetDirectoryPage: React.FC = () => {
 
         <div className="flex items-center gap-3">
           <button
+            type="button"
             onClick={() => setIsAddModalOpen(true)}
             className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -138,6 +139,7 @@ export const FleetDirectoryPage: React.FC = () => {
           </select>
 
           <button
+            type="button"
             onClick={() => setShowOnlyPermitAlerts(!showOnlyPermitAlerts)}
             className={`w-full sm:w-auto px-4 py-2 rounded border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer text-center ${
               showOnlyPermitAlerts
@@ -180,12 +182,13 @@ export const FleetDirectoryPage: React.FC = () => {
                       {v.registrationNumber}
                     </td>
                     <td className="py-3.5 px-6">
-                      <div
+                      <button
+                        type="button"
                         onClick={() => setActiveInspectorVehicle(v)}
-                        className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer"
+                        className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer text-left font-normal"
                       >
                         {v.name}
-                      </div>
+                      </button>
                       <div className="text-xs text-gray-500">Year {v.yearOfManufacture} • {v.fuelType}</div>
                     </td>
                     <td className="py-3.5 px-6">
@@ -221,6 +224,7 @@ export const FleetDirectoryPage: React.FC = () => {
                     <td className="py-3.5 px-6 text-right whitespace-nowrap">
                       <div className="flex items-center justify-end gap-1.5">
                         <button
+                          type="button"
                           onClick={() => setActiveInspectorVehicle(v)}
                           className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
                         >
@@ -228,6 +232,7 @@ export const FleetDirectoryPage: React.FC = () => {
                         </button>
                         {v.status !== 'In Maintenance' ? (
                           <button
+                            type="button"
                             onClick={() => setSelectedVehicleForMaintenance(v)}
                             className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
                           >
@@ -235,6 +240,7 @@ export const FleetDirectoryPage: React.FC = () => {
                           </button>
                         ) : (
                           <button
+                            type="button"
                             onClick={() => {
                               submitApprovalRequest(
                                 'COMPLETE_MAINTENANCE',
@@ -253,6 +259,7 @@ export const FleetDirectoryPage: React.FC = () => {
 
                         {v.status !== 'On Mission' ? (
                           <button
+                            type="button"
                             onClick={() => setSelectedVehicleForDispatch(v)}
                             className="px-2.5 py-1 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white text-xs font-semibold uppercase tracking-wider cursor-pointer"
                           >
@@ -260,6 +267,7 @@ export const FleetDirectoryPage: React.FC = () => {
                           </button>
                         ) : (
                           <button
+                            type="button"
                             onClick={() => {
                               submitApprovalRequest(
                                 'RETURN_MISSION',
@@ -277,6 +285,7 @@ export const FleetDirectoryPage: React.FC = () => {
                         )}
 
                         <button
+                          type="button"
                           onClick={() => setSelectedVehicleForDriver(v)}
                           className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
                         >
@@ -430,6 +439,7 @@ export const FleetDirectoryPage: React.FC = () => {
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
           <span className="text-xs font-semibold">{toastMsg}</span>
           <button
+            type="button"
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
