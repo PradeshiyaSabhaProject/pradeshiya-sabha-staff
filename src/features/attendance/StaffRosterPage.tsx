@@ -115,14 +115,14 @@ const isPastMonth = (monthStr: string) => {
 
 const getDaysInMonth = (monthStr: string) => {
   const yearStr = monthStr.split(' ')[1] || '2026'
-  const year = parseInt(yearStr, 10) || 2026
+  const year = Number.parseInt(yearStr, 10) || 2026
   const idx = getMonthIndex(monthStr)
   return new Date(year, idx + 1, 0).getDate()
 }
 
 const getDayOfWeekChar = (monthStr: string, dayNum: number) => {
   const yearStr = monthStr.split(' ')[1] || '2026'
-  const year = parseInt(yearStr, 10) || 2026
+  const year = Number.parseInt(yearStr, 10) || 2026
   const idx = getMonthIndex(monthStr)
   const date = new Date(year, idx, dayNum)
   return ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.getDay()]
@@ -130,7 +130,7 @@ const getDayOfWeekChar = (monthStr: string, dayNum: number) => {
 
 const isWeekendDay = (monthStr: string, dayNum: number) => {
   const yearStr = monthStr.split(' ')[1] || '2026'
-  const year = parseInt(yearStr, 10) || 2026
+  const year = Number.parseInt(yearStr, 10) || 2026
   const idx = getMonthIndex(monthStr)
   const date = new Date(year, idx, dayNum)
   const day = date.getDay()
