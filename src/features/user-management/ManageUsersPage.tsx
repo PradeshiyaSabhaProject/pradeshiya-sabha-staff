@@ -229,6 +229,7 @@ export const ManageUsersPage: React.FC = () => {
         </div>
         <div>
           <button
+            type="button"
             onClick={() => navigate('/users/create')}
             className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -333,6 +334,7 @@ export const ManageUsersPage: React.FC = () => {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             {hasActiveFilters && (
               <button
+                type="button"
                 onClick={handleResetFilters}
                 className="text-gray-500 hover:text-[#801028] font-medium px-3 py-2 text-sm transition-colors cursor-pointer"
               >
