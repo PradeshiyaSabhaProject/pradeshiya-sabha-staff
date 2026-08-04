@@ -223,6 +223,7 @@ export const FleetApprovalsPage: React.FC = () => {
           {(['Pending Approval', 'All', 'Approved', 'Rejected'] as const).map((tab) => (
             <button
               key={tab}
+              type="button"
               onClick={() => setActiveTab(tab)}
               className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === tab
@@ -340,12 +341,14 @@ export const FleetApprovalsPage: React.FC = () => {
                       {req.status === 'Pending Approval' ? (
                         <div className="flex items-center justify-end gap-2">
                           <button
+                            type="button"
                             onClick={() => handleApprove(req)}
                             className="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded text-[11px] font-bold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
                           >
                             Approve & Execute
                           </button>
                           <button
+                            type="button"
                             onClick={() => setRejectModalReq(req)}
                             className="px-3 py-1.5 bg-[#A31736] hover:bg-[#801028] text-white rounded text-[11px] font-bold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
                           >
@@ -354,6 +357,7 @@ export const FleetApprovalsPage: React.FC = () => {
                         </div>
                       ) : (
                         <button
+                          type="button"
                           onClick={() => setSelectedRequest(req)}
                           className="px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded text-[11px] font-semibold uppercase tracking-wider cursor-pointer"
                         >
@@ -372,11 +376,13 @@ export const FleetApprovalsPage: React.FC = () => {
       {/* Reject Reason Modal */}
       {rejectModalReq && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+          <button
+            type="button"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs cursor-default"
             onClick={() => setRejectModalReq(null)}
+            aria-label="Close modal"
           />
-          <div className="relative bg-white max-w-md w-full rounded-2xl shadow-2xl border border-gray-200 p-6 z-10 animate-scale-up">
+          <div className="relative bg-white max-w-md w-full rounded-2xl shadow-2xl border border-gray-200 p-6 z-10 animate-scale-up text-left">
             <h3 className="text-base font-extrabold text-[#0f172a] mb-1">
               Decline Authorization Request
             </h3>
@@ -386,10 +392,11 @@ export const FleetApprovalsPage: React.FC = () => {
 
             <form onSubmit={handleRejectConfirm} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">
+                <label htmlFor="reject-reason-text" className="block text-xs font-bold text-gray-600 mb-1 uppercase tracking-wider">
                   Reason for Rejection *
                 </label>
                 <textarea
+                  id="reject-reason-text"
                   value={rejectionNote}
                   onChange={(e) => setRejectionNote(e.target.value)}
                   placeholder="State municipal reason for denying this fleet operation..."
@@ -422,11 +429,13 @@ export const FleetApprovalsPage: React.FC = () => {
       {/* View Log Modal */}
       {selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+          <button
+            type="button"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs cursor-default"
             onClick={() => setSelectedRequest(null)}
+            aria-label="Close details"
           />
-          <div className="relative bg-white max-w-lg w-full rounded-2xl shadow-2xl border border-gray-200 p-6 z-10 animate-scale-up space-y-4">
+          <div className="relative bg-white max-w-lg w-full rounded-2xl shadow-2xl border border-gray-200 p-6 z-10 animate-scale-up space-y-4 text-left">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
                 <span className="font-mono text-xs font-bold text-[#1e3a8a]">
@@ -437,6 +446,7 @@ export const FleetApprovalsPage: React.FC = () => {
                 </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedRequest(null)}
                 className="text-gray-400 hover:text-gray-700 font-bold text-lg cursor-pointer"
               >
@@ -477,6 +487,7 @@ export const FleetApprovalsPage: React.FC = () => {
 
             <div className="pt-2 flex justify-end">
               <button
+                type="button"
                 onClick={() => setSelectedRequest(null)}
                 className="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded text-xs font-bold uppercase tracking-wider cursor-pointer"
               >
