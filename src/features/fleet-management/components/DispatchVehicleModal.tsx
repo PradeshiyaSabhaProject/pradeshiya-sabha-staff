@@ -57,7 +57,7 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
       destinationWard,
       purpose,
       estimatedReturn: formattedReturn,
-      driverId: selectedDriverId ? selectedDriverId : null,
+      driverId: selectedDriverId || null,
     })
     onClose()
   }
