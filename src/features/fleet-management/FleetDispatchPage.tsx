@@ -86,6 +86,32 @@ function getStatusBadgeStyle(status: VehicleStatus): string {
   }
 }
 
+function getMarkerBgStyle(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'background: #1d4ed8; border: 2.5px solid white;'
+    case 'Available':
+      return 'background: #059669; border: 2.5px solid white;'
+    case 'In Maintenance':
+      return 'background: #ea580c; border: 2.5px solid white;'
+    default:
+      return 'background: #A31736; border: 2.5px solid white;'
+  }
+}
+
+function getMarkerBadgeColor(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'color: #1d4ed8; background: #eff6ff;'
+    case 'Available':
+      return 'color: #059669; background: #ecfdf5;'
+    case 'In Maintenance':
+      return 'color: #ea580c; background: #fff7ed;'
+    default:
+      return 'color: #A31736; background: #fef2f2;'
+  }
+}
+
 export const FleetDispatchPage: React.FC = () => {
   const { vehicles, drivers, submitApprovalRequest } = useFleetData()
 
@@ -166,14 +192,7 @@ export const FleetDispatchPage: React.FC = () => {
     visibleVehicles.forEach((veh, index) => {
       const [lat, lng] = getVehicleCoordinates(veh, index)
 
-      const bgStyle =
-        veh.status === 'On Mission'
-          ? 'background: #1d4ed8; border: 2.5px solid white;'
-          : veh.status === 'Available'
-          ? 'background: #059669; border: 2.5px solid white;'
-          : veh.status === 'In Maintenance'
-          ? 'background: #ea580c; border: 2.5px solid white;'
-          : 'background: #A31736; border: 2.5px solid white;'
+      const bgStyle = getMarkerBgStyle(veh.status)
 
       const iconSvg =
         veh.status === 'On Mission'
@@ -200,14 +219,7 @@ export const FleetDispatchPage: React.FC = () => {
 
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup)
 
-      const badgeColor =
-        veh.status === 'On Mission'
-          ? 'color: #1d4ed8; background: #eff6ff;'
-          : veh.status === 'Available'
-          ? 'color: #059669; background: #ecfdf5;'
-          : veh.status === 'In Maintenance'
-          ? 'color: #ea580c; background: #fff7ed;'
-          : 'color: #A31736; background: #fef2f2;'
+      const badgeColor = getMarkerBadgeColor(veh.status)
 
       marker.bindPopup(`
         <div style="min-width: 230px; font-family: 'Public Sans', sans-serif; padding: 4px 0;">
