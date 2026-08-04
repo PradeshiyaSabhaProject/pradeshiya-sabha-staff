@@ -23,8 +23,7 @@ export const FleetApprovalsPage: React.FC = () => {
       searchTerm === '' ||
       r.requestNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (r.targetVehicleReg &&
-        r.targetVehicleReg.toLowerCase().includes(searchTerm.toLowerCase()))
+      r.targetVehicleReg?.toLowerCase().includes(searchTerm.toLowerCase())
     return matchStatus && matchSearch
   })
 
