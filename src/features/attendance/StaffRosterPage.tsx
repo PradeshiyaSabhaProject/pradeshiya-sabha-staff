@@ -285,8 +285,8 @@ export const StaffRosterPage: React.FC = () => {
 
   const handleCellChange = (empId: string, dayNum: number, newCode: string) => {
     if (isCurrentMonthLocked) return // Prevent edit if past month
-    const existingRow = rosterData.find((r) => r.employeeId === empId && r.month === selectedMonth)
-    if (existingRow) {
+    const hasRow = rosterData.some((r) => r.employeeId === empId && r.month === selectedMonth)
+    if (hasRow) {
       setRosterData(
         rosterData.map((row) => {
           if (row.employeeId !== empId || row.month !== selectedMonth) return row
