@@ -30,7 +30,7 @@ const ComplainPage: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse block"></span>
             <span className="text-red-800 font-bold uppercase tracking-wider">Deadlines Active</span>
           </div>
-          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
+          <button type="button" className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
             <span className="text-gray-700">Quick Stats</span>
             <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-orange-200">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block"></span>
