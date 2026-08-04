@@ -110,12 +110,13 @@ export const FleetOverviewPage: React.FC = () => {
       {/* ── KPI Cards Bar matching Asset/Letter Overview ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Fleet */}
-        <div
+        <button
+          type="button"
           onClick={() => {
             setStatusFilter('All')
             setShowOnlyPermitAlerts(false)
           }}
-          className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all"
+          className="bg-white border border-gray-300 rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all w-full text-left font-normal"
         >
           <div className="flex items-start justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
@@ -131,15 +132,16 @@ export const FleetOverviewPage: React.FC = () => {
           <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-[#1e3a8a] h-1.5 rounded-sm transition-all duration-1000" style={{ width: '100%' }} />
           </div>
-        </div>
+        </button>
 
         {/* Available at Depot */}
-        <div
+        <button
+          type="button"
           onClick={() => {
             setStatusFilter('Available')
             setShowOnlyPermitAlerts(false)
           }}
-          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all ${statusFilter === 'Available' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-gray-300'
+          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all w-full text-left font-normal ${statusFilter === 'Available' ? 'border-emerald-500 ring-1 ring-emerald-500' : 'border-gray-300'
             }`}
         >
           <div className="flex items-start justify-between">
@@ -156,15 +158,16 @@ export const FleetOverviewPage: React.FC = () => {
           <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-emerald-600 h-1.5 rounded-sm transition-all duration-1000" style={{ width: `${stats.total ? (stats.available / stats.total) * 100 : 0}%` }} />
           </div>
-        </div>
+        </button>
 
         {/* Active On Mission */}
-        <div
+        <button
+          type="button"
           onClick={() => {
             setStatusFilter('On Mission')
             setShowOnlyPermitAlerts(false)
           }}
-          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all ${statusFilter === 'On Mission' ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-300'
+          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all w-full text-left font-normal ${statusFilter === 'On Mission' ? 'border-blue-500 ring-1 ring-blue-500' : 'border-gray-300'
             }`}
         >
           <div className="flex items-start justify-between">
@@ -181,15 +184,16 @@ export const FleetOverviewPage: React.FC = () => {
           <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-blue-600 h-1.5 rounded-sm transition-all duration-1000" style={{ width: `${stats.total ? (stats.onMission / stats.total) * 100 : 0}%` }} />
           </div>
-        </div>
+        </button>
 
         {/* In Maintenance */}
-        <div
+        <button
+          type="button"
           onClick={() => {
             setStatusFilter('In Maintenance')
             setShowOnlyPermitAlerts(false)
           }}
-          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all ${statusFilter === 'In Maintenance' ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-300'
+          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all w-full text-left font-normal ${statusFilter === 'In Maintenance' ? 'border-orange-500 ring-1 ring-orange-500' : 'border-gray-300'
             }`}
         >
           <div className="flex items-start justify-between">
@@ -206,12 +210,13 @@ export const FleetOverviewPage: React.FC = () => {
           <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-orange-500 h-1.5 rounded-sm transition-all duration-1000" style={{ width: `${stats.total ? (stats.inMaintenance / stats.total) * 100 : 0}%` }} />
           </div>
-        </div>
+        </button>
 
         {/* Permits / Legal Alerts */}
-        <div
+        <button
+          type="button"
           onClick={() => setShowOnlyPermitAlerts(!showOnlyPermitAlerts)}
-          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all ${showOnlyPermitAlerts
+          className={`bg-white border rounded p-5 shadow-sm flex flex-col justify-between cursor-pointer hover:shadow transition-all w-full text-left font-normal ${showOnlyPermitAlerts
               ? 'border-[#A31736] ring-1 ring-[#A31736] bg-red-50/30'
               : 'border-gray-300'
             }`}
@@ -230,7 +235,7 @@ export const FleetOverviewPage: React.FC = () => {
           <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-5 overflow-hidden">
             <div className="bg-[#A31736] h-1.5 rounded-sm transition-all duration-1000" style={{ width: `${stats.total ? (stats.permitAlerts / stats.total) * 100 : 0}%` }} />
           </div>
-        </div>
+        </button>
       </div>
 
       {/* ── Interactive Legal Compliance Banner ── */}
