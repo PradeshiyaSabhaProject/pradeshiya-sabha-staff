@@ -366,15 +366,18 @@ export const CreateUserPage: React.FC = () => {
                 >
                   {/* Parent Module Header */}
                   <div className="p-4 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
-                    <label className="flex items-center gap-3 cursor-pointer select-none font-bold text-sm text-gray-900">
+                    <div className="flex items-center gap-3">
                       <input
+                        id={`module-chk-${module.id}`}
                         type="checkbox"
                         checked={isTopSelected}
                         onChange={() => toggleFeature(module.id, children.map((c) => c.id))}
                         className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
                       />
-                      <span>{module.label}</span>
-                    </label>
+                      <label htmlFor={`module-chk-${module.id}`} className="cursor-pointer select-none font-bold text-sm text-gray-900">
+                        {module.label}
+                      </label>
+                    </div>
 
                     {children.length > 0 && (
                       <button
@@ -401,23 +404,26 @@ export const CreateUserPage: React.FC = () => {
                       {children.map((child) => {
                         const isChildSelected = selectedFeatures.includes(child.id)
                         return (
-                          <label
+                          <div
                             key={child.id}
                             className={`flex items-center justify-between p-2 rounded-lg text-xs transition-colors cursor-pointer select-none ${
                               isChildSelected ? 'bg-[#801028]/10 text-[#801028] font-bold' : 'text-gray-600 hover:bg-gray-50'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5">
+                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
                               <input
+                                id={`child-chk-${child.id}`}
                                 type="checkbox"
                                 checked={isChildSelected}
                                 onChange={() => toggleChildFeature(module.id, child.id)}
                                 className="w-3.5 h-3.5 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
                               />
-                              <span>{child.label}</span>
+                              <label htmlFor={`child-chk-${child.id}`} className="truncate cursor-pointer flex-1 select-none font-normal">
+                                {child.label}
+                              </label>
                             </div>
                             {isChildSelected && <CheckIcon />}
-                          </label>
+                          </div>
                         )
                       })}
                     </div>
@@ -491,18 +497,19 @@ export const CreateUserPage: React.FC = () => {
             </div>
 
             <div className="flex flex-col justify-center">
-              <label className="flex items-center gap-3 p-3.5 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer select-none">
+              <div className="flex items-center gap-3 p-3.5 bg-gray-50 border border-gray-200 rounded-lg">
                 <input
+                  id="must-change-password-chk"
                   type="checkbox"
                   checked={mustChangePassword}
                   onChange={(e) => setMustChangePassword(e.target.checked)}
-                  className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
+                  className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer shrink-0"
                 />
-                <div>
-                  <p className="text-xs font-bold text-gray-900">Require password change on first login</p>
-                  <p className="text-[11px] text-gray-500">Employee will be prompted to create their own private password upon signing in.</p>
-                </div>
-              </label>
+                <label htmlFor="must-change-password-chk" className="cursor-pointer select-none flex-1 min-w-0">
+                  <span className="block text-xs font-bold text-gray-900">Require password change on first login</span>
+                  <span className="block text-[11px] text-gray-500 mt-0.5 font-normal">Employee will be prompted to create their own private password upon signing in.</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>
