@@ -16,7 +16,7 @@ export const FleetDriversPage: React.FC = () => {
       d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       d.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       d.licenseNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (d.assignedVehicleReg && d.assignedVehicleReg.toLowerCase().includes(searchQuery.toLowerCase()))
+      d.assignedVehicleReg?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const assignedCount = drivers.filter((d) => d.assignedVehicleId).length
