@@ -25,6 +25,16 @@ const CheckIcon = () => (
   </svg>
 )
 
+function getPresetButtonClass(preset: 'Admin' | 'Manager' | 'Staff' | 'Clear', rolePreset: string): string {
+  if (preset === 'Clear') {
+    return 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
+  }
+  if (rolePreset === preset) {
+    return 'bg-[#801028] text-white border-[#801028] shadow-xs'
+  }
+  return 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+}
+
 export const CreateUserPage: React.FC = () => {
   const navigate = useNavigate()
   const { availableEmployees, createUser } = useUserManagement()
@@ -333,13 +343,7 @@ export const CreateUserPage: React.FC = () => {
                   key={preset}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                    preset === 'Clear'
-                      ? 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
-                      : rolePreset === preset
-                      ? 'bg-[#801028] text-white border-[#801028] shadow-xs'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-all cursor-pointer border ${getPresetButtonClass(preset, rolePreset)}`}
                 >
                   {preset === 'Admin' ? 'Admin (All)' : preset}
                 </button>
