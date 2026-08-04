@@ -32,16 +32,18 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onAssign(vehicle.id, selectedDriverId ? selectedDriverId : null)
+    onAssign(vehicle.id, selectedDriverId || null)
     onClose()
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
+        aria-label="Close modal"
       />
 
       {/* Modal Container matching Asset/Letter Management UI */}
@@ -76,10 +78,11 @@ export const AssignDriverModal: React.FC<AssignDriverModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="assign-driver" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Select Municipal Driver / Operator
             </label>
             <select
+              id="assign-driver"
               value={selectedDriverId}
               onChange={(e) => setSelectedDriverId(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"

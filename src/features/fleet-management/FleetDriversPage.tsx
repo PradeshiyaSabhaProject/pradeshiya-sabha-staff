@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
@@ -16,7 +16,7 @@ export const FleetDriversPage: React.FC = () => {
       d.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       d.employeeId.toLowerCase().includes(searchQuery.toLowerCase()) ||
       d.licenseNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (d.assignedVehicleReg && d.assignedVehicleReg.toLowerCase().includes(searchQuery.toLowerCase()))
+      d.assignedVehicleReg?.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const assignedCount = drivers.filter((d) => d.assignedVehicleId).length
@@ -121,6 +121,7 @@ export const FleetDriversPage: React.FC = () => {
                       </p>
                     </div>
                     <button
+                      type="button"
                       onClick={() => setSelectedVehicleForDriver(assignedVehicle)}
                       className="px-2.5 py-1 bg-white hover:bg-gray-50 border border-gray-300 rounded text-[11px] font-bold uppercase tracking-wider text-gray-700 cursor-pointer"
                     >
@@ -162,6 +163,7 @@ export const FleetDriversPage: React.FC = () => {
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedVehicleForDriver(v)}
                 className="px-3.5 py-1.5 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-semibold uppercase tracking-wider shadow-sm shrink-0 cursor-pointer"
               >

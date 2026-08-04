@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react'
-import type { VehicleCategory, VehicleStatus, DriverRecord } from '../data/initialFleetData'
+import React, { useState } from 'react'
+import type { VehicleCategory, VehicleStatus, DriverRecord, FuelType } from '../data/initialFleetData'
 
 interface AddVehicleModalProps {
   isOpen: boolean
@@ -9,7 +9,7 @@ interface AddVehicleModalProps {
     name: string
     category: VehicleCategory
     department: string
-    fuelType: 'Diesel' | 'Petrol' | 'EV'
+    fuelType: FuelType
     odometerKm: number
     yearOfManufacture: number
     status: VehicleStatus
@@ -32,7 +32,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
   const [name, setName] = useState('')
   const [category, setCategory] = useState<VehicleCategory>('Garbage Compactor')
   const [department, setDepartment] = useState('Solid Waste Management')
-  const [fuelType, setFuelType] = useState<'Diesel' | 'Petrol' | 'EV'>('Diesel')
+  const [fuelType, setFuelType] = useState<FuelType>('Diesel')
   const [odometerKm, setOdometerKm] = useState(12000)
   const [yearOfManufacture, setYearOfManufacture] = useState(2026)
   const [currentLocation, setCurrentLocation] = useState('Municipal Central Depot - Bay 01')
@@ -62,7 +62,7 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
       yearOfManufacture: Number(yearOfManufacture) || 2026,
       status,
       currentLocation,
-      assignedDriverId: assignedDriverId ? assignedDriverId : null,
+      assignedDriverId: assignedDriverId || null,
       permitExpiryDate,
       revenueLicenseExpiryDate,
       insuranceExpiryDate,
@@ -77,9 +77,11 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
+        aria-label="Close modal"
       />
 
       {/* Modal Container matching Asset/Letter Management UI */}
@@ -119,11 +121,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-reg" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Registration Number *
                 </label>
                 <input
                   type="text"
+                  id="add-veh-reg"
                   value={regNum}
                   onChange={(e) => setRegNum(e.target.value)}
                   placeholder="e.g. WP LA-4821 / CAB-9012"
@@ -133,11 +136,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-name" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Make & Model Name *
                 </label>
                 <input
                   type="text"
+                  id="add-veh-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Isuzu Forward Compactor 10T"
@@ -155,10 +159,11 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-category" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Vehicle Category
                 </label>
                 <select
+                  id="add-veh-category"
                   value={category}
                   onChange={(e) => setCategory(e.target.value as VehicleCategory)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -173,10 +178,11 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-dept" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Assigned Council Department
                 </label>
                 <select
+                  id="add-veh-dept"
                   value={department}
                   onChange={(e) => setDepartment(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -198,12 +204,13 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-fuel" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Fuel Type
                 </label>
                 <select
+                  id="add-veh-fuel"
                   value={fuelType}
-                  onChange={(e) => setFuelType(e.target.value as 'Diesel' | 'Petrol' | 'EV')}
+                  onChange={(e) => setFuelType(e.target.value as FuelType)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
                 >
                   <option value="Diesel">Diesel</option>
@@ -213,11 +220,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-odometer" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Odometer (KM)
                 </label>
                 <input
                   type="number"
+                  id="add-veh-odometer"
                   min="0"
                   step="100"
                   value={odometerKm}
@@ -227,11 +235,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-year" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Manufacture Year
                 </label>
                 <input
                   type="number"
+                  id="add-veh-year"
                   min="1990"
                   max="2030"
                   value={yearOfManufacture}
@@ -243,10 +252,11 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-location" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Where It Is At The Moment (Location)
                 </label>
                 <select
+                  id="add-veh-location"
                   value={currentLocation}
                   onChange={(e) => setCurrentLocation(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -262,10 +272,11 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-driver" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Assign Municipal Driver / Operator
                 </label>
                 <select
+                  id="add-veh-driver"
                   value={assignedDriverId}
                   onChange={(e) => setAssignedDriverId(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -288,11 +299,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-permit" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Route Permit Expiry
                 </label>
                 <input
                   type="date"
+                  id="add-veh-permit"
                   value={permitExpiryDate}
                   onChange={(e) => setPermitExpiryDate(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -300,11 +312,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-rev-lic" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Revenue License Expiry
                 </label>
                 <input
                   type="date"
+                  id="add-veh-rev-lic"
                   value={revenueLicenseExpiryDate}
                   onChange={(e) => setRevenueLicenseExpiryDate(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -312,11 +325,12 @@ export const AddVehicleModal: React.FC<AddVehicleModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="add-veh-insurance" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                   Insurance Policy Expiry
                 </label>
                 <input
                   type="date"
+                  id="add-veh-insurance"
                   value={insuranceExpiryDate}
                   onChange={(e) => setInsuranceExpiryDate(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"

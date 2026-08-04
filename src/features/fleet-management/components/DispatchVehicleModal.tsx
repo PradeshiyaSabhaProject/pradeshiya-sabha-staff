@@ -57,7 +57,7 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
       destinationWard,
       purpose,
       estimatedReturn: formattedReturn,
-      driverId: selectedDriverId ? selectedDriverId : null,
+      driverId: selectedDriverId || null,
     })
     onClose()
   }
@@ -65,9 +65,11 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
+      <button
+        type="button"
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
         onClick={onClose}
+        aria-label="Close modal"
       />
 
       {/* Modal Container matching Asset/Letter Management UI */}
@@ -102,10 +104,11 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="dispatch-ward" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Destination Ward / Location
             </label>
             <select
+              id="dispatch-ward"
               value={destinationWard}
               onChange={(e) => setDestinationWard(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -132,11 +135,12 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="dispatch-purpose" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Purpose / Task Description
             </label>
             <input
               type="text"
+              id="dispatch-purpose"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="e.g. Garbage collection / Culvert repair inspection"
@@ -148,11 +152,12 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
           {/* Calendar & Time Selection */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="dispatch-return-date" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                 Estimated Return Date
               </label>
               <input
                 type="date"
+                id="dispatch-return-date"
                 value={returnDate}
                 onChange={(e) => setReturnDate(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -161,11 +166,12 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+              <label htmlFor="dispatch-return-time" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
                 Estimated Return Time
               </label>
               <input
                 type="time"
+                id="dispatch-return-time"
                 value={returnTime}
                 onChange={(e) => setReturnTime(e.target.value)}
                 className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
@@ -175,10 +181,11 @@ export const DispatchVehicleModal: React.FC<DispatchVehicleModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
+            <label htmlFor="dispatch-driver" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
               Assigned Driver for Mission
             </label>
             <select
+              id="dispatch-driver"
               value={selectedDriverId}
               onChange={(e) => setSelectedDriverId(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"

@@ -25,6 +25,48 @@ const CheckIcon = () => (
   </svg>
 )
 
+function getPresetButtonClass(preset: 'Admin' | 'Manager' | 'Staff' | 'Clear', rolePreset: string): string {
+  if (preset === 'Clear') {
+    return 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
+  }
+  if (rolePreset === preset) {
+    return 'bg-[#801028] text-white border-[#801028] shadow-xs'
+  }
+  return 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+}
+
+const renderEmployeeAction = (hasAccount: boolean, isSelected: boolean) => {
+  if (hasAccount) {
+    return (
+      <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded">
+        Account Exists
+      </span>
+    )
+  }
+  if (isSelected) {
+    return (
+      <span className="w-6 h-6 rounded-full bg-[#801028] text-white flex items-center justify-center shadow-xs">
+        <CheckIcon />
+      </span>
+    )
+  }
+  return (
+    <span className="text-xs font-semibold text-[#801028] border border-[#801028]/30 px-2.5 py-1 rounded-lg hover:bg-[#801028]/10">
+      Select
+    </span>
+  )
+}
+
+function getEmployeeCardClass(hasAccount: boolean, isSelected: boolean): string {
+  if (hasAccount) {
+    return 'bg-gray-50/80 border-gray-200 opacity-60 cursor-not-allowed'
+  }
+  if (isSelected) {
+    return 'bg-[#801028]/5 border-[#801028] shadow-xs cursor-pointer'
+  }
+  return 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer'
+}
+
 export const CreateUserPage: React.FC = () => {
   const navigate = useNavigate()
   const { availableEmployees, createUser } = useUserManagement()
@@ -62,9 +104,11 @@ export const CreateUserPage: React.FC = () => {
   const generatePassword = () => {
     const words = ['Sabha', 'Lanka', 'Council', 'GovLK', 'Portal', 'Pradeshiya']
     const symbols = ['@', '#', '$', '!', '&']
-    const num = Math.floor(1000 + Math.random() * 9000)
-    const word = words[Math.floor(Math.random() * words.length)]
-    const sym = symbols[Math.floor(Math.random() * symbols.length)]
+    const randomValues = new Uint32Array(3)
+    window.crypto.getRandomValues(randomValues)
+    const num = 1000 + (randomValues[0] % 9000)
+    const word = words[randomValues[1] % words.length]
+    const sym = symbols[randomValues[2] % symbols.length]
     setTempPassword(`${word}${sym}${num}`)
   }
 
@@ -256,19 +300,15 @@ export const CreateUserPage: React.FC = () => {
               const hasAccount = emp.status === 'Has Account'
 
               return (
-                <div
+                <button
+                  type="button"
+                  disabled={hasAccount}
                   key={emp.employeeId}
-                  onClick={() => !hasAccount && setSelectedEmployee(emp)}
-                  className={`p-4 rounded-xl border transition-all flex items-center justify-between ${
-                    hasAccount
-                      ? 'bg-gray-50/80 border-gray-200 opacity-60 cursor-not-allowed'
-                      : isSelected
-                      ? 'bg-[#801028]/5 border-[#801028] shadow-xs cursor-pointer'
-                      : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer'
-                  }`}
+                  onClick={() => setSelectedEmployee(emp)}
+                  className={`w-full text-left p-4 rounded-xl border transition-all flex items-center justify-between ${getEmployeeCardClass(hasAccount, isSelected)}`}
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div
+                  <span className="flex items-center gap-3 min-w-0">
+                    <span
                       className={`w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center shrink-0 ${
                         isSelected
                           ? 'bg-[#801028] text-white shadow-xs'
@@ -276,35 +316,23 @@ export const CreateUserPage: React.FC = () => {
                       }`}
                     >
                       {emp.avatarInitials || 'E'}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-bold text-gray-900 text-sm truncate">{emp.employeeName}</p>
+                    </span>
+                    <span className="min-w-0 block">
+                      <span className="flex items-center gap-2">
+                        <span className="block font-bold text-gray-900 text-sm truncate">{emp.employeeName}</span>
                         <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono text-gray-600 shrink-0">
                           {emp.employeeId}
                         </span>
-                      </div>
-                      <p className="text-xs text-gray-500 truncate">{emp.designation}</p>
-                      <p className="text-[11px] text-gray-400 truncate">{emp.department}</p>
-                    </div>
-                  </div>
+                      </span>
+                      <span className="block text-xs text-gray-500 truncate mt-0.5">{emp.designation}</span>
+                      <span className="block text-[11px] text-gray-400 truncate mt-0.5">{emp.department}</span>
+                    </span>
+                  </span>
 
-                  <div className="shrink-0 ml-3">
-                    {hasAccount ? (
-                      <span className="text-[10px] font-bold bg-gray-200 text-gray-600 px-2 py-1 rounded">
-                        Account Exists
-                      </span>
-                    ) : isSelected ? (
-                      <span className="w-6 h-6 rounded-full bg-[#801028] text-white flex items-center justify-center shadow-xs">
-                        <CheckIcon />
-                      </span>
-                    ) : (
-                      <span className="text-xs font-semibold text-[#801028] border border-[#801028]/30 px-2.5 py-1 rounded-lg hover:bg-[#801028]/10">
-                        Select
-                      </span>
-                    )}
-                  </div>
-                </div>
+                  <span className="shrink-0 ml-3 block">
+                    {renderEmployeeAction(hasAccount, isSelected)}
+                  </span>
+                </button>
               )
             })}
           </div>
@@ -331,13 +359,7 @@ export const CreateUserPage: React.FC = () => {
                   key={preset}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-all cursor-pointer border ${
-                    preset === 'Clear'
-                      ? 'bg-gray-100 text-gray-600 border-gray-200 hover:bg-gray-200'
-                      : rolePreset === preset
-                      ? 'bg-[#801028] text-white border-[#801028] shadow-xs'
-                      : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
+                  className={`text-xs px-3 py-1.5 rounded-lg font-bold uppercase tracking-wider transition-all cursor-pointer border ${getPresetButtonClass(preset, rolePreset)}`}
                 >
                   {preset === 'Admin' ? 'Admin (All)' : preset}
                 </button>
@@ -364,15 +386,18 @@ export const CreateUserPage: React.FC = () => {
                 >
                   {/* Parent Module Header */}
                   <div className="p-4 flex items-center justify-between border-b border-gray-100 bg-gray-50/50">
-                    <label className="flex items-center gap-3 cursor-pointer select-none font-bold text-sm text-gray-900">
+                    <div className="flex items-center gap-3">
                       <input
+                        id={`module-chk-${module.id}`}
                         type="checkbox"
                         checked={isTopSelected}
                         onChange={() => toggleFeature(module.id, children.map((c) => c.id))}
                         className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
                       />
-                      <span>{module.label}</span>
-                    </label>
+                      <label htmlFor={`module-chk-${module.id}`} className="cursor-pointer select-none font-bold text-sm text-gray-900">
+                        {module.label}
+                      </label>
+                    </div>
 
                     {children.length > 0 && (
                       <button
@@ -399,23 +424,26 @@ export const CreateUserPage: React.FC = () => {
                       {children.map((child) => {
                         const isChildSelected = selectedFeatures.includes(child.id)
                         return (
-                          <label
+                          <div
                             key={child.id}
                             className={`flex items-center justify-between p-2 rounded-lg text-xs transition-colors cursor-pointer select-none ${
                               isChildSelected ? 'bg-[#801028]/10 text-[#801028] font-bold' : 'text-gray-600 hover:bg-gray-50'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5">
+                            <div className="flex items-center gap-2.5 flex-1 min-w-0">
                               <input
+                                id={`child-chk-${child.id}`}
                                 type="checkbox"
                                 checked={isChildSelected}
                                 onChange={() => toggleChildFeature(module.id, child.id)}
                                 className="w-3.5 h-3.5 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
                               />
-                              <span>{child.label}</span>
+                              <label htmlFor={`child-chk-${child.id}`} className="truncate cursor-pointer flex-1 select-none font-normal">
+                                {child.label}
+                              </label>
                             </div>
                             {isChildSelected && <CheckIcon />}
-                          </label>
+                          </div>
                         )
                       })}
                     </div>
@@ -453,11 +481,12 @@ export const CreateUserPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
+              <label htmlFor="temp-password-input" className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
                 Temporary Password <span className="text-[#801028]">*</span>
               </label>
               <div className="relative">
                 <input
+                  id="temp-password-input"
                   type={showPassword ? 'text' : 'password'}
                   value={tempPassword}
                   onChange={(e) => setTempPassword(e.target.value)}
@@ -489,18 +518,19 @@ export const CreateUserPage: React.FC = () => {
             </div>
 
             <div className="flex flex-col justify-center">
-              <label className="flex items-center gap-3 p-3.5 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer select-none">
+              <div className="flex items-center gap-3 p-3.5 bg-gray-50 border border-gray-200 rounded-lg">
                 <input
+                  id="must-change-password-chk"
                   type="checkbox"
                   checked={mustChangePassword}
                   onChange={(e) => setMustChangePassword(e.target.checked)}
-                  className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer"
+                  className="w-4 h-4 text-[#801028] rounded border-gray-300 focus:ring-[#801028] cursor-pointer shrink-0"
                 />
-                <div>
-                  <p className="text-xs font-bold text-gray-900">Require password change on first login</p>
-                  <p className="text-[11px] text-gray-500">Employee will be prompted to create their own private password upon signing in.</p>
-                </div>
-              </label>
+                <label htmlFor="must-change-password-chk" className="cursor-pointer select-none flex-1 min-w-0">
+                  <span className="block text-xs font-bold text-gray-900">Require password change on first login</span>
+                  <span className="block text-[11px] text-gray-500 mt-0.5 font-normal">Employee will be prompted to create their own private password upon signing in.</span>
+                </label>
+              </div>
             </div>
           </div>
         </div>

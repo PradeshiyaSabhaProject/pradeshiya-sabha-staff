@@ -103,6 +103,7 @@ export const FleetMaintenancePage: React.FC = () => {
 
                 <div className="flex items-center justify-end">
                   <button
+                    type="button"
                     onClick={() => completeMaintenance(v.id)}
                     className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
                   >
@@ -139,6 +140,7 @@ export const FleetMaintenancePage: React.FC = () => {
               </div>
 
               <button
+                type="button"
                 onClick={() => setSelectedVehicleForMaintenance(v)}
                 className="px-3.5 py-1.5 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-semibold uppercase tracking-wider shadow-sm shrink-0 cursor-pointer"
               >

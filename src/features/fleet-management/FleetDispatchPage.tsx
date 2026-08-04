@@ -75,6 +75,43 @@ function getVehicleCoordinates(v: VehicleRecord, index: number): [number, number
   return [6.8440 + index * 0.002, 79.9960 + index * 0.002]
 }
 
+function getStatusBadgeStyle(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'bg-blue-50 text-blue-700'
+    case 'Available':
+      return 'bg-emerald-50 text-emerald-700'
+    default:
+      return 'bg-orange-50 text-orange-700'
+  }
+}
+
+function getMarkerBgStyle(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'background: #1d4ed8; border: 2.5px solid white;'
+    case 'Available':
+      return 'background: #059669; border: 2.5px solid white;'
+    case 'In Maintenance':
+      return 'background: #ea580c; border: 2.5px solid white;'
+    default:
+      return 'background: #A31736; border: 2.5px solid white;'
+  }
+}
+
+function getMarkerBadgeColor(status: VehicleStatus): string {
+  switch (status) {
+    case 'On Mission':
+      return 'color: #1d4ed8; background: #eff6ff;'
+    case 'Available':
+      return 'color: #059669; background: #ecfdf5;'
+    case 'In Maintenance':
+      return 'color: #ea580c; background: #fff7ed;'
+    default:
+      return 'color: #A31736; background: #fef2f2;'
+  }
+}
+
 export const FleetDispatchPage: React.FC = () => {
   const { vehicles, drivers, submitApprovalRequest } = useFleetData()
 
@@ -155,14 +192,7 @@ export const FleetDispatchPage: React.FC = () => {
     visibleVehicles.forEach((veh, index) => {
       const [lat, lng] = getVehicleCoordinates(veh, index)
 
-      const bgStyle =
-        veh.status === 'On Mission'
-          ? 'background: #1d4ed8; border: 2.5px solid white;'
-          : veh.status === 'Available'
-          ? 'background: #059669; border: 2.5px solid white;'
-          : veh.status === 'In Maintenance'
-          ? 'background: #ea580c; border: 2.5px solid white;'
-          : 'background: #A31736; border: 2.5px solid white;'
+      const bgStyle = getMarkerBgStyle(veh.status)
 
       const iconSvg =
         veh.status === 'On Mission'
@@ -189,14 +219,7 @@ export const FleetDispatchPage: React.FC = () => {
 
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup)
 
-      const badgeColor =
-        veh.status === 'On Mission'
-          ? 'color: #1d4ed8; background: #eff6ff;'
-          : veh.status === 'Available'
-          ? 'color: #059669; background: #ecfdf5;'
-          : veh.status === 'In Maintenance'
-          ? 'color: #ea580c; background: #fff7ed;'
-          : 'color: #A31736; background: #fef2f2;'
+      const badgeColor = getMarkerBadgeColor(veh.status)
 
       marker.bindPopup(`
         <div style="min-width: 230px; font-family: 'Public Sans', sans-serif; padding: 4px 0;">
@@ -232,6 +255,45 @@ export const FleetDispatchPage: React.FC = () => {
   }
 
   const activeMissionVehicles = vehicles.filter((v) => v.status === 'On Mission')
+
+  const renderActionButtons = (vehicle: VehicleRecord) => {
+    if (vehicle.status === 'Available') {
+      return (
+        <button
+          type="button"
+          onClick={() => setSelectedVehicleForDispatch(vehicle)}
+          className="w-full py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
+        >
+          Dispatch to Field
+        </button>
+      )
+    }
+    if (vehicle.status === 'On Mission') {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            submitApprovalRequest(
+              'RETURN_MISSION',
+              `Log Field Mission Return for ${vehicle.registrationNumber}`,
+              `Confirming vehicle return from field assignment back to municipal depot.`,
+              { vehicleId: vehicle.id },
+              { targetVehicleId: vehicle.id, targetVehicleReg: vehicle.registrationNumber }
+            )
+            setToastMsg(`Mission return request submitted for ${vehicle.registrationNumber}.`)
+          }}
+          className="w-full py-2 bg-[#1e3a8a] hover:bg-blue-900 text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
+        >
+          Return to Depot
+        </button>
+      )
+    }
+    return (
+      <span className="w-full py-2 bg-gray-100 text-gray-500 text-center rounded text-xs font-semibold block">
+        Currently In Workshop
+      </span>
+    )
+  }
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-white overflow-hidden animate-fade-in">
@@ -281,6 +343,7 @@ export const FleetDispatchPage: React.FC = () => {
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
             <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
               <button
+                type="button"
                 onClick={handleZoomIn}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center cursor-pointer"
                 title="Zoom In"
@@ -288,6 +351,7 @@ export const FleetDispatchPage: React.FC = () => {
                 <PlusIcon />
               </button>
               <button
+                type="button"
                 onClick={handleZoomOut}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center cursor-pointer"
                 title="Zoom Out"
@@ -296,6 +360,7 @@ export const FleetDispatchPage: React.FC = () => {
               </button>
             </div>
             <button
+              type="button"
               onClick={handleCenterMap}
               className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center cursor-pointer"
               title="Center Map to Municipal Area"
@@ -307,6 +372,7 @@ export const FleetDispatchPage: React.FC = () => {
           {/* Bottom Center Status Legend Overlay */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-700 select-none uppercase tracking-wider w-[92%] sm:w-auto max-w-full">
             <button
+              type="button"
               onClick={() => toggleLayer('Available')}
               className={`flex items-center gap-2 transition-opacity cursor-pointer ${
                 activeLayers['Available'] ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
@@ -316,6 +382,7 @@ export const FleetDispatchPage: React.FC = () => {
               <span>Available ({vehicles.filter((v) => v.status === 'Available').length})</span>
             </button>
             <button
+              type="button"
               onClick={() => toggleLayer('On Mission')}
               className={`flex items-center gap-2 transition-opacity cursor-pointer ${
                 activeLayers['On Mission'] ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
@@ -325,6 +392,7 @@ export const FleetDispatchPage: React.FC = () => {
               <span>On Mission ({activeMissionVehicles.length})</span>
             </button>
             <button
+              type="button"
               onClick={() => toggleLayer('In Maintenance')}
               className={`flex items-center gap-2 transition-opacity cursor-pointer ${
                 activeLayers['In Maintenance'] ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
@@ -346,13 +414,7 @@ export const FleetDispatchPage: React.FC = () => {
                   {selectedVehicle.registrationNumber}
                 </span>
                 <span
-                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                    selectedVehicle.status === 'On Mission'
-                      ? 'bg-blue-50 text-blue-700'
-                      : selectedVehicle.status === 'Available'
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'bg-orange-50 text-orange-700'
-                  }`}
+                  className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${getStatusBadgeStyle(selectedVehicle.status)}`}
                 >
                   {selectedVehicle.status}
                 </span>
@@ -387,34 +449,7 @@ export const FleetDispatchPage: React.FC = () => {
               </div>
 
               <div className="pt-3 flex items-center gap-2">
-                {selectedVehicle.status === 'Available' ? (
-                  <button
-                    onClick={() => setSelectedVehicleForDispatch(selectedVehicle)}
-                    className="w-full py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
-                  >
-                    Dispatch to Field
-                  </button>
-                ) : selectedVehicle.status === 'On Mission' ? (
-                  <button
-                    onClick={() => {
-                      submitApprovalRequest(
-                        'RETURN_MISSION',
-                        `Log Field Mission Return for ${selectedVehicle.registrationNumber}`,
-                        `Confirming vehicle return from field assignment back to municipal depot.`,
-                        { vehicleId: selectedVehicle.id },
-                        { targetVehicleId: selectedVehicle.id, targetVehicleReg: selectedVehicle.registrationNumber }
-                      )
-                      setToastMsg(`Mission return request submitted for ${selectedVehicle.registrationNumber}.`)
-                    }}
-                    className="w-full py-2 bg-[#1e3a8a] hover:bg-blue-900 text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
-                  >
-                    Return to Depot
-                  </button>
-                ) : (
-                  <span className="w-full py-2 bg-gray-100 text-gray-500 text-center rounded text-xs font-semibold block">
-                    Currently In Workshop
-                  </span>
-                )}
+                {renderActionButtons(selectedVehicle)}
               </div>
             </div>
           ) : (
@@ -463,10 +498,11 @@ export const FleetDispatchPage: React.FC = () => {
 
             <div className="space-y-2">
               {activeMissionVehicles.map((v) => (
-                <div
+                <button
+                  type="button"
                   key={v.id}
                   onClick={() => setSelectedVehicle(v)}
-                  className="p-3 rounded border border-gray-200 bg-gray-50 hover:bg-blue-50/50 transition-colors cursor-pointer"
+                  className="p-3 rounded border border-gray-200 bg-gray-50 hover:bg-blue-50/50 transition-colors cursor-pointer w-full text-left font-normal"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-mono font-bold text-xs text-[#1e3a8a]">{v.registrationNumber}</span>
@@ -475,10 +511,10 @@ export const FleetDispatchPage: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-xs font-bold text-gray-900 truncate mt-1">{v.name}</p>
-                  <p className="text-[11px] text-gray-500 truncate mt-0.5">
+                  <p className="text-[11px] text-gray-500 truncate mt-0.5 mb-0 text-left">
                     Ward: {v.currentLocation}
                   </p>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -510,6 +546,7 @@ export const FleetDispatchPage: React.FC = () => {
           <div className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
           <span className="text-xs font-semibold">{toastMsg}</span>
           <button
+            type="button"
             onClick={() => setToastMsg(null)}
             className="text-gray-400 hover:text-white font-bold ml-2 cursor-pointer"
           >
