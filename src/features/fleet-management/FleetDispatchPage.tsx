@@ -233,6 +233,45 @@ export const FleetDispatchPage: React.FC = () => {
 
   const activeMissionVehicles = vehicles.filter((v) => v.status === 'On Mission')
 
+  const renderActionButtons = (vehicle: VehicleRecord) => {
+    if (vehicle.status === 'Available') {
+      return (
+        <button
+          type="button"
+          onClick={() => setSelectedVehicleForDispatch(vehicle)}
+          className="w-full py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
+        >
+          Dispatch to Field
+        </button>
+      )
+    }
+    if (vehicle.status === 'On Mission') {
+      return (
+        <button
+          type="button"
+          onClick={() => {
+            submitApprovalRequest(
+              'RETURN_MISSION',
+              `Log Field Mission Return for ${vehicle.registrationNumber}`,
+              `Confirming vehicle return from field assignment back to municipal depot.`,
+              { vehicleId: vehicle.id },
+              { targetVehicleId: vehicle.id, targetVehicleReg: vehicle.registrationNumber }
+            )
+            setToastMsg(`Mission return request submitted for ${vehicle.registrationNumber}.`)
+          }}
+          className="w-full py-2 bg-[#1e3a8a] hover:bg-blue-900 text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
+        >
+          Return to Depot
+        </button>
+      )
+    }
+    return (
+      <span className="w-full py-2 bg-gray-100 text-gray-500 text-center rounded text-xs font-semibold block">
+        Currently In Workshop
+      </span>
+    )
+  }
+
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] bg-white overflow-hidden animate-fade-in">
       {/* ── Top GIS Toolbar matching Interactive GIS Mapping ── */}
@@ -393,36 +432,7 @@ export const FleetDispatchPage: React.FC = () => {
               </div>
 
               <div className="pt-3 flex items-center gap-2">
-                {selectedVehicle.status === 'Available' ? (
-                  <button
-                    type="button"
-                    onClick={() => setSelectedVehicleForDispatch(selectedVehicle)}
-                    className="w-full py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
-                  >
-                    Dispatch to Field
-                  </button>
-                ) : selectedVehicle.status === 'On Mission' ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      submitApprovalRequest(
-                        'RETURN_MISSION',
-                        `Log Field Mission Return for ${selectedVehicle.registrationNumber}`,
-                        `Confirming vehicle return from field assignment back to municipal depot.`,
-                        { vehicleId: selectedVehicle.id },
-                        { targetVehicleId: selectedVehicle.id, targetVehicleReg: selectedVehicle.registrationNumber }
-                      )
-                      setToastMsg(`Mission return request submitted for ${selectedVehicle.registrationNumber}.`)
-                    }}
-                    className="w-full py-2 bg-[#1e3a8a] hover:bg-blue-900 text-white rounded text-xs font-bold uppercase tracking-wider cursor-pointer shadow-sm transition-colors"
-                  >
-                    Return to Depot
-                  </button>
-                ) : (
-                  <span className="w-full py-2 bg-gray-100 text-gray-500 text-center rounded text-xs font-semibold block">
-                    Currently In Workshop
-                  </span>
-                )}
+                {renderActionButtons(selectedVehicle)}
               </div>
             </div>
           ) : (
