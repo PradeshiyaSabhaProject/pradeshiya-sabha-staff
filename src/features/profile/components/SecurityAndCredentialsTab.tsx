@@ -139,7 +139,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
             )}
 
             <div>
-              <label htmlFor="passwordOtpCode" className="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1.5">/*change*/
+              <label htmlFor="passwordOtpCode" className="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                 Enter 6-Digit SMS OTP
               </label>
               <div className="flex gap-2 max-w-md">

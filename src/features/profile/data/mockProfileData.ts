@@ -130,7 +130,7 @@ export const INITIAL_ACTIVITY_LOGS: ActivityLogItem[] = [
     action: 'Submitted Annual Leave Request (2 Days)',
     module: 'Attendance',
     timestamp: 'July 14, 2026',
-    ip: '192.168.10.42',/*change the ip*/
+    ip: '192.168.10.45',
     status: 'Success',
     details: 'Leave application submitted via Mobile Staff Portal for July 28 - July 29.',
   },
@@ -139,7 +139,7 @@ export const INITIAL_ACTIVITY_LOGS: ActivityLogItem[] = [
     action: 'Attempted login from unrecognized subnet',
     module: 'Security',
     timestamp: 'July 10, 2026 at 02:11 AM',
-    ip: '192.168.10.42',/*change the ip*/
+    ip: '203.0.113.15',
     status: 'Warning',
     details: 'Blocked by Council Firewall automated geo-fencing policy. Password unchanged.',
   },
