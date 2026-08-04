@@ -57,6 +57,16 @@ const renderEmployeeAction = (hasAccount: boolean, isSelected: boolean) => {
   )
 }
 
+function getEmployeeCardClass(hasAccount: boolean, isSelected: boolean): string {
+  if (hasAccount) {
+    return 'bg-gray-50/80 border-gray-200 opacity-60 cursor-not-allowed'
+  }
+  if (isSelected) {
+    return 'bg-[#801028]/5 border-[#801028] shadow-xs cursor-pointer'
+  }
+  return 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer'
+}
+
 export const CreateUserPage: React.FC = () => {
   const navigate = useNavigate()
   const { availableEmployees, createUser } = useUserManagement()
@@ -293,13 +303,7 @@ export const CreateUserPage: React.FC = () => {
                 <div
                   key={emp.employeeId}
                   onClick={() => !hasAccount && setSelectedEmployee(emp)}
-                  className={`p-4 rounded-xl border transition-all flex items-center justify-between ${
-                    hasAccount
-                      ? 'bg-gray-50/80 border-gray-200 opacity-60 cursor-not-allowed'
-                      : isSelected
-                      ? 'bg-[#801028]/5 border-[#801028] shadow-xs cursor-pointer'
-                      : 'bg-white border-gray-200 hover:border-gray-300 hover:bg-gray-50/50 cursor-pointer'
-                  }`}
+                  className={`p-4 rounded-xl border transition-all flex items-center justify-between ${getEmployeeCardClass(hasAccount, isSelected)}`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <div
