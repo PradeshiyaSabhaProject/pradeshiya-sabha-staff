@@ -136,9 +136,11 @@ export const ManageUsersPage: React.FC = () => {
   const handleOpenResetPassword = (user: AppUser) => {
     const words = ['Sabha', 'Lanka', 'Council', 'GovLK', 'Portal', 'Pradeshiya']
     const symbols = ['@', '#', '$', '!', '&']
-    const num = Math.floor(1000 + Math.random() * 9000)
-    const word = words[Math.floor(Math.random() * words.length)]
-    const sym = symbols[Math.floor(Math.random() * symbols.length)]
+    const randomValues = new Uint32Array(3)
+    window.crypto.getRandomValues(randomValues)
+    const num = 1000 + (randomValues[0] % 9000)
+    const word = words[randomValues[1] % words.length]
+    const sym = symbols[randomValues[2] % symbols.length]
     const generated = `${word}${sym}${num}`
 
     resetPassword(user.id, generated)
