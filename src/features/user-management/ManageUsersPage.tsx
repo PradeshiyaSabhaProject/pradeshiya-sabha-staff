@@ -57,6 +57,30 @@ const SearchIcon = () => (
   </svg>
 )
 
+function getRoleBadgeStyle(rolePreset: string): string {
+  switch (rolePreset) {
+    case 'Admin':
+      return 'bg-green-50 text-green-700 border-green-200'
+    case 'Manager':
+      return 'bg-purple-50 text-purple-700 border-purple-200'
+    case 'Staff':
+      return 'bg-blue-50 text-blue-700 border-blue-200'
+    default:
+      return 'bg-amber-50 text-amber-700 border-amber-200'
+  }
+}
+
+function getStatusDotColor(status: AppUser['status']): string {
+  switch (status) {
+    case 'Active':
+      return 'bg-green-500'
+    case 'Suspended':
+      return 'bg-amber-500'
+    default:
+      return 'bg-red-500'
+  }
+}
+
 export const ManageUsersPage: React.FC = () => {
   const navigate = useNavigate()
   const { users, updatePermissions, resetPassword, updateStatus, deleteUser } = useUserManagement()
@@ -368,15 +392,7 @@ export const ManageUsersPage: React.FC = () => {
                       <td className="py-4 px-6">
                         <div className="flex flex-wrap items-center gap-1.5 max-w-xs">
                           <span
-                            className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border ${
-                              u.rolePreset === 'Admin'
-                                ? 'bg-green-50 text-green-700 border-green-200'
-                                : u.rolePreset === 'Manager'
-                                ? 'bg-purple-50 text-purple-700 border-purple-200'
-                                : u.rolePreset === 'Staff'
-                                ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                : 'bg-amber-50 text-amber-700 border-amber-200'
-                            }`}
+                            className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border ${getRoleBadgeStyle(u.rolePreset)}`}
                           >
                             {u.rolePreset}
                           </span>
@@ -405,13 +421,7 @@ export const ManageUsersPage: React.FC = () => {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span
-                              className={`w-2 h-2 rounded-full shrink-0 ${
-                                u.status === 'Active'
-                                  ? 'bg-green-500'
-                                  : u.status === 'Suspended'
-                                  ? 'bg-amber-500'
-                                  : 'bg-red-500'
-                              }`}
+                              className={`w-2 h-2 rounded-full shrink-0 ${getStatusDotColor(u.status)}`}
                             />
                             <select
                               value={u.status}
