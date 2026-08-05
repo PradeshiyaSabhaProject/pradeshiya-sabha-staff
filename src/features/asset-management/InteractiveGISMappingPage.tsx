@@ -112,6 +112,21 @@ export const InteractiveGISMappingPage: React.FC = () => {
     return 'Operational' // Verified, Digitized, Operational
   }
 
+  const getBgStyle = (category: string) => {
+    if (category === 'Utility / Infrastructure') return 'background: #1d4ed8; border: 2px solid white;'
+    if (category === 'Building') return 'background: #800000; border: 2px solid white;'
+    if (category === 'Land') return 'background: #059669; border: 2px solid white;'
+    if (category === 'Road') return 'background: #4b5563; border: 2px solid white;'
+    return 'background: #A31736; border: 2px solid white;'
+  }
+
+  const getIconHtml = (category: string) => {
+    if (category === 'Utility / Infrastructure') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
+    if (category === 'Building') return `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
+    if (category === 'Land') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
+  }
+
   // Filter assets based on active layers, priority, and search
   const visibleAssets = useMemo(() => {
     // Determine allowed categories from checked layers
@@ -208,23 +223,15 @@ export const InteractiveGISMappingPage: React.FC = () => {
       if (Number.isNaN(lat) || Number.isNaN(lng)) return
 
       // Determine marker color and icon based on category & priority
-      const bgStyle = asset.category === 'Utility / Infrastructure' ? 'background: #1d4ed8; border: 2px solid white;'
-        : asset.category === 'Building' ? 'background: #800000; border: 2px solid white;'
-        : asset.category === 'Land' ? 'background: #059669; border: 2px solid white;'
-        : asset.category === 'Road' ? 'background: #4b5563; border: 2px solid white;'
-        : 'background: #A31736; border: 2px solid white;'
+      const bgStyle = getBgStyle(asset.category)
 
-      const iconHtml = asset.category === 'Utility / Infrastructure' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
-        : asset.category === 'Building' ? `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
-        : asset.category === 'Land' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
-        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
+      const iconHtml = getIconHtml(asset.category)
 
       // If high priority / disputed, add red glow/badge
       const priorityGroup = getAssetPriorityGroup(asset.status)
-      const pulseHtml =
-        priorityGroup === 'High Priority'
-          ? `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
-          : ''
+      const pulseHtml = priorityGroup === 'High Priority'
+        ? `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
+        : ''
 
       const customIcon = L.divIcon({
         className: 'custom-gis-pin',
@@ -310,6 +317,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
             <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
               <button
+                type="button"
                 onClick={handleZoomIn}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center"
                 title="Zoom In"
@@ -317,6 +325,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
                 <PlusIcon />
               </button>
               <button
+                type="button"
                 onClick={handleZoomOut}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center"
                 title="Zoom Out"
@@ -465,6 +474,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setSelectedAsset(null)}
                   className="w-full mt-2 py-1.5 px-3 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors uppercase tracking-wider"
                 >

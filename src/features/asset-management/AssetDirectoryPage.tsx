@@ -224,11 +224,12 @@ export const AssetDirectoryPage: React.FC = () => {
           
           {/* Asset Type Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="assetTypeSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Asset Type
             </label>
             <div className="relative">
               <select
+                id="assetTypeSelect"
                 value={categoryFilter}
                 onChange={(e) => {
                   setCategoryFilter(e.target.value)
@@ -252,11 +253,12 @@ export const AssetDirectoryPage: React.FC = () => {
 
           {/* Status Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="statusSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Status
             </label>
             <div className="relative">
               <select
+                id="statusSelect"
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value)
@@ -280,11 +282,12 @@ export const AssetDirectoryPage: React.FC = () => {
 
           {/* Location / Ward Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="wardSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Location / Ward
             </label>
             <div className="relative">
               <select
+                id="wardSelect"
                 value={wardFilter}
                 onChange={(e) => {
                   setWardFilter(e.target.value)
