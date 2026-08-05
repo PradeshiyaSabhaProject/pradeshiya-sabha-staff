@@ -629,7 +629,12 @@ const AssetOverviewPage: React.FC = () => {
       {/* ── Asset Details Overlay Panel (now with Edit + Update) ── */}
       {activeAssetDetails && editFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={closeAssetDetails} />
+          <button
+            type="button"
+            aria-label="Close asset details"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+            onClick={closeAssetDetails}
+          />
           <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 max-w-md w-full relative z-10 animate-scale-up">
 
             {/* Header */}
@@ -638,6 +643,7 @@ const AssetOverviewPage: React.FC = () => {
                 {isEditingDetails ? 'Edit Asset Record' : 'Asset Detail Log'}
               </h3>
               <button
+                type="button"
                 onClick={closeAssetDetails}
                 className="text-gray-400 hover:text-gray-600 font-extrabold text-lg cursor-pointer"
               >
@@ -779,15 +785,16 @@ const AssetOverviewPage: React.FC = () => {
                   {/* Quantity + Unit */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="editQuantity" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                         Quantity
                       </label>
                       <input
+                        id="editQuantity"
                         type="number"
                         min="0"
                         step="any"
                         value={editFormData.value}
-                        onChange={(e) => setEditFormData({ ...editFormData, value: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) => setEditFormData({ ...editFormData, value: Number.parseFloat(e.target.value) || 0 })}
                         className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
                       />
                     </div>

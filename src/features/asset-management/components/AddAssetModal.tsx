@@ -73,7 +73,9 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div 
+      <button
+        type="button"
+        aria-label="Close modal"
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
         onClick={onClose}
       />
