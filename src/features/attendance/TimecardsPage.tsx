@@ -23,6 +23,13 @@ function getStatusBadgeStyle(row: TimecardRow): string {
   return 'bg-green-100 text-green-900 border border-green-300'
 }
 
+function getRowBackgroundClass(row: TimecardRow, i: number): string {
+  if (row.isWeekendWork) {
+    return 'bg-indigo-50/40'
+  }
+  return i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
+}
+
 export const TimecardsPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedEmp, setSelectedEmp] = useState('PS-EMP-0012')
@@ -448,8 +455,7 @@ export const TimecardsPage: React.FC = () => {
               {timecardEntries.map((row, i) => (
                 <tr
                   key={i}
-                  className={`group hover:bg-red-50/30 transition cursor-pointer ${row.isWeekendWork ? 'bg-indigo-50/40' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
-                    }`}
+                  className={`group hover:bg-red-50/30 transition cursor-pointer ${getRowBackgroundClass(row, i)}`}
                 >
                   {/* Row Index Number (1, 2, 3...) */}
                   <td className="py-2.5 px-2 border-r border-gray-300 bg-gray-100 text-gray-600 text-center font-bold font-mono text-[11px] select-none group-hover:bg-[#801028]/15 group-hover:text-[#801028] transition">
