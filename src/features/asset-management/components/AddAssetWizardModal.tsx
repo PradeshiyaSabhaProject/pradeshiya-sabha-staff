@@ -173,6 +173,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     setAttachments((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const getStatusBadgeClass = (status?: string) => {
+    if (status === 'Verified') return 'bg-emerald-100 text-emerald-800'
+    if (status === 'Image') return 'bg-blue-100 text-blue-800'
+    return 'bg-purple-100 text-purple-800'
+  }
+
   const handleNext = () => {
     if (step === 1 && (!name.trim() || !location.trim())) {
       alert('Please fill in Asset Name and Ward / Location to proceed.')
@@ -191,9 +197,9 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
       category,
       location: location.trim() || 'General Ward',
       status: conditionStatus,
-      value: parseFloat(areaSize) || 1,
+      value: Number.parseFloat(areaSize) || 1,
       unit,
-      valuation: parseFloat(valuation) || 0,
+      valuation: Number.parseFloat(valuation) || 0,
       acquisitionDate,
       fundingSource,
       areaSize: `${areaSize} ${unit}`,
@@ -344,10 +350,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 {/* Asset ID */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardAssetId" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Asset ID (Auto-generated)
                   </label>
                   <input
+                    id="wizardAssetId"
                     type="text"
                     disabled
                     value={assetIdPreview}
@@ -521,11 +528,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Area / Size */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardAreaSize" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Area / Size *
                   </label>
                   <div className="flex">
                     <input
+                      id="wizardAreaSize"
                       type="number"
                       step="any"
                       required
@@ -551,11 +559,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 {/* Condition Status */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardConditionStatus" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Condition Status *
                   </label>
                   <div className="relative">
                     <select
+                      id="wizardConditionStatus"
                       value={conditionStatus}
                       onChange={(e) => setConditionStatus(e.target.value as AssetRecord['status'])}
                       className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-10 cursor-pointer"
@@ -606,10 +615,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label htmlFor="longitude" className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       LONGITUDE
                     </label>
                     <input
+                      id="longitude"
                       type="text"
                       value={longitude}
                       onChange={(e) => setLongitude(e.target.value)}
@@ -696,7 +706,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   <div className="space-y-2.5">
                     {attachments.map((file, idx) => (
                       <div
-                        key={idx}
+                        key={file.name}
                         className="flex items-center justify-between p-3.5 bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl transition-all"
                       >
                         <div className="flex items-center gap-3 min-w-0">
@@ -711,15 +721,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                         <div className="flex items-center gap-3 shrink-0 ml-3">
                           {file.status && (
-                            <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                file.status === 'Verified'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : file.status === 'Image'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-purple-100 text-purple-800'
-                              }`}
-                            >
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getStatusBadgeClass(file.status)}`}>
                               {file.status}
                             </span>
                           )}
@@ -799,7 +801,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   <div>
                     <span className="text-gray-400 block font-medium">VALUATION AMOUNT</span>
                     <span className="font-bold text-gray-900 text-sm mt-0.5 block">
-                      LKR {parseFloat(valuation || '0').toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      LKR {Number.parseFloat(valuation || '0').toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
                   <div className="flex gap-6">
@@ -876,8 +878,8 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   </button>
                 </div>
                 <div className="space-y-2">
-                  {attachments.map((file, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
+                  {attachments.map((file) => (
+                    <div key={file.name} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
                       <FileDocIcon />
                       <span className="font-semibold text-gray-800 truncate flex-1">{file.name}</span>
                       <span className="text-[11px] text-gray-500">{file.size.split('•')[0]}</span>
