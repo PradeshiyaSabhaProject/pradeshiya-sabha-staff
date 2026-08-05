@@ -400,37 +400,33 @@ const Sidebar: React.FC = () => {
             <div key={item.path} className="relative group">
               {hasChildren ? (
                 // Expandable item
-                <button
-                  type="button"
-                  onClick={() => handleMainItemClick(item, visibleChildren)}
-                  title={isDesktopCollapsed ? item.label : undefined}
-                  className={`w-full flex items-center gap-3 py-3 text-sm font-medium transition-all text-left ${
+                <div
+                  className={`w-full flex items-center justify-between text-sm font-medium transition-all ${
                     active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
-                  } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
+                  }`}
                 >
-                  <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                  <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                  <span
-                    role="button"
-                    tabIndex={0}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleMenu(item.path)
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.stopPropagation()
-                        e.preventDefault()
-                        toggleMenu(item.path)
-                      }
-                    }}
-                    className={`p-1 rounded transition-colors ${
+                  <button
+                    type="button"
+                    onClick={() => handleMainItemClick(item, visibleChildren)}
+                    title={isDesktopCollapsed ? item.label : undefined}
+                    className={`flex-1 flex items-center gap-3 py-3 text-left transition-all ${
+                      isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'
+                    }`}
+                  >
+                    <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
+                    <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleMenu(item.path)}
+                    className={`p-1 mr-3 rounded transition-colors ${
                       active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
                     } ${isDesktopCollapsed ? 'lg:hidden' : ''}`}
+                    aria-label={isOpen ? "Collapse submenu" : "Expand submenu"}
                   >
                     <ChevronDownIcon open={isOpen} />
-                  </span>
-                </button>
+                  </button>
+                </div>
               ) : (
                 // Plain link
                 <Link
