@@ -19,7 +19,7 @@ const AllApplicationsPage: React.FC = () => {
 
   const handleUpdate = (id: string, updatedData: Partial<ApplicationForm>) => {
     updateApplication(id, updatedData)
-    if (selectedApp && selectedApp.id === id) {
+    if (selectedApp?.id === id) {
       setSelectedApp({ ...selectedApp, ...updatedData })
     }
   }
