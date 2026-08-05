@@ -22,6 +22,32 @@ const FileTextIcon = () => (
   </svg>
 )
 
+const getModuleBadgeStyle = (moduleName: string): string => {
+  switch (moduleName) {
+    case 'Letters':
+      return 'bg-blue-100 text-blue-800 border border-blue-200'
+    case 'Attendance':
+      return 'bg-purple-100 text-purple-800 border border-purple-200'
+    case 'Appointments':
+      return 'bg-orange-100 text-orange-800 border border-orange-200'
+    case 'Security':
+      return 'bg-red-100 text-red-800 border border-red-200'
+    default:
+      return 'bg-gray-200 text-gray-800 border border-gray-300'
+  }
+}
+
+const getStatusDotStyle = (status: string): string => {
+  switch (status) {
+    case 'Success':
+      return 'bg-emerald-500'
+    case 'Warning':
+      return 'bg-amber-500'
+    default:
+      return 'bg-blue-500'
+  }
+}
+
 export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }) => {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedModule, setSelectedModule] = useState<string>('All')
@@ -100,30 +126,18 @@ export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }
               <div key={log.id} className="relative group">
                 {/* Timeline Dot */}
                 <div
-                  className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm ${
-                    log.status === 'Success'
-                      ? 'bg-emerald-500'
-                      : log.status === 'Warning'
-                      ? 'bg-amber-500'
-                      : 'bg-blue-500'
-                  }`}
+                  className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm ${getStatusDotStyle(
+                    log.status
+                  )}`}
                 />
 
                 <div className="bg-gray-50/80 group-hover:bg-gray-100/90 border border-gray-200 rounded-xl p-4 transition-all">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/60 pb-2.5 mb-2.5">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${
-                          log.module === 'Letters'
-                            ? 'bg-blue-100 text-blue-800 border border-blue-200'
-                            : log.module === 'Attendance'
-                            ? 'bg-purple-100 text-purple-800 border border-purple-200'
-                            : log.module === 'Appointments'
-                            ? 'bg-orange-100 text-orange-800 border border-orange-200'
-                            : log.module === 'Security'
-                            ? 'bg-red-100 text-red-800 border border-red-200'
-                            : 'bg-gray-200 text-gray-800 border border-gray-300'
-                        }`}
+                        className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${getModuleBadgeStyle(
+                          log.module
+                        )}`}
                       >
                         {log.module}
                       </span>
