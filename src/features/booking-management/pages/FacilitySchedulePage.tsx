@@ -13,6 +13,17 @@ const CalendarIcon = () => (
   </svg>
 )
 
+function getStatusBadgeStyle(status: string): string {
+  switch (status) {
+    case 'APPROVED':
+      return 'bg-green-100 text-green-800 border-green-300'
+    case 'PENDING':
+      return 'bg-orange-100 text-orange-800 border-orange-300'
+    default:
+      return 'bg-indigo-100 text-indigo-800 border-indigo-300'
+  }
+}
+
 const FacilitySchedulePage: React.FC = () => {
   const { loading, bookings, approveBooking, rejectBooking, addRemark } = useBookingData()
   const [selectedBooking, setSelectedBooking] = useState<FacilityBooking | null>(null)
@@ -125,11 +136,7 @@ const FacilitySchedulePage: React.FC = () => {
                     <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {booking.facilityName}
                     </span>
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider border ${
-                      booking.status === 'APPROVED' ? 'bg-green-100 text-green-800 border-green-300' :
-                      booking.status === 'PENDING' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                      'bg-indigo-100 text-indigo-800 border-indigo-300'
-                    }`}>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider border ${getStatusBadgeStyle(booking.status)}`}>
                       {booking.status}
                     </span>
                   </div>
