@@ -316,6 +316,7 @@ const Sidebar: React.FC = () => {
       {/* Floating Edge Button to Reveal Sidebar on Mobile when hidden */}
       {!isMobileOpen && (
         <button
+          type="button"
           onClick={() => setIsMobileOpen(true)}
           aria-label="Reveal Sidebar Menu"
           title="Reveal / Open Navigation Menu"
@@ -351,6 +352,7 @@ const Sidebar: React.FC = () => {
 
           {/* Mobile close button */}
           <button
+            type="button"
             onClick={() => setIsMobileOpen(false)}
             aria-label="Close Sidebar"
             title="Hide / Close menu"
@@ -365,6 +367,7 @@ const Sidebar: React.FC = () => {
 
           {/* Desktop collapse / expand button right on sidebar */}
           <button
+            type="button"
             onClick={toggleDesktopSidebar}
             title={isDesktopCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
             className={`hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#A31736] hover:bg-gray-100 transition-colors shrink-0 ${
@@ -398,6 +401,7 @@ const Sidebar: React.FC = () => {
               {hasChildren ? (
                 // Expandable item
                 <button
+                  type="button"
                   onClick={() => handleMainItemClick(item, visibleChildren)}
                   title={isDesktopCollapsed ? item.label : undefined}
                   className={`w-full flex items-center gap-3 py-3 text-sm font-medium transition-all text-left ${
@@ -520,6 +524,7 @@ const Sidebar: React.FC = () => {
           )}
         </Link>
         <button
+          type="button"
           onClick={() => {
             setIsMobileOpen(false)
             logout()
