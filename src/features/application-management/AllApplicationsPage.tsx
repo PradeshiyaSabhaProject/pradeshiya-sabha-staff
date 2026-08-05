@@ -39,6 +39,7 @@ const AllApplicationsPage: React.FC = () => {
             <span className="text-red-800 font-bold uppercase tracking-wider">Pipeline Active</span>
           </div>
           <button 
+            type="button"
             onClick={() => navigate('/applications/officers')}
             className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded-xl shadow-xs hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-pointer"
           >
