@@ -119,6 +119,7 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
             return (
               <button
                 key={tab.id}
+                type="button"
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
                   isActive 
@@ -199,6 +200,7 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
         
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button 
+            type="button"
             onClick={handleFilter}
             className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
@@ -206,6 +208,7 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
           </button>
           {(appliedFilters.date || appliedFilters.category || appliedFilters.status || appliedFilters.officer || activeTab !== 'all') && (
             <button 
+              type="button"
               onClick={handleReset}
               className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
             >
@@ -275,6 +278,7 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
                   </td>
                   <td className="py-4 px-6 text-center whitespace-nowrap">
                     <button 
+                      type="button"
                       onClick={() => onView(application)}
                       className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
                     >
