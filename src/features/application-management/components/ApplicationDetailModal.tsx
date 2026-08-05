@@ -150,6 +150,87 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
     }
   }
 
+  const renderDecisionSection = () => {
+    if (application.status === 'APPROVED' || application.status === 'REJECTED') {
+      return (
+        <div className="p-3.5 bg-white border border-amber-200 rounded-xl text-xs font-bold text-gray-700 flex items-center justify-between">
+          <span>
+            This application has already been finalized as{' '}
+            <span className="uppercase text-[#801028]">{application.status}</span>.
+          </span>
+          <span className="text-[10px] bg-gray-100 text-gray-600 px-2.5 py-1 rounded uppercase">Completed</span>
+        </div>
+      )
+    }
+
+    if (!showRejectionForm) {
+      return (
+        <div className="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            onClick={handleManagerApprove}
+            className="flex-1 min-w-[180px] bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            <span>Approve Application </span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowRejectionForm(true)}
+            className="flex-1 min-w-[180px] bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            <span>Reject Application</span>
+          </button>
+        </div>
+      )
+    }
+
+    return (
+      <form onSubmit={handleManagerReject} className="bg-white border-2 border-red-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-extrabold text-[#801028] uppercase tracking-wider">Specify Rejection Remarks (Mandatory)</span>
+          <button
+            type="button"
+            onClick={() => setShowRejectionForm(false)}
+            className="text-xs font-bold text-gray-400 hover:text-gray-600 cursor-pointer"
+          >
+            ✕ Cancel Rejection
+          </button>
+        </div>
+        <textarea
+          value={rejectionRemarkText}
+          onChange={(e) => setRejectionRemarkText(e.target.value)}
+          placeholder="State clearly the reason for rejection or missing statutory criteria to be sent to the applicant..."
+          rows={3}
+          required
+          className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-xs text-gray-800 focus:outline-none focus:border-[#801028] focus:bg-white transition-all"
+        />
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => setShowRejectionForm(false)}
+            className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!rejectionRemarkText.trim()}
+            className="px-5 py-2 bg-[#801028] hover:bg-[#600a1c] disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
+          >
+            <span>Confirm Rejection</span>
+          </button>
+        </div>
+      </form>
+    )
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden">
@@ -360,73 +441,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
                 </div>
               ) : (
                 <div className="space-y-3 pt-1">
-                  {application.status === 'APPROVED' || application.status === 'REJECTED' ? (
-                    <div className="p-3.5 bg-white border border-amber-200 rounded-xl text-xs font-bold text-gray-700 flex items-center justify-between">
-                      <span>This application has already been finalized as <span className="uppercase text-[#801028]">{application.status}</span>.</span>
-                      <span className="text-[10px] bg-gray-100 text-gray-600 px-2.5 py-1 rounded uppercase">Completed</span>
-                    </div>
-                  ) : !showRejectionForm ? (
-                    <div className="flex flex-wrap items-center gap-3">
-                      <button
-                        type="button"
-                        onClick={handleManagerApprove}
-                        className="flex-1 min-w-[180px] bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
-                          <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        <span>Approve Application </span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setShowRejectionForm(true)}
-                        className="flex-1 min-w-[180px] bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
-                      >
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4">
-                          <line x1="18" y1="6" x2="6" y2="18" />
-                          <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                        <span>Reject Application</span>
-                      </button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleManagerReject} className="bg-white border-2 border-red-200 rounded-xl p-4 space-y-3 animate-fade-in shadow-xs">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-extrabold text-[#801028] uppercase tracking-wider">Specify Rejection Remarks (Mandatory)</span>
-                        <button
-                          type="button"
-                          onClick={() => setShowRejectionForm(false)}
-                          className="text-xs font-bold text-gray-400 hover:text-gray-600 cursor-pointer"
-                        >
-                          ✕ Cancel Rejection
-                        </button>
-                      </div>
-                      <textarea
-                        value={rejectionRemarkText}
-                        onChange={(e) => setRejectionRemarkText(e.target.value)}
-                        placeholder="State clearly the reason for rejection or missing statutory criteria to be sent to the applicant..."
-                        rows={3}
-                        required
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-xs text-gray-800 focus:outline-none focus:border-[#801028] focus:bg-white transition-all"
-                      />
-                      <div className="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setShowRejectionForm(false)}
-                          className="px-4 py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs font-bold rounded-lg transition-colors cursor-pointer"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={!rejectionRemarkText.trim()}
-                          className="px-5 py-2 bg-[#801028] hover:bg-[#600a1c] disabled:opacity-50 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 shadow-sm"
-                        >
-                          <span>Confirm Rejection</span>
-                        </button>
-                      </div>
-                    </form>
-                  )}
+                  {renderDecisionSection()}
                 </div>
               )}
             </div>
