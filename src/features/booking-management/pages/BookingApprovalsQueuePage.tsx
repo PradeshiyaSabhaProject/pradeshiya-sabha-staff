@@ -68,6 +68,7 @@ const BookingApprovalsQueuePage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => navigate('/bookings/all')}
           className="flex items-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer self-start sm:self-auto"
         >
@@ -87,6 +88,7 @@ const BookingApprovalsQueuePage: React.FC = () => {
             All facility reservations submitted by citizens have been reviewed, approved, or processed by municipal officers.
           </p>
           <button
+            type="button"
             onClick={() => navigate('/bookings/all')}
             className="mt-4 px-5 py-2.5 bg-[#801028] text-white text-xs font-bold rounded-xl hover:bg-[#680c20] transition-colors uppercase tracking-wider cursor-pointer"
           >
