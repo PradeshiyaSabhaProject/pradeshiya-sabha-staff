@@ -64,57 +64,57 @@ export const AttendanceDashboardPage: React.FC = () => {
       case 'Present':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-800 text-white border border-emerald-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 mr-1.5"></span>
-            Present
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 mr-1.5" />
+            <span>Present</span>
           </span>
         )
       case 'Late Entry':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-800 text-white border border-amber-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 mr-1.5"></span>
-            Late Entry
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 mr-1.5" />
+            <span>Late Entry</span>
           </span>
         )
       case 'Approved Leave':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-800 text-white border border-blue-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-300 mr-1.5"></span>
-            Approved Leave
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-300 mr-1.5" />
+            <span>Approved Leave</span>
           </span>
         )
       case 'Official Duty':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-800 text-white border border-purple-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-300 mr-1.5"></span>
-            Official Field Duty
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-300 mr-1.5" />
+            <span>Official Field Duty</span>
           </span>
         )
       case 'Weekend Duty':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-800 text-white border border-indigo-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mr-1.5 animate-pulse"></span>
-            Weekend Duty (Sat/Sun)
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mr-1.5 animate-pulse" />
+            <span>Weekend Duty (Sat/Sun)</span>
           </span>
         )
       case 'Overtime':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-800 text-white border border-orange-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-300 mr-1.5"></span>
-            Present + Overtime
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-300 mr-1.5" />
+            <span>Present + Overtime</span>
           </span>
         )
       case 'Missed Punch':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-800 text-white border border-rose-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-300 mr-1.5 animate-ping"></span>
-            Missed Out Punch
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-300 mr-1.5 animate-ping" />
+            <span>Missed Out Punch</span>
           </span>
         )
       default:
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-800 text-white border border-gray-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>
-            Absent
+            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5" />
+            <span>Absent</span>
           </span>
         )
     }
