@@ -187,15 +187,16 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
             
             {/* Quantity */}
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label htmlFor="assetValue" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                 Quantity / Value
               </label>
               <input
+                id="assetValue"
                 type="number"
                 min="0.1"
                 step="any"
                 value={value}
-                onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setValue(Number.parseFloat(e.target.value) || 0)}
                 className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] transition-all"
               />
             </div>

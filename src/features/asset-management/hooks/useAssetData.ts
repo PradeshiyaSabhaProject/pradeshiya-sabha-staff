@@ -323,7 +323,9 @@ export function useAssetData() {
     else if (newAssetData.category === 'Machinery & Equipment') prefix = 'ASSET-EQ'
     else if (newAssetData.category === 'Utility / Infrastructure') prefix = 'ASSET-UT'
 
-    const randNum = Math.floor(1000 + Math.random() * 9000)
+    const randomBuffer = new Uint32Array(1)
+    crypto.getRandomValues(randomBuffer)
+    const randNum = 1000 + (randomBuffer[0] % 9000)
     const newId = `${prefix}-${randNum}`
 
     const formatDate = (date: Date) => {
