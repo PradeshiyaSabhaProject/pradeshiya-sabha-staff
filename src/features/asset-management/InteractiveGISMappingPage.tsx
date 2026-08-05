@@ -229,9 +229,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
 
       // If high priority / disputed, add red glow/badge
       const priorityGroup = getAssetPriorityGroup(asset.status)
-      const pulseHtml = priorityGroup === 'High Priority'
-        ? `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
-        : ''
+      const pulseHtml = getPriorityPulseHtml(priorityGroup)
 
       const customIcon = L.divIcon({
         className: 'custom-gis-pin',
@@ -249,12 +247,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup)
 
       // Bind sleek popup
-      const statusColor =
-        priorityGroup === 'High Priority'
-          ? 'color: #dc2626; background: #fee2e2;'
-          : priorityGroup === 'Maintenance'
-          ? 'color: #d97706; background: #fef3c7;'
-          : 'color: #059669; background: #d1fae5;'
+      const statusColor = getStatusColorStyle(priorityGroup)
 
       marker.bindPopup(`
         <div style="min-width: 220px; font-family: 'Public Sans', sans-serif; padding: 4px 0;">

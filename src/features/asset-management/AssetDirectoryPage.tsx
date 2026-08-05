@@ -116,11 +116,27 @@ export const AssetDirectoryPage: React.FC = () => {
       return `Rs. ${asset.valuation.toLocaleString('en-US', { minimumFractionDigits: 0 })}`
     }
     // Default mock valuation calculation if not set
-    const baseVal = asset.category === 'Land' ? 124500000
-      : asset.category === 'Road' ? 45200000
-      : asset.category === 'Building' ? 32800000
-      : 85000000
+    const baseVal = getCategoryBaseValue(asset.category)
     return `Rs. ${(baseVal * (asset.value || 1)).toLocaleString('en-US')}`
+  }
+
+  const getCategoryBaseValue = (category: string) => {
+    if (category === 'Land') return 124500000
+    if (category === 'Road') return 45200000
+    if (category === 'Building') return 32800000
+    return 85000000
+  }
+
+  const getStatusDotClass = (isOperational: boolean, isMaintenance: boolean) => {
+    if (isOperational) return 'bg-emerald-500'
+    if (isMaintenance) return 'bg-red-500'
+    return 'bg-gray-400'
+  }
+
+  const getStatusTextClass = (isOperational: boolean, isMaintenance: boolean) => {
+    if (isOperational) return 'text-emerald-700'
+    if (isMaintenance) return 'text-red-600'
+    return 'text-gray-600'
   }
 
   return (
@@ -385,22 +401,10 @@ export const AssetDirectoryPage: React.FC = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`w-2 h-2 rounded-full ${
-                              isOperational
-                                ? 'bg-emerald-500'
-                                : isMaintenance
-                                ? 'bg-red-500'
-                                : 'bg-gray-400'
-                            }`}
+                            className={`w-2 h-2 rounded-full ${getStatusDotClass(isOperational, isMaintenance)}`}
                           />
                           <span
-                            className={`text-xs font-semibold ${
-                              isOperational
-                                ? 'text-emerald-700'
-                                : isMaintenance
-                                ? 'text-red-600'
-                                : 'text-gray-600'
-                            }`}
+                            className={`text-xs font-semibold ${getStatusTextClass(isOperational, isMaintenance)}`}
                           >
                             {asset.status}
                           </span>
