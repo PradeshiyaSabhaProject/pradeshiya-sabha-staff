@@ -504,6 +504,7 @@ const AssetOverviewPage: React.FC = () => {
                     {/* Asset ID (Styled as blue link in mockup) */}
                     <td className="py-4 px-6 whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => openAssetDetails(asset)}
                         className="text-sm font-extrabold text-[#1e3a8a] font-mono hover:underline text-left cursor-pointer"
                       >
@@ -537,6 +538,7 @@ const AssetOverviewPage: React.FC = () => {
                     {/* Action Manage Button */}
                     <td className="py-4 px-6 text-right whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => openAssetDetails(asset)}
                         className="text-xs font-bold text-[#1e3a8a] hover:text-blue-800 cursor-pointer"
                       >
@@ -613,6 +615,7 @@ const AssetOverviewPage: React.FC = () => {
 
               {/* Next page button */}
               <button
+                type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
                 className={`w-8 h-8 rounded-lg border flex items-center justify-center text-gray-500 transition-all select-none ${currentPage === totalPages
@@ -725,10 +728,11 @@ const AssetOverviewPage: React.FC = () => {
 
                   {/* Asset Name */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="editAssetName" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                       Asset Name
                     </label>
                     <input
+                      id="editAssetName"
                       type="text"
                       value={editFormData.name}
                       onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
@@ -757,14 +761,15 @@ const AssetOverviewPage: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                        Status
-                      </label>
-                      <select
-                        value={editFormData.status}
-                        onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as AssetRecord['status'] })}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
-                      >
+                      <label htmlFor="editStatus" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                          Status
+                        </label>
+                        <select
+                          id="editStatus"
+                          value={editFormData.status}
+                          onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as AssetRecord['status'] })}
+                          className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                        >
                         <option value="Operational">Operational</option>
                         <option value="Under Maintenance">Under Maintenance</option>
                         <option value="Disputed">Disputed</option>
@@ -806,15 +811,16 @@ const AssetOverviewPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                        Unit
-                      </label>
-                      <input
-                        type="text"
-                        value={editFormData.unit}
-                        onChange={(e) => setEditFormData({ ...editFormData, unit: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
-                      />
+                      <label htmlFor="editUnit" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                          Unit
+                        </label>
+                        <input
+                          id="editUnit"
+                          type="text"
+                          value={editFormData.unit}
+                          onChange={(e) => setEditFormData({ ...editFormData, unit: e.target.value })}
+                          className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+                        />
                     </div>
                   </div>
 
