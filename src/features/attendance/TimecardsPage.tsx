@@ -454,7 +454,7 @@ export const TimecardsPage: React.FC = () => {
             <tbody className="divide-y divide-gray-300">
               {timecardEntries.map((row, i) => (
                 <tr
-                  key={i}
+                  key={row.date}
                   className={`group hover:bg-red-50/30 transition cursor-pointer ${getRowBackgroundClass(row, i)}`}
                 >
                   {/* Row Index Number (1, 2, 3...) */}
