@@ -442,8 +442,10 @@ const Sidebar: React.FC = () => {
     <>
       {/* Mobile Backdrop */}
       {isMobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300"
+        <button
+          type="button"
+          aria-label="Close navigation sidebar"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 border-none outline-none cursor-default"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
