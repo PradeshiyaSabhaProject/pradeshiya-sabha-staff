@@ -94,7 +94,7 @@ export const ProfilePage: React.FC = () => {
         <div className="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-gray-700 flex items-center gap-3 animate-fade-in text-xs sm:text-sm font-semibold">
           <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse"></span>
           <span>{toast}</span>
-          <button onClick={() => setToast(null)} className="ml-2 text-gray-400 hover:text-white font-bold cursor-pointer">
+          <button type="button" onClick={() => setToast(null)} className="ml-2 text-gray-400 hover:text-white font-bold cursor-pointer">
             ✕
           </button>
         </div>
@@ -118,6 +118,7 @@ export const ProfilePage: React.FC = () => {
             return (
               <button
                 key={tab.key}
+                type="button"
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
                   isActive
