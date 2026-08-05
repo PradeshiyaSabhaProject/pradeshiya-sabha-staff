@@ -330,6 +330,7 @@ export const TimecardsPage: React.FC = () => {
 
           <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-start sm:justify-end">
             <button
+              type="button"
               onClick={() => alert('Exporting TIMECARD_JULY2026.xlsx spreadsheet...')}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-[#6a0d21] hover:bg-[#5c0b1c] text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-[#941934] shadow-2xs cursor-pointer"
             >
@@ -341,6 +342,7 @@ export const TimecardsPage: React.FC = () => {
               <span>Download .XLSX Workbook</span>
             </button>
             <button
+              type="button"
               onClick={() => window.print()}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-white/20 cursor-pointer"
             >
@@ -499,6 +501,7 @@ export const TimecardsPage: React.FC = () => {
                   {/* Col I: Action */}
                   <td className="py-2.5 px-3 text-center font-sans">
                     <button
+                      type="button"
                       onClick={() => navigate('/attendance/request-regularization')}
                       className="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition cursor-pointer"
                     >
