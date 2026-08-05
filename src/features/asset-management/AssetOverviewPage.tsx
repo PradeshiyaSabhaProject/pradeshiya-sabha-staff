@@ -262,6 +262,7 @@ const AssetOverviewPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
+            type="button"
             onClick={() => setIsAddModalOpen(true)}
             className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -270,6 +271,7 @@ const AssetOverviewPage: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={() => alert('PDF Export triggered (Simulated)')}
             className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
@@ -278,6 +280,7 @@ const AssetOverviewPage: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={() => window.print()}
             className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
@@ -578,6 +581,7 @@ const AssetOverviewPage: React.FC = () => {
 
               {/* Previous page button */}
               <button
+                type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
                 className={`w-8 h-8 rounded-lg border flex items-center justify-center text-gray-500 transition-all select-none ${currentPage === 1

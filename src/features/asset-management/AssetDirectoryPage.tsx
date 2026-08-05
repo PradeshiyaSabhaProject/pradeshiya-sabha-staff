@@ -429,6 +429,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => setCurrentPageLocal((p) => Math.max(1, p - 1))}
               disabled={currentPageLocal === 1}
               className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
@@ -437,6 +438,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </button>
             
             <button
+              type="button"
               onClick={() => setCurrentPageLocal(1)}
               className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                 currentPageLocal === 1
@@ -449,6 +451,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
             {totalPagesLocal >= 2 && (
               <button
+                type="button"
                 onClick={() => setCurrentPageLocal(2)}
                 className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                   currentPageLocal === 2
@@ -462,6 +465,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
             {totalPagesLocal >= 3 && (
               <button
+                type="button"
                 onClick={() => setCurrentPageLocal(3)}
                 className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                   currentPageLocal === 3
@@ -476,6 +480,7 @@ export const AssetDirectoryPage: React.FC = () => {
             <span className="px-1 text-gray-400">...</span>
 
             <button
+              type="button"
               onClick={() => setCurrentPageLocal(371)}
               className="w-10 h-8 rounded-lg font-bold hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors cursor-pointer"
             >
@@ -483,6 +488,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </button>
 
             <button
+              type="button"
               onClick={() => setCurrentPageLocal((p) => Math.min(totalPagesLocal, p + 1))}
               disabled={currentPageLocal === totalPagesLocal}
               className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
@@ -503,7 +509,9 @@ export const AssetDirectoryPage: React.FC = () => {
       {/* ── SIMPLE ASSET DETAILS VIEW MODAL ─────────────────────────────── */}
       {selectedAssetForView && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
+          <button
+            type="button"
+            aria-label="Close asset details"
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
             onClick={() => setSelectedAssetForView(null)}
           />
@@ -511,6 +519,7 @@ export const AssetDirectoryPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="text-lg font-bold text-gray-900">Asset Record Details</h3>
               <button
+                type="button"
                 onClick={() => setSelectedAssetForView(null)}
                 className="text-gray-400 hover:text-gray-700 font-bold"
               >
