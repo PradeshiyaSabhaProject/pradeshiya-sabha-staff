@@ -234,21 +234,19 @@ const generatePattern = (
     } else if (patternType === 'night') {
       const cycle = d % 6
       days[d] = cycle < 4 ? 'NGT' : 'OFF'
+    } else if (d === 11 || d === 19) {
+      days[d] = 'OT+'
     } else {
-      if (d === 11 || d === 19) {
-        days[d] = 'OT+'
-      } else {
-        const cycle = d % 4
-        let shiftCode = 'GEN'
-        if (cycle === 0) {
-          shiftCode = 'OFF'
-        } else if (cycle === 1) {
-          shiftCode = 'MRN'
-        } else if (cycle === 2) {
-          shiftCode = 'EVE'
-        }
-        days[d] = shiftCode
+      const cycle = d % 4
+      let shiftCode = 'GEN'
+      if (cycle === 0) {
+        shiftCode = 'OFF'
+      } else if (cycle === 1) {
+        shiftCode = 'MRN'
+      } else if (cycle === 2) {
+        shiftCode = 'EVE'
       }
+      days[d] = shiftCode
     }
   }
   return days
