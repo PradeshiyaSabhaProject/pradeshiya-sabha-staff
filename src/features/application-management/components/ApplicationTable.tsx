@@ -47,10 +47,10 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
   const [filters, setFilters] = useState({ date: '', category: '', status: '', officer: '' })
   const [appliedFilters, setAppliedFilters] = useState({ date: '', category: '', status: '', officer: '' })
 
-  const uniqueDates = useMemo(() => Array.from(new Set(applications.map(a => a.date))).sort(), [applications])
-  const uniqueCategories = useMemo(() => Array.from(new Set(applications.map(a => a.category))).sort(), [applications])
-  const uniqueStatuses = useMemo(() => Array.from(new Set(applications.map(a => a.status))).sort(), [applications])
-  const uniqueOfficers = useMemo(() => Array.from(new Set(applications.map(a => a.assignedOfficer))).sort(), [applications])
+  const uniqueDates = useMemo(() => Array.from(new Set(applications.map(a => a.date))).sort((a, b) => a.localeCompare(b)), [applications])
+  const uniqueCategories = useMemo(() => Array.from(new Set(applications.map(a => a.category))).sort((a, b) => a.localeCompare(b)), [applications])
+  const uniqueStatuses = useMemo(() => Array.from(new Set(applications.map(a => a.status))).sort((a, b) => a.localeCompare(b)), [applications])
+  const uniqueOfficers = useMemo(() => Array.from(new Set(applications.map(a => a.assignedOfficer))).sort((a, b) => a.localeCompare(b)), [applications])
 
   const handleFilter = () => {
     setAppliedFilters(filters)
