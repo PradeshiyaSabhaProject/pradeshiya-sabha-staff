@@ -91,7 +91,13 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   const [name, setName] = useState('')
   const [category, setCategory] = useState<AssetRecord['category']>('Land')
   const [location, setLocation] = useState('')
-  const [assetIdPreview, setAssetIdPreview] = useState('PS-AST-2026-8821')
+  function generateRandomSuffix(): string {
+    const randomBytes = new Uint32Array(1)
+    crypto.getRandomValues(randomBytes)
+    return String(1000 + (randomBytes[0] % 9000))
+  }
+
+  const [assetIdPreview, setAssetIdPreview] = useState(`PS-AST-2026-${generateRandomSuffix()}`)
 
   // Stage 2 State
   const [valuation, setValuation] = useState<string>('45250000.00')
@@ -113,6 +119,8 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     { name: 'Site_Boundary_North_View.jpg', size: '1.8 MB • Uploaded 1 min ago', type: 'image', status: 'Image' },
     { name: 'Structural_Survey_Final.docx', size: '2.4 MB • Uploaded just now', type: 'doc', status: 'Document' },
   ])
+
+  
 
   const getCategoryDefaults = (cat: string) => {
     const randomBytes = new Uint32Array(1)

@@ -409,6 +409,7 @@ export const AssetDirectoryPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedAssetForView(asset)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAssetForView(asset); } }}
                           className="text-xs font-bold text-[#800020] hover:underline cursor-pointer"
                         >
                           View Details
