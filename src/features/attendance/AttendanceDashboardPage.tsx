@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { MOCK_BIOMETRIC_LOGS, type BiometricLog } from './data/mockAttendanceData'
 import { BiometricSyncModal } from './components/BiometricSyncModal'
 
+function getRowBackgroundClass(isWeekend: boolean | undefined, i: number): string {
+  if (isWeekend) {
+    return 'bg-indigo-50/40'
+  }
+  return i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
+}
+
 export const AttendanceDashboardPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState('2026-07-10')
@@ -14,8 +21,8 @@ export const AttendanceDashboardPage: React.FC = () => {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
   const [lastSyncText, setLastSyncText] = useState('Today at 08:45 AM')
 
-  const uniqueDepartments = Array.from(new Set(logs.map((l) => l.department))).sort()
-  const uniqueStatuses = Array.from(new Set(logs.map((l) => l.status))).sort()
+  const uniqueDepartments = Array.from(new Set(logs.map((l) => l.department))).sort((a, b) => a.localeCompare(b))
+  const uniqueStatuses = Array.from(new Set(logs.map((l) => l.status))).sort((a, b) => a.localeCompare(b))
 
   const filteredLogs = logs.filter((log) => {
     const matchesSearch =
@@ -437,8 +444,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               {filteredLogs.map((log, i) => (
                 <tr
                   key={log.id}
-                  className={`group hover:bg-red-50/30 transition cursor-pointer ${log.isWeekend ? 'bg-indigo-50/40' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
-                    }`}
+                  className={`group hover:bg-red-50/30 transition cursor-pointer ${getRowBackgroundClass(log.isWeekend, i)}`}
                 >
                   {/* Row Index Number (1, 2, 3...) */}
                   <td className="py-2.5 px-2 border-r border-gray-300 bg-gray-100 text-gray-600 text-center font-bold font-mono text-[11px] select-none group-hover:bg-[#801028]/15 group-hover:text-[#801028] transition">
