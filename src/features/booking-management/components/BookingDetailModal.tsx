@@ -125,6 +125,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             </p>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="p-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer shrink-0"
           >
@@ -348,6 +349,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full sm:w-auto justify-end">
             <button
+              type="button"
               onClick={onClose}
               className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer flex-1 sm:flex-initial text-center"
             >
@@ -358,6 +360,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             {onApprove && onReject && !showRejectionForm && !showApproveForm && (
               <>
                 <button
+                  type="button"
                   onClick={() => setShowRejectionForm(true)}
                   className="px-4.5 py-2 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer flex-1 sm:flex-initial"
                 >
@@ -365,6 +368,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   <span>Reject</span>
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowApproveForm(true)}
                   className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer flex-1 sm:flex-initial"
                 >
@@ -382,6 +386,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             <div className="flex items-center justify-between text-xs font-bold text-green-900">
               <span>Confirm Official Approval for Venue Reservation</span>
               <button
+                type="button"
                 onClick={() => setShowApproveForm(false)}
                 className="text-gray-500 hover:text-gray-800 font-bold cursor-pointer"
               >
@@ -397,6 +402,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             />
             <div className="flex items-center justify-end gap-2">
               <button
+                type="button"
                 onClick={handleConfirmApprove}
                 className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white font-extrabold text-xs rounded-xl transition-colors shadow-sm cursor-pointer"
               >
