@@ -207,6 +207,32 @@ interface MonthlyRosterRow {
 }
 
 // Generate default shifts for any given month
+function getOfficeShift(d: number, weekend: boolean): string {
+  if (d === 4 || d === 11 || d === 18) return 'WKD'
+  if (d === 9 || d === 23) return 'OT+'
+  return weekend ? 'OFF' : 'GEN'
+}
+
+function getMorningShift(d: number, weekend: boolean): string {
+  if (d === 5 || d === 12 || d === 26) return 'EMG'
+  if (d === 11 || d === 25) return 'WKD'
+  return (d % 7 === 5 || weekend) ? 'OFF' : 'MRN'
+}
+
+function getNightShift(d: number): string {
+  const cycle = d % 6
+  return cycle < 4 ? 'NGT' : 'OFF'
+}
+
+function getWaterShift(d: number): string {
+  if (d === 11 || d === 19) return 'OT+'
+  const cycle = d % 4
+  if (cycle === 0) return 'OFF'
+  if (cycle === 1) return 'MRN'
+  if (cycle === 2) return 'EVE'
+  return 'GEN'
+}
+
 const generatePattern = (
   patternType: 'office' | 'morning' | 'night' | 'water',
   monthStr: string = 'July 2026'
@@ -216,37 +242,13 @@ const generatePattern = (
   for (let d = 1; d <= totalDays; d++) {
     const weekend = isWeekendDay(monthStr, d)
     if (patternType === 'office') {
-      if (d === 4 || d === 11 || d === 18) {
-        days[d] = 'WKD' // Saturday special work
-      } else if (d === 9 || d === 23) {
-        days[d] = 'OT+' // Overtime weekday
-      } else {
-        days[d] = weekend ? 'OFF' : 'GEN'
-      }
+      days[d] = getOfficeShift(d, weekend)
     } else if (patternType === 'morning') {
-      if (d === 5 || d === 12 || d === 26) {
-        days[d] = 'EMG' // Sunday emergency callout
-      } else if (d === 11 || d === 25) {
-        days[d] = 'WKD' // Saturday duty
-      } else {
-        days[d] = (d % 7 === 5 || weekend) ? 'OFF' : 'MRN'
-      }
+      days[d] = getMorningShift(d, weekend)
     } else if (patternType === 'night') {
-      const cycle = d % 6
-      days[d] = cycle < 4 ? 'NGT' : 'OFF'
-    } else if (d === 11 || d === 19) {
-      days[d] = 'OT+'
+      days[d] = getNightShift(d)
     } else {
-      const cycle = d % 4
-      let shiftCode = 'GEN'
-      if (cycle === 0) {
-        shiftCode = 'OFF'
-      } else if (cycle === 1) {
-        shiftCode = 'MRN'
-      } else if (cycle === 2) {
-        shiftCode = 'EVE'
-      }
-      days[d] = shiftCode
+      days[d] = getWaterShift(d)
     }
   }
   return days
