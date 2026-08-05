@@ -139,6 +139,7 @@ export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }
             return (
               <button
                 key={mod}
+                type="button"
                 onClick={() => setSelectedModule(mod)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${filterBtnStyle}`}
               >
