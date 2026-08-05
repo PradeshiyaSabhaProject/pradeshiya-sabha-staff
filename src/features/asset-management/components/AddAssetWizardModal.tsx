@@ -260,6 +260,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               const stepNum = idx + 1
               const isActive = step === stepNum
               const isCompleted = step > stepNum
+              const stepCircleClass = isActive
+                ? 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
+                : isCompleted
+                ? 'bg-[#A31736] text-white'
+                : 'bg-white border-2 border-gray-200 text-gray-400'
 
               return (
                 <React.Fragment key={title}>
@@ -283,13 +288,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${
-                        isActive
-                          ? 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
-                          : isCompleted
-                          ? 'bg-[#A31736] text-white'
-                          : 'bg-white border-2 border-gray-200 text-gray-400'
-                      }`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${stepCircleClass}`}
                     >
                       {isCompleted ? <CheckIcon /> : stepNum}
                     </div>
@@ -450,10 +449,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               {/* Acquisition Date & Funding Source */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="acquisitionDate" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Acquisition Date
                   </label>
                   <input
+                    id="acquisitionDate"
                     type="date"
                     value={acquisitionDate}
                     onChange={(e) => setAcquisitionDate(e.target.value)}
@@ -462,11 +462,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="fundingSource" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Funding Source
                   </label>
                   <div className="relative">
                     <select
+                      id="fundingSource"
                       value={fundingSource}
                       onChange={(e) => setFundingSource(e.target.value)}
                       className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-10 cursor-pointer"
@@ -579,10 +580,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label htmlFor="latitude" className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       LATITUDE
                     </label>
                     <input
+                      id="latitude"
                       type="text"
                       value={latitude}
                       onChange={(e) => setLatitude(e.target.value)}

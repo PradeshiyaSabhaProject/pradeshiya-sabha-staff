@@ -442,6 +442,7 @@ const AssetOverviewPage: React.FC = () => {
               {/* Reset Filters button */}
               {(categoryFilter || statusFilter || searchQuery) && (
                 <button
+                  type="button"
                   onClick={() => { setCategoryFilter(''); setStatusFilter(''); setSearchQuery(''); }}
                   className="text-xs font-bold text-[#A31736] hover:text-[#801028] px-2 py-2 transition-colors cursor-pointer"
                 >
@@ -594,6 +595,7 @@ const AssetOverviewPage: React.FC = () => {
                 return (
                   <button
                     key={pageNum}
+                    type="button"
                     onClick={() => setCurrentPage(pageNum)}
                     className={`w-8 h-8 rounded-lg border text-xs font-bold transition-all select-none cursor-pointer ${isActive
                         ? 'bg-[#A31736] text-white border-[#A31736] shadow-2xs'
@@ -627,7 +629,12 @@ const AssetOverviewPage: React.FC = () => {
       {/* ── Asset Details Overlay Panel (now with Edit + Update) ── */}
       {activeAssetDetails && editFormData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={closeAssetDetails} />
+          <button
+            type="button"
+            aria-label="Close asset details"
+            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
+            onClick={closeAssetDetails}
+          />
           <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 max-w-md w-full relative z-10 animate-scale-up">
 
             {/* Header */}
@@ -636,6 +643,7 @@ const AssetOverviewPage: React.FC = () => {
                 {isEditingDetails ? 'Edit Asset Record' : 'Asset Detail Log'}
               </h3>
               <button
+                type="button"
                 onClick={closeAssetDetails}
                 className="text-gray-400 hover:text-gray-600 font-extrabold text-lg cursor-pointer"
               >
@@ -762,10 +770,11 @@ const AssetOverviewPage: React.FC = () => {
 
                   {/* Location/Ward */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="editLocation" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                       Location / Ward
                     </label>
                     <input
+                      id="editLocation"
                       type="text"
                       value={editFormData.location}
                       onChange={(e) => setEditFormData({ ...editFormData, location: e.target.value })}
@@ -776,15 +785,16 @@ const AssetOverviewPage: React.FC = () => {
                   {/* Quantity + Unit */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="editQuantity" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                         Quantity
                       </label>
                       <input
+                        id="editQuantity"
                         type="number"
                         min="0"
                         step="any"
                         value={editFormData.value}
-                        onChange={(e) => setEditFormData({ ...editFormData, value: parseFloat(e.target.value) || 0 })}
+                        onChange={(e) => setEditFormData({ ...editFormData, value: Number.parseFloat(e.target.value) || 0 })}
                         className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
                       />
                     </div>
@@ -811,12 +821,14 @@ const AssetOverviewPage: React.FC = () => {
                 {/* Footer buttons: Cancel + Update */}
                 <div className="mt-6 flex justify-end gap-2.5">
                   <button
+                    type="button"
                     onClick={cancelEditing}
                     className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
+                    type="button"
                     onClick={handleUpdateAsset}
                     className="px-5 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
