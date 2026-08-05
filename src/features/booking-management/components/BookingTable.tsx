@@ -60,6 +60,26 @@ const TABS: { id: string; label: string; status: BookingStatus | null }[] = [
   { id: 'completed', label: 'Completed Events', status: 'COMPLETED' }
 ]
 
+function matchesTab(b: FacilityBooking, activeTab: string, showTabs: boolean): boolean {
+  if (!showTabs || activeTab === 'all') return true
+  const tabObj = TABS.find(t => t.id === activeTab)
+  if (!tabObj?.status) return true
+  if (b.status === tabObj.status) return true
+  if (activeTab === 'rejected' && b.status === 'CANCELLED') return true
+  return false
+}
+
+function matchesSearch(b: FacilityBooking, searchQuery: string): boolean {
+  if (!searchQuery) return true
+  const q = searchQuery.toLowerCase()
+  return (
+    b.citizenName.toLowerCase().includes(q) ||
+    b.citizenNic.toLowerCase().includes(q) ||
+    b.refId.toLowerCase().includes(q) ||
+    b.eventTitle.toLowerCase().includes(q)
+  )
+}
+
 const BookingTable: React.FC<BookingTableProps> = ({
   bookings,
   onView,
@@ -73,15 +93,15 @@ const BookingTable: React.FC<BookingTableProps> = ({
   const [appliedFilters, setAppliedFilters] = useState({ facility: '', date: '', status: '', search: '' })
 
   const uniqueFacilities = useMemo(
-    () => Array.from(new Set(bookings.map(b => b.facilityName))).sort(),
+    () => Array.from(new Set(bookings.map(b => b.facilityName))).sort((a, b) => a.localeCompare(b)),
     [bookings]
   )
   const uniqueDates = useMemo(
-    () => Array.from(new Set(bookings.map(b => b.bookingDate))).sort(),
+    () => Array.from(new Set(bookings.map(b => b.bookingDate))).sort((a, b) => a.localeCompare(b)),
     [bookings]
   )
   const uniqueStatuses = useMemo(
-    () => Array.from(new Set(bookings.map(b => b.status))).sort(),
+    () => Array.from(new Set(bookings.map(b => b.status))).sort((a, b) => a.localeCompare(b)),
     [bookings]
   )
 
@@ -97,50 +117,12 @@ const BookingTable: React.FC<BookingTableProps> = ({
 
   const filteredBookings = useMemo(() => {
     return bookings.filter(b => {
-      // Tab filter
-      if (showTabs && activeTab !== 'all') {
-        const tabObj = TABS.find(t => t.id === activeTab)
-        if (tabObj && tabObj.status && b.status !== tabObj.status) {
-          if (activeTab === 'rejected' && b.status === 'CANCELLED') {
-            // allow cancelled in rejected tab
-          } else {
-            return false
-          }
-        }
-      }
-
-      // External facility filter
-      if (selectedFacilityFilter && b.facilityName !== selectedFacilityFilter) {
-        return false
-      }
-
-      // Applied facility filter
-      if (appliedFilters.facility && b.facilityName !== appliedFilters.facility) {
-        return false
-      }
-
-      // Applied status filter
-      if (appliedFilters.status && b.status !== appliedFilters.status) {
-        return false
-      }
-
-      // Applied date filter
-      if (appliedFilters.date && b.bookingDate !== appliedFilters.date) {
-        return false
-      }
-
-      // Applied search filter
-      if (appliedFilters.search || filters.search) {
-        const q = (appliedFilters.search || filters.search).toLowerCase()
-        const matchesName = b.citizenName.toLowerCase().includes(q)
-        const matchesNic = b.citizenNic.toLowerCase().includes(q)
-        const matchesRef = b.refId.toLowerCase().includes(q)
-        const matchesTitle = b.eventTitle.toLowerCase().includes(q)
-        if (!matchesName && !matchesNic && !matchesRef && !matchesTitle) {
-          return false
-        }
-      }
-
+      if (!matchesTab(b, activeTab, showTabs)) return false
+      if (selectedFacilityFilter && b.facilityName !== selectedFacilityFilter) return false
+      if (appliedFilters.facility && b.facilityName !== appliedFilters.facility) return false
+      if (appliedFilters.status && b.status !== appliedFilters.status) return false
+      if (appliedFilters.date && b.bookingDate !== appliedFilters.date) return false
+      if (!matchesSearch(b, appliedFilters.search || filters.search)) return false
       return true
     })
   }, [bookings, activeTab, appliedFilters, filters.search, showTabs, selectedFacilityFilter])
@@ -192,6 +174,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
             const count = getTabCount(tab.id, tab.status)
             return (
               <button
+                type="button"
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-5 sm:px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
@@ -282,6 +265,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
         {/* Filter & Reset Buttons */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
+            type="button"
             onClick={handleFilter}
             className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer flex-1 sm:flex-initial text-center"
           >
@@ -289,6 +273,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
           </button>
           {(appliedFilters.facility || appliedFilters.date || appliedFilters.status || appliedFilters.search || filters.search || activeTab !== 'all' || selectedFacilityFilter) && (
             <button
+              type="button"
               onClick={handleReset}
               className="text-gray-500 hover:text-[#801028] font-medium px-3 py-2 text-sm transition-colors cursor-pointer"
             >
@@ -356,6 +341,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                       {isPending && onApprove && onReject && (
                         <>
                           <button
+                            type="button"
                             onClick={() => onApprove(booking.id)}
                             title="Quick Approve Booking"
                             className="p-1.5 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors cursor-pointer shadow-2xs"
@@ -363,6 +349,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                             <CheckIcon />
                           </button>
                           <button
+                            type="button"
                             onClick={() => onReject(booking.id)}
                             title="Quick Reject Booking"
                             className="p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer shadow-2xs"
@@ -372,6 +359,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                         </>
                       )}
                       <button
+                        type="button"
                         onClick={() => onView(booking)}
                         className="p-2 rounded-lg hover:bg-gray-200 transition-colors group cursor-pointer inline-flex items-center justify-center"
                       >
@@ -405,8 +393,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
             return (
               <div
                 key={booking.id}
-                onClick={() => onView(booking)}
-                className="p-4 space-y-3 hover:bg-gray-50/70 transition-colors cursor-pointer"
+                className="p-4 space-y-3 hover:bg-gray-50/40 transition-colors border border-gray-100 rounded-xl my-2"
               >
                 {/* Top bar: Ref + Status badge */}
                 <div className="flex items-center justify-between gap-2">
@@ -446,7 +433,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                 </div>
 
                 {/* Mobile Action Bar */}
-                <div className="flex items-center justify-between pt-1" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-gray-400">
                     Submitted: {booking.submittedDate}
                   </span>
@@ -454,6 +441,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                     {isPending && onApprove && onReject && (
                       <>
                         <button
+                          type="button"
                           onClick={() => onApprove(booking.id)}
                           className="px-2.5 py-1.5 bg-green-600 hover:bg-green-700 text-white rounded-md text-xs font-bold flex items-center gap-1 shadow-2xs"
                         >
@@ -461,6 +449,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                           <span>Approve</span>
                         </button>
                         <button
+                          type="button"
                           onClick={() => onReject(booking.id)}
                           className="px-2.5 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-md text-xs font-bold flex items-center gap-1 shadow-2xs"
                         >
@@ -470,6 +459,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                       </>
                     )}
                     <button
+                      type="button"
                       onClick={() => onView(booking)}
                       className="px-3 py-1.5 bg-white border border-gray-300 hover:border-[#801028] text-gray-700 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-2xs"
                     >

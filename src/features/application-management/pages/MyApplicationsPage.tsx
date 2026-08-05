@@ -39,7 +39,7 @@ const MyApplicationsPage: React.FC = () => {
 
   const handleUpdate = (id: string, updatedData: Partial<ApplicationForm>) => {
     updateApplication(id, updatedData)
-    if (selectedApp && selectedApp.id === id) {
+    if (selectedApp?.id === id) {
       setSelectedApp({ ...selectedApp, ...updatedData })
     }
   }
@@ -54,7 +54,7 @@ const MyApplicationsPage: React.FC = () => {
           <p className="text-sm text-gray-500 mt-1">Review citizen statutory forms sent directly to you. Approve for automatic technical escalation or reject with remarks.</p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
-          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-default">
+          <button type="button" className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-default">
             <span className="text-gray-700">My Workload</span>
             <span className="flex items-center gap-1 text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-amber-200">
               <span className="w-1.5 h-1.5 rounded-full bg-amber-500 block"></span>

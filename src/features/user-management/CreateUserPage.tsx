@@ -93,10 +93,10 @@ export const CreateUserPage: React.FC = () => {
   const filteredEmployees = availableEmployees.filter((emp) => {
     const q = searchQuery.toLowerCase()
     return (
-      (emp.employeeName || '').toLowerCase().includes(q) ||
-      (emp.employeeId || '').toLowerCase().includes(q) ||
-      (emp.department || '').toLowerCase().includes(q) ||
-      (emp.designation || '').toLowerCase().includes(q)
+      emp.employeeName?.toLowerCase().includes(q) ||
+      emp.employeeId?.toLowerCase().includes(q) ||
+      emp.department?.toLowerCase().includes(q) ||
+      emp.designation?.toLowerCase().includes(q)
     )
   })
 

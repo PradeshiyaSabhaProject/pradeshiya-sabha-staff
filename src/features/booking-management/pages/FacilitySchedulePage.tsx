@@ -13,6 +13,17 @@ const CalendarIcon = () => (
   </svg>
 )
 
+function getStatusBadgeStyle(status: string): string {
+  switch (status) {
+    case 'APPROVED':
+      return 'bg-green-100 text-green-800 border-green-300'
+    case 'PENDING':
+      return 'bg-orange-100 text-orange-800 border-orange-300'
+    default:
+      return 'bg-indigo-100 text-indigo-800 border-indigo-300'
+  }
+}
+
 const FacilitySchedulePage: React.FC = () => {
   const { loading, bookings, approveBooking, rejectBooking, addRemark } = useBookingData()
   const [selectedBooking, setSelectedBooking] = useState<FacilityBooking | null>(null)
@@ -73,6 +84,7 @@ const FacilitySchedulePage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => navigate('/bookings/all')}
           className="flex items-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer self-start sm:self-auto"
         >
@@ -109,53 +121,47 @@ const FacilitySchedulePage: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {activeBookings.map((booking) => (
-            <div
+            <button
+              type="button"
               key={booking.id}
               onClick={() => handleView(booking)}
-              className="bg-white border border-gray-200 hover:border-[#801028] rounded-xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="w-full text-left font-normal bg-white border border-gray-200 hover:border-[#801028] rounded-xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div className="flex items-start gap-4">
-                <div className="bg-gray-100 border border-gray-200 rounded-xl p-3 text-center min-w-[85px] shrink-0">
+              <span className="flex items-start gap-4">
+                <span className="bg-gray-100 border border-gray-200 rounded-xl p-3 text-center min-w-[85px] shrink-0 block">
                   <span className="text-[10px] font-bold text-gray-500 uppercase block">Date</span>
                   <span className="text-sm font-black text-[#801028] block mt-0.5">{booking.bookingDate}</span>
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
+                </span>
+                <span className="block">
+                  <span className="flex items-center gap-2">
                     <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {booking.facilityName}
                     </span>
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider border ${
-                      booking.status === 'APPROVED' ? 'bg-green-100 text-green-800 border-green-300' :
-                      booking.status === 'PENDING' ? 'bg-orange-100 text-orange-800 border-orange-300' :
-                      'bg-indigo-100 text-indigo-800 border-indigo-300'
-                    }`}>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider border ${getStatusBadgeStyle(booking.status)}`}>
                       {booking.status}
                     </span>
-                  </div>
-                  <h3 className="text-base font-black text-gray-900 mt-1.5 leading-snug">
+                  </span>
+                  <span className="block text-base font-black text-gray-900 mt-1.5 leading-snug">
                     {booking.eventTitle}
-                  </h3>
-                  <div className="text-xs text-gray-500 font-medium mt-1 flex flex-wrap items-center gap-2 sm:gap-4">
+                  </span>
+                  <span className="text-xs text-gray-500 font-medium mt-1 flex flex-wrap items-center gap-2 sm:gap-4">
                     <span>⏰ {booking.timeSlot}</span>
                     <span>👤 {booking.citizenName}</span>
                     <span>👥 ~{booking.expectedAttendees} attendees</span>
-                  </div>
-                </div>
-              </div>
+                  </span>
+                </span>
+              </span>
 
-              <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-gray-100">
-                <div className="text-right hidden md:block">
+              <span className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-gray-100">
+                <span className="text-right hidden md:block">
                   <span className="text-[11px] font-bold text-gray-400 uppercase block">Ref ID</span>
                   <span className="text-xs font-extrabold text-[#801028] font-mono">{booking.refId}</span>
-                </div>
-                <button
-                  onClick={(e) => { e.stopPropagation(); handleView(booking) }}
-                  className="w-full sm:w-auto px-4 py-2 bg-gray-50 hover:bg-[#801028] text-gray-700 hover:text-white border border-gray-200 hover:border-[#801028] rounded-xl text-xs font-bold transition-all cursor-pointer text-center"
-                >
+                </span>
+                <span className="w-full sm:w-auto px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold text-center block">
                   Dossier & Actions →
-                </button>
-              </div>
-            </div>
+                </span>
+              </span>
+            </button>
           ))}
         </div>
       )}

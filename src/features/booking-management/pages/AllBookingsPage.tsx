@@ -62,6 +62,7 @@ const AllBookingsPage: React.FC = () => {
 
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => navigate('/bookings/approvals')}
             className="flex items-center justify-center gap-2.5 bg-[#801028] hover:bg-[#680c20] text-white text-xs font-extrabold px-4.5 py-2.5 rounded-xl shadow-sm transition-colors uppercase tracking-wider cursor-pointer flex-1 sm:flex-initial"
           >
@@ -73,6 +74,7 @@ const AllBookingsPage: React.FC = () => {
             )}
           </button>
           <button
+            type="button"
             onClick={() => navigate('/bookings/schedule')}
             className="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer flex-1 sm:flex-initial"
           >

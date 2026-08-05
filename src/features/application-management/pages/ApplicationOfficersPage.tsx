@@ -21,12 +21,13 @@ const ApplicationOfficersPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <button 
+            type="button"
             onClick={() => navigate('/applications/all')}
             className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-pointer"
           >
             <span className="text-gray-700 font-bold">All Applications</span>
           </button>
-          <button className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-default">
+          <button type="button" className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider cursor-default">
             <span className="text-gray-700 font-bold">TOTAL ASSIGNED: {totalAssigned}</span>
             <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-orange-200">
               <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block"></span>

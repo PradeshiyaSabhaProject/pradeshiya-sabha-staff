@@ -173,6 +173,7 @@ export const ApproveStaffPage: React.FC = () => {
 
                   <div className="flex items-center gap-3">
                     <button
+                      type="button"
                       disabled={processingId !== null}
                       onClick={() => handleAction(req.id, 'reject')}
                       className="flex-1 sm:flex-none px-4 py-2 rounded-lg text-sm font-bold border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
@@ -180,6 +181,7 @@ export const ApproveStaffPage: React.FC = () => {
                       {processingId === req.id ? 'Processing...' : 'Decline'}
                     </button>
                     <button
+                      type="button"
                       disabled={processingId !== null}
                       onClick={() => handleAction(req.id, 'approve')}
                       className="flex-1 sm:flex-none px-6 py-2 rounded-lg text-sm font-bold text-white bg-[#801028] hover:bg-[#6a0d21] shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"

@@ -11,13 +11,23 @@ const ChevronDownIcon = () => (
   </svg>
 )
 
+function getRemainingBadgeStyle(remaining: number): string {
+  if (remaining > 5) {
+    return 'bg-red-50 text-red-700 border-red-200'
+  }
+  if (remaining > 0) {
+    return 'bg-amber-50 text-amber-700 border-amber-200'
+  }
+  return 'bg-green-50 text-green-700 border-green-200'
+}
+
 const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ officers }) => {
   const [departmentFilter, setDepartmentFilter] = useState('')
   const [appliedDeptFilter, setAppliedDeptFilter] = useState('')
 
   const departments = useMemo(() => {
     const set = new Set(officers.map(o => o.department))
-    return Array.from(set).sort()
+    return Array.from(set).sort((a, b) => a.localeCompare(b))
   }, [officers])
 
   const filteredOfficers = useMemo(() => {
@@ -57,6 +67,7 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button 
+            type="button"
             onClick={handleFilter}
             className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
           >
@@ -64,6 +75,7 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
           </button>
           {appliedDeptFilter && (
             <button 
+              type="button"
               onClick={handleReset}
               className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
             >
@@ -110,13 +122,7 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
                   {officer.completedApplications}
                 </td>
                 <td className="py-4 px-6 text-center whitespace-nowrap">
-                  <span className={`px-3 py-1 rounded-full border text-xs font-bold ${
-                    officer.remainingApplications > 5 
-                      ? 'bg-red-50 text-red-700 border-red-200' 
-                      : officer.remainingApplications > 0
-                        ? 'bg-amber-50 text-amber-700 border-amber-200'
-                        : 'bg-green-50 text-green-700 border-green-200'
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full border text-xs font-bold ${getRemainingBadgeStyle(officer.remainingApplications)}`}>
                     {officer.remainingApplications} Pending
                   </span>
                 </td>

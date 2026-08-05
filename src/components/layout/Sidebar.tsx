@@ -236,6 +236,141 @@ const navItems: NavItem[] = [
   { label: 'Settings', path: '/settings', icon: <SettingsIcon />, roles: ['admin', 'superadmin'] },
 ]
 
+// ── Sub-component ──────────────────────────────────────────────────────────
+interface SidebarNavItemProps {
+  item: NavItem
+  visibleChildren: NavChild[]
+  isOpen: boolean
+  isDesktopCollapsed: boolean
+  setIsMobileOpen: (open: boolean) => void
+  toggleMenu: (path: string) => void
+  handleMainItemClick: (item: NavItem, visibleChildren: NavChild[]) => void
+}
+
+const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
+  item,
+  visibleChildren,
+  isOpen,
+  isDesktopCollapsed,
+  setIsMobileOpen,
+  toggleMenu,
+  handleMainItemClick,
+}) => {
+  const location = useLocation()
+  const active = location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+  const hasChildren = visibleChildren.length > 0
+
+  return (
+    <div className="relative group">
+      {hasChildren ? (
+        // Expandable item
+        <div
+          className={`w-full flex items-center justify-between text-sm font-medium transition-all ${
+            active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+          }`}
+        >
+          <button
+            type="button"
+            onClick={() => handleMainItemClick(item, visibleChildren)}
+            title={isDesktopCollapsed ? item.label : undefined}
+            className={`flex-1 flex items-center gap-3 py-3 text-left transition-all ${
+              isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'
+            }`}
+          >
+            <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
+            <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => toggleMenu(item.path)}
+            className={`p-1 mr-3 rounded transition-colors ${
+              active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
+            } ${isDesktopCollapsed ? 'lg:hidden' : ''}`}
+            aria-label={isOpen ? 'Collapse submenu' : 'Expand submenu'}
+          >
+            <ChevronDownIcon open={isOpen} />
+          </button>
+        </div>
+      ) : (
+        // Plain link
+        <Link
+          to={item.path}
+          onClick={() => setIsMobileOpen(false)}
+          title={isDesktopCollapsed ? item.label : undefined}
+          className={`flex items-center gap-3 py-3 text-sm font-medium transition-all ${
+            active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
+          } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
+        >
+          <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
+          <span className={isDesktopCollapsed ? 'lg:hidden' : ''}>{item.label}</span>
+        </Link>
+      )}
+
+      {/* Sub-items drawer when expanded */}
+      {hasChildren && isOpen && (
+        <div className={`bg-gray-50 border-t border-b border-gray-100 py-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>
+          {visibleChildren.map((child) => {
+            const childActive = location.pathname === child.path
+            return (
+              <Link
+                key={child.path}
+                to={child.path}
+                onClick={() => setIsMobileOpen(false)}
+                className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
+                  childActive
+                    ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
+                }`}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
+                {child.label}
+              </Link>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Flyout menu / tooltip when collapsed on desktop */}
+      {isDesktopCollapsed && (
+        <div className="hidden lg:group-hover:block absolute left-full top-0 ml-1 z-[60] bg-gray-900 text-white rounded-lg shadow-xl py-2 px-3 min-w-[200px] pointer-events-auto transition-opacity duration-150">
+          <div className="font-semibold text-xs pb-1.5 border-b border-gray-700 text-gray-100">
+            {item.label}
+          </div>
+          {hasChildren ? (
+            <div className="mt-1 flex flex-col gap-1 pt-1">
+              {visibleChildren.map((child) => {
+                const childActive = location.pathname === child.path
+                return (
+                  <Link
+                    key={child.path}
+                    to={child.path}
+                    onClick={() => setIsMobileOpen(false)}
+                    className={`text-xs py-1.5 px-2.5 rounded transition-colors block ${
+                      childActive
+                        ? 'bg-[#A31736] text-white font-semibold'
+                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    }`}
+                  >
+                    {child.label}
+                  </Link>
+                )
+              })}
+            </div>
+          ) : (
+            <Link
+              to={item.path}
+              onClick={() => setIsMobileOpen(false)}
+              className="text-xs text-gray-300 hover:text-white block pt-1.5"
+            >
+              Go to {item.label}
+            </Link>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ── Component ──────────────────────────────────────────────────────────────
 const Sidebar: React.FC = () => {
   const { user, logout } = useAuth()
@@ -307,8 +442,10 @@ const Sidebar: React.FC = () => {
     <>
       {/* Mobile Backdrop */}
       {isMobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300"
+        <button
+          type="button"
+          aria-label="Close navigation sidebar"
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 border-none outline-none cursor-default"
           onClick={() => setIsMobileOpen(false)}
         />
       )}
@@ -316,6 +453,7 @@ const Sidebar: React.FC = () => {
       {/* Floating Edge Button to Reveal Sidebar on Mobile when hidden */}
       {!isMobileOpen && (
         <button
+          type="button"
           onClick={() => setIsMobileOpen(true)}
           aria-label="Reveal Sidebar Menu"
           title="Reveal / Open Navigation Menu"
@@ -351,6 +489,7 @@ const Sidebar: React.FC = () => {
 
           {/* Mobile close button */}
           <button
+            type="button"
             onClick={() => setIsMobileOpen(false)}
             aria-label="Close Sidebar"
             title="Hide / Close menu"
@@ -365,6 +504,7 @@ const Sidebar: React.FC = () => {
 
           {/* Desktop collapse / expand button right on sidebar */}
           <button
+            type="button"
             onClick={toggleDesktopSidebar}
             title={isDesktopCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
             className={`hidden lg:flex p-1.5 rounded-lg text-gray-400 hover:text-[#A31736] hover:bg-gray-100 transition-colors shrink-0 ${
@@ -386,118 +526,25 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* Nav items */}
-      <nav className="flex-1 overflow-y-auto py-2 min-h-0">
-        {visibleNavItems.map((item) => {
-          const active = isActive(item.path)
-          const visibleChildren = getVisibleChildren(item.children)
-          const hasChildren = visibleChildren.length > 0
-          const isOpen = openMenus[item.path]
+        <nav className="flex-1 overflow-y-auto py-2 min-h-0">
+          {visibleNavItems.map((item) => {
+            const visibleChildren = getVisibleChildren(item.children)
+            const isOpen = openMenus[item.path]
 
-          return (
-            <div key={item.path} className="relative group">
-              {hasChildren ? (
-                // Expandable item
-                <button
-                  onClick={() => handleMainItemClick(item, visibleChildren)}
-                  title={isDesktopCollapsed ? item.label : undefined}
-                  className={`w-full flex items-center gap-3 py-3 text-sm font-medium transition-all text-left ${
-                    active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
-                  } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
-                >
-                  <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                  <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      toggleMenu(item.path)
-                    }}
-                    className={`p-1 rounded transition-colors ${
-                      active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
-                    } ${isDesktopCollapsed ? 'lg:hidden' : ''}`}
-                  >
-                    <ChevronDownIcon open={isOpen} />
-                  </span>
-                </button>
-              ) : (
-                // Plain link
-                <Link
-                  to={item.path}
-                  onClick={() => setIsMobileOpen(false)}
-                  title={isDesktopCollapsed ? item.label : undefined}
-                  className={`flex items-center gap-3 py-3 text-sm font-medium transition-all ${
-                    active ? 'bg-[#A31736] text-white shadow-sm' : 'text-gray-700 hover:bg-gray-50'
-                  } ${isDesktopCollapsed ? 'lg:justify-center lg:px-0 lg:py-3.5' : 'px-5'}`}
-                >
-                  <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                  <span className={isDesktopCollapsed ? 'lg:hidden' : ''}>{item.label}</span>
-                </Link>
-              )}
-
-              {/* Sub-items drawer when expanded */}
-              {hasChildren && isOpen && (
-                <div className={`bg-gray-50 border-t border-b border-gray-100 py-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>
-                  {visibleChildren.map((child) => {
-                    const childActive = location.pathname === child.path
-                    return (
-                      <Link
-                        key={child.path}
-                        to={child.path}
-                        onClick={() => setIsMobileOpen(false)}
-                        className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
-                          childActive
-                            ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
-                            : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
-                        }`}
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
-                        {child.label}
-                      </Link>
-                    )
-                  })}
-                </div>
-              )}
-
-              {/* Flyout menu / tooltip when collapsed on desktop */}
-              {isDesktopCollapsed && (
-                <div className="hidden lg:group-hover:block absolute left-full top-0 ml-1 z-[60] bg-gray-900 text-white rounded-lg shadow-xl py-2 px-3 min-w-[200px] pointer-events-auto transition-opacity duration-150">
-                  <div className="font-semibold text-xs pb-1.5 border-b border-gray-700 text-gray-100">
-                    {item.label}
-                  </div>
-                  {hasChildren ? (
-                    <div className="mt-1 flex flex-col gap-1 pt-1">
-                      {visibleChildren.map((child) => {
-                        const childActive = location.pathname === child.path
-                        return (
-                          <Link
-                            key={child.path}
-                            to={child.path}
-                            onClick={() => setIsMobileOpen(false)}
-                            className={`text-xs py-1.5 px-2.5 rounded transition-colors block ${
-                              childActive
-                                ? 'bg-[#A31736] text-white font-semibold'
-                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                            }`}
-                          >
-                            {child.label}
-                          </Link>
-                        )
-                      })}
-                    </div>
-                  ) : (
-                    <Link
-                      to={item.path}
-                      onClick={() => setIsMobileOpen(false)}
-                      className="text-xs text-gray-300 hover:text-white block pt-1.5"
-                    >
-                      Go to {item.label}
-                    </Link>
-                  )}
-                </div>
-              )}
-            </div>
-          )
-        })}
-      </nav>
+            return (
+              <SidebarNavItem
+                key={item.path}
+                item={item}
+                visibleChildren={visibleChildren}
+                isOpen={isOpen}
+                isDesktopCollapsed={isDesktopCollapsed}
+                setIsMobileOpen={setIsMobileOpen}
+                toggleMenu={toggleMenu}
+                handleMainItemClick={handleMainItemClick}
+              />
+            )
+          })}
+        </nav>
 
       {/* Bottom: Archive + Logout */}
       <div className="border-t border-gray-200 py-2">
@@ -520,6 +567,7 @@ const Sidebar: React.FC = () => {
           )}
         </Link>
         <button
+          type="button"
           onClick={() => {
             setIsMobileOpen(false)
             logout()

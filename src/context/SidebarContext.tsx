@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 
 interface SidebarContextType {
   isMobileOpen: boolean
@@ -32,28 +32,31 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, [isDesktopCollapsed])
 
-  const toggleMobileSidebar = () => setIsMobileOpen((prev) => !prev)
-  const toggleDesktopSidebar = () => setIsDesktopCollapsed((prev) => !prev)
-  const toggleSidebar = () => {
+  const toggleMobileSidebar = useCallback(() => setIsMobileOpen((prev) => !prev), [])
+  const toggleDesktopSidebar = useCallback(() => setIsDesktopCollapsed((prev) => !prev), [])
+  const toggleSidebar = useCallback(() => {
     if (window.innerWidth < 1024) {
-      toggleMobileSidebar()
+      setIsMobileOpen((prev) => !prev)
     } else {
-      toggleDesktopSidebar()
+      setIsDesktopCollapsed((prev) => !prev)
     }
-  }
+  }, [])
+
+  const contextValue = useMemo(
+    () => ({
+      isMobileOpen,
+      setIsMobileOpen,
+      toggleMobileSidebar,
+      isDesktopCollapsed,
+      setIsDesktopCollapsed,
+      toggleDesktopSidebar,
+      toggleSidebar,
+    }),
+    [isMobileOpen, isDesktopCollapsed, toggleMobileSidebar, toggleDesktopSidebar, toggleSidebar]
+  )
 
   return (
-    <SidebarContext.Provider
-      value={{
-        isMobileOpen,
-        setIsMobileOpen,
-        toggleMobileSidebar,
-        isDesktopCollapsed,
-        setIsDesktopCollapsed,
-        toggleDesktopSidebar,
-        toggleSidebar,
-      }}
-    >
+    <SidebarContext.Provider value={contextValue}>
       {children}
     </SidebarContext.Provider>
   )

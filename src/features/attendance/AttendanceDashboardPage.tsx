@@ -3,6 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { MOCK_BIOMETRIC_LOGS, type BiometricLog } from './data/mockAttendanceData'
 import { BiometricSyncModal } from './components/BiometricSyncModal'
 
+function getRowBackgroundClass(isWeekend: boolean | undefined, i: number): string {
+  if (isWeekend) {
+    return 'bg-indigo-50/40'
+  }
+  return i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
+}
+
 export const AttendanceDashboardPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState('2026-07-10')
@@ -14,8 +21,8 @@ export const AttendanceDashboardPage: React.FC = () => {
   const [isSyncModalOpen, setIsSyncModalOpen] = useState(false)
   const [lastSyncText, setLastSyncText] = useState('Today at 08:45 AM')
 
-  const uniqueDepartments = Array.from(new Set(logs.map((l) => l.department))).sort()
-  const uniqueStatuses = Array.from(new Set(logs.map((l) => l.status))).sort()
+  const uniqueDepartments = Array.from(new Set(logs.map((l) => l.department))).sort((a, b) => a.localeCompare(b))
+  const uniqueStatuses = Array.from(new Set(logs.map((l) => l.status))).sort((a, b) => a.localeCompare(b))
 
   const filteredLogs = logs.filter((log) => {
     const matchesSearch =
@@ -57,57 +64,57 @@ export const AttendanceDashboardPage: React.FC = () => {
       case 'Present':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-800 text-white border border-emerald-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 mr-1.5"></span>
-            Present
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 mr-1.5" />
+            <span>Present</span>
           </span>
         )
       case 'Late Entry':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-800 text-white border border-amber-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 mr-1.5"></span>
-            Late Entry
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 mr-1.5" />
+            <span>Late Entry</span>
           </span>
         )
       case 'Approved Leave':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-800 text-white border border-blue-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-300 mr-1.5"></span>
-            Approved Leave
+            <span className="w-1.5 h-1.5 rounded-full bg-blue-300 mr-1.5" />
+            <span>Approved Leave</span>
           </span>
         )
       case 'Official Duty':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-800 text-white border border-purple-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-300 mr-1.5"></span>
-            Official Field Duty
+            <span className="w-1.5 h-1.5 rounded-full bg-purple-300 mr-1.5" />
+            <span>Official Field Duty</span>
           </span>
         )
       case 'Weekend Duty':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-800 text-white border border-indigo-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mr-1.5 animate-pulse"></span>
-            Weekend Duty (Sat/Sun)
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mr-1.5 animate-pulse" />
+            <span>Weekend Duty (Sat/Sun)</span>
           </span>
         )
       case 'Overtime':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-800 text-white border border-orange-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-300 mr-1.5"></span>
-            Present + Overtime
+            <span className="w-1.5 h-1.5 rounded-full bg-orange-300 mr-1.5" />
+            <span>Present + Overtime</span>
           </span>
         )
       case 'Missed Punch':
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-800 text-white border border-rose-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-300 mr-1.5 animate-ping"></span>
-            Missed Out Punch
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-300 mr-1.5 animate-ping" />
+            <span>Missed Out Punch</span>
           </span>
         )
       default:
         return (
           <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-800 text-white border border-gray-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5"></span>
-            Absent
+            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5" />
+            <span>Absent</span>
           </span>
         )
     }
@@ -126,6 +133,7 @@ export const AttendanceDashboardPage: React.FC = () => {
 
         <div className="flex items-center w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setIsSyncModalOpen(true)}
             className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer"
           >
@@ -226,6 +234,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               />
             </div>
             <button
+              type="button"
               onClick={() => alert(`Exporting BIOMETRIC_DAILY_ROSTER_${selectedDate}.xlsx spreadsheet...`)}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-[#6a0d21] hover:bg-[#5c0b1c] text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-[#941934] shadow-2xs cursor-pointer"
             >
@@ -237,6 +246,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               <span>Download .XLSX</span>
             </button>
             <button
+              type="button"
               onClick={() => setIsSyncModalOpen(true)}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-white/20 cursor-pointer"
             >
@@ -246,6 +256,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               <span>Force Sync</span>
             </button>
             <button
+              type="button"
               onClick={() => window.print()}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1 border border-white/20 cursor-pointer"
             >
@@ -305,6 +316,7 @@ export const AttendanceDashboardPage: React.FC = () => {
 
               {(selectedDepartment !== 'All' || selectedStatus !== 'All' || activeFilter !== 'All' || searchQuery !== '') && (
                 <button
+                  type="button"
                   onClick={() => {
                     setSelectedDepartment('All')
                     setSelectedStatus('All')
@@ -344,6 +356,7 @@ export const AttendanceDashboardPage: React.FC = () => {
             <span className="text-xs font-bold text-gray-500 uppercase mr-1">Quick Category:</span>
             {['All', 'Present', 'Late', 'Weekend', 'Overtime', 'Leave', 'Missed'].map((filter) => (
               <button
+                type="button"
                 key={filter}
                 onClick={() => {
                   setActiveFilter(filter)
@@ -431,8 +444,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               {filteredLogs.map((log, i) => (
                 <tr
                   key={log.id}
-                  className={`group hover:bg-red-50/30 transition cursor-pointer ${log.isWeekend ? 'bg-indigo-50/40' : i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
-                    }`}
+                  className={`group hover:bg-red-50/30 transition cursor-pointer ${getRowBackgroundClass(log.isWeekend, i)}`}
                 >
                   {/* Row Index Number (1, 2, 3...) */}
                   <td className="py-2.5 px-2 border-r border-gray-300 bg-gray-100 text-gray-600 text-center font-bold font-mono text-[11px] select-none group-hover:bg-[#801028]/15 group-hover:text-[#801028] transition">
@@ -516,6 +528,7 @@ export const AttendanceDashboardPage: React.FC = () => {
                   {/* Col I: Action */}
                   <td className="py-2.5 px-3 text-center font-sans">
                     <button
+                      type="button"
                       onClick={() => navigate('/attendance/request-regularization')}
                       className="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition cursor-pointer"
                     >
