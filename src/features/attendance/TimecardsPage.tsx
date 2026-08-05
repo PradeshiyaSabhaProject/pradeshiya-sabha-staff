@@ -253,14 +253,15 @@ export const TimecardsPage: React.FC = () => {
               <div className="absolute z-10 w-full mt-1.5 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-auto py-1">
                 {filteredEmployees.length > 0 ? (
                   filteredEmployees.map(emp => (
-                    <div
+                    <button
+                      type="button"
                       key={emp.id}
                       onClick={() => {
                         setSelectedEmp(emp.id)
                         setSearchQuery('')
                         setIsSearchOpen(false)
                       }}
-                      className={`px-4 py-2.5 cursor-pointer transition-colors ${selectedEmp === emp.id ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
+                      className={`w-full text-left px-4 py-2.5 transition-colors ${selectedEmp === emp.id ? 'bg-blue-50' : 'hover:bg-gray-50'}`}
                     >
                       <div className="flex justify-between items-center">
                         <div>
@@ -271,7 +272,7 @@ export const TimecardsPage: React.FC = () => {
                           {emp.id}
                         </div>
                       </div>
-                    </div>
+                    </button>
                   ))
                 ) : (
                   <div className="px-4 py-3 text-sm text-gray-500 text-center">
