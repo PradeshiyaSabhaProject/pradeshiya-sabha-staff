@@ -407,6 +407,7 @@ export const AssetDirectoryPage: React.FC = () => {
                       {/* Actions */}
                       <td className="py-4 px-6 text-right">
                         <button
+                          type="button"
                           onClick={() => setSelectedAssetForView(asset)}
                           className="text-xs font-bold text-[#800020] hover:underline cursor-pointer"
                         >
@@ -559,6 +560,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </div>
             <div className="pt-3 border-t border-gray-100 flex justify-end">
               <button
+                type="button"
                 onClick={() => setSelectedAssetForView(null)}
                 className="px-4 py-2 bg-[#800020] text-white rounded-xl text-xs font-bold cursor-pointer"
               >

@@ -219,6 +219,18 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     'Review',
   ]
 
+  const getStepCircleClass = (isActive: boolean, isCompleted: boolean) => {
+    if (isActive) return 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
+    if (isCompleted) return 'bg-[#A31736] text-white'
+    return 'bg-white border-2 border-gray-200 text-gray-400'
+  }
+
+  const getStepTitleClass = (isActive: boolean, isCompleted: boolean) => {
+    if (isActive) return 'text-[#A31736]'
+    if (isCompleted) return 'text-gray-700'
+    return 'text-gray-400'
+  }
+
   const getSubtitle = () => {
     switch (step) {
       case 1:
@@ -274,11 +286,6 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               const stepNum = idx + 1
               const isActive = step === stepNum
               const isCompleted = step > stepNum
-              const stepCircleClass = isActive
-                ? 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
-                : isCompleted
-                ? 'bg-[#A31736] text-white'
-                : 'bg-white border-2 border-gray-200 text-gray-400'
 
               return (
                 <React.Fragment key={title}>
@@ -303,19 +310,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${stepCircleClass}`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${getStepCircleClass(isActive, isCompleted)}`}
                     >
                       {isCompleted ? <CheckIcon /> : stepNum}
                     </div>
-                    <span
-                      className={`text-[11px] font-semibold mt-1.5 whitespace-nowrap transition-colors ${
-                        isActive
-                          ? 'text-[#A31736]'
-                          : isCompleted
-                          ? 'text-gray-700'
-                          : 'text-gray-400'
-                      }`}
-                    >
+                    <span className={`text-[11px] font-semibold mt-1.5 whitespace-nowrap transition-colors ${getStepTitleClass(isActive, isCompleted)}`}>
                       {title}
                     </span>
                   </button>
