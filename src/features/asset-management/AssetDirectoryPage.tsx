@@ -138,6 +138,7 @@ export const AssetDirectoryPage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => setIsWizardOpen(true)}
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#800020] hover:bg-[#600018] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
         >

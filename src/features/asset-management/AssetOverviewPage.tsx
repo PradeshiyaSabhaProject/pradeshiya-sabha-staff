@@ -694,12 +694,14 @@ const AssetOverviewPage: React.FC = () => {
                 {/* Footer buttons: Close + Edit */}
                 <div className="mt-6 flex justify-end gap-2.5">
                   <button
+                    type="button"
                     onClick={closeAssetDetails}
                     className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
                     Close View
                   </button>
                   <button
+                    type="button"
                     onClick={startEditing}
                     className="px-5 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
                   >
@@ -737,10 +739,11 @@ const AssetOverviewPage: React.FC = () => {
                   {/* Category + Status */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="editCategory" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                         Category
                       </label>
                       <select
+                        id="editCategory"
                         value={editFormData.category}
                         onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value as AssetRecord['category'] })}
                         className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"

@@ -205,7 +205,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
       if (!asset.coordinates) return
       const lat = parseFloat(asset.coordinates.lat)
       const lng = parseFloat(asset.coordinates.lng)
-      if (isNaN(lat) || isNaN(lng)) return
+      if (Number.isNaN(lat) || Number.isNaN(lng)) return
 
       // Determine marker color and icon based on category & priority
       const bgStyle = asset.category === 'Utility / Infrastructure' ? 'background: #1d4ed8; border: 2px solid white;'
@@ -325,6 +325,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
               </button>
             </div>
             <button
+              type="button"
               onClick={handleCenterMap}
               className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center"
               title="Center Map to Colombo/Homagama"
@@ -336,6 +337,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Bottom Center Priority Legend Overlay */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-700 select-none uppercase tracking-wider w-[92%] sm:w-auto max-w-full">
             <button
+              type="button"
               onClick={() => togglePriority('High Priority')}
               className={`flex items-center gap-2.5 transition-opacity ${
                 priorityFilter.includes('High Priority') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
@@ -345,6 +347,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
               <span>High Priority</span>
             </button>
             <button
+              type="button"
               onClick={() => togglePriority('Maintenance')}
               className={`flex items-center gap-2.5 transition-opacity ${
                 priorityFilter.includes('Maintenance') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
@@ -354,6 +357,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
               <span>Maintenance</span>
             </button>
             <button
+              type="button"
               onClick={() => togglePriority('Operational')}
               className={`flex items-center gap-2.5 transition-opacity ${
                 priorityFilter.includes('Operational') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
