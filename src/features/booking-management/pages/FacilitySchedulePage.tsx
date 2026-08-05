@@ -73,6 +73,7 @@ const FacilitySchedulePage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => navigate('/bookings/all')}
           className="flex items-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer self-start sm:self-auto"
         >
@@ -149,6 +150,7 @@ const FacilitySchedulePage: React.FC = () => {
                   <span className="text-xs font-extrabold text-[#801028] font-mono">{booking.refId}</span>
                 </div>
                 <button
+                  type="button"
                   onClick={(e) => { e.stopPropagation(); handleView(booking) }}
                   className="w-full sm:w-auto px-4 py-2 bg-gray-50 hover:bg-[#801028] text-gray-700 hover:text-white border border-gray-200 hover:border-[#801028] rounded-xl text-xs font-bold transition-all cursor-pointer text-center"
                 >
