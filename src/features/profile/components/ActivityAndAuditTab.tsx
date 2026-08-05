@@ -131,21 +131,21 @@ export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          {modules.map((mod) => (
-            <button
-              key={mod}
-              onClick={() => setSelectedModule(mod)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                selectedModule === mod
-                  ? 'bg-[#801028] text-white shadow-2xs'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-              }`}
-            >
-              {mod}
-            </button>
-          ))}
-        </div>
+          {modules.map((mod) => {
+            const isSelected = selectedModule === mod
+            const filterBtnStyle = isSelected
+              ? 'bg-[#801028] text-white shadow-2xs'
+              : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+            return (
+              <button
+                key={mod}
+                onClick={() => setSelectedModule(mod)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${filterBtnStyle}`}
+              >
+                {mod}
+              </button>
+            )
+          })}
       </div>
 
       {/* Timeline Section */}
