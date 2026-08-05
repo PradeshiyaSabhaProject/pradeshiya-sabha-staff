@@ -88,13 +88,13 @@ export const isApplicationAssignedToCurrentOfficer = (
 ): boolean => {
   if (!currentOfficerName && !userRole) return false
   const currentNameLower = currentOfficerName ? currentOfficerName.toLowerCase().trim() : ''
-  if (application.assignedInspector && application.assignedInspector.toLowerCase().trim() === currentNameLower) {
+  if (application.assignedInspector?.toLowerCase().trim() === currentNameLower) {
     return true
   }
-  if (application.assignedOfficer && application.assignedOfficer.toLowerCase().trim() === currentNameLower) {
+  if (application.assignedOfficer?.toLowerCase().trim() === currentNameLower) {
     return true
   }
-  if (application.assignedOfficer && application.assignedOfficer.toLowerCase().includes('manager')) {
+  if (application.assignedOfficer?.toLowerCase().includes('manager')) {
     return true
   }
   if (userRole === 'manager' || userRole === 'admin' || userRole === 'superadmin' || currentNameLower.includes('admin') || currentNameLower.includes('manager')) {
