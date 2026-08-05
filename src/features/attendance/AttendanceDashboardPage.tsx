@@ -126,6 +126,7 @@ export const AttendanceDashboardPage: React.FC = () => {
 
         <div className="flex items-center w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setIsSyncModalOpen(true)}
             className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer"
           >
@@ -226,6 +227,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               />
             </div>
             <button
+              type="button"
               onClick={() => alert(`Exporting BIOMETRIC_DAILY_ROSTER_${selectedDate}.xlsx spreadsheet...`)}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-[#6a0d21] hover:bg-[#5c0b1c] text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-[#941934] shadow-2xs cursor-pointer"
             >
@@ -237,6 +239,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               <span>Download .XLSX</span>
             </button>
             <button
+              type="button"
               onClick={() => setIsSyncModalOpen(true)}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-white/20 cursor-pointer"
             >
@@ -246,6 +249,7 @@ export const AttendanceDashboardPage: React.FC = () => {
               <span>Force Sync</span>
             </button>
             <button
+              type="button"
               onClick={() => window.print()}
               className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1 border border-white/20 cursor-pointer"
             >
@@ -305,6 +309,7 @@ export const AttendanceDashboardPage: React.FC = () => {
 
               {(selectedDepartment !== 'All' || selectedStatus !== 'All' || activeFilter !== 'All' || searchQuery !== '') && (
                 <button
+                  type="button"
                   onClick={() => {
                     setSelectedDepartment('All')
                     setSelectedStatus('All')
@@ -344,6 +349,7 @@ export const AttendanceDashboardPage: React.FC = () => {
             <span className="text-xs font-bold text-gray-500 uppercase mr-1">Quick Category:</span>
             {['All', 'Present', 'Late', 'Weekend', 'Overtime', 'Leave', 'Missed'].map((filter) => (
               <button
+                type="button"
                 key={filter}
                 onClick={() => {
                   setActiveFilter(filter)
@@ -516,6 +522,7 @@ export const AttendanceDashboardPage: React.FC = () => {
                   {/* Col I: Action */}
                   <td className="py-2.5 px-3 text-center font-sans">
                     <button
+                      type="button"
                       onClick={() => navigate('/attendance/request-regularization')}
                       className="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition cursor-pointer"
                     >
