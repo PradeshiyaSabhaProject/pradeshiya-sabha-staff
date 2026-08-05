@@ -212,7 +212,7 @@ export const TimecardsPage: React.FC = () => {
   const totalOtHoursCalc = timecardEntries.reduce((acc, row) => {
     const match = row.otHours.match(/^(\d+)h\s*(\d+)m/)
     if (match) {
-      return acc + parseInt(match[1]) * 60 + parseInt(match[2])
+      return acc + Number.parseInt(match[1], 10) * 60 + Number.parseInt(match[2], 10)
     }
     return acc
   }, 0)
