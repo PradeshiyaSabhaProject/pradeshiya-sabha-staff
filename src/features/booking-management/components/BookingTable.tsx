@@ -411,8 +411,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
             return (
               <div
                 key={booking.id}
-                onClick={() => onView(booking)}
-                className="p-4 space-y-3 hover:bg-gray-50/70 transition-colors cursor-pointer"
+                className="p-4 space-y-3 hover:bg-gray-50/40 transition-colors border border-gray-100 rounded-xl my-2"
               >
                 {/* Top bar: Ref + Status badge */}
                 <div className="flex items-center justify-between gap-2">
@@ -452,7 +451,7 @@ const BookingTable: React.FC<BookingTableProps> = ({
                 </div>
 
                 {/* Mobile Action Bar */}
-                <div className="flex items-center justify-between pt-1" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center justify-between pt-1">
                   <span className="text-[11px] text-gray-400">
                     Submitted: {booking.submittedDate}
                   </span>
