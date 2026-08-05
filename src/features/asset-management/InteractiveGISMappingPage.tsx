@@ -127,6 +127,25 @@ export const InteractiveGISMappingPage: React.FC = () => {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
   }
 
+  const getPriorityPulseHtml = (priorityGroup: string) => {
+    if (priorityGroup !== 'High Priority') return ''
+    return `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
+  }
+
+  const getStatusColorStyle = (priorityGroup: string) => {
+    if (priorityGroup === 'High Priority') return 'color: #dc2626; background: #fee2e2;'
+    if (priorityGroup === 'Maintenance') return 'color: #d97706; background: #fef3c7;'
+    return 'color: #059669; background: #d1fae5;'
+  }
+
+  const getPriorityToggleClass = (priority: string) => {
+    const baseClass = 'flex items-center gap-2.5 transition-opacity'
+    if (priorityFilter.includes(priority)) {
+      return `${baseClass} opacity-100 font-bold`
+    }
+    return `${baseClass} opacity-40 hover:opacity-70`
+  }
+
   const isAssetVisible = (asset: AssetRecord, allowedCategories: Set<string>) => {
     if (!asset.coordinates) return false
     if (!allowedCategories.has(asset.category)) return false
@@ -331,9 +350,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => togglePriority('High Priority')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('High Priority') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('High Priority')}
             >
               <span className="w-3.5 h-3.5 rounded bg-red-700 inline-block shadow-sm"></span>
               <span>High Priority</span>
@@ -341,9 +358,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => togglePriority('Maintenance')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('Maintenance') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('Maintenance')}
             >
               <span className="w-3.5 h-3.5 rounded bg-amber-800 inline-block shadow-sm"></span>
               <span>Maintenance</span>
@@ -351,9 +366,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => togglePriority('Operational')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('Operational') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('Operational')}
             >
               <span className="w-3.5 h-3.5 rounded bg-emerald-600 inline-block shadow-sm"></span>
               <span>Operational</span>
