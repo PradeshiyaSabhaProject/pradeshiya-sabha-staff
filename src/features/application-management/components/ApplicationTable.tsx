@@ -66,7 +66,7 @@ const ApplicationTable: React.FC<ApplicationTableProps> = ({ applications, onVie
     return applications.filter(a => {
       if (showTabs) {
         const tabObj = TABS.find(t => t.id === activeTab)
-        if (tabObj && tabObj.status && a.status !== tabObj.status) return false
+        if (tabObj?.status && a.status !== tabObj.status) return false
       }
       
       if (appliedFilters.date && a.date !== appliedFilters.date) return false
