@@ -411,9 +411,18 @@ const Sidebar: React.FC = () => {
                   <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
                   <span className={`flex-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>{item.label}</span>
                   <span
+                    role="button"
+                    tabIndex={0}
                     onClick={(e) => {
                       e.stopPropagation()
                       toggleMenu(item.path)
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.stopPropagation()
+                        e.preventDefault()
+                        toggleMenu(item.path)
+                      }
                     }}
                     className={`p-1 rounded transition-colors ${
                       active ? 'hover:bg-white/20' : 'hover:bg-gray-200'
