@@ -116,11 +116,27 @@ export const AssetDirectoryPage: React.FC = () => {
       return `Rs. ${asset.valuation.toLocaleString('en-US', { minimumFractionDigits: 0 })}`
     }
     // Default mock valuation calculation if not set
-    const baseVal = asset.category === 'Land' ? 124500000
-      : asset.category === 'Road' ? 45200000
-      : asset.category === 'Building' ? 32800000
-      : 85000000
+    const baseVal = getCategoryBaseValue(asset.category)
     return `Rs. ${(baseVal * (asset.value || 1)).toLocaleString('en-US')}`
+  }
+
+  const getCategoryBaseValue = (category: string) => {
+    if (category === 'Land') return 124500000
+    if (category === 'Road') return 45200000
+    if (category === 'Building') return 32800000
+    return 85000000
+  }
+
+  const getStatusDotClass = (isOperational: boolean, isMaintenance: boolean) => {
+    if (isOperational) return 'bg-emerald-500'
+    if (isMaintenance) return 'bg-red-500'
+    return 'bg-gray-400'
+  }
+
+  const getStatusTextClass = (isOperational: boolean, isMaintenance: boolean) => {
+    if (isOperational) return 'text-emerald-700'
+    if (isMaintenance) return 'text-red-600'
+    return 'text-gray-600'
   }
 
   return (
@@ -138,6 +154,7 @@ export const AssetDirectoryPage: React.FC = () => {
         </div>
 
         <button
+          type="button"
           onClick={() => setIsWizardOpen(true)}
           className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#800020] hover:bg-[#600018] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
         >
@@ -223,11 +240,12 @@ export const AssetDirectoryPage: React.FC = () => {
           
           {/* Asset Type Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="assetTypeSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Asset Type
             </label>
             <div className="relative">
               <select
+                id="assetTypeSelect"
                 value={categoryFilter}
                 onChange={(e) => {
                   setCategoryFilter(e.target.value)
@@ -251,11 +269,12 @@ export const AssetDirectoryPage: React.FC = () => {
 
           {/* Status Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="statusSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Status
             </label>
             <div className="relative">
               <select
+                id="statusSelect"
                 value={statusFilter}
                 onChange={(e) => {
                   setStatusFilter(e.target.value)
@@ -279,11 +298,12 @@ export const AssetDirectoryPage: React.FC = () => {
 
           {/* Location / Ward Dropdown */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-1.5">
+            <label htmlFor="wardSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
               Location / Ward
             </label>
             <div className="relative">
               <select
+                id="wardSelect"
                 value={wardFilter}
                 onChange={(e) => {
                   setWardFilter(e.target.value)
@@ -381,22 +401,10 @@ export const AssetDirectoryPage: React.FC = () => {
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-2">
                           <span
-                            className={`w-2 h-2 rounded-full ${
-                              isOperational
-                                ? 'bg-emerald-500'
-                                : isMaintenance
-                                ? 'bg-red-500'
-                                : 'bg-gray-400'
-                            }`}
+                            className={`w-2 h-2 rounded-full ${getStatusDotClass(isOperational, isMaintenance)}`}
                           />
                           <span
-                            className={`text-xs font-semibold ${
-                              isOperational
-                                ? 'text-emerald-700'
-                                : isMaintenance
-                                ? 'text-red-600'
-                                : 'text-gray-600'
-                            }`}
+                            className={`text-xs font-semibold ${getStatusTextClass(isOperational, isMaintenance)}`}
                           >
                             {asset.status}
                           </span>
@@ -406,7 +414,9 @@ export const AssetDirectoryPage: React.FC = () => {
                       {/* Actions */}
                       <td className="py-4 px-6 text-right">
                         <button
+                          type="button"
                           onClick={() => setSelectedAssetForView(asset)}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAssetForView(asset); } }}
                           className="text-xs font-bold text-[#800020] hover:underline cursor-pointer"
                         >
                           View Details
@@ -429,6 +439,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
           <div className="flex items-center gap-1">
             <button
+              type="button"
               onClick={() => setCurrentPageLocal((p) => Math.max(1, p - 1))}
               disabled={currentPageLocal === 1}
               className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
@@ -437,6 +448,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </button>
             
             <button
+              type="button"
               onClick={() => setCurrentPageLocal(1)}
               className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                 currentPageLocal === 1
@@ -449,6 +461,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
             {totalPagesLocal >= 2 && (
               <button
+                type="button"
                 onClick={() => setCurrentPageLocal(2)}
                 className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                   currentPageLocal === 2
@@ -462,6 +475,7 @@ export const AssetDirectoryPage: React.FC = () => {
 
             {totalPagesLocal >= 3 && (
               <button
+                type="button"
                 onClick={() => setCurrentPageLocal(3)}
                 className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
                   currentPageLocal === 3
@@ -476,6 +490,7 @@ export const AssetDirectoryPage: React.FC = () => {
             <span className="px-1 text-gray-400">...</span>
 
             <button
+              type="button"
               onClick={() => setCurrentPageLocal(371)}
               className="w-10 h-8 rounded-lg font-bold hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors cursor-pointer"
             >
@@ -483,6 +498,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </button>
 
             <button
+              type="button"
               onClick={() => setCurrentPageLocal((p) => Math.min(totalPagesLocal, p + 1))}
               disabled={currentPageLocal === totalPagesLocal}
               className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
@@ -503,7 +519,9 @@ export const AssetDirectoryPage: React.FC = () => {
       {/* ── SIMPLE ASSET DETAILS VIEW MODAL ─────────────────────────────── */}
       {selectedAssetForView && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
+          <button
+            type="button"
+            aria-label="Close asset details"
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
             onClick={() => setSelectedAssetForView(null)}
           />
@@ -511,6 +529,7 @@ export const AssetDirectoryPage: React.FC = () => {
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <h3 className="text-lg font-bold text-gray-900">Asset Record Details</h3>
               <button
+                type="button"
                 onClick={() => setSelectedAssetForView(null)}
                 className="text-gray-400 hover:text-gray-700 font-bold"
               >
@@ -549,6 +568,7 @@ export const AssetDirectoryPage: React.FC = () => {
             </div>
             <div className="pt-3 border-t border-gray-100 flex justify-end">
               <button
+                type="button"
                 onClick={() => setSelectedAssetForView(null)}
                 className="px-4 py-2 bg-[#800020] text-white rounded-xl text-xs font-bold cursor-pointer"
               >

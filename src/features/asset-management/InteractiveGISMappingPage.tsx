@@ -112,9 +112,60 @@ export const InteractiveGISMappingPage: React.FC = () => {
     return 'Operational' // Verified, Digitized, Operational
   }
 
+  const getBgStyle = (category: string) => {
+    if (category === 'Utility / Infrastructure') return 'background: #1d4ed8; border: 2px solid white;'
+    if (category === 'Building') return 'background: #800000; border: 2px solid white;'
+    if (category === 'Land') return 'background: #059669; border: 2px solid white;'
+    if (category === 'Road') return 'background: #4b5563; border: 2px solid white;'
+    return 'background: #A31736; border: 2px solid white;'
+  }
+
+  const getIconHtml = (category: string) => {
+    if (category === 'Utility / Infrastructure') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
+    if (category === 'Building') return `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
+    if (category === 'Land') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
+  }
+
+  const getPriorityPulseHtml = (priorityGroup: string) => {
+    if (priorityGroup !== 'High Priority') return ''
+    return `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
+  }
+
+  const getStatusColorStyle = (priorityGroup: string) => {
+    if (priorityGroup === 'High Priority') return 'color: #dc2626; background: #fee2e2;'
+    if (priorityGroup === 'Maintenance') return 'color: #d97706; background: #fef3c7;'
+    return 'color: #059669; background: #d1fae5;'
+  }
+
+  const getPriorityToggleClass = (priority: string) => {
+    const baseClass = 'flex items-center gap-2.5 transition-opacity'
+    if (priorityFilter.includes(priority)) {
+      return `${baseClass} opacity-100 font-bold`
+    }
+    return `${baseClass} opacity-40 hover:opacity-70`
+  }
+
+  const isAssetVisible = (asset: AssetRecord, allowedCategories: Set<string>) => {
+    if (!asset.coordinates) return false
+    if (!allowedCategories.has(asset.category)) return false
+
+    const priorityGroup = getAssetPriorityGroup(asset.status)
+    if (!priorityFilter.includes(priorityGroup)) return false
+
+    if (!searchQuery.trim()) return true
+
+    const query = searchQuery.trim().toLowerCase()
+    return (
+      asset.name.toLowerCase().includes(query) ||
+      asset.location.toLowerCase().includes(query) ||
+      asset.id.toLowerCase().includes(query) ||
+      asset.category.toLowerCase().includes(query)
+    )
+  }
+
   // Filter assets based on active layers, priority, and search
   const visibleAssets = useMemo(() => {
-    // Determine allowed categories from checked layers
     const allowedCategories = new Set<string>()
     LAYER_OPTIONS.forEach((layer) => {
       if (activeLayers[layer.id]) {
@@ -122,30 +173,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
       }
     })
 
-    return assets.filter((asset) => {
-      // Must have coordinates
-      if (!asset.coordinates) return false
-
-      // Layer check
-      if (!allowedCategories.has(asset.category)) return false
-
-      // Priority check
-      const priorityGroup = getAssetPriorityGroup(asset.status)
-      if (!priorityFilter.includes(priorityGroup)) return false
-
-      // Search query check
-      if (searchQuery.trim()) {
-        const query = searchQuery.trim().toLowerCase()
-        const matchesSearch =
-          asset.name.toLowerCase().includes(query) ||
-          asset.location.toLowerCase().includes(query) ||
-          asset.id.toLowerCase().includes(query) ||
-          asset.category.toLowerCase().includes(query)
-        if (!matchesSearch) return false
-      }
-
-      return true
-    })
+    return assets.filter((asset) => isAssetVisible(asset, allowedCategories))
   }, [assets, activeLayers, priorityFilter, searchQuery])
 
   // Calculate stats to match screenshot baseline
@@ -203,28 +231,14 @@ export const InteractiveGISMappingPage: React.FC = () => {
 
     visibleAssets.forEach((asset) => {
       if (!asset.coordinates) return
-      const lat = parseFloat(asset.coordinates.lat)
-      const lng = parseFloat(asset.coordinates.lng)
-      if (isNaN(lat) || isNaN(lng)) return
+      const lat = Number.parseFloat(asset.coordinates.lat)
+      const lng = Number.parseFloat(asset.coordinates.lng)
+      if (Number.isNaN(lat) || Number.isNaN(lng)) return
 
-      // Determine marker color and icon based on category & priority
-      const bgStyle = asset.category === 'Utility / Infrastructure' ? 'background: #1d4ed8; border: 2px solid white;'
-        : asset.category === 'Building' ? 'background: #800000; border: 2px solid white;'
-        : asset.category === 'Land' ? 'background: #059669; border: 2px solid white;'
-        : asset.category === 'Road' ? 'background: #4b5563; border: 2px solid white;'
-        : 'background: #A31736; border: 2px solid white;'
-
-      const iconHtml = asset.category === 'Utility / Infrastructure' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
-        : asset.category === 'Building' ? `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
-        : asset.category === 'Land' ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
-        : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
-
-      // If high priority / disputed, add red glow/badge
+      const bgStyle = getBgStyle(asset.category)
+      const iconHtml = getIconHtml(asset.category)
       const priorityGroup = getAssetPriorityGroup(asset.status)
-      const pulseHtml =
-        priorityGroup === 'High Priority'
-          ? `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
-          : ''
+      const pulseHtml = getPriorityPulseHtml(priorityGroup)
 
       const customIcon = L.divIcon({
         className: 'custom-gis-pin',
@@ -242,12 +256,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup)
 
       // Bind sleek popup
-      const statusColor =
-        priorityGroup === 'High Priority'
-          ? 'color: #dc2626; background: #fee2e2;'
-          : priorityGroup === 'Maintenance'
-          ? 'color: #d97706; background: #fef3c7;'
-          : 'color: #059669; background: #d1fae5;'
+      const statusColor = getStatusColorStyle(priorityGroup)
 
       marker.bindPopup(`
         <div style="min-width: 220px; font-family: 'Public Sans', sans-serif; padding: 4px 0;">
@@ -310,6 +319,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
             <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
               <button
+                type="button"
                 onClick={handleZoomIn}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center"
                 title="Zoom In"
@@ -317,6 +327,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
                 <PlusIcon />
               </button>
               <button
+                type="button"
                 onClick={handleZoomOut}
                 className="p-2.5 hover:bg-gray-50 text-gray-700 transition-colors block w-full flex items-center justify-center"
                 title="Zoom Out"
@@ -325,6 +336,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
               </button>
             </div>
             <button
+              type="button"
               onClick={handleCenterMap}
               className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700 transition-colors flex items-center justify-center"
               title="Center Map to Colombo/Homagama"
@@ -336,28 +348,25 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Bottom Center Priority Legend Overlay */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 sm:py-2.5 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] sm:text-xs font-semibold text-gray-700 select-none uppercase tracking-wider w-[92%] sm:w-auto max-w-full">
             <button
+              type="button"
               onClick={() => togglePriority('High Priority')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('High Priority') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('High Priority')}
             >
               <span className="w-3.5 h-3.5 rounded bg-red-700 inline-block shadow-sm"></span>
               <span>High Priority</span>
             </button>
             <button
+              type="button"
               onClick={() => togglePriority('Maintenance')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('Maintenance') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('Maintenance')}
             >
               <span className="w-3.5 h-3.5 rounded bg-amber-800 inline-block shadow-sm"></span>
               <span>Maintenance</span>
             </button>
             <button
+              type="button"
               onClick={() => togglePriority('Operational')}
-              className={`flex items-center gap-2.5 transition-opacity ${
-                priorityFilter.includes('Operational') ? 'opacity-100 font-bold' : 'opacity-40 hover:opacity-70'
-              }`}
+              className={getPriorityToggleClass('Operational')}
             >
               <span className="w-3.5 h-3.5 rounded bg-emerald-600 inline-block shadow-sm"></span>
               <span>Operational</span>
@@ -461,6 +470,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => setSelectedAsset(null)}
                   className="w-full mt-2 py-1.5 px-3 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-700 hover:bg-gray-100 transition-colors uppercase tracking-wider"
                 >

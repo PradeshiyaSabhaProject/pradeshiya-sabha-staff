@@ -91,7 +91,13 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   const [name, setName] = useState('')
   const [category, setCategory] = useState<AssetRecord['category']>('Land')
   const [location, setLocation] = useState('')
-  const [assetIdPreview, setAssetIdPreview] = useState('PS-AST-2026-8821')
+  function generateRandomSuffix(): string {
+    const randomBytes = new Uint32Array(1)
+    crypto.getRandomValues(randomBytes)
+    return String(1000 + (randomBytes[0] % 9000))
+  }
+
+  const [assetIdPreview, setAssetIdPreview] = useState(`PS-AST-2026-${generateRandomSuffix()}`)
 
   // Stage 2 State
   const [valuation, setValuation] = useState<string>('45250000.00')
@@ -114,8 +120,13 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     { name: 'Structural_Survey_Final.docx', size: '2.4 MB • Uploaded just now', type: 'doc', status: 'Document' },
   ])
 
+  
+
   const getCategoryDefaults = (cat: string) => {
-    const rand = Math.floor(1000 + Math.random() * 9000)
+    const randomBytes = new Uint32Array(1)
+    crypto.getRandomValues(randomBytes)
+    const rand = 1000 + (randomBytes[0] % 9000)
+
     switch (cat) {
       case 'Land':
         return { unit: 'Plots', id: `PS-LN-2026-${rand}` }
@@ -145,8 +156,10 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
   const handlePickFromMap = () => {
     // Simulate interactive GIS mapping coordinate selection in Homagama
-    const lat = (6.840000 + Math.random() * 0.01).toFixed(6)
-    const lng = (79.990000 + Math.random() * 0.01).toFixed(6)
+    const randomBytes = new Uint32Array(2)
+    crypto.getRandomValues(randomBytes)
+    const lat = (6.840000 + (randomBytes[0] % 10) / 1000).toFixed(6)
+    const lng = (79.990000 + (randomBytes[1] % 10) / 1000).toFixed(6)
     setLatitude(lat)
     setLongitude(lng)
     setMapPicked(true)
@@ -168,6 +181,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     setAttachments((prev) => prev.filter((_, i) => i !== index))
   }
 
+  const getStatusBadgeClass = (status?: string) => {
+    if (status === 'Verified') return 'bg-emerald-100 text-emerald-800'
+    if (status === 'Image') return 'bg-blue-100 text-blue-800'
+    return 'bg-purple-100 text-purple-800'
+  }
+
   const handleNext = () => {
     if (step === 1 && (!name.trim() || !location.trim())) {
       alert('Please fill in Asset Name and Ward / Location to proceed.')
@@ -186,9 +205,9 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
       category,
       location: location.trim() || 'General Ward',
       status: conditionStatus,
-      value: parseFloat(areaSize) || 1,
+      value: Number.parseFloat(areaSize) || 1,
       unit,
-      valuation: parseFloat(valuation) || 0,
+      valuation: Number.parseFloat(valuation) || 0,
       acquisitionDate,
       fundingSource,
       areaSize: `${areaSize} ${unit}`,
@@ -207,6 +226,18 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     'Attachments',
     'Review',
   ]
+
+  const getStepCircleClass = (isActive: boolean, isCompleted: boolean) => {
+    if (isActive) return 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
+    if (isCompleted) return 'bg-[#A31736] text-white'
+    return 'bg-white border-2 border-gray-200 text-gray-400'
+  }
+
+  const getStepTitleClass = (isActive: boolean, isCompleted: boolean) => {
+    if (isActive) return 'text-[#A31736]'
+    if (isCompleted) return 'text-gray-700'
+    return 'text-gray-400'
+  }
 
   const getSubtitle = () => {
     switch (step) {
@@ -228,7 +259,9 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
-      <div
+      <button
+        type="button"
+        aria-label="Close wizard modal"
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
       />
@@ -246,6 +279,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
             <p className="text-xs text-gray-500 mt-0.5">{getSubtitle()}</p>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200/50 transition-all cursor-pointer"
           >
@@ -260,11 +294,6 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               const stepNum = idx + 1
               const isActive = step === stepNum
               const isCompleted = step > stepNum
-              const stepCircleClass = isActive
-                ? 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
-                : isCompleted
-                ? 'bg-[#A31736] text-white'
-                : 'bg-white border-2 border-gray-200 text-gray-400'
 
               return (
                 <React.Fragment key={title}>
@@ -278,7 +307,8 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   )}
 
                   {/* Step Item */}
-                  <div
+                  <button
+                    type="button"
                     onClick={() => {
                       // Allow jumping to completed steps or current step
                       if (stepNum < step) setStep(stepNum)
@@ -288,22 +318,14 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     }`}
                   >
                     <div
-                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${stepCircleClass}`}
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm transition-all duration-300 shadow-xs ${getStepCircleClass(isActive, isCompleted)}`}
                     >
                       {isCompleted ? <CheckIcon /> : stepNum}
                     </div>
-                    <span
-                      className={`text-[11px] font-semibold mt-1.5 whitespace-nowrap transition-colors ${
-                        isActive
-                          ? 'text-[#A31736]'
-                          : isCompleted
-                          ? 'text-gray-700'
-                          : 'text-gray-400'
-                      }`}
-                    >
+                    <span className={`text-[11px] font-semibold mt-1.5 whitespace-nowrap transition-colors ${getStepTitleClass(isActive, isCompleted)}`}>
                       {title}
                     </span>
-                  </div>
+                  </button>
                 </React.Fragment>
               )
             })}
@@ -319,10 +341,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Asset Name */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardAssetName" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Asset Name *
                   </label>
                   <input
+                    id="wizardAssetName"
                     type="text"
                     required
                     value={name}
@@ -334,10 +357,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 {/* Asset ID */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardAssetId" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Asset ID (Auto-generated)
                   </label>
                   <input
+                    id="wizardAssetId"
                     type="text"
                     disabled
                     value={assetIdPreview}
@@ -349,11 +373,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Category */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardCategory" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Category *
                   </label>
                   <div className="relative">
                     <select
+                      id="wizardCategory"
                       value={category}
                       onChange={(e) => {
                         const cat = e.target.value as AssetRecord['category']
@@ -379,11 +404,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 {/* Ward / Location */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardLocation" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Ward / Location *
                   </label>
                   <div className="relative">
                     <input
+                      id="wizardLocation"
                       type="text"
                       required
                       value={location}
@@ -425,7 +451,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
               {/* Valuation Input */}
               <div>
-                <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                <label htmlFor="initialValuation" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                   Initial Valuation (LKR)
                 </label>
                 <div className="relative">
@@ -433,6 +459,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     Rs.
                   </span>
                   <input
+                    id="initialValuation"
                     type="number"
                     step="0.01"
                     value={valuation}
@@ -508,11 +535,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Area / Size */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardAreaSize" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Area / Size *
                   </label>
                   <div className="flex">
                     <input
+                      id="wizardAreaSize"
                       type="number"
                       step="any"
                       required
@@ -538,11 +566,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                 {/* Condition Status */}
                 <div>
-                  <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
+                  <label htmlFor="wizardConditionStatus" className="block text-xs font-bold text-gray-600 uppercase tracking-wider mb-1.5">
                     Condition Status *
                   </label>
                   <div className="relative">
                     <select
+                      id="wizardConditionStatus"
                       value={conditionStatus}
                       onChange={(e) => setConditionStatus(e.target.value as AssetRecord['status'])}
                       className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-10 cursor-pointer"
@@ -593,10 +622,11 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
+                    <label htmlFor="longitude" className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                       LONGITUDE
                     </label>
                     <input
+                      id="longitude"
                       type="text"
                       value={longitude}
                       onChange={(e) => setLongitude(e.target.value)}
@@ -646,15 +676,16 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   Upload deed documents, site photos, structural plans, or survey reports. (Max 10MB per file)
                 </p>
                 
-                <label className="mt-4 inline-block px-5 py-2 border-2 border-[#A31736] text-[#A31736] hover:bg-[#A31736] hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs">
+                <label htmlFor="wizardFileUpload" className="mt-4 inline-block px-5 py-2 border-2 border-[#A31736] text-[#A31736] hover:bg-[#A31736] hover:text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs">
                   Browse Files
-                  <input
-                    type="file"
-                    multiple
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
                 </label>
+                <input
+                  id="wizardFileUpload"
+                  type="file"
+                  multiple
+                  onChange={handleFileUpload}
+                  className="hidden"
+                />
               </div>
 
               {/* Uploaded Files List */}
@@ -682,7 +713,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   <div className="space-y-2.5">
                     {attachments.map((file, idx) => (
                       <div
-                        key={idx}
+                        key={file.name}
                         className="flex items-center justify-between p-3.5 bg-gray-50/80 hover:bg-gray-100/80 border border-gray-200/80 rounded-xl transition-all"
                       >
                         <div className="flex items-center gap-3 min-w-0">
@@ -697,15 +728,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
                         <div className="flex items-center gap-3 shrink-0 ml-3">
                           {file.status && (
-                            <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                                file.status === 'Verified'
-                                  ? 'bg-emerald-100 text-emerald-800'
-                                  : file.status === 'Image'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-purple-100 text-purple-800'
-                              }`}
-                            >
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${getStatusBadgeClass(file.status)}`}>
                               {file.status}
                             </span>
                           )}
@@ -785,7 +808,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   <div>
                     <span className="text-gray-400 block font-medium">VALUATION AMOUNT</span>
                     <span className="font-bold text-gray-900 text-sm mt-0.5 block">
-                      LKR {parseFloat(valuation || '0').toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                      LKR {Number.parseFloat(valuation || '0').toLocaleString('en-US', { minimumFractionDigits: 2 })}
                     </span>
                   </div>
                   <div className="flex gap-6">
@@ -862,8 +885,8 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                   </button>
                 </div>
                 <div className="space-y-2">
-                  {attachments.map((file, i) => (
-                    <div key={i} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
+                  {attachments.map((file) => (
+                    <div key={file.name} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
                       <FileDocIcon />
                       <span className="font-semibold text-gray-800 truncate flex-1">{file.name}</span>
                       <span className="text-[11px] text-gray-500">{file.size.split('•')[0]}</span>

@@ -262,6 +262,7 @@ const AssetOverviewPage: React.FC = () => {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <button
+            type="button"
             onClick={() => setIsAddModalOpen(true)}
             className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
@@ -270,6 +271,7 @@ const AssetOverviewPage: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={() => alert('PDF Export triggered (Simulated)')}
             className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
@@ -278,6 +280,7 @@ const AssetOverviewPage: React.FC = () => {
           </button>
 
           <button
+            type="button"
             onClick={() => window.print()}
             className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
           >
@@ -461,6 +464,7 @@ const AssetOverviewPage: React.FC = () => {
                 />
                 {searchQuery && (
                   <button
+                    type="button"
                     onClick={() => setSearchQuery('')}
                     className="absolute right-2.5 top-2 text-gray-400 hover:text-gray-600 text-sm font-bold"
                   >
@@ -501,6 +505,7 @@ const AssetOverviewPage: React.FC = () => {
                     {/* Asset ID (Styled as blue link in mockup) */}
                     <td className="py-4 px-6 whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => openAssetDetails(asset)}
                         className="text-sm font-extrabold text-[#1e3a8a] font-mono hover:underline text-left cursor-pointer"
                       >
@@ -534,6 +539,7 @@ const AssetOverviewPage: React.FC = () => {
                     {/* Action Manage Button */}
                     <td className="py-4 px-6 text-right whitespace-nowrap">
                       <button
+                        type="button"
                         onClick={() => openAssetDetails(asset)}
                         className="text-xs font-bold text-[#1e3a8a] hover:text-blue-800 cursor-pointer"
                       >
@@ -578,6 +584,7 @@ const AssetOverviewPage: React.FC = () => {
 
               {/* Previous page button */}
               <button
+                type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
                 className={`w-8 h-8 rounded-lg border flex items-center justify-center text-gray-500 transition-all select-none ${currentPage === 1
@@ -609,6 +616,7 @@ const AssetOverviewPage: React.FC = () => {
 
               {/* Next page button */}
               <button
+                type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
                 className={`w-8 h-8 rounded-lg border flex items-center justify-center text-gray-500 transition-all select-none ${currentPage === totalPages
@@ -690,12 +698,14 @@ const AssetOverviewPage: React.FC = () => {
                 {/* Footer buttons: Close + Edit */}
                 <div className="mt-6 flex justify-end gap-2.5">
                   <button
+                    type="button"
                     onClick={closeAssetDetails}
                     className="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold transition-colors cursor-pointer"
                   >
                     Close View
                   </button>
                   <button
+                    type="button"
                     onClick={startEditing}
                     className="px-5 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-lg text-sm font-semibold transition-colors cursor-pointer flex items-center gap-1.5"
                   >
@@ -719,10 +729,11 @@ const AssetOverviewPage: React.FC = () => {
 
                   {/* Asset Name */}
                   <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                    <label htmlFor="editAssetName" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                       Asset Name
                     </label>
                     <input
+                      id="editAssetName"
                       type="text"
                       value={editFormData.name}
                       onChange={(e) => setEditFormData({ ...editFormData, name: e.target.value })}
@@ -733,10 +744,11 @@ const AssetOverviewPage: React.FC = () => {
                   {/* Category + Status */}
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                      <label htmlFor="editCategory" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                         Category
                       </label>
                       <select
+                        id="editCategory"
                         value={editFormData.category}
                         onChange={(e) => setEditFormData({ ...editFormData, category: e.target.value as AssetRecord['category'] })}
                         className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
@@ -750,14 +762,15 @@ const AssetOverviewPage: React.FC = () => {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                        Status
-                      </label>
-                      <select
-                        value={editFormData.status}
-                        onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as AssetRecord['status'] })}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
-                      >
+                      <label htmlFor="editStatus" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                          Status
+                        </label>
+                        <select
+                          id="editStatus"
+                          value={editFormData.status}
+                          onChange={(e) => setEditFormData({ ...editFormData, status: e.target.value as AssetRecord['status'] })}
+                          className="w-full bg-gray-50 border border-gray-300 rounded-lg px-2.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                        >
                         <option value="Operational">Operational</option>
                         <option value="Under Maintenance">Under Maintenance</option>
                         <option value="Disputed">Disputed</option>
@@ -799,15 +812,16 @@ const AssetOverviewPage: React.FC = () => {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
-                        Unit
-                      </label>
-                      <input
-                        type="text"
-                        value={editFormData.unit}
-                        onChange={(e) => setEditFormData({ ...editFormData, unit: e.target.value })}
-                        className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
-                      />
+                      <label htmlFor="editUnit" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                          Unit
+                        </label>
+                        <input
+                          id="editUnit"
+                          type="text"
+                          value={editFormData.unit}
+                          onChange={(e) => setEditFormData({ ...editFormData, unit: e.target.value })}
+                          className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+                        />
                     </div>
                   </div>
 
