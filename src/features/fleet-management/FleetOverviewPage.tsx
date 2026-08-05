@@ -74,6 +74,283 @@ export const FleetOverviewPage: React.FC = () => {
     }
   }
 
+  const renderMainContent = () => {
+    if (filteredVehicles.length === 0) {
+      return (
+        <div className="bg-white rounded border border-gray-300 p-12 text-center space-y-3">
+          <p className="text-sm font-bold text-gray-700">No Municipal Vehicles Found</p>
+          <p className="text-xs text-gray-500 max-w-md mx-auto">
+            No council vehicles match your search keywords or active filter criteria.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery('')
+              setCategoryFilter('All')
+              setStatusFilter('All')
+              setShowOnlyPermitAlerts(false)
+            }}
+            className="px-4 py-2 rounded bg-[#1e3a8a] text-white text-xs font-semibold uppercase tracking-wider shadow-sm cursor-pointer"
+          >
+            Reset Filters
+          </button>
+        </div>
+      )
+    }
+
+    if (viewMode === 'grid') {
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredVehicles.map((v) => {
+            const compliance = getVehicleComplianceInfo(v)
+
+            return (
+              <div
+                key={v.id}
+                className="bg-white rounded border border-gray-300 shadow-sm hover:shadow transition-all overflow-hidden flex flex-col justify-between"
+              >
+                <div>
+                  {/* Card Header */}
+                  <div className="p-5 border-b border-gray-100 flex items-start justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                          {v.registrationNumber}
+                        </span>
+                        <span
+                          className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider ${getStatusBadgeStyle(
+                            v.status
+                          )}`}
+                        >
+                          {v.status}
+                        </span>
+                      </div>
+                      <h3 className="text-base font-bold text-gray-900">
+                        <button
+                          type="button"
+                          onClick={() => setActiveInspectorVehicle(v)}
+                          className="hover:text-[#1e3a8a] transition-colors cursor-pointer text-left font-bold"
+                        >
+                          {v.name}
+                        </button>
+                      </h3>
+                      <p className="text-xs text-gray-500 mt-0.5">{v.category} • {v.department}</p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setActiveInspectorVehicle(v)}
+                      className="text-xs text-[#1e3a8a] font-semibold hover:underline cursor-pointer shrink-0"
+                    >
+                      Inspect
+                    </button>
+                  </div>
+
+                  {/* Real-time Location Box */}
+                  <div className="px-5 py-3.5 bg-gray-50 border-b border-gray-100">
+                    <div className="flex items-center justify-between text-[11px] text-gray-500 uppercase tracking-wider font-bold mb-1">
+                      <span>Where It Is At The Moment</span>
+                      {v.status === 'On Mission' && (
+                        <span className="text-blue-700 font-bold">Field Duty</span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-700 font-semibold truncate">
+                      {v.currentLocation}
+                    </div>
+                  </div>
+
+                  {/* Driver & Compliance Details */}
+                  <div className="p-5 space-y-3.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-gray-500">Assigned Driver:</span>
+                      <span className="font-semibold text-gray-800">
+                        {v.assignedDriverName || 'Unassigned'}
+                      </span>
+                    </div>
+
+                    {compliance.hasAnyAlert ? (
+                      <div className="p-2.5 bg-red-50 border border-red-200 rounded flex items-center justify-between text-xs">
+                        <span className="font-bold text-red-800">{compliance.alertMessage}</span>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedVehicleForPermit(v)}
+                          className="px-2.5 py-1 bg-[#A31736] text-white rounded text-[11px] font-bold uppercase tracking-wider cursor-pointer"
+                        >
+                          Renew
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <span>Permit Expiry:</span>
+                        <span className="font-semibold text-gray-700">{v.permitExpiryDate}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Action Buttons matching Letter/Asset cards */}
+                <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-1.5">
+                  {v.status !== 'In Maintenance' ? (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedVehicleForMaintenance(v)}
+                      className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
+                    >
+                      Maintenance
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        submitApprovalRequest(
+                          'COMPLETE_MAINTENANCE',
+                          `Sign-Off Repair Completion for ${v.registrationNumber}`,
+                          `Workshop completion inspection and return to active depot availability.`,
+                          { vehicleId: v.id },
+                          { targetVehicleId: v.id, targetVehicleReg: v.registrationNumber }
+                        )
+                        setToastMsg(`Repair completion request submitted for ${v.registrationNumber}.`)
+                      }}
+                      className="px-3 py-1.5 rounded bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
+                    >
+                      Complete Service
+                    </button>
+                  )}
+
+                  {v.status !== 'On Mission' ? (
+                    <button
+                      type="button"
+                      onClick={() => setSelectedVehicleForDispatch(v)}
+                      className="px-3 py-1.5 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
+                    >
+                      Dispatch
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        submitApprovalRequest(
+                          'RETURN_MISSION',
+                          `Log Field Mission Return for ${v.registrationNumber}`,
+                          `Confirming vehicle return from field assignment back to municipal depot.`,
+                          { vehicleId: v.id },
+                          { targetVehicleId: v.id, targetVehicleReg: v.registrationNumber }
+                        )
+                        setToastMsg(`Mission return request submitted for ${v.registrationNumber}.`)
+                      }}
+                      className="px-3 py-1.5 rounded bg-[#1e3a8a] text-white hover:bg-blue-900 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
+                    >
+                      Return Depot
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedVehicleForDriver(v)}
+                    className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
+                  >
+                    Driver
+                  </button>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      )
+    }
+
+    return (
+      /* Table View Matching Asset/Letter Management Tables */
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden">
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[950px]">
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <th className="py-4 px-6">REG NUMBER</th>
+                <th className="py-4 px-6">VEHICLE & CATEGORY</th>
+                <th className="py-4 px-6">WHERE IT IS AT THE MOMENT</th>
+                <th className="py-4 px-6">DRIVER</th>
+                <th className="py-4 px-6">STATUS</th>
+                <th className="py-4 px-6">PERMIT EXPIRY</th>
+                <th className="py-4 px-6 text-right">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 text-sm">
+              {filteredVehicles.map((v) => {
+                const compliance = getVehicleComplianceInfo(v)
+                return (
+                  <tr key={v.id} className="hover:bg-gray-50/60 transition-colors">
+                    <td className="py-3.5 px-6 font-mono font-bold text-[#1e3a8a]">
+                      {v.registrationNumber}
+                    </td>
+                    <td className="py-3.5 px-6">
+                      <button
+                        type="button"
+                        onClick={() => setActiveInspectorVehicle(v)}
+                        className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer text-left"
+                      >
+                        {v.name}
+                      </button>
+                      <div className="text-xs text-gray-500">{v.category} • {v.department}</div>
+                    </td>
+                    <td className="py-3.5 px-6 font-medium text-gray-800 max-w-xs truncate">
+                      {v.currentLocation}
+                    </td>
+                    <td className="py-3.5 px-6 font-medium text-gray-800">
+                      {v.assignedDriverName || 'Unassigned'}
+                    </td>
+                    <td className="py-3.5 px-6">
+                      <span
+                        className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider ${getStatusBadgeStyle(
+                          v.status
+                        )}`}
+                      >
+                        {v.status}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-6">
+                      <span
+                        className={`font-semibold text-xs ${compliance.isPermitOverdue ? 'text-[#A31736] font-bold' : 'text-gray-700'
+                          }`}
+                      >
+                        {v.permitExpiryDate}
+                      </span>
+                    </td>
+                    <td className="py-3.5 px-6 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => setSelectedVehicleForMaintenance(v)}
+                          className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                        >
+                          Maintenance
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedVehicleForDispatch(v)}
+                          className="px-2.5 py-1 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                        >
+                          Dispatch
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedVehicleForDriver(v)}
+                          className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
+                        >
+                          Driver
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       {/* ── Page Header matching Letter/Asset Management ── */}
@@ -356,292 +633,13 @@ export const FleetOverviewPage: React.FC = () => {
             <option value="Permit Due">Permit Due</option>
           </select>
         </div>
-
         <div className="text-xs text-gray-500 font-semibold w-full md:w-auto text-left md:text-right">
           Showing <span className="text-gray-900 font-bold">{filteredVehicles.length}</span> of{' '}
           {vehicles.length} vehicles
         </div>
       </div>
 
-      {/* ── Main Content Area ── */}
-      {filteredVehicles.length === 0 ? (
-        <div className="bg-white rounded border border-gray-300 p-12 text-center space-y-3">
-          <p className="text-sm font-bold text-gray-700">No Municipal Vehicles Found</p>
-          <p className="text-xs text-gray-500 max-w-md mx-auto">
-            No council vehicles match your search keywords or active filter criteria.
-          </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSearchQuery('')
-              setCategoryFilter('All')
-              setStatusFilter('All')
-              setShowOnlyPermitAlerts(false)
-            }}
-            className="px-4 py-2 rounded bg-[#1e3a8a] text-white text-xs font-semibold uppercase tracking-wider shadow-sm cursor-pointer"
-          >
-            Reset Filters
-          </button>
-        </div>
-      ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredVehicles.map((v) => {
-            const compliance = getVehicleComplianceInfo(v)
-
-            return (
-              <div
-                key={v.id}
-                className="bg-white rounded border border-gray-300 shadow-sm hover:shadow transition-all overflow-hidden flex flex-col justify-between"
-              >
-                <div>
-                  {/* Card Header */}
-                  <div className="p-5 border-b border-gray-100 flex items-start justify-between gap-3">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
-                          {v.registrationNumber}
-                        </span>
-                        <span
-                          className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider ${getStatusBadgeStyle(
-                            v.status
-                          )}`}
-                        >
-                          {v.status}
-                        </span>
-                      </div>
-                      <h3 className="text-base font-bold text-gray-900">
-                        <button
-                          type="button"
-                          onClick={() => setActiveInspectorVehicle(v)}
-                          className="hover:text-[#1e3a8a] transition-colors cursor-pointer text-left font-bold"
-                        >
-                          {v.name}
-                        </button>
-                      </h3>
-                      <p className="text-xs text-gray-500 mt-0.5">{v.category} • {v.department}</p>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => setActiveInspectorVehicle(v)}
-                      className="text-xs text-[#1e3a8a] font-semibold hover:underline cursor-pointer shrink-0"
-                    >
-                      Inspect
-                    </button>
-                  </div>
-
-                  {/* Real-time Location Box */}
-                  <div className="px-5 py-3.5 bg-gray-50 border-b border-gray-100">
-                    <div className="flex items-center justify-between text-[11px] text-gray-500 uppercase tracking-wider font-bold mb-1">
-                      <span>Where It Is At The Moment</span>
-                      {v.status === 'On Mission' && (
-                        <span className="text-blue-700 font-bold">Field Duty</span>
-                      )}
-                    </div>
-                    <div className="text-xs font-bold text-gray-800 truncate">
-                      {v.currentLocation}
-                    </div>
-
-                    {v.activeMission && (
-                      <p className="text-[11px] text-gray-600 mt-1 italic truncate">
-                        Mission: {v.activeMission.purpose} ({v.activeMission.estimatedReturn})
-                      </p>
-                    )}
-
-                    {v.activeMaintenance && (
-                      <p className="text-[11px] text-orange-700 mt-1 italic truncate">
-                        Workshop: {v.activeMaintenance.workshopName} ({v.activeMaintenance.maintenanceType})
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Details */}
-                  <div className="p-5 space-y-2.5">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="text-gray-500">Assigned Driver:</span>
-                      <span className="font-semibold text-gray-800">
-                        {v.assignedDriverName || 'Unassigned'}
-                      </span>
-                    </div>
-
-                    {compliance.hasAnyAlert ? (
-                      <div className="p-2.5 bg-red-50 border border-red-200 rounded flex items-center justify-between text-xs">
-                        <span className="font-bold text-red-800">{compliance.alertMessage}</span>
-                        <button
-                          type="button"
-                          onClick={() => setSelectedVehicleForPermit(v)}
-                          className="px-2.5 py-1 bg-[#A31736] text-white rounded text-[11px] font-bold uppercase tracking-wider cursor-pointer"
-                        >
-                          Renew
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="flex items-center justify-between text-xs text-gray-500">
-                        <span>Permit Expiry:</span>
-                        <span className="font-semibold text-gray-700">{v.permitExpiryDate}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Footer Action Buttons matching Letter/Asset cards */}
-                <div className="p-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-1.5">
-                  {v.status !== 'In Maintenance' ? (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedVehicleForMaintenance(v)}
-                      className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
-                    >
-                      Maintenance
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        submitApprovalRequest(
-                          'COMPLETE_MAINTENANCE',
-                          `Sign-Off Repair Completion for ${v.registrationNumber}`,
-                          `Workshop completion inspection and return to active depot availability.`,
-                          { vehicleId: v.id },
-                          { targetVehicleId: v.id, targetVehicleReg: v.registrationNumber }
-                        )
-                        setToastMsg(`Repair completion request submitted for ${v.registrationNumber}.`)
-                      }}
-                      className="px-3 py-1.5 rounded bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
-                    >
-                      Complete Service
-                    </button>
-                  )}
-
-                  {v.status !== 'On Mission' ? (
-                    <button
-                      type="button"
-                      onClick={() => setSelectedVehicleForDispatch(v)}
-                      className="px-3 py-1.5 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
-                    >
-                      Dispatch
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        submitApprovalRequest(
-                          'RETURN_MISSION',
-                          `Log Field Mission Return for ${v.registrationNumber}`,
-                          `Confirming vehicle return from field assignment back to municipal depot.`,
-                          { vehicleId: v.id },
-                          { targetVehicleId: v.id, targetVehicleReg: v.registrationNumber }
-                        )
-                        setToastMsg(`Mission return request submitted for ${v.registrationNumber}.`)
-                      }}
-                      className="px-3 py-1.5 rounded bg-[#1e3a8a] text-white hover:bg-blue-900 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
-                    >
-                      Return Depot
-                    </button>
-                  )}
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedVehicleForDriver(v)}
-                    className="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-semibold text-xs transition-all uppercase tracking-wider cursor-pointer"
-                  >
-                    Driver
-                  </button>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      ) : (
-        /* Table View Matching Asset/Letter Management Tables */
-        <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden">
-          <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
-            <table className="w-full text-left border-collapse min-w-[950px]">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                  <th className="py-4 px-6">REG NUMBER</th>
-                  <th className="py-4 px-6">VEHICLE & CATEGORY</th>
-                  <th className="py-4 px-6">WHERE IT IS AT THE MOMENT</th>
-                  <th className="py-4 px-6">DRIVER</th>
-                  <th className="py-4 px-6">STATUS</th>
-                  <th className="py-4 px-6">PERMIT EXPIRY</th>
-                  <th className="py-4 px-6 text-right">ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
-                {filteredVehicles.map((v) => {
-                  const compliance = getVehicleComplianceInfo(v)
-                  return (
-                    <tr key={v.id} className="hover:bg-gray-50/60 transition-colors">
-                      <td className="py-3.5 px-6 font-mono font-bold text-[#1e3a8a]">
-                        {v.registrationNumber}
-                      </td>
-                      <td className="py-3.5 px-6">
-                        <button
-                          type="button"
-                          onClick={() => setActiveInspectorVehicle(v)}
-                          className="font-bold text-gray-900 hover:text-[#1e3a8a] cursor-pointer text-left"
-                        >
-                          {v.name}
-                        </button>
-                        <div className="text-xs text-gray-500">{v.category} • {v.department}</div>
-                      </td>
-                      <td className="py-3.5 px-6 font-medium text-gray-800 max-w-xs truncate">
-                        {v.currentLocation}
-                      </td>
-                      <td className="py-3.5 px-6 font-medium text-gray-800">
-                        {v.assignedDriverName || 'Unassigned'}
-                      </td>
-                      <td className="py-3.5 px-6">
-                        <span
-                          className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider ${getStatusBadgeStyle(
-                            v.status
-                          )}`}
-                        >
-                          {v.status}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-6">
-                        <span
-                          className={`font-semibold text-xs ${compliance.isPermitOverdue ? 'text-[#A31736] font-bold' : 'text-gray-700'
-                            }`}
-                        >
-                          {v.permitExpiryDate}
-                        </span>
-                      </td>
-                      <td className="py-3.5 px-6 text-right whitespace-nowrap">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => setSelectedVehicleForMaintenance(v)}
-                            className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
-                          >
-                            Maintenance
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedVehicleForDispatch(v)}
-                            className="px-2.5 py-1 rounded border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white text-xs font-semibold uppercase tracking-wider cursor-pointer"
-                          >
-                            Dispatch
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedVehicleForDriver(v)}
-                            className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
-                          >
-                            Driver
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      )}
+      {renderMainContent()}
 
       {/* Modals & Inspector Drawer */}
       <AddVehicleModal
