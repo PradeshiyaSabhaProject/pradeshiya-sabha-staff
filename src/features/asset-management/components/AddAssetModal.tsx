@@ -88,6 +88,7 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
             <h3 className="text-lg font-bold text-gray-900">Add Digital Record</h3>
           </div>
           <button 
+            type="button"
             onClick={onClose}
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
           >
