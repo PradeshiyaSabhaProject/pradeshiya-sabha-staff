@@ -127,9 +127,26 @@ export const InteractiveGISMappingPage: React.FC = () => {
     return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
   }
 
+  const isAssetVisible = (asset: AssetRecord, allowedCategories: Set<string>) => {
+    if (!asset.coordinates) return false
+    if (!allowedCategories.has(asset.category)) return false
+
+    const priorityGroup = getAssetPriorityGroup(asset.status)
+    if (!priorityFilter.includes(priorityGroup)) return false
+
+    if (!searchQuery.trim()) return true
+
+    const query = searchQuery.trim().toLowerCase()
+    return (
+      asset.name.toLowerCase().includes(query) ||
+      asset.location.toLowerCase().includes(query) ||
+      asset.id.toLowerCase().includes(query) ||
+      asset.category.toLowerCase().includes(query)
+    )
+  }
+
   // Filter assets based on active layers, priority, and search
   const visibleAssets = useMemo(() => {
-    // Determine allowed categories from checked layers
     const allowedCategories = new Set<string>()
     LAYER_OPTIONS.forEach((layer) => {
       if (activeLayers[layer.id]) {
@@ -137,30 +154,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
       }
     })
 
-    return assets.filter((asset) => {
-      // Must have coordinates
-      if (!asset.coordinates) return false
-
-      // Layer check
-      if (!allowedCategories.has(asset.category)) return false
-
-      // Priority check
-      const priorityGroup = getAssetPriorityGroup(asset.status)
-      if (!priorityFilter.includes(priorityGroup)) return false
-
-      // Search query check
-      if (searchQuery.trim()) {
-        const query = searchQuery.trim().toLowerCase()
-        const matchesSearch =
-          asset.name.toLowerCase().includes(query) ||
-          asset.location.toLowerCase().includes(query) ||
-          asset.id.toLowerCase().includes(query) ||
-          asset.category.toLowerCase().includes(query)
-        if (!matchesSearch) return false
-      }
-
-      return true
-    })
+    return assets.filter((asset) => isAssetVisible(asset, allowedCategories))
   }, [assets, activeLayers, priorityFilter, searchQuery])
 
   // Calculate stats to match screenshot baseline
@@ -218,16 +212,12 @@ export const InteractiveGISMappingPage: React.FC = () => {
 
     visibleAssets.forEach((asset) => {
       if (!asset.coordinates) return
-      const lat = parseFloat(asset.coordinates.lat)
-      const lng = parseFloat(asset.coordinates.lng)
+      const lat = Number.parseFloat(asset.coordinates.lat)
+      const lng = Number.parseFloat(asset.coordinates.lng)
       if (Number.isNaN(lat) || Number.isNaN(lng)) return
 
-      // Determine marker color and icon based on category & priority
       const bgStyle = getBgStyle(asset.category)
-
       const iconHtml = getIconHtml(asset.category)
-
-      // If high priority / disputed, add red glow/badge
       const priorityGroup = getAssetPriorityGroup(asset.status)
       const pulseHtml = getPriorityPulseHtml(priorityGroup)
 
