@@ -155,7 +155,8 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
         </h2>
         {selectedFacility && (
           <button
-            onClick={() => onSelectFacility && onSelectFacility('')}
+            type="button"
+            onClick={() => onSelectFacility?.('')}
             className="self-start sm:self-auto text-xs font-bold text-[#801028] hover:underline bg-[#801028]/10 px-3 py-1 rounded-full border border-[#801028]/20 cursor-pointer"
           >
             Clear Filter ({selectedFacility}) ×
@@ -171,40 +172,41 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
           const isSelected = selectedFacility === fac.name
 
           return (
-            <div
+            <button
+              type="button"
               key={fac.name}
-              onClick={() => onSelectFacility && onSelectFacility(isSelected ? '' : fac.name)}
-              className={`relative bg-white border rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all cursor-pointer flex flex-col justify-between ${
+              onClick={() => onSelectFacility?.(isSelected ? '' : fac.name)}
+              className={`relative bg-white border rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all cursor-pointer flex flex-col justify-between text-left font-normal w-full ${
                 isSelected ? 'ring-2 ring-[#801028] border-[#801028] bg-rose-50/20' : 'border-gray-300 hover:border-gray-400'
               }`}
             >
-              <div>
-                <div className="flex items-start justify-between gap-2 mb-2">
-                  <div>
+              <span className="block w-full">
+                <span className="flex items-start justify-between gap-2 mb-2">
+                  <span className="block text-left">
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-600 inline-block">
                       {fac.category}
                     </span>
-                    <h3 className="text-base font-extrabold text-gray-900 mt-1.5 leading-snug">
+                    <span className="block text-base font-extrabold text-gray-900 mt-1.5 leading-snug">
                       {fac.name}
-                    </h3>
-                  </div>
-                  <div className={`p-2.5 rounded-xl bg-gradient-to-br ${fac.imageBg} border shrink-0 flex items-center justify-center shadow-2xs`}>
+                    </span>
+                  </span>
+                  <span className={`p-2.5 rounded-xl bg-gradient-to-br ${fac.imageBg} border shrink-0 flex items-center justify-center shadow-2xs`}>
                     {fac.icon}
-                  </div>
-                </div>
+                  </span>
+                </span>
 
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-semibold text-gray-500 my-3">
+                <span className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-semibold text-gray-500 my-3">
                   <span className="flex items-center gap-1.5">
                     <UsersGroupIcon />
                     {fac.capacity}
                   </span>
                   <span className="text-gray-300 hidden sm:inline">|</span>
                   <span className="text-[#801028] font-bold">{fac.rate}</span>
-                </div>
-              </div>
+                </span>
+              </span>
 
-              <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <span className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs w-full block">
+                <span className="flex flex-wrap items-center gap-2 sm:gap-3">
                   <span className="flex items-center gap-1.5 text-gray-600 font-semibold">
                     <span className="w-2 h-2 rounded-full bg-green-500"></span>
                     {approvedCount} Reserved
@@ -215,12 +217,12 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
                       {pendingCount} Pending
                     </span>
                   )}
-                </div>
-                <span className="text-[11px] font-bold text-[#801028] uppercase tracking-wider shrink-0">
+                </span>
+                <span className="text-[11px] font-bold text-[#801028] uppercase tracking-wider shrink-0 block">
                   {isSelected ? 'Active Filter' : 'Filter →'}
                 </span>
-              </div>
-            </div>
+              </span>
+            </button>
           )
         })}
       </div>
