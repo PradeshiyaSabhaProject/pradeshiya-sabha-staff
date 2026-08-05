@@ -160,6 +160,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
             Application Details - {application.refId}
           </h2>
           <button
+            type="button"
             onClick={onClose}
             className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors cursor-pointer"
           >
@@ -367,6 +368,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
                   ) : !showRejectionForm ? (
                     <div className="flex flex-wrap items-center gap-3">
                       <button
+                        type="button"
                         onClick={handleManagerApprove}
                         className="flex-1 min-w-[180px] bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
                       >
@@ -376,6 +378,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
                         <span>Approve Application </span>
                       </button>
                       <button
+                        type="button"
                         onClick={() => setShowRejectionForm(true)}
                         className="flex-1 min-w-[180px] bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-bold py-3 px-5 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider"
                       >
@@ -440,6 +443,7 @@ const ApplicationDetailModal: React.FC<ApplicationDetailModalProps> = ({ applica
             )}
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="px-5 py-2 bg-white border border-gray-300 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
           >
