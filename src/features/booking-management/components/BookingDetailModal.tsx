@@ -44,6 +44,17 @@ const ImageIcon = () => (
   </svg>
 )
 
+function getRemarkCardStyle(action: string | undefined): string {
+  switch (action) {
+    case 'APPROVED':
+      return 'bg-green-50/70 border-green-200 text-green-950'
+    case 'REJECTED':
+      return 'bg-red-50/70 border-red-200 text-red-950'
+    default:
+      return 'bg-gray-50 border-gray-200 text-gray-800'
+  }
+}
+
 const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   booking,
   onClose,
@@ -299,13 +310,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
             ) : (
               <div className="space-y-2.5 max-h-48 overflow-y-auto pr-1">
                 {booking.remarks.map((rem) => (
-                  <div key={rem.id} className={`p-3.5 rounded-xl border text-xs ${
-                    rem.action === 'APPROVED'
-                      ? 'bg-green-50/70 border-green-200 text-green-950'
-                      : rem.action === 'REJECTED'
-                      ? 'bg-red-50/70 border-red-200 text-red-950'
-                      : 'bg-gray-50 border-gray-200 text-gray-800'
-                  }`}>
+                  <div key={rem.id} className={`p-3.5 rounded-xl border text-xs ${getRemarkCardStyle(rem.action)}`}>
                     <div className="flex items-center justify-between font-bold mb-1">
                       <span className="text-gray-900 flex items-center gap-1.5">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#801028]"></span>
