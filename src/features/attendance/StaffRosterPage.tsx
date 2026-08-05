@@ -499,7 +499,7 @@ export const StaffRosterPage: React.FC = () => {
 
                     {/* Daily Shift Cells (Defaults to null '-' if roster not made) */}
                     {monthDays.map((d) => {
-                      const shiftCode = existingRow && existingRow.days[d] !== undefined ? existingRow.days[d] : ''
+                      const shiftCode = existingRow?.days[d] ?? ''
                       const shiftTpl = getShiftDetails(shiftCode)
                       const isEditing = editingCell?.empId === emp.employeeId && editingCell?.day === d
                       const weekend = isWeekendDay(selectedMonth, d)
