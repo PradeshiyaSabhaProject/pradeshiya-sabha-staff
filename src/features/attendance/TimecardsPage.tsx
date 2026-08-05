@@ -30,17 +30,159 @@ function getRowBackgroundClass(row: TimecardRow, i: number): string {
   return i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
 }
 
+const employeesList = [
+  { id: 'PS-EMP-0012', name: 'Kasun Perera', title: 'Senior Revenue Inspector', department: 'Revenue & Finance Department' },
+  { id: 'PS-EMP-0019', name: 'Nimali Fernando', title: 'Subject Clerk', department: 'Administration' },
+  { id: 'PS-EMP-0034', name: 'Eng. Samantha Bandara', title: 'Technical Officer', department: 'Engineering Division' },
+  { id: 'PS-EMP-0041', name: 'Chaminda Rathnayake', title: 'Public Health Inspector', department: 'Health & Sanitation' }
+]
+
+const timecardEntriesByEmp: Record<string, Array<{
+  date: string
+  shift: string
+  checkIn: string
+  checkOut: string
+  workedHours: string
+  otHours: string
+  status: string
+  device: string
+  isWeekendWork?: boolean
+}>> = {
+  'PS-EMP-0012': [
+    {
+      date: '2026-07-12 (Sun)',
+      shift: 'Weekend Off / Rest Day',
+      checkIn: '--:--',
+      checkOut: '--:--',
+      workedHours: '0h 00m',
+      otHours: '0h 00m',
+      status: 'Weekend Rest Day',
+      device: 'N/A'
+    },
+    {
+      date: '2026-07-11 (Sat)',
+      shift: '08:30 AM - 02:30 PM (Saturday Special)',
+      checkIn: '08:25 AM',
+      checkOut: '02:35 PM',
+      workedHours: '6h 10m',
+      otHours: '6h 10m (1.5x Sat Rate)',
+      status: 'Weekend Duty (Budget Drive)',
+      device: 'Main Gate ZKTeco F18 #1',
+      isWeekendWork: true
+    },
+    {
+      date: '2026-07-10 (Fri)',
+      shift: '08:30 AM - 04:30 PM',
+      checkIn: '08:22 AM',
+      checkOut: '06:35 PM',
+      workedHours: '10h 13m',
+      otHours: '2h 00m (OT)',
+      status: 'Present + Overtime',
+      device: 'Main Gate ZKTeco F18 #1'
+    },
+    {
+      date: '2026-07-09 (Thu)',
+      shift: '08:30 AM - 04:30 PM',
+      checkIn: '08:29 AM',
+      checkOut: '04:40 PM',
+      workedHours: '8h 11m',
+      otHours: '0h 10m',
+      status: 'Present - Full Day (Regularized)',
+      device: 'Manual Correction (Approved)'
+    },
+    {
+      date: '2026-07-08 (Wed)',
+      shift: '08:30 AM - 04:30 PM',
+      checkIn: '08:48 AM',
+      checkOut: '04:32 PM',
+      workedHours: '7h 44m',
+      otHours: '0h 00m',
+      status: 'Late Entry (18m)',
+      device: 'ZKTeco F18 #2'
+    },
+    {
+      date: '2026-07-07 (Tue)',
+      shift: '08:30 AM - 04:30 PM',
+      checkIn: '--:--',
+      checkOut: '--:--',
+      workedHours: '0h 00m',
+      otHours: '0h 00m',
+      status: 'Approved Leave (Annual)',
+      device: 'Leave System'
+    },
+    {
+      date: '2026-07-06 (Mon)',
+      shift: '08:30 AM - 04:30 PM',
+      checkIn: '08:18 AM',
+      checkOut: '06:00 PM',
+      workedHours: '9h 42m',
+      otHours: '1h 30m (OT)',
+      status: 'Present + Overtime',
+      device: 'Main Gate ZKTeco F18 #1'
+    },
+    {
+      date: '2026-07-05 (Sun)',
+      shift: '08:30 AM - 04:30 PM (Special Sunday Callout)',
+      checkIn: '08:40 AM',
+      checkOut: '04:40 PM',
+      workedHours: '8h 00m',
+      otHours: '--',
+      status: 'Sunday Emergency Duty (Regularized)',
+      device: 'ZKTeco F18 #1',
+      isWeekendWork: true
+    },
+    {
+      date: '2026-07-04 (Sat)',
+      shift: '08:30 AM - 02:30 PM (Saturday Shift)',
+      checkIn: '08:28 AM',
+      checkOut: '02:35 PM',
+      workedHours: '6h 07m',
+      otHours: '--',
+      status: 'Saturday Weekend Duty',
+      device: 'ZKTeco F18 #1',
+      isWeekendWork: true
+    }
+  ],
+  'PS-EMP-0041': [
+    {
+      date: '2026-07-12 (Sun)',
+      shift: '06:00 AM - 01:00 PM (Emergency Sunday Drive)',
+      checkIn: '06:05 AM',
+      checkOut: '01:15 PM',
+      workedHours: '7h 10m',
+      otHours: '--',
+      status: 'Sunday Emergency Weekend Duty',
+      device: 'Sanitation Depot Bio #3',
+      isWeekendWork: true
+    },
+    {
+      date: '2026-07-11 (Sat)',
+      shift: '06:00 AM - 02:00 PM',
+      checkIn: '05:58 AM',
+      checkOut: '02:05 PM',
+      workedHours: '8h 07m',
+      otHours: '--',
+      status: 'Saturday Sanitation Duty',
+      device: 'Sanitation Depot Bio #3',
+      isWeekendWork: true
+    },
+    {
+      date: '2026-07-10 (Fri)',
+      shift: '06:00 AM - 02:00 PM',
+      checkIn: '06:14 AM',
+      checkOut: '02:05 PM',
+      workedHours: '7h 51m',
+      otHours: '0h 00m',
+      status: 'Late Entry (14m)',
+      device: 'Sanitation Depot Bio #3'
+    }
+  ]
+}
+
 export const TimecardsPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedEmp, setSelectedEmp] = useState('PS-EMP-0012')
   const [selectedMonth, setSelectedMonth] = useState('2026-07')
-
-  const employeesList = [
-    { id: 'PS-EMP-0012', name: 'Kasun Perera', title: 'Senior Revenue Inspector', department: 'Revenue & Finance Department' },
-    { id: 'PS-EMP-0019', name: 'Nimali Fernando', title: 'Subject Clerk', department: 'Administration' },
-    { id: 'PS-EMP-0034', name: 'Eng. Samantha Bandara', title: 'Technical Officer', department: 'Engineering Division' },
-    { id: 'PS-EMP-0041', name: 'Chaminda Rathnayake', title: 'Public Health Inspector', department: 'Health & Sanitation' }
-  ]
 
   const selectedEmpData = employeesList.find(e => e.id === selectedEmp) || employeesList[0]
 
@@ -64,148 +206,6 @@ export const TimecardsPage: React.FC = () => {
       emp.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
       emp.title.toLowerCase().includes(searchQuery.toLowerCase())
   )
-
-  const timecardEntriesByEmp: Record<string, Array<{
-    date: string
-    shift: string
-    checkIn: string
-    checkOut: string
-    workedHours: string
-    otHours: string
-    status: string
-    device: string
-    isWeekendWork?: boolean
-  }>> = {
-    'PS-EMP-0012': [
-      {
-        date: '2026-07-12 (Sun)',
-        shift: 'Weekend Off / Rest Day',
-        checkIn: '--:--',
-        checkOut: '--:--',
-        workedHours: '0h 00m',
-        otHours: '0h 00m',
-        status: 'Weekend Rest Day',
-        device: 'N/A'
-      },
-      {
-        date: '2026-07-11 (Sat)',
-        shift: '08:30 AM - 02:30 PM (Saturday Special)',
-        checkIn: '08:25 AM',
-        checkOut: '02:35 PM',
-        workedHours: '6h 10m',
-        otHours: '6h 10m (1.5x Sat Rate)',
-        status: 'Weekend Duty (Budget Drive)',
-        device: 'Main Gate ZKTeco F18 #1',
-        isWeekendWork: true
-      },
-      {
-        date: '2026-07-10 (Fri)',
-        shift: '08:30 AM - 04:30 PM',
-        checkIn: '08:22 AM',
-        checkOut: '06:35 PM',
-        workedHours: '10h 13m',
-        otHours: '2h 00m (OT)',
-        status: 'Present + Overtime',
-        device: 'Main Gate ZKTeco F18 #1'
-      },
-      {
-        date: '2026-07-09 (Thu)',
-        shift: '08:30 AM - 04:30 PM',
-        checkIn: '08:29 AM',
-        checkOut: '04:40 PM',
-        workedHours: '8h 11m',
-        otHours: '0h 10m',
-        status: 'Present - Full Day (Regularized)',
-        device: 'Manual Correction (Approved)'
-      },
-      {
-        date: '2026-07-08 (Wed)',
-        shift: '08:30 AM - 04:30 PM',
-        checkIn: '08:48 AM',
-        checkOut: '04:32 PM',
-        workedHours: '7h 44m',
-        otHours: '0h 00m',
-        status: 'Late Entry (18m)',
-        device: 'ZKTeco F18 #2'
-      },
-      {
-        date: '2026-07-07 (Tue)',
-        shift: '08:30 AM - 04:30 PM',
-        checkIn: '--:--',
-        checkOut: '--:--',
-        workedHours: '0h 00m',
-        otHours: '0h 00m',
-        status: 'Approved Leave (Annual)',
-        device: 'Leave System'
-      },
-      {
-        date: '2026-07-06 (Mon)',
-        shift: '08:30 AM - 04:30 PM',
-        checkIn: '08:18 AM',
-        checkOut: '06:00 PM',
-        workedHours: '9h 42m',
-        otHours: '1h 30m (OT)',
-        status: 'Present + Overtime',
-        device: 'Main Gate ZKTeco F18 #1'
-      },
-      {
-        date: '2026-07-05 (Sun)',
-        shift: '08:30 AM - 04:30 PM (Special Sunday Callout)',
-        checkIn: '08:40 AM',
-        checkOut: '04:40 PM',
-        workedHours: '8h 00m',
-        otHours: '--',
-        status: 'Sunday Emergency Duty (Regularized)',
-        device: 'ZKTeco F18 #1',
-        isWeekendWork: true
-      },
-      {
-        date: '2026-07-04 (Sat)',
-        shift: '08:30 AM - 02:30 PM (Saturday Shift)',
-        checkIn: '08:28 AM',
-        checkOut: '02:35 PM',
-        workedHours: '6h 07m',
-        otHours: '--',
-        status: 'Saturday Weekend Duty',
-        device: 'ZKTeco F18 #1',
-        isWeekendWork: true
-      }
-    ],
-    'PS-EMP-0041': [
-      {
-        date: '2026-07-12 (Sun)',
-        shift: '06:00 AM - 01:00 PM (Emergency Sunday Drive)',
-        checkIn: '06:05 AM',
-        checkOut: '01:15 PM',
-        workedHours: '7h 10m',
-        otHours: '--',
-        status: 'Sunday Emergency Weekend Duty',
-        device: 'Sanitation Depot Bio #3',
-        isWeekendWork: true
-      },
-      {
-        date: '2026-07-11 (Sat)',
-        shift: '06:00 AM - 02:00 PM',
-        checkIn: '05:58 AM',
-        checkOut: '02:05 PM',
-        workedHours: '8h 07m',
-        otHours: '--',
-        status: 'Saturday Sanitation Duty',
-        device: 'Sanitation Depot Bio #3',
-        isWeekendWork: true
-      },
-      {
-        date: '2026-07-10 (Fri)',
-        shift: '06:00 AM - 02:00 PM',
-        checkIn: '06:14 AM',
-        checkOut: '02:05 PM',
-        workedHours: '7h 51m',
-        otHours: '0h 00m',
-        status: 'Late Entry (14m)',
-        device: 'Sanitation Depot Bio #3'
-      }
-    ]
-  }
 
   const timecardEntries = timecardEntriesByEmp[selectedEmp] || timecardEntriesByEmp['PS-EMP-0012']
 
