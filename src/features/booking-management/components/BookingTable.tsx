@@ -60,6 +60,26 @@ const TABS: { id: string; label: string; status: BookingStatus | null }[] = [
   { id: 'completed', label: 'Completed Events', status: 'COMPLETED' }
 ]
 
+function matchesTab(b: FacilityBooking, activeTab: string, showTabs: boolean): boolean {
+  if (!showTabs || activeTab === 'all') return true
+  const tabObj = TABS.find(t => t.id === activeTab)
+  if (!tabObj?.status) return true
+  if (b.status === tabObj.status) return true
+  if (activeTab === 'rejected' && b.status === 'CANCELLED') return true
+  return false
+}
+
+function matchesSearch(b: FacilityBooking, searchQuery: string): boolean {
+  if (!searchQuery) return true
+  const q = searchQuery.toLowerCase()
+  return (
+    b.citizenName.toLowerCase().includes(q) ||
+    b.citizenNic.toLowerCase().includes(q) ||
+    b.refId.toLowerCase().includes(q) ||
+    b.eventTitle.toLowerCase().includes(q)
+  )
+}
+
 const BookingTable: React.FC<BookingTableProps> = ({
   bookings,
   onView,
@@ -97,50 +117,12 @@ const BookingTable: React.FC<BookingTableProps> = ({
 
   const filteredBookings = useMemo(() => {
     return bookings.filter(b => {
-      // Tab filter
-      if (showTabs && activeTab !== 'all') {
-        const tabObj = TABS.find(t => t.id === activeTab)
-        if (tabObj?.status && b.status !== tabObj.status) {
-          if (activeTab === 'rejected' && b.status === 'CANCELLED') {
-            // allow cancelled in rejected tab
-          } else {
-            return false
-          }
-        }
-      }
-
-      // External facility filter
-      if (selectedFacilityFilter && b.facilityName !== selectedFacilityFilter) {
-        return false
-      }
-
-      // Applied facility filter
-      if (appliedFilters.facility && b.facilityName !== appliedFilters.facility) {
-        return false
-      }
-
-      // Applied status filter
-      if (appliedFilters.status && b.status !== appliedFilters.status) {
-        return false
-      }
-
-      // Applied date filter
-      if (appliedFilters.date && b.bookingDate !== appliedFilters.date) {
-        return false
-      }
-
-      // Applied search filter
-      if (appliedFilters.search || filters.search) {
-        const q = (appliedFilters.search || filters.search).toLowerCase()
-        const matchesName = b.citizenName.toLowerCase().includes(q)
-        const matchesNic = b.citizenNic.toLowerCase().includes(q)
-        const matchesRef = b.refId.toLowerCase().includes(q)
-        const matchesTitle = b.eventTitle.toLowerCase().includes(q)
-        if (!matchesName && !matchesNic && !matchesRef && !matchesTitle) {
-          return false
-        }
-      }
-
+      if (!matchesTab(b, activeTab, showTabs)) return false
+      if (selectedFacilityFilter && b.facilityName !== selectedFacilityFilter) return false
+      if (appliedFilters.facility && b.facilityName !== appliedFilters.facility) return false
+      if (appliedFilters.status && b.status !== appliedFilters.status) return false
+      if (appliedFilters.date && b.bookingDate !== appliedFilters.date) return false
+      if (!matchesSearch(b, appliedFilters.search || filters.search)) return false
       return true
     })
   }, [bookings, activeTab, appliedFilters, filters.search, showTabs, selectedFacilityFilter])
