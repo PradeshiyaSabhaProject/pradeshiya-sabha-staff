@@ -210,7 +210,7 @@ export const TimecardsPage: React.FC = () => {
   const timecardEntries = timecardEntriesByEmp[selectedEmp] || timecardEntriesByEmp['PS-EMP-0012']
 
   const totalOtHoursCalc = timecardEntries.reduce((acc, row) => {
-    const match = row.otHours.match(/^(\d+)h\s*(\d+)m/)
+    const match = /^(\d+)h\s*(\d+)m/.exec(row.otHours)
     if (match) {
       return acc + Number.parseInt(match[1], 10) * 60 + Number.parseInt(match[2], 10)
     }
