@@ -63,6 +63,55 @@ export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }
 
   const modules = ['All', 'Letters', 'Attendance', 'Appointments', 'Security']
 
+  let content
+
+  if (filteredLogs.length === 0) {
+    content = (
+      <div className="text-center py-12 text-gray-400 text-sm">
+        <p className="font-semibold text-gray-600">No activity records match your current filter criteria.</p>
+      </div>
+    )
+  } else {
+    content = (
+      <div className="relative pl-6 sm:pl-8 border-l-2 border-gray-200 space-y-6 my-2">
+        {filteredLogs.map((log) => (
+          <div key={log.id} className="relative group">
+            {/* Timeline Dot */}
+            <div
+              className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm ${getStatusDotStyle(
+                log.status
+              )}`}
+            />
+
+            <div className="bg-gray-50/80 group-hover:bg-gray-100/90 border border-gray-200 rounded-xl p-4 transition-all">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/60 pb-2.5 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${getModuleBadgeStyle(
+                      log.module
+                    )}`}
+                  >
+                    {log.module}
+                  </span>
+                  <h4 className="font-bold text-sm text-gray-900">{log.action}</h4>
+                </div>
+
+                <div className="flex items-center gap-3 text-xs text-gray-500 shrink-0">
+                  <span className="font-mono text-[11px] bg-white px-2.5 py-0.5 rounded border border-gray-200 text-gray-700">
+                    {log.ip}
+                  </span>
+                  <span className="font-semibold text-gray-600">{log.timestamp}</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-gray-600 leading-relaxed">{log.details}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Top Controls: Search and Filter Pills matching standard top bar */}
@@ -116,48 +165,7 @@ export const ActivityAndAuditTab: React.FC<ActivityAndAuditTabProps> = ({ logs }
           </span>
         </div>
 
-        {filteredLogs.length === 0 ? (
-          <div className="text-center py-12 text-gray-400 text-sm">
-            <p className="font-semibold text-gray-600">No activity records match your current filter criteria.</p>
-          </div>
-        ) : (
-          <div className="relative pl-6 sm:pl-8 border-l-2 border-gray-200 space-y-6 my-2">
-            {filteredLogs.map((log) => (
-              <div key={log.id} className="relative group">
-                {/* Timeline Dot */}
-                <div
-                  className={`absolute -left-[31px] sm:-left-[39px] top-1.5 w-5 h-5 rounded-full border-4 border-white flex items-center justify-center shadow-sm ${getStatusDotStyle(
-                    log.status
-                  )}`}
-                />
-
-                <div className="bg-gray-50/80 group-hover:bg-gray-100/90 border border-gray-200 rounded-xl p-4 transition-all">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200/60 pb-2.5 mb-2.5">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${getModuleBadgeStyle(
-                          log.module
-                        )}`}
-                      >
-                        {log.module}
-                      </span>
-                      <h4 className="font-bold text-sm text-gray-900">{log.action}</h4>
-                    </div>
-
-                    <div className="flex items-center gap-3 text-xs text-gray-500 shrink-0">
-                      <span className="font-mono text-[11px] bg-white px-2.5 py-0.5 rounded border border-gray-200 text-gray-700">
-                        {log.ip}
-                      </span>
-                      <span className="font-semibold text-gray-600">{log.timestamp}</span>
-                    </div>
-                  </div>
-
-                  <p className="text-xs text-gray-600 leading-relaxed">{log.details}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {content}
       </div>
     </div>
   )
