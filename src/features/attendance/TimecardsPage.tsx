@@ -1,6 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+interface TimecardRow {
+  isWeekendWork?: boolean
+  otHours?: string
+  status: string
+}
+
+function getStatusBadgeStyle(row: TimecardRow): string {
+  if (row.isWeekendWork) {
+    return 'bg-indigo-100 text-indigo-900 border border-indigo-300'
+  }
+  if (row.otHours && row.otHours !== '0h 00m' && row.otHours !== '--' && row.otHours.includes('OT')) {
+    return 'bg-orange-100 text-orange-900 border border-orange-300'
+  }
+  if (row.status.includes('Late')) {
+    return 'bg-amber-100 text-amber-900 border border-amber-300'
+  }
+  if (row.status.includes('Leave')) {
+    return 'bg-blue-100 text-blue-900 border border-blue-300'
+  }
+  return 'bg-green-100 text-green-900 border border-green-300'
+}
+
 export const TimecardsPage: React.FC = () => {
   const navigate = useNavigate()
   const [selectedEmp, setSelectedEmp] = useState('PS-EMP-0012')
@@ -477,18 +499,7 @@ export const TimecardsPage: React.FC = () => {
 
                   {/* Col G: Status */}
                   <td className="py-2.5 px-3 border-r border-gray-300 font-sans">
-                    <span
-                      className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${row.isWeekendWork
-                        ? 'bg-indigo-100 text-indigo-900 border border-indigo-300'
-                        : row.otHours !== '0h 00m' && row.otHours !== '--' && row.otHours.includes('OT')
-                          ? 'bg-orange-100 text-orange-900 border border-orange-300'
-                          : row.status.includes('Late')
-                            ? 'bg-amber-100 text-amber-900 border border-amber-300'
-                            : row.status.includes('Leave')
-                              ? 'bg-blue-100 text-blue-900 border border-blue-300'
-                              : 'bg-green-100 text-green-900 border border-green-300'
-                        }`}
-                    >
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold ${getStatusBadgeStyle(row)}`}>
                       {row.status}
                     </span>
                   </td>
