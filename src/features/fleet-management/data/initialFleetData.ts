@@ -51,6 +51,16 @@ export interface DriverRecord {
 
 export type FuelType = 'Diesel' | 'Petrol' | 'EV'
 
+export interface GpsTelemetry {
+  lat: number
+  lng: number
+  speedKmH: number
+  directionHeading: number
+  gpsStatus: 'Live GPS Online' | 'Idle' | 'Offline'
+  lastPingTime: string
+  routeTrail?: [number, number][]
+}
+
 export interface VehicleRecord {
   id: string
   registrationNumber: string // e.g. WP LA-4821
@@ -63,6 +73,7 @@ export interface VehicleRecord {
   status: VehicleStatus
   // Location & mission state
   currentLocation: string // e.g. "Municipal Depot - Bay 04" or "Ward 04 - Solid Waste Route A"
+  gpsTracking?: GpsTelemetry
   activeMission?: {
     destination: string
     purpose: string

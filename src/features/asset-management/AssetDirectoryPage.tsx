@@ -239,6 +239,8 @@ export const AssetDirectoryPage: React.FC = () => {
                 <option value="Land">Land</option>
                 <option value="Road">Road</option>
                 <option value="Building">Building</option>
+                <option value="Streetlamp">Streetlamp</option>
+                <option value="Grounds">Grounds</option>
                 <option value="Vehicle">Vehicle</option>
                 <option value="Machinery & Equipment">Machinery & Equipment</option>
                 <option value="Utility / Infrastructure">Utility / Infrastructure</option>
