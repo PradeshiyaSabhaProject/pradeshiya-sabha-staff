@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
+import { useLeave } from '../../../context/LeaveContext'
 
 interface ApplyLeaveModalProps {
   isOpen: boolean
   onClose: () => void
-  onSubmit: (data: {
+  onSubmit?: (data: {
     leaveType: string
     startDate: string
     endDate: string
@@ -13,17 +14,32 @@ interface ApplyLeaveModalProps {
 }
 
 export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [leaveType, setLeaveType] = useState('Annual Leave')
-  const [startDate, setStartDate] = useState('2026-07-15')
-  const [endDate, setEndDate] = useState('2026-07-16')
+  const { applyLeave, leaveBalances } = useLeave()
+  const myBalance = leaveBalances.find((b) => b.employeeId === 'PS-EMP-0012') || leaveBalances[0]
+
+  const [leaveType, setLeaveType] = useState<'Annual Leave' | 'Casual Leave' | 'Medical Leave' | 'Duty Leave' | 'Compensatory Leave (Comp-Off)' | 'No-Pay Leave'>('Annual Leave')
+  const [startDate, setStartDate] = useState('2026-07-22')
+  const [endDate, setEndDate] = useState('2026-07-23')
   const [daysCount, setDaysCount] = useState(2)
   const [reason, setReason] = useState('')
+  const [handoverOfficer, setHandoverOfficer] = useState('Ruwan Kumara (Accountant)')
 
   if (!isOpen) return null
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onSubmit({ leaveType, startDate, endDate, daysCount, reason })
+    applyLeave({
+      leaveType,
+      startDate,
+      endDate,
+      daysCount,
+      reason,
+      handoverOfficer
+    })
+
+    if (onSubmit) {
+      onSubmit({ leaveType, startDate, endDate, daysCount, reason })
+    }
     onClose()
   }
 
@@ -61,25 +77,29 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
         {/* Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-left">
           <div>
-            <label htmlFor="leave-category" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Leave Category</label>
+            <label htmlFor="leave-category" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+              Leave Category
+            </label>
             <select
               id="leave-category"
               value={leaveType}
-              onChange={(e) => setLeaveType(e.target.value)}
+              onChange={(e) => setLeaveType(e.target.value as any)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 bg-gray-50/50 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Annual Leave">Annual Leave (Balance: 9 Days)</option>
-              <option value="Casual Leave">Casual Leave (Balance: 10 Days)</option>
-              <option value="Medical Leave">Medical Leave (Balance: 19 Days)</option>
-              <option value="Duty Leave">Duty Leave (Official Outside Work)</option>
+              <option value="Annual Leave">Annual Leave (Balance: {myBalance?.annual.remaining} Days)</option>
+              <option value="Casual Leave">Casual Leave (Balance: {myBalance?.casual.remaining} Days)</option>
+              <option value="Medical Leave">Medical Leave (Balance: {myBalance?.medical.remaining} Days)</option>
+              <option value="Duty Leave">Duty Leave (Official Outside Duty)</option>
               <option value="Compensatory Leave (Comp-Off)">Compensatory Leave (Comp-Off - Earned from Weekend/OT)</option>
-              <option value="No-Pay Leave">No-Pay Leave</option>
+              <option value="No-Pay Leave">No-Pay Leave (Unpaid Authorized)</option>
             </select>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label htmlFor="start-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Start Date</label>
+              <label htmlFor="start-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                Start Date
+              </label>
               <input
                 type="date"
                 id="start-date"
@@ -89,7 +109,9 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
               />
             </div>
             <div>
-              <label htmlFor="end-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">End Date</label>
+              <label htmlFor="end-date" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                End Date
+              </label>
               <input
                 type="date"
                 id="end-date"
@@ -99,7 +121,9 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
               />
             </div>
             <div>
-              <label htmlFor="working-days" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Working Days</label>
+              <label htmlFor="working-days" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+                Working Days
+              </label>
               <input
                 type="number"
                 id="working-days"
@@ -113,12 +137,28 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
           </div>
 
           <div>
-            <label htmlFor="leave-reason" className="block text-xs font-semibold uppercase text-gray-600 mb-1">Reason & Handover Notes</label>
+            <label htmlFor="handover-officer" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+              Acting Officer / Handover Duty
+            </label>
+            <input
+              type="text"
+              id="handover-officer"
+              value={handoverOfficer}
+              onChange={(e) => setHandoverOfficer(e.target.value)}
+              className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Name & Designation of acting officer..."
+            />
+          </div>
+
+          <div>
+            <label htmlFor="leave-reason" className="block text-xs font-semibold uppercase text-gray-600 mb-1">
+              Reason & Details
+            </label>
             <textarea
               id="leave-reason"
               rows={3}
               required
-              placeholder="State clear reason and officer taking over duties..."
+              placeholder="State clear reason for leave request..."
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -142,7 +182,7 @@ export const ApplyLeaveModal: React.FC<ApplyLeaveModalProps> = ({ isOpen, onClos
               </div>
               <div className="bg-white p-2 rounded-lg border border-blue-200 shadow-2xs">
                 <div className="font-bold text-gray-800">2. Dept Head</div>
-                <div className="text-[11px] text-gray-500">Director Works</div>
+                <div className="text-[11px] text-gray-500">Chief Revenue Officer</div>
               </div>
               <div className="bg-white p-2 rounded-lg border border-blue-200 shadow-2xs">
                 <div className="font-bold text-gray-800">3. HR / Secretary</div>

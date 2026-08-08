@@ -11,6 +11,9 @@ function getStatusBadgeStyle(row: TimecardRow): string {
   if (row.isWeekendWork) {
     return 'bg-indigo-100 text-indigo-900 border border-indigo-300'
   }
+  if (row.status.includes('Unauthorized') || row.status.includes('No-Pay')) {
+    return 'bg-rose-100 text-rose-900 border border-rose-300 font-bold'
+  }
   if (row.otHours && row.otHours !== '0h 00m' && row.otHours !== '--' && row.otHours.includes('OT')) {
     return 'bg-orange-100 text-orange-900 border border-orange-300'
   }

@@ -26,21 +26,28 @@ export interface LeaveRequest {
   employeeName: string
   designation: string
   department: string
-  leaveType: 'Annual Leave' | 'Casual Leave' | 'Medical Leave' | 'Duty Leave' | 'Maternity Leave' | 'Compensatory Leave (Comp-Off)'
+  avatarInitials?: string
+  leaveType: 'Annual Leave' | 'Casual Leave' | 'Medical Leave' | 'Duty Leave' | 'Maternity Leave' | 'Compensatory Leave (Comp-Off)' | 'No-Pay Leave'
   startDate: string
   endDate: string
   daysCount: number
   reason: string
+  handoverOfficer?: string
   appliedOn: string
   approvalLevels: {
     levelNumber: 1 | 2 | 3
     roleName: string
     approverName: string
-    status: 'Approved' | 'Pending' | 'Rejected' | 'Waiting'
+    status: 'Approved' | 'Pending' | 'Rejected' | 'Waiting' | 'Cancelled'
     timestamp?: string
     comments?: string
   }[]
-  overallStatus: 'Approved' | 'Pending Level 1' | 'Pending Level 2' | 'Pending Level 3' | 'Rejected'
+  overallStatus: 'Approved' | 'Pending Level 1' | 'Pending Level 2' | 'Pending Level 3' | 'Rejected (Unauthorized No-Pay Leave)' | 'Cancelled by Employee'
+  isUnauthorizedNoPay?: boolean
+  rejectionReason?: string
+  rejectedBy?: string
+  cancelledAt?: string
+  cancellationReason?: string
 }
 
 export interface LeaveBalance {
