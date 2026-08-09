@@ -97,6 +97,14 @@ const ArchiveIcon = () => (
     <line x1="10" y1="12" x2="14" y2="12" />
   </svg>
 )
+const InventoryIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M3 7h18" />
+    <path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+    <path d="M9 11h6" />
+    <path d="M9 15h4" />
+  </svg>
+)
 const LogoutIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -165,6 +173,17 @@ const navItems: NavItem[] = [
       { label: 'Asset Directory', path: '/assets/directory' },
       { label: 'Interactive GIS Mapping', path: '/assets/gis-mapping' },
     ]
+  },
+  {
+    label: 'Inventory Management',
+    path: '/inventory-management',
+    icon: <InventoryIcon />,
+    children: [
+      { label: 'All Inventory', path: '/inventory-management/all' },
+      { label: 'Stock Usage', path: '/inventory-management/usage' },
+      { label: 'Inventory Request', path: '/inventory-management/request' },
+      { label: 'Inventory Approve', path: '/inventory-management/approve', roles: ['admin'] },
+    ],
   },
   {
     label: 'Fleet Management',
@@ -389,6 +408,7 @@ const Sidebar: React.FC = () => {
     '/letters': false,
     '/applications': false,
     '/assets': false,
+    '/inventory-management': false,
     '/fleet': false,
     '/users': false,
   })
