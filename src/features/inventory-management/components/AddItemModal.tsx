@@ -15,6 +15,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
   const [unit, setUnit] = useState('units')
   const [quantityAvailable, setQuantityAvailable] = useState(20)
   const [reorderLevel, setReorderLevel] = useState(8)
+  const [maxStock, setMaxStock] = useState(100)
   const [location, setLocation] = useState('Main Store - Shelf A1')
   const [lastUpdated, setLastUpdated] = useState(() => new Date().toISOString().split('T')[0])
   const [error, setError] = useState('')
@@ -36,6 +37,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
       unit,
       quantityAvailable: Number(quantityAvailable) || 0,
       reorderLevel: Number(reorderLevel) || 0,
+      maxStock: Number(maxStock) || 0,
       location,
       lastUpdated,
     })
@@ -102,6 +104,13 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Reorder Level</label>
               <input type="number" min="0" value={reorderLevel} onChange={(e) => setReorderLevel(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Maximum Stock</label>
+              <input type="number" min="0" value={maxStock} onChange={(e) => setMaxStock(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
             </div>
           </div>
 

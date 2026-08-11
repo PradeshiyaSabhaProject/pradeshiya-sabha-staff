@@ -29,8 +29,8 @@ export const ApproveRequestModal: React.FC<ApproveRequestModalProps> = ({ isOpen
 
         <div className="p-6 space-y-4">
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-600">
-            <p className="font-semibold text-gray-900">{request.title}</p>
-            <p className="mt-2">{request.description}</p>
+            <p className="font-semibold text-gray-900">{request.itemName}</p>
+            <p className="mt-2">{request.reason}</p>
             <p className="mt-2">Requested by: {request.requestedBy}</p>
             {request.quantityRequested ? <p className="mt-2">Quantity: {request.quantityRequested}</p> : null}
           </div>
