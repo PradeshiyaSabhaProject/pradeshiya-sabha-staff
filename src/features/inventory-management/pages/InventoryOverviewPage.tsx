@@ -1,113 +1,76 @@
-import React, { useMemo, useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { AddItemModal } from '../components/AddItemModal'
-import { RecordUsageModal } from '../components/RecordUsageModal'
-import { RequestStockModal } from '../components/RequestStockModal'
 import { useInventoryData } from '../hooks/useInventoryData'
+import { UnavailableItemsPanel } from '../components/UnavailableItemsPanel'
 
-const InventoryOverviewPage: React.FC = () => {
-  const { items, stats, filteredItems, searchQuery, setSearchQuery, categoryFilter, setCategoryFilter, statusFilter, setStatusFilter, addItem, recordUsage, requestStock } = useInventoryData()
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
-  const [isUsageModalOpen, setIsUsageModalOpen] = useState(false)
-  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false)
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null)
+export const InventoryOverviewPage: React.FC = () => {
+  const { items, requests } = useInventoryData()
 
-  const selectedItem = useMemo(() => items.find((item) => item.id === selectedItemId) ?? null, [items, selectedItemId])
+  const totalItems = items.length
+  const lowStockCount = items.filter((i) => i.status === 'Low Stock').length
+  const outOfStockCount = items.filter((i) => i.status === 'Out of Stock').length
+  const pendingRequests = requests.filter((r) => r.status === 'Pending Approval').length
+
+  const cards = [
+    { label: 'Total Inventory Items', value: totalItems, accent: 'text-[#0f172a]', bg: 'bg-white' },
+    { label: 'Low Stock Items', value: lowStockCount, accent: 'text-orange-700', bg: 'bg-orange-50' },
+    { label: 'Out of Stock Items', value: outOfStockCount, accent: 'text-[#A31736]', bg: 'bg-red-50' },
+    { label: 'Pending Requests', value: pendingRequests, accent: 'text-amber-700', bg: 'bg-amber-50' },
+  ]
+
+  const quickLinks = [
+    { to: '/inventory-management/all', label: 'All Inventory', desc: 'Browse full stock list' },
+    { to: '/inventory-management/usage', label: 'Stock Usage', desc: 'Record item consumption' },
+    { to: '/inventory-management/request', label: 'Request Stock', desc: 'Ask for replenishment' },
+    { to: '/inventory-management/approve', label: 'Approvals', desc: 'Review pending requests' },
+  ]
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div>
-          <h1 className="text-2xl font-black text-gray-900 tracking-tight">Inventory Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-500">Track stock levels, usage, and replenishment requests for council stores.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setIsAddModalOpen(true)} className="rounded-xl bg-[#A31736] px-4 py-2.5 text-sm font-semibold text-white shadow-sm">+ Add Item</button>
-          <button type="button" onClick={() => setIsRequestModalOpen(true)} className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700">Request Stock</button>
-        </div>
+      <div>
+        <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          Inventory Management Overview
+        </h1>
+        <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
+          Monitor office stock levels, track usage, and manage stock requests across all
+          departments.
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Total Items</p>
-          <p className="mt-2 text-3xl font-black text-gray-900">{stats.total}</p>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Low Stock</p>
-          <p className="mt-2 text-3xl font-black text-amber-600">{stats.lowStock}</p>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Out of Stock</p>
-          <p className="mt-2 text-3xl font-black text-red-600">{stats.outOfStock}</p>
-        </div>
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-          <p className="text-sm text-gray-500">Pending Requests</p>
-          <p className="mt-2 text-3xl font-black text-[#1e3a8a]">{stats.pendingRequests}</p>
-        </div>
-      </div>
-
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="w-full lg:w-72">
-            <label className="mb-2 block text-sm font-semibold text-gray-700">Search inventory</label>
-            <input value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} placeholder="Search by name or location" className="w-full rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700" />
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700">
-              <option value="All">All Categories</option>
-              <option value="Office Supplies">Office Supplies</option>
-              <option value="Cleaning Supplies">Cleaning Supplies</option>
-              <option value="IT Equipment">IT Equipment</option>
-              <option value="Safety Equipment">Safety Equipment</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Tools & Hardware">Tools & Hardware</option>
-            </select>
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-700">
-              <option value="All">All Status</option>
-              <option value="In Stock">In Stock</option>
-              <option value="Low Stock">Low Stock</option>
-              <option value="Out of Stock">Out of Stock</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        {filteredItems.map((item) => (
-          <div key={item.id} className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{item.itemCode}</p>
-                <h3 className="text-lg font-bold text-gray-900">{item.name}</h3>
-                <p className="mt-1 text-sm text-gray-600">{item.category} • {item.department}</p>
-              </div>
-              <span className={`rounded-full border px-2.5 py-1 text-xs font-semibold ${item.status === 'Out of Stock' ? 'border-red-200 bg-red-50 text-red-700' : item.status === 'Low Stock' ? 'border-amber-200 bg-amber-50 text-amber-700' : 'border-emerald-200 bg-emerald-50 text-emerald-700'}`}>{item.status}</span>
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl bg-gray-50 p-3 text-sm text-gray-700">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Available</p>
-                <p className="mt-1 text-xl font-black text-gray-900">{item.quantityAvailable} {item.unit}</p>
-              </div>
-              <div className="rounded-xl bg-gray-50 p-3 text-sm text-gray-700">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">Reorder Level</p>
-                <p className="mt-1 text-xl font-black text-gray-900">{item.reorderLevel} {item.unit}</p>
-              </div>
-            </div>
-            <div className="mt-4 text-sm text-gray-600">
-              <p><span className="font-semibold">Location:</span> {item.location}</p>
-              <p className="mt-1"><span className="font-semibold">Last Updated:</span> {item.lastUpdated}</p>
-            </div>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <button type="button" onClick={() => { setSelectedItemId(item.id); setIsUsageModalOpen(true) }} className="rounded-xl border border-gray-300 px-3.5 py-2 text-sm font-semibold text-gray-700">Record Usage</button>
-              <Link to="/inventory-management/approve" className="rounded-xl border border-gray-300 px-3.5 py-2 text-sm font-semibold text-gray-700">Approvals</Link>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {cards.map((card) => (
+          <div
+            key={card.label}
+            className={`${card.bg} rounded border border-gray-300 shadow-sm p-5`}
+          >
+            <p className="text-[11px] uppercase tracking-wider font-bold text-gray-500">
+              {card.label}
+            </p>
+            <p className={`text-3xl font-black mt-2 ${card.accent}`}>{card.value}</p>
           </div>
         ))}
       </div>
 
-      <AddItemModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} onAdd={(item) => { addItem(item); setIsAddModalOpen(false) }} />
-      <RecordUsageModal isOpen={isUsageModalOpen} onClose={() => setIsUsageModalOpen(false)} item={selectedItem} onRecordUsage={(itemId, details) => { recordUsage(itemId, details); setIsUsageModalOpen(false) }} />
-      <RequestStockModal isOpen={isRequestModalOpen} onClose={() => setIsRequestModalOpen(false)} onRequest={(details) => { requestStock(details); setIsRequestModalOpen(false) }} />
+      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
+        <div className="p-5 border-b border-gray-200">
+          <h2 className="text-base font-bold text-gray-900">Quick Access</h2>
+          <p className="text-xs text-gray-500">Jump straight to a task</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-5">
+          {quickLinks.map((link) => (
+            <Link
+              key={link.to}
+              to={link.to}
+              className="p-4 rounded border border-gray-300 bg-gray-50/60 hover:bg-gray-50 hover:border-[#A31736]/40 transition-all"
+            >
+              <h3 className="text-sm font-bold text-gray-900">{link.label}</h3>
+              <p className="text-xs text-gray-500 mt-1">{link.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <UnavailableItemsPanel items={items} />
     </div>
   )
 }

@@ -18,15 +18,17 @@ const AllInventoryPage: React.FC = () => {
   const { items } = useInventoryData()
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState<(ItemCategory | 'All')>('All')
+  const [unavailableOnly, setUnavailableOnly] = useState(false)
 
   const filteredItems = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
     return items.filter((item) => {
       const matchesTerm = !term || item.name.toLowerCase().includes(term)
       const matchesCategory = category === 'All' || item.category === category
-      return matchesTerm && matchesCategory
+      const matchesAvailability = !unavailableOnly || item.status !== 'In Stock'
+      return matchesTerm && matchesCategory && matchesAvailability
     })
-  }, [items, searchTerm, category])
+  }, [items, searchTerm, category, unavailableOnly])
 
   const lowOrOutCount = items.filter((i) => i.status !== 'In Stock').length
 
@@ -79,6 +81,18 @@ const AllInventoryPage: React.FC = () => {
             </option>
           ))}
         </select>
+
+        <button
+          type="button"
+          onClick={() => setUnavailableOnly((v) => !v)}
+          className={`shrink-0 px-3.5 py-2 rounded text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+            unavailableOnly
+              ? 'bg-[#A31736] border-[#A31736] text-white'
+              : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400'
+          }`}
+        >
+          {unavailableOnly ? '✓ Unavailable Only' : 'Show Unavailable Only'}
+        </button>
 
         <span className="text-xs text-gray-500 font-semibold whitespace-nowrap">
           Showing <strong className="text-gray-900">{filteredItems.length}</strong> items
