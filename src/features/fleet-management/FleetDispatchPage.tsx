@@ -52,6 +52,9 @@ const MinusIcon = () => (
 
 // Helper to determine realistic GPS coordinates in Homagama / Pradeshiya Sabha area
 function getVehicleCoordinates(v: VehicleRecord, index: number): [number, number] {
+  if (v.gpsTracking) {
+    return [v.gpsTracking.lat, v.gpsTracking.lng]
+  }
   const loc = (v.currentLocation || '').toLowerCase()
   if (loc.includes('ward 01') || loc.includes('town')) {
     return [6.8415 + (index % 3) * 0.003, 79.9982 + (index % 4) * 0.003]
@@ -89,11 +92,11 @@ function getStatusBadgeStyle(status: VehicleStatus): string {
 function getMarkerBgStyle(status: VehicleStatus): string {
   switch (status) {
     case 'On Mission':
-      return 'background: #1d4ed8; border: 2.5px solid white;'
+      return 'background: #ea580c; border: 2.5px solid white;'
     case 'Available':
       return 'background: #059669; border: 2.5px solid white;'
     case 'In Maintenance':
-      return 'background: #ea580c; border: 2.5px solid white;'
+      return 'background: #d97706; border: 2.5px solid white;'
     default:
       return 'background: #A31736; border: 2.5px solid white;'
   }
@@ -102,11 +105,11 @@ function getMarkerBgStyle(status: VehicleStatus): string {
 function getMarkerBadgeColor(status: VehicleStatus): string {
   switch (status) {
     case 'On Mission':
-      return 'color: #1d4ed8; background: #eff6ff;'
+      return 'color: #ea580c; background: #fff7ed;'
     case 'Available':
       return 'color: #059669; background: #ecfdf5;'
     case 'In Maintenance':
-      return 'color: #ea580c; background: #fff7ed;'
+      return 'color: #d97706; background: #fef3c7;'
     default:
       return 'color: #A31736; background: #fef2f2;'
   }
@@ -192,47 +195,47 @@ export const FleetDispatchPage: React.FC = () => {
     visibleVehicles.forEach((veh, index) => {
       const [lat, lng] = getVehicleCoordinates(veh, index)
 
+      // Draw polyline route trail
+      if (veh.gpsTracking?.routeTrail && veh.gpsTracking.routeTrail.length > 1) {
+        L.polyline(veh.gpsTracking.routeTrail, {
+          color: veh.category.includes('Tractor') || veh.category.includes('Compactor') ? '#ea580c' : '#2563eb',
+          weight: 4,
+          opacity: 0.75,
+          dashArray: '6, 6',
+        }).addTo(layerGroup)
+      }
+
       const bgStyle = getMarkerBgStyle(veh.status)
-
-      const iconSvg =
-        veh.status === 'On Mission'
-          ? `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>`
-          : `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
-
-      const pulseHtml =
-        veh.status === 'On Mission'
-          ? `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #3b82f6; border-radius: 50%; border: 1.5px solid white;"></span>`
-          : ''
+      const vehicleEmoji = veh.category.includes('Tractor') ? '🚜' : veh.category.includes('Compactor') ? '🚛' : '🚚'
 
       const customIcon = L.divIcon({
         className: 'custom-fleet-pin',
         html: `
-          <div style="position: relative; width: 34px; height: 34px; border-radius: 50%; ${bgStyle} box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.35), 0 2px 4px -1px rgba(0, 0, 0, 0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s;">
-            ${iconSvg}
-            ${pulseHtml}
+          <div style="position: relative; width: 36px; height: 36px; border-radius: 50%; ${bgStyle} box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+            <span style="font-size: 15px;">${vehicleEmoji}</span>
+            <span style="position: absolute; top: -2px; right: -2px; width: 10px; height: 10px; background: #22c55e; border-radius: 50%; border: 1.5px solid white;"></span>
           </div>
         `,
-        iconSize: [34, 34],
-        iconAnchor: [17, 17],
+        iconSize: [36, 36],
+        iconAnchor: [18, 18],
         popupAnchor: [0, -19],
       })
 
       const marker = L.marker([lat, lng], { icon: customIcon }).addTo(layerGroup)
-
       const badgeColor = getMarkerBadgeColor(veh.status)
 
       marker.bindPopup(`
-        <div style="min-width: 230px; font-family: 'Public Sans', sans-serif; padding: 4px 0;">
-          <div style="font-size: 11px; font-weight: 800; color: #1e3a8a; font-family: monospace; letter-spacing: 0.05em; margin-bottom: 2px;">${veh.registrationNumber}</div>
+        <div style="min-width: 230px; font-family: sans-serif; padding: 4px 0;">
+          <div style="font-size: 10px; font-weight: 800; color: #ea580c; letter-spacing: 0.05em; margin-bottom: 2px;">🟢 LIVE GPS ACTIVE • ${veh.registrationNumber}</div>
           <div style="font-size: 15px; font-weight: 800; color: #111827; margin-bottom: 6px;">${veh.name}</div>
           <div style="display: inline-block; padding: 2.5px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; ${badgeColor} margin-bottom: 8px;">
-            ${veh.status}
+            ${veh.status} (${veh.gpsTracking?.speedKmH || 18} km/h)
           </div>
           <div style="font-size: 12px; color: #4b5563; margin-bottom: 4px;"><strong>Location:</strong> ${veh.currentLocation}</div>
           <div style="font-size: 12px; color: #4b5563; margin-bottom: 6px;"><strong>Driver:</strong> ${veh.assignedDriverName || 'Unassigned'}</div>
           ${
             veh.activeMission
-              ? `<div style="font-size: 12px; color: #1d4ed8; font-weight: 700; border-top: 1px solid #e5e7eb; padding-top: 6px;">Mission: ${veh.activeMission.purpose}</div>`
+              ? `<div style="font-size: 12px; color: #ea580c; font-weight: 700; border-top: 1px solid #e5e7eb; padding-top: 6px;">Route / Mission: ${veh.activeMission.purpose}</div>`
               : ''
           }
         </div>

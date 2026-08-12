@@ -130,6 +130,49 @@ export function useFleetData() {
     localStorage.setItem(APPROVALS_STORAGE_KEY, JSON.stringify(approvalRequests))
   }, [approvalRequests])
 
+  // Live GPS Telemetry simulation loop for garbage tractors and fleet vehicles
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVehicles((prevVehicles) =>
+        prevVehicles.map((v, idx) => {
+          if (v.status !== 'On Mission' && v.status !== 'Available') return v
+
+          const baseLat = 6.8415 + (idx % 4) * 0.005
+          const baseLng = 79.9982 + (idx % 3) * 0.004
+
+          const currentLat = v.gpsTracking?.lat || baseLat
+          const currentLng = v.gpsTracking?.lng || baseLng
+
+          const deltaLat = (Math.random() - 0.48) * 0.0003
+          const deltaLng = (Math.random() - 0.48) * 0.0003
+
+          const nextLat = Math.round((currentLat + deltaLat) * 10000) / 10000
+          const nextLng = Math.round((currentLng + deltaLng) * 10000) / 10000
+
+          const prevTrail = v.gpsTracking?.routeTrail || [[baseLat, baseLng]]
+          const updatedTrail = [...prevTrail.slice(-12), [nextLat, nextLng] as [number, number]]
+
+          const speed = v.status === 'On Mission' ? Math.floor(12 + Math.random() * 18) : 0
+
+          return {
+            ...v,
+            gpsTracking: {
+              lat: nextLat,
+              lng: nextLng,
+              speedKmH: speed,
+              directionHeading: Math.floor(Math.random() * 360),
+              gpsStatus: 'Live GPS Online',
+              lastPingTime: 'Just now (GPS 4G)',
+              routeTrail: updatedTrail,
+            },
+          }
+        })
+      )
+    }, 3000)
+
+    return () => clearInterval(interval)
+  }, [])
+
   // Filtered vehicles
   const filteredVehicles = useMemo(() => {
     return vehicles.filter((v) => {

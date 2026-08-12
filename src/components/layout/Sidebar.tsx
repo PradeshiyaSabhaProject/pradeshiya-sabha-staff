@@ -70,6 +70,13 @@ const AttendanceIcon = () => (
     <polyline points="12 6 12 12 16 14" />
   </svg>
 )
+const KpiIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M18 20V10" />
+    <path d="M12 20V4" />
+    <path d="M6 20v-6" />
+  </svg>
+)
 const ProfileIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
@@ -152,6 +159,16 @@ const navItems: NavItem[] = [
       { label: 'My Attendance Corrections', path: '/attendance/my-corrections' },
       { label: 'Manager Approvals Queue', path: '/attendance/approvals' },
       { label: 'Monthly Duty Rosters', path: '/attendance/rosters' },
+    ],
+  },
+  {
+    label: 'KPI & Performance',
+    path: '/kpi',
+    icon: <KpiIcon />,
+    children: [
+      { label: 'My KPI Dashboard', path: '/kpi/my-kpi' },
+      { label: 'Subordinates & Team KPIs', path: '/kpi/team-kpi' },
+      { label: 'Council KPI Benchmarks', path: '/kpi/overview' },
     ],
   },
   {

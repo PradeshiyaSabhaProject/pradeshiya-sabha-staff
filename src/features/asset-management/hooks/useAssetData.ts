@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 export interface AssetAttachment {
   name: string
@@ -9,7 +9,7 @@ export interface AssetAttachment {
 
 export interface AssetRecord {
   id: string
-  category: 'Land' | 'Road' | 'Building' | 'Vehicle' | 'Machinery & Equipment' | 'Utility / Infrastructure'
+  category: 'Land' | 'Road' | 'Building' | 'Vehicle' | 'Machinery & Equipment' | 'Utility / Infrastructure' | 'Streetlamp' | 'Grounds'
   name: string
   location: string
   dateAdded: string
@@ -24,17 +24,175 @@ export interface AssetRecord {
   coordinates?: { lat: string; lng: string }
   attachments?: AssetAttachment[]
   depreciation?: string
+  // Specialized asset attributes
+  wattage?: string // For Streetlamps (e.g. "120W Solar LED")
+  poleId?: string // For Streetlamps (e.g. "SL-HML-042")
+  acreage?: string // For Lands & Grounds (e.g. "4.2 Acres")
+  roadKm?: number // For Roads (e.g. 5.8 km)
 }
-
 
 export interface AssetStats {
   municipalLands: { value: number; label: string; change: string }
   roadInfrastructure: { value: number; label: string; change: string }
   buildingUnits: { value: number; label: string; change: string }
   materialAssets: { value: number; label: string; change: string }
+  streetlampsCount?: { value: number; label: string; change: string }
+  groundsAcreage?: { value: number; label: string; change: string }
 }
 
 const INITIAL_ASSETS: AssetRecord[] = [
+  // ── STREETLAMPS ──
+  {
+    id: 'ASSET-SL-4021',
+    category: 'Streetlamp',
+    name: 'Smart Solar LED Streetlamp Pole #SL-HML-042',
+    location: 'High Level Road, Homagama Town Center',
+    dateAdded: 'Nov 04, 2026',
+    status: 'Operational',
+    value: 1,
+    unit: 'Pole',
+    wattage: '120W Solar LED',
+    poleId: 'SL-HML-042',
+    conditionStatus: 'Good - Battery 98%',
+    coordinates: { lat: '6.8415', lng: '79.9982' }
+  },
+  {
+    id: 'ASSET-SL-4022',
+    category: 'Streetlamp',
+    name: 'Dual Arm Highway Streetlamp Pole #SL-HML-043',
+    location: 'High Level Road Junction',
+    dateAdded: 'Nov 04, 2026',
+    status: 'Operational',
+    value: 1,
+    unit: 'Pole',
+    wattage: '150W LED Grid',
+    poleId: 'SL-HML-043',
+    conditionStatus: 'Operational',
+    coordinates: { lat: '6.8428', lng: '79.9995' }
+  },
+  {
+    id: 'ASSET-SL-4023',
+    category: 'Streetlamp',
+    name: 'Station Road LED Lamp Pole #SL-STR-012',
+    location: 'Station Road, Homagama Railway Station',
+    dateAdded: 'Oct 30, 2026',
+    status: 'Under Maintenance',
+    value: 1,
+    unit: 'Pole',
+    wattage: '90W LED',
+    poleId: 'SL-STR-012',
+    conditionStatus: 'Bulb Replacement Scheduled',
+    coordinates: { lat: '6.8450', lng: '80.0015' }
+  },
+
+  // ── GROUNDS & PARKS ──
+  {
+    id: 'ASSET-GR-0901',
+    category: 'Grounds',
+    name: 'Homagama Municipal Central Sports Ground',
+    location: 'Ward 01, Court Complex Road',
+    dateAdded: 'Nov 02, 2026',
+    status: 'Operational',
+    value: 12.5,
+    unit: 'Acres',
+    acreage: '12.5 Acres',
+    valuation: 145000000,
+    coordinates: { lat: '6.8432', lng: '79.9968' }
+  },
+  {
+    id: 'ASSET-GR-0902',
+    category: 'Grounds',
+    name: 'Meegoda Community Play Park & Recreation Area',
+    location: 'Ward 06, Meegoda Junction',
+    dateAdded: 'Oct 28, 2026',
+    status: 'Verified',
+    value: 4.8,
+    unit: 'Acres',
+    acreage: '4.8 Acres',
+    valuation: 65000000,
+    coordinates: { lat: '6.8550', lng: '80.0420' }
+  },
+
+  // ── LANDS ──
+  {
+    id: 'ASSET-LN-0921',
+    category: 'Land',
+    name: 'Public Reservation & Forest Reserve Plot A',
+    location: 'Ward 01, Town Center',
+    dateAdded: 'Oct 22, 2026',
+    status: 'Verified',
+    value: 8.5,
+    unit: 'Perches',
+    acreage: '2.5 Acres',
+    valuation: 85000000,
+    coordinates: { lat: '6.8450', lng: '80.0010' }
+  },
+  {
+    id: 'ASSET-LN-0923',
+    category: 'Land',
+    name: 'Pitipana Tech City Municipal Reserve Plot',
+    location: 'Pitipana South',
+    dateAdded: 'Oct 26, 2026',
+    status: 'Verified',
+    value: 6.2,
+    unit: 'Acres',
+    acreage: '6.2 Acres',
+    valuation: 180000000,
+    coordinates: { lat: '6.8330', lng: '80.0150' }
+  },
+
+  // ── ROADS & DRAINAGE ──
+  {
+    id: 'ASSET-RD-0042',
+    category: 'Road',
+    name: 'Homagama Town Bypass Asphalt Corridor',
+    location: 'Ward 04, Central North',
+    dateAdded: 'Oct 24, 2026',
+    status: 'Verified',
+    value: 4.5,
+    unit: 'KM',
+    roadKm: 4.5,
+    coordinates: { lat: '6.8850', lng: '79.9150' }
+  },
+  {
+    id: 'ASSET-RD-0043',
+    category: 'Road',
+    name: 'Main Station Canal Concrete Drainage Channel',
+    location: 'Ward 04, Central North',
+    dateAdded: 'Oct 21, 2026',
+    status: 'Audit Pending',
+    value: 12,
+    unit: 'KM',
+    roadKm: 12.0,
+    coordinates: { lat: '6.8750', lng: '79.9350' }
+  },
+
+  // ── CIVIC BUILDINGS ──
+  {
+    id: 'ASSET-BL-1184',
+    category: 'Building',
+    name: 'Pradeshiya Sabha Main Administrative Secretariat',
+    location: 'High Level Road, Homagama Town Center',
+    dateAdded: 'Oct 28, 2026',
+    status: 'Operational',
+    value: 1,
+    unit: 'Units',
+    valuation: 320000000,
+    coordinates: { lat: '6.8410', lng: '79.9975' }
+  },
+  {
+    id: 'ASSET-BL-1182',
+    category: 'Building',
+    name: 'Piliyandala Ward Sub-Office & Community Center',
+    location: 'Ward 12, Piliyandala',
+    dateAdded: 'Oct 23, 2026',
+    status: 'Digitized',
+    value: 1,
+    unit: 'Units',
+    coordinates: { lat: '6.8018', lng: '79.9227' }
+  },
+
+  // ── UTILITIES ──
   {
     id: 'ASSET-UT-1046',
     category: 'Utility / Infrastructure',
@@ -47,254 +205,97 @@ const INITIAL_ASSETS: AssetRecord[] = [
     coordinates: { lat: '6.9520', lng: '79.8880' }
   },
   {
-    id: 'ASSET-BL-1184',
-    category: 'Building',
-    name: 'Diyatha Uyana Civic Center',
-    location: 'Sri Jayawardenepura Kotte',
-    dateAdded: 'Oct 28, 2026',
-    status: 'Operational',
-    value: 1,
-    unit: 'Units',
-    coordinates: { lat: '6.9010', lng: '79.9180' }
-  },
-  {
-    id: 'ASSET-LN-0923',
-    category: 'Land',
-    name: 'Mount Lavinia Coastal Reserve',
-    location: 'Mount Lavinia',
-    dateAdded: 'Oct 26, 2026',
-    status: 'Verified',
-    value: 3,
-    unit: 'Plots',
-    coordinates: { lat: '6.8330', lng: '79.8640' }
-  },
-  {
-    id: 'ASSET-RD-0042',
-    category: 'Road',
-    name: 'Surface Roadway',
-    location: 'Ward 04, Central North',
-    dateAdded: 'Oct 24, 2026',
-    status: 'Verified',
-    value: 4.5,
-    unit: 'KM',
-    coordinates: { lat: '6.8850', lng: '79.9150' }
-  },
-  {
-    id: 'ASSET-BL-1182',
-    category: 'Building',
-    name: 'Community Hall',
-    location: 'Ward 12, Piliyandala',
-    dateAdded: 'Oct 23, 2026',
-    status: 'Digitized',
-    value: 1,
-    unit: 'Units',
-    coordinates: { lat: '6.8018', lng: '79.9227' }
-  },
-  {
-    id: 'ASSET-LN-0921',
-    category: 'Land',
-    name: 'Public Reservation',
-    location: 'Ward 01, Town Center',
-    dateAdded: 'Oct 22, 2026',
-    status: 'Verified',
-    value: 2,
-    unit: 'Plots',
-    coordinates: { lat: '6.8450', lng: '80.0010' }
-  },
-  {
-    id: 'ASSET-RD-0043',
-    category: 'Road',
-    name: 'Drainage Channel',
-    location: 'Ward 04, Central North',
-    dateAdded: 'Oct 21, 2026',
-    status: 'Audit Pending',
-    value: 12,
-    unit: 'KM',
-    coordinates: { lat: '6.8750', lng: '79.9350' }
-  },
-  {
-    id: 'ASSET-VH-0512',
-    category: 'Vehicle',
-    name: 'Garbage Compactor',
-    location: 'Ward 02, Homagama',
-    dateAdded: 'Oct 20, 2026',
-    status: 'Operational',
-    value: 1,
-    unit: 'Items',
-    coordinates: { lat: '6.8441', lng: '80.0024' }
-  },
-  {
-    id: 'ASSET-EQ-0881',
-    category: 'Machinery & Equipment',
-    name: 'Water Pump',
-    location: 'Ward 07, Pitipana',
-    dateAdded: 'Oct 18, 2026',
-    status: 'Under Maintenance',
-    value: 3,
-    unit: 'Items',
-    coordinates: { lat: '6.8320', lng: '80.0150' }
-  },
-  {
     id: 'ASSET-UT-1044',
     category: 'Utility / Infrastructure',
-    name: 'Solar Power Grid',
+    name: 'Solar Roof Power Grid Depot',
     location: 'Ward 09, Mattegoda',
     dateAdded: 'Oct 15, 2026',
     status: 'Operational',
     value: 1,
     unit: 'Items',
     coordinates: { lat: '6.8250', lng: '79.9550' }
-  },
-  {
-    id: 'ASSET-LN-0922',
-    category: 'Land',
-    name: "Children's Park",
-    location: 'Ward 05, Godagama',
-    dateAdded: 'Oct 12, 2026',
-    status: 'Disputed',
-    value: 1,
-    unit: 'Plots',
-    coordinates: { lat: '6.8525', lng: '80.0233' }
-  },
-  {
-    id: 'ASSET-BL-1183',
-    category: 'Building',
-    name: 'Pradeshiya Sabha Office',
-    location: 'Ward 03, Homagama',
-    dateAdded: 'Oct 10, 2026',
-    status: 'Operational',
-    value: 1,
-    unit: 'Units',
-    coordinates: { lat: '6.8430', lng: '79.9980' }
-  },
-  {
-    id: 'ASSET-VH-0513',
-    category: 'Vehicle',
-    name: 'Ambulance',
-    location: 'Ward 02, Homagama',
-    dateAdded: 'Oct 08, 2026',
-    status: 'Operational',
-    value: 1,
-    unit: 'Items',
-    coordinates: { lat: '6.8445', lng: '80.0030' }
-  },
-  {
-    id: 'ASSET-EQ-0882',
-    category: 'Machinery & Equipment',
-    name: 'Excavator',
-    location: 'Ward 11, Pannipitiya',
-    dateAdded: 'Oct 05, 2026',
-    status: 'Under Maintenance',
-    value: 1,
-    unit: 'Items',
-    coordinates: { lat: '6.8480', lng: '79.9463' }
-  },
-  {
-    id: 'ASSET-UT-1045',
-    category: 'Utility / Infrastructure',
-    name: 'Water Purification Plant',
-    location: 'Ward 08, Meegoda',
-    dateAdded: 'Oct 01, 2026',
-    status: 'Operational',
-    value: 1,
-    unit: 'Items',
-    coordinates: { lat: '6.8550', lng: '80.0650' }
-  },
+  }
 ]
 
 export function useAssetData() {
-  const [loading, setLoading] = useState(true)
   const [assets, setAssets] = useState<AssetRecord[]>(() => {
-    const saved = localStorage.getItem('pradeshiya_assets')
-    return saved ? JSON.parse(saved) : INITIAL_ASSETS
+    const saved = localStorage.getItem('pradeshiya_sabha_assets')
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch (e) {
+        console.error('Failed to parse assets from localStorage', e)
+      }
+    }
+    return INITIAL_ASSETS
   })
 
-  // Filter States
-  const [categoryFilter, setCategoryFilter] = useState<string>('')
-  const [statusFilter, setStatusFilter] = useState<string>('')
-  const [searchQuery, setSearchQuery] = useState<string>('')
+  const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize] = useState(10)
+  const [categoryFilter, setCategoryFilter] = useState('All')
+  const [statusFilter, setStatusFilter] = useState('All')
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // Pagination States
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const pageSize = 5
-
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 700)
-    return () => clearTimeout(timer)
-  }, [])
-
-  // Persist assets to localStorage when modified
-  const saveAssets = (updatedAssets: AssetRecord[]) => {
-    setAssets(updatedAssets)
-    localStorage.setItem('pradeshiya_assets', JSON.stringify(updatedAssets))
+  const saveAssets = (newAssets: AssetRecord[]) => {
+    setAssets(newAssets)
+    localStorage.setItem('pradeshiya_sabha_assets', JSON.stringify(newAssets))
   }
 
-  // Reset page on filter change
-  useEffect(() => {
-    setTimeout(() => {
-      setCurrentPage(1)
-    }, 0)
-  }, [categoryFilter, statusFilter, searchQuery])
-
-  // Filtered Assets
+  // Filtering
   const filteredAssets = useMemo(() => {
     return assets.filter((asset) => {
-      const matchesCategory = !categoryFilter || asset.category === categoryFilter
-      const matchesStatus = !statusFilter || asset.status.toLowerCase() === statusFilter.toLowerCase()
-
-      const query = searchQuery.trim().toLowerCase()
-      const matchesSearch = !query ||
-        asset.id.toLowerCase().includes(query) ||
-        asset.name.toLowerCase().includes(query) ||
-        asset.location.toLowerCase().includes(query) ||
-        asset.category.toLowerCase().includes(query)
-
-      return matchesCategory && matchesStatus && matchesSearch
+      if (categoryFilter !== 'All' && asset.category !== categoryFilter) return false
+      if (statusFilter !== 'All' && asset.status !== statusFilter) return false
+      if (searchQuery.trim()) {
+        const query = searchQuery.trim().toLowerCase()
+        const matchesName = asset.name.toLowerCase().includes(query)
+        const matchesId = asset.id.toLowerCase().includes(query)
+        const matchesLoc = asset.location.toLowerCase().includes(query)
+        const matchesPole = asset.poleId ? asset.poleId.toLowerCase().includes(query) : false
+        if (!matchesName && !matchesId && !matchesLoc && !matchesPole) return false
+      }
+      return true
     })
   }, [assets, categoryFilter, statusFilter, searchQuery])
 
-  // Total pages
+  // Pagination
   const totalItems = filteredAssets.length
   const totalPages = Math.ceil(totalItems / pageSize) || 1
 
-  // Paginated Assets
   const paginatedAssets = useMemo(() => {
-    const startIndex = (currentPage - 1) * pageSize
-    return filteredAssets.slice(startIndex, startIndex + pageSize)
+    const start = (currentPage - 1) * pageSize
+    return filteredAssets.slice(start, start + pageSize)
   }, [filteredAssets, currentPage, pageSize])
 
-  // Dynamic KPI Stats calculations based on a high baseline to match mockup visual styles
-  const stats = useMemo<AssetStats>(() => {
-    // Baseline counts from mockup:
-    // Municipal Lands: 842 Plots, Road Infrastructure: 450 KM, Building Units: 1200 Units, Material Assets: 24.5k
-    let landVal = 840
-    let roadVal = 433.5
-    let buildingVal = 1198
-    let materialVal = 24490
+  // Reset pagination on filter change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [categoryFilter, statusFilter, searchQuery])
 
-    // Accumulate custom added quantities
-    assets.forEach((asset) => {
-      // Find items not in INITIAL_ASSETS to prevent double counting
-      const isInitial = INITIAL_ASSETS.some((init) => init.id === asset.id)
-      if (!isInitial) {
-        if (asset.category === 'Land') {
-          landVal += asset.value || 1
-        } else if (asset.category === 'Road') {
-          roadVal += asset.value || 0
-        } else if (asset.category === 'Building') {
-          buildingVal += asset.value || 1
-        } else {
-          // Vehicles, Machinery, Utilities fall under Material Assets
-          materialVal += asset.value || 1
-        }
-      }
+  // Stats calculation
+  const stats: AssetStats = useMemo(() => {
+    let landVal = 0
+    let roadVal = 0
+    let buildingVal = 0
+    let materialVal = 0
+    let lampsCount = 0
+    let groundsAcres = 0
+
+    assets.forEach((a) => {
+      if (a.category === 'Land') landVal += a.value
+      else if (a.category === 'Road') roadVal += a.value
+      else if (a.category === 'Building') buildingVal += a.value
+      else if (a.category === 'Streetlamp') lampsCount += a.value
+      else if (a.category === 'Grounds') groundsAcres += a.value
+      else materialVal += a.value
     })
 
     return {
       municipalLands: {
-        value: landVal,
+        value: Number(landVal.toFixed(1)),
         label: 'Municipal Lands',
-        change: '+2.4%',
+        change: '+2.4% vs last year',
       },
       roadInfrastructure: {
         value: Number(roadVal.toFixed(1)),
@@ -304,24 +305,35 @@ export function useAssetData() {
       buildingUnits: {
         value: buildingVal,
         label: 'Building Units',
-        change: '12 Pending',
+        change: 'Operational',
       },
       materialAssets: {
         value: materialVal,
         label: 'Material Assets',
         change: 'Stocked',
       },
+      streetlampsCount: {
+        value: lampsCount,
+        label: 'Smart Streetlamps',
+        change: 'Grid Operational',
+      },
+      groundsAcreage: {
+        value: Number(groundsAcres.toFixed(1)),
+        label: 'Public Grounds (Acres)',
+        change: 'Maintained',
+      }
     }
   }, [assets])
 
   const addAsset = (newAssetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => {
-    // Generate code suffix based on category
-    let prefix = 'ASSET-LN' // Default Land
+    let prefix = 'ASSET-LN'
     if (newAssetData.category === 'Road') prefix = 'ASSET-RD'
     else if (newAssetData.category === 'Building') prefix = 'ASSET-BL'
     else if (newAssetData.category === 'Vehicle') prefix = 'ASSET-VH'
     else if (newAssetData.category === 'Machinery & Equipment') prefix = 'ASSET-EQ'
     else if (newAssetData.category === 'Utility / Infrastructure') prefix = 'ASSET-UT'
+    else if (newAssetData.category === 'Streetlamp') prefix = 'ASSET-SL'
+    else if (newAssetData.category === 'Grounds') prefix = 'ASSET-GR'
 
     const randomBuffer = new Uint32Array(1)
     crypto.getRandomValues(randomBuffer)
@@ -343,6 +355,7 @@ export function useAssetData() {
     saveAssets(updated)
     return newRecord
   }
+
   const updateAsset = (
     id: string,
     updatedData: Partial<Omit<AssetRecord, 'id' | 'dateAdded'>>
@@ -357,6 +370,7 @@ export function useAssetData() {
   return {
     loading,
     assets: paginatedAssets,
+    allAssets: filteredAssets,
     currentPage,
     totalPages,
     totalItems,
@@ -373,4 +387,3 @@ export function useAssetData() {
     stats,
   }
 }
-

@@ -8,6 +8,7 @@ import complainRoutes from '../features/complain/complainRoutes'
 import letterRoutes from '../features/letters/letterRoutes'
 import applicationRoutes from '../features/application-management/applicationRoutes'
 import attendanceRoutes from '../features/attendance/attendanceRoutes'
+import kpiRoutes from '../features/kpi/kpiRoutes'
 import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
 import bookingRoutes from '../features/booking-management/bookingRoutes'
@@ -64,6 +65,7 @@ export const AppRoutes: React.FC = () => {
         {/* Import feature routes */}
         {overviewRoutes}
         {attendanceRoutes}
+        {kpiRoutes}
 
         {/* Appointment Management Routes */}
         {appointmentRoutes}
