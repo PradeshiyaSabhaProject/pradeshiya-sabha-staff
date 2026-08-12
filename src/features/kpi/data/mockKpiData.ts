@@ -208,7 +208,6 @@ export const INITIAL_KPI_PROFILES: EmployeeKpiProfile[] = [
     ]
   },
   {
-    id: 'PS-EMP-0062',
     employeeId: 'PS-EMP-0062',
     employeeName: 'Upul Dissanayake',
     designation: 'Works Overseer',

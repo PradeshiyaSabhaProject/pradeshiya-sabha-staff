@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { INITIAL_KPI_PROFILES, type EmployeeKpiProfile, type KpiMetric } from '../features/kpi/data/mockKpiData'
+import { INITIAL_KPI_PROFILES, type EmployeeKpiProfile } from '../features/kpi/data/mockKpiData'
 
 interface KpiContextType {
   kpiProfiles: EmployeeKpiProfile[]

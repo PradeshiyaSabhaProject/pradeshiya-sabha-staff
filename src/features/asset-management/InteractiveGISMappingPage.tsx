@@ -116,57 +116,6 @@ export const InteractiveGISMappingPage: React.FC = () => {
     return 'Operational'
   }
 
-  const getBgStyle = (category: string) => {
-    if (category === 'Utility / Infrastructure') return 'background: #1d4ed8; border: 2px solid white;'
-    if (category === 'Building') return 'background: #800000; border: 2px solid white;'
-    if (category === 'Land') return 'background: #059669; border: 2px solid white;'
-    if (category === 'Road') return 'background: #4b5563; border: 2px solid white;'
-    return 'background: #A31736; border: 2px solid white;'
-  }
-
-  const getIconHtml = (category: string) => {
-    if (category === 'Utility / Infrastructure') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="w-4 h-4"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`
-    if (category === 'Building') return `<span style="color: white; font-weight: 900; font-size: 13px; font-family: sans-serif;">H</span>`
-    if (category === 'Land') return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><path d="M12 10a4 4 0 0 0-4-4 4 4 0 0 0-4 4v2h8v-2z"/><path d="M12 10a4 4 0 0 1 4-4 4 4 0 0 1 4 4v2h-8v-2z"/><line x1="12" y1="12" x2="12" y2="22"/></svg>`
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" class="w-4 h-4"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>`
-  }
-
-  const getPriorityPulseHtml = (priorityGroup: string) => {
-    if (priorityGroup !== 'High Priority') return ''
-    return `<span style="position: absolute; -top: 2px; -right: 2px; width: 10px; height: 10px; background: #dc2626; border-radius: 50%; border: 1.5px solid white;"></span>`
-  }
-
-  const getStatusColorStyle = (priorityGroup: string) => {
-    if (priorityGroup === 'High Priority') return 'color: #dc2626; background: #fee2e2;'
-    if (priorityGroup === 'Maintenance') return 'color: #d97706; background: #fef3c7;'
-    return 'color: #059669; background: #d1fae5;'
-  }
-
-  const getPriorityToggleClass = (priority: string) => {
-    const baseClass = 'flex items-center gap-2.5 transition-opacity'
-    if (priorityFilter.includes(priority)) {
-      return `${baseClass} opacity-100 font-bold`
-    }
-    return `${baseClass} opacity-40 hover:opacity-70`
-  }
-
-  const isAssetVisible = (asset: AssetRecord, allowedCategories: Set<string>) => {
-    if (!asset.coordinates) return false
-    if (!allowedCategories.has(asset.category)) return false
-
-    const priorityGroup = getAssetPriorityGroup(asset.status)
-    if (!priorityFilter.includes(priorityGroup)) return false
-
-    if (!searchQuery.trim()) return true
-
-    const query = searchQuery.trim().toLowerCase()
-    return (
-      asset.name.toLowerCase().includes(query) ||
-      asset.location.toLowerCase().includes(query) ||
-      asset.id.toLowerCase().includes(query) ||
-      asset.category.toLowerCase().includes(query)
-    )
-  }
 
   // Filter assets based on active layers, priority, and search
   const visibleAssets = useMemo(() => {

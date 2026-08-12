@@ -230,7 +230,7 @@ export function useAssetData() {
     return INITIAL_ASSETS
   })
 
-  const [loading, setLoading] = useState(false)
+  const [loading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize] = useState(10)
   const [categoryFilter, setCategoryFilter] = useState('All')
