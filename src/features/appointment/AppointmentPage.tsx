@@ -112,7 +112,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     const rows = appointments
       .map(
         (a) =>
-          `"${a.id}","${a.citizenName}","${a.phone}","${a.email}","${a.service}","${a.dateTime}","${a.assignedOfficer}","${a.status}","${a.remark.replace(/"/g, '""')}"`
+          `"${a.id}","${a.citizenName}","${a.phone}","${a.email}","${a.service}","${a.dateTime}","${a.assignedOfficer}","${a.status}","${a.remark.replaceAll('"', '""')}"`
       )
       .join('\n');
     const blob = new Blob([headers + rows], { type: 'text/csv;charset=utf-8;' });
@@ -122,7 +122,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     link.setAttribute('download', `${mode === 'my' ? 'My' : 'All'}_Appointments.csv`);
     document.body.appendChild(link);
     link.click();
-    document.body.removeChild(link);
+    link.remove();
   };
 
   // Status Style badge helper
@@ -192,6 +192,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     // Always show page 1
     range.push(
       <button
+        type="button"
         key={1}
         onClick={() => setCurrentPage(1)}
         className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -214,6 +215,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
       range.push(
         <button
+          type="button"
           key={i}
           onClick={() => setCurrentPage(i)}
           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -237,6 +239,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     if (totalPages > 1) {
       range.push(
         <button
+          type="button"
           key={totalPages}
           onClick={() => setCurrentPage(totalPages)}
           className={`w-8 h-8 rounded-lg text-xs font-bold transition-all cursor-pointer ${
@@ -254,6 +257,99 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
   const skeleton = (h = 'h-12') => (
     <div className={`${h} bg-gray-100 rounded-lg animate-pulse w-full`} />
   );
+
+  const getTableBodyContent = () => {
+    if (loading) {
+      return [1, 2, 3, 4, 5].map((i) => (
+        <tr key={i}>
+          <td colSpan={7} className="py-4 px-6">
+            {skeleton('h-10')}
+          </td>
+        </tr>
+      ));
+    }
+
+    if (appointments.length === 0) {
+      return (
+        <tr>
+          <td colSpan={7} className="py-12 text-center text-gray-400 font-medium italic">
+            No appointments found matching the selected filters.
+          </td>
+        </tr>
+      );
+    }
+
+    return appointments.map((app) => (
+      <tr key={app.id} className="hover:bg-gray-50/40 transition-colors">
+        {/* ID */}
+        <td className="py-4.5 px-6 font-bold text-gray-700 whitespace-nowrap">{app.id}</td>
+
+        {/* Citizen Name & Phone */}
+        <td className="py-4.5 px-6 whitespace-nowrap">
+          <div className="font-bold text-gray-900">{app.citizenName}</div>
+          <div className="text-[11px] text-gray-400 mt-0.5 font-medium">{app.phone}</div>
+        </td>
+
+        {/* Service */}
+        <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.service}</td>
+
+        {/* Date & Time */}
+        <td className="py-4.5 px-6 whitespace-nowrap">
+          <div className="font-bold text-gray-900">{app.dateTime.split(' ')[0]}</div>
+          <div className="text-[11px] text-gray-400 mt-0.5 font-medium">
+            {app.dateTime.split(' ').slice(1).join(' ')}
+          </div>
+        </td>
+
+        {/* Assigned Officer */}
+        <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.assignedOfficer}</td>
+
+        {/* Status Pill Badge */}
+        <td className="py-4.5 px-6 text-center whitespace-nowrap">
+          <span className={`text-[10px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wide inline-block ${getStatusBadgeClass(app.status)}`}>
+            {app.status}
+          </span>
+        </td>
+
+        {/* Action buttons */}
+        <td className="py-4.5 px-6 text-center whitespace-nowrap">
+          <div className="flex items-center justify-center gap-1.5">
+            {/* Eye Button */}
+            <button
+              type="button"
+              onClick={() => openDetails(app)}
+              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+              title="View Details"
+            >
+              <EyeIcon />
+            </button>
+
+            {/* Approve and Reject (Only for 'my' mode and status is PENDING) */}
+            {mode === 'my' && app.status === 'PENDING' && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => updateStatus(app.id, 'APPROVED')}
+                  className="border border-green-200 bg-green-50 hover:bg-green-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+                  title="Approve Appointment"
+                >
+                  <CheckIcon />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateStatus(app.id, 'REJECTED')}
+                  className="border border-red-200 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
+                  title="Reject Appointment"
+                >
+                  <CrossIcon />
+                </button>
+              </>
+            )}
+          </div>
+        </td>
+      </tr>
+    ));
+  };
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
@@ -332,6 +428,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               const isActive = activeTab === cleanedLabel;
               return (
                 <button
+                  type="button"
                   key={tab.label}
                   onClick={() => {
                     setActiveTab(cleanedLabel);
@@ -405,12 +502,14 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
           <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
+              type="button"
               onClick={resetFilters}
               className="flex-1 sm:flex-initial border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider text-center justify-center"
             >
               Filter
             </button>
             <button
+              type="button"
               onClick={handleExportCSV}
               className="flex-1 sm:flex-initial bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer h-9 shadow-xs uppercase tracking-wider text-center justify-center"
             >
@@ -434,89 +533,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">
-              {loading ? (
-                [1, 2, 3, 4, 5].map((i) => (
-                  <tr key={i}>
-                    <td colSpan={7} className="py-4 px-6">
-                      {skeleton('h-10')}
-                    </td>
-                  </tr>
-                ))
-              ) : appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="py-12 text-center text-gray-400 font-medium italic">
-                    No appointments found matching the selected filters.
-                  </td>
-                </tr>
-              ) : (
-                appointments.map((app) => (
-                  <tr key={app.id} className="hover:bg-gray-50/40 transition-colors">
-                    {/* ID */}
-                    <td className="py-4.5 px-6 font-bold text-gray-700 whitespace-nowrap">{app.id}</td>
-
-                    {/* Citizen Name & Phone */}
-                    <td className="py-4.5 px-6 whitespace-nowrap">
-                      <div className="font-bold text-gray-900">{app.citizenName}</div>
-                      <div className="text-[11px] text-gray-400 mt-0.5 font-medium">{app.phone}</div>
-                    </td>
-
-                    {/* Service */}
-                    <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.service}</td>
-
-                    {/* Date & Time */}
-                    <td className="py-4.5 px-6 whitespace-nowrap">
-                      <div className="font-bold text-gray-900">{app.dateTime.split(' ')[0]}</div>
-                      <div className="text-[11px] text-gray-400 mt-0.5 font-medium">
-                        {app.dateTime.split(' ').slice(1).join(' ')}
-                      </div>
-                    </td>
-
-                    {/* Assigned Officer */}
-                    <td className="py-4.5 px-6 font-bold text-gray-800 whitespace-nowrap">{app.assignedOfficer}</td>
-
-                    {/* Status Pill Badge */}
-                    <td className="py-4.5 px-6 text-center whitespace-nowrap">
-                      <span className={`text-[10px] font-bold px-3 py-1.5 rounded-md uppercase tracking-wide inline-block ${getStatusBadgeClass(app.status)}`}>
-                        {app.status}
-                      </span>
-                    </td>
-
-                    {/* Action buttons */}
-                    <td className="py-4.5 px-6 text-center whitespace-nowrap">
-                      <div className="flex items-center justify-center gap-1.5">
-                        {/* Eye Button */}
-                        <button
-                          onClick={() => openDetails(app)}
-                          className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                          title="View Details"
-                        >
-                          <EyeIcon />
-                        </button>
-
-                        {/* Approve and Reject (Only for 'my' mode and status is PENDING) */}
-                        {mode === 'my' && app.status === 'PENDING' && (
-                          <>
-                            <button
-                              onClick={() => updateStatus(app.id, 'APPROVED')}
-                              className="border border-green-200 bg-green-50 hover:bg-green-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                              title="Approve Appointment"
-                            >
-                              <CheckIcon />
-                            </button>
-                            <button
-                              onClick={() => updateStatus(app.id, 'REJECTED')}
-                              className="border border-red-200 bg-red-50 hover:bg-red-100 p-1.5 rounded-lg transition-colors cursor-pointer shadow-3xs flex items-center justify-center"
-                              title="Reject Appointment"
-                            >
-                              <CrossIcon />
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
+              {getTableBodyContent()}
             </tbody>
           </table>
         </div>
@@ -531,6 +548,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
             <div className="flex items-center gap-1">
               {/* Prev Button */}
               <button
+                type="button"
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage((c) => Math.max(1, c - 1))}
                 className="w-8 h-8 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs"
@@ -543,6 +561,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
 
               {/* Next Button */}
               <button
+                type="button"
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage((c) => Math.min(totalPages, c + 1))}
                 className="w-8 h-8 rounded-lg text-xs font-bold border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs"

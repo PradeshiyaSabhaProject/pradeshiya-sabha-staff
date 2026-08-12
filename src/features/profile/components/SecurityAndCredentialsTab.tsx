@@ -50,7 +50,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
   const [passMessage, setPassMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
   const [registeredPhone] = useState('+94 77 342 9182')
-  
+
   // OTP Verification state strictly for updating password/credentials
   const [isVerifyingPasswordOtp, setIsVerifyingPasswordOtp] = useState(false)
   const [passwordOtpCode, setPasswordOtpCode] = useState('')
@@ -112,11 +112,10 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
 
         {passMessage && (
           <div
-            className={`p-3 rounded-lg text-xs font-semibold flex items-center gap-2 border ${
-              passMessage.type === 'success'
+            className={`p-3 rounded-lg text-xs font-semibold flex items-center gap-2 border ${passMessage.type === 'success'
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                 : 'bg-red-50 text-red-800 border-red-200'
-            }`}
+              }`}
           >
             <span>{passMessage.type === 'success' ? '✔' : '⚠'}</span>
             <span>{passMessage.text}</span>
@@ -140,11 +139,13 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
             )}
 
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+              <label htmlFor="passwordOtpCode" className="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1.5">
                 Enter 6-Digit SMS OTP
               </label>
               <div className="flex gap-2 max-w-md">
                 <input
+                  id="passwordOtpCode"
+                  name="passwordOtpCode"
                   type="text"
                   maxLength={6}
                   placeholder="e.g. 894215"
@@ -244,11 +245,10 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
           {sessions.map((session) => (
             <div
               key={session.id}
-              className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-                session.isCurrent
+              className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${session.isCurrent
                   ? 'bg-red-50/20 border-[#801028]/30 shadow-2xs'
                   : 'bg-white border-gray-200 hover:border-gray-300'
-              }`}
+                }`}
             >
               <div className="flex items-start gap-3.5">
                 <div className="p-2.5 rounded-xl bg-gray-100 border border-gray-200 shrink-0 mt-0.5">

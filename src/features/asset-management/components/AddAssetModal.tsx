@@ -73,7 +73,9 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Background Overlay */}
-      <div 
+      <button
+        type="button"
+        aria-label="Close modal"
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300"
         onClick={onClose}
       />
@@ -88,6 +90,7 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
             <h3 className="text-lg font-bold text-gray-900">Add Digital Record</h3>
           </div>
           <button 
+            type="button"
             onClick={onClose}
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
           >
@@ -100,10 +103,11 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
           
           {/* Asset Name Field */}
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+            <label htmlFor="assetName" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
               Asset Name / Sub-category <span className="text-red-500">*</span>
             </label>
             <input
+              id="assetName"
               type="text"
               required
               value={name}
@@ -118,11 +122,12 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
             
             {/* Category Dropdown */}
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label htmlFor="assetCategory" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                 Category <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
+                  id="assetCategory"
                   value={category}
                   onChange={(e) => {
                     const cat = e.target.value as AssetRecord['category']
@@ -146,11 +151,12 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
 
             {/* Status Dropdown */}
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label htmlFor="assetStatus" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                 Status <span className="text-red-500">*</span>
               </label>
               <div className="relative">
                 <select
+                  id="assetStatus"
                   value={status}
                   onChange={(e) => setStatus(e.target.value as AssetRecord['status'])}
                   className="w-full appearance-none bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer"
@@ -169,10 +175,11 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
 
           {/* Location / Ward Text Field */}
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+            <label htmlFor="assetLocation" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
               Location / Ward <span className="text-red-500">*</span>
             </label>
             <input
+              id="assetLocation"
               type="text"
               required
               value={location}
@@ -187,15 +194,16 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
             
             {/* Quantity */}
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+              <label htmlFor="assetValue" className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
                 Quantity / Value
               </label>
               <input
+                id="assetValue"
                 type="number"
                 min="0.1"
                 step="any"
                 value={value}
-                onChange={(e) => setValue(parseFloat(e.target.value) || 0)}
+                onChange={(e) => setValue(Number.parseFloat(e.target.value) || 0)}
                 className="w-full bg-gray-50 border border-gray-300 rounded-lg px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736] transition-all"
               />
             </div>
