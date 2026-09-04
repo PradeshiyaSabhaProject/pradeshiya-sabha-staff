@@ -7,6 +7,7 @@ import type { VehicleRecord } from '../fleet-management/data/initialFleetData'
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
+/** Renders the map search icon. */
 const SearchIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
     <circle cx="11" cy="11" r="8" />
@@ -14,6 +15,7 @@ const SearchIcon = () => (
   </svg>
 )
 
+/** Renders the map layers icon. */
 const LayersIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-500">
     <polygon points="12 2 2 7 12 12 22 7 12 2" />
@@ -22,6 +24,7 @@ const LayersIcon = () => (
   </svg>
 )
 
+/** Renders the map locate icon. */
 const LocateIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-700">
     <circle cx="12" cy="12" r="3" />
@@ -36,6 +39,7 @@ const LocateIcon = () => (
   </svg>
 )
 
+/** Renders the zoom-in icon. */
 const PlusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
     <line x1="12" y1="5" x2="12" y2="19" />
@@ -43,12 +47,14 @@ const PlusIcon = () => (
   </svg>
 )
 
+/** Renders the zoom-out icon. */
 const MinusIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
     <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
 
+/** Renders the inspector information icon. */
 const InfoIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#A31736]">
     <circle cx="12" cy="12" r="10" />
@@ -77,6 +83,7 @@ const LAYER_OPTIONS: LayerOption[] = [
   { id: 'vehicles_gps', label: 'Garbage Tractors (Live GPS)', colorClass: 'bg-orange-600 animate-pulse', categories: ['Vehicle', 'Machinery & Equipment'] },
 ]
 
+/** Renders the interactive GIS map with asset layers and live vehicle telemetry. */
 export const InteractiveGISMappingPage: React.FC = () => {
   const { assets } = useAssetData()
   const { vehicles } = useFleetData()
@@ -100,16 +107,19 @@ export const InteractiveGISMappingPage: React.FC = () => {
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersLayerGroupRef = useRef<L.LayerGroup | null>(null)
 
+  /** Toggles visibility for a map layer. */
   const toggleLayer = (layerId: string) => {
     setActiveLayers((prev) => ({ ...prev, [layerId]: !prev[layerId] }))
   }
 
+  /** Toggles a priority group in the map filter. */
   const togglePriority = (priority: string) => {
     setPriorityFilter((prev) =>
       prev.includes(priority) ? prev.filter((p) => p !== priority) : [...prev, priority]
     )
   }
 
+  /** Maps an asset or vehicle status to a display priority group. */
   const getAssetPriorityGroup = (status: string) => {
     if (status === 'Disputed' || status === 'Audit Pending' || status === 'Permit Due') return 'High Priority'
     if (status === 'Under Maintenance' || status === 'In Maintenance') return 'Maintenance'
@@ -334,8 +344,11 @@ export const InteractiveGISMappingPage: React.FC = () => {
     })
   }, [visibleAssets, visibleVehicles])
 
+  /** Increases the Leaflet map zoom level. */
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn()
+  /** Decreases the Leaflet map zoom level. */
   const handleZoomOut = () => mapInstanceRef.current?.zoomOut()
+  /** Centers the Leaflet map on the default jurisdiction location. */
   const handleCenterMap = () => mapInstanceRef.current?.setView([6.8432, 79.9968], 13, { animate: true })
 
   return (
