@@ -64,8 +64,10 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   const [rescheduleError, setRescheduleError] = useState('');
   const [showNotificationModal, setShowNotificationModal] = useState(false);
 
+  // The modal is controlled by the page and needs a selected record to render.
   if (!isOpen || !appointment) return null;
 
+  // Available actions depend on both staff mode and the appointment status.
   const isMyMode = mode === 'my';
   const showPendingActions = isMyMode && appointment.status === 'PENDING';
   const showApprovedActions = isMyMode && appointment.status === 'APPROVED';
@@ -96,7 +98,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
       setRescheduleError('Please select both date and time.');
       return;
     }
-    // Convert 24hr format from input to 12hr AM/PM format
+    // Convert the time input to the date-time format used by the appointment data.
     const [hours24, minutes] = newTime.split(':');
     const hrs = Number.parseInt(hours24, 10);
     const ampm = hrs >= 12 ? 'PM' : 'AM';
@@ -189,7 +191,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
             </div>
           </div>
 
-          {/* Right Column: Attached Documents */}
+          {/* Documents belong to the selected appointment and are read-only here. */}
           <div className="md:col-span-5 space-y-3">
             {appointment.documents.map((doc) => (
               <div
@@ -219,7 +221,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
         </div>
 
-        {/* Reschedule Panel (Conditional) */}
+        {/* While editing the schedule, show the form instead of the normal actions. */}
         {isRescheduling && (
           <form onSubmit={handleRescheduleSubmit} className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 mb-6 space-y-3.5 animate-fade-in">
             <h4 className="text-sm font-bold text-[#1e3a8a]">Reschedule Appointment</h4>
@@ -323,7 +325,7 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
           </div>
         )}
 
-        {/* Notification Modal */}
+        {/* Show the notification content as a confirmation preview for staff. */}
         {showNotificationModal && (
           <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
             <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">

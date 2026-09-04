@@ -1,4 +1,4 @@
-// Appointment-specific types and mock API services
+// Shared appointment contract and local data source for the staff appointment feature.
 
 export type AppointmentStatus = 'PENDING' | 'APPROVED' | 'RESCHEDULED' | 'REJECTED' | 'COMPLETED' | 'NO-SHOW';
 
@@ -32,7 +32,7 @@ export interface AppointmentStats {
   total: number;
 }
 
-// 63 realistic mock records to perfectly align with the UI designs
+// Local records keep the staff screens usable until a backend service is connected.
 const MOCK_APPOINTMENTS: AppointmentItem[] = [
   {
     id: '#PS-2026-0842',

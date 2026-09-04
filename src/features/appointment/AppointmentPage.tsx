@@ -92,7 +92,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     endIndex,
   } = useAppointmentData({ mode });
 
-  // Modal State
+  // Keep the selected row here so the table and details modal share one source of truth.
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentItem | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -107,7 +107,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
   };
 
   const handleExportCSV = () => {
-    // Generate CSV content
+    // Export the appointments currently visible after the active filters and page are applied.
     const headers = 'ID,Citizen Name,Phone,Email,Service,Date & Time,Assigned Officer,Status,Remark\n';
     const rows = appointments
       .map(
@@ -259,6 +259,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
   );
 
   const getTableBodyContent = () => {
+    // Keep loading, empty, and populated states together so the table layout remains consistent.
     if (loading) {
       return [1, 2, 3, 4, 5].map((i) => (
         <tr key={i}>
@@ -324,7 +325,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               <EyeIcon />
             </button>
 
-            {/* Approve and Reject (Only for 'my' mode and status is PENDING) */}
+            {/* Only the staff member's pending appointments expose quick actions here. */}
             {mode === 'my' && app.status === 'PENDING' && (
               <>
                 <button
