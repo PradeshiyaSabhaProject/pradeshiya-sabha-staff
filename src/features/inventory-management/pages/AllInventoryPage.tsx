@@ -14,12 +14,17 @@ const ALL_CATEGORIES: (ItemCategory | 'All')[] = [
   'Safety Equipment',
 ]
 
+/**
+ * Displays a searchable and filterable table of all inventory items.
+ * Allows filtering by category and availability status, with counts of items needing attention.
+ */
 const AllInventoryPage: React.FC = () => {
   const { items } = useInventoryData()
   const [searchTerm, setSearchTerm] = useState('')
   const [category, setCategory] = useState<(ItemCategory | 'All')>('All')
   const [unavailableOnly, setUnavailableOnly] = useState(false)
 
+  /** Filters items by search term (name), category, and availability status based on current filters. */
   const filteredItems = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
     return items.filter((item) => {

@@ -17,6 +17,10 @@ function getLastUsage(item: InventoryItemRecord) {
   return [...item.usageHistory].sort((a, b) => (a.usedAt < b.usedAt ? 1 : -1))[0]
 }
 
+/**
+ * Displays a table of items with low or out-of-stock status, sorted by urgency.
+ * Shows item details and the last staff member who used the item for quick follow-up.
+ */
 export const UnavailableItemsPanel: React.FC<UnavailableItemsPanelProps> = ({
   items,
   showViewAllLink = false,

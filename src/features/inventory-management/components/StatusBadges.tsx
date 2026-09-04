@@ -13,6 +13,7 @@ const APPROVAL_STATUS_STYLES: Record<ApprovalStatus, string> = {
   Rejected: 'bg-red-50 text-[#A31736] border-red-200',
 }
 
+/** Displays item stock status (In Stock, Low Stock, Out of Stock) as a styled badge. */
 export const ItemStatusBadge: React.FC<{ status: ItemStatus }> = ({ status }) => (
   <span
     className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider font-semibold whitespace-nowrap ${ITEM_STATUS_STYLES[status]}`}
@@ -21,6 +22,7 @@ export const ItemStatusBadge: React.FC<{ status: ItemStatus }> = ({ status }) =>
   </span>
 )
 
+/** Displays request approval status (Pending Approval, Approved, Rejected) as a styled badge. */
 export const ApprovalStatusBadge: React.FC<{ status: ApprovalStatus }> = ({ status }) => (
   <span
     className={`text-[11px] px-2.5 py-0.5 rounded border uppercase tracking-wider font-semibold whitespace-nowrap ${APPROVAL_STATUS_STYLES[status]}`}

@@ -11,6 +11,10 @@ interface RequestStockModalProps {
   }) => void
 }
 
+/**
+ * Modal form for submitting a stock replenishment request.
+ * Collects item name, quantity, justification, and requester info, then calls onSubmit.
+ */
 export const RequestStockModal: React.FC<RequestStockModalProps> = ({
   isOpen,
   onClose,
@@ -34,6 +38,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
 
   if (!isOpen) return null
 
+  /** Collects form data and calls onSubmit with request details, then closes the modal. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({ itemName, quantityRequested, reason, requestedBy })

@@ -6,11 +6,15 @@ import { ItemStatusBadge } from '../components/StatusBadges'
 import { AvailabilityBar } from '../components/AvailabilityBar'
 import type { InventoryItemRecord } from '../data/initialInventoryData'
 
+/**
+ * Page for recording stock consumption against inventory items.
+ * Shows selectable items and a chronological log of all recorded usage across the inventory.
+ */
 const StockUsagePage: React.FC = () => {
   const { items, recordUsage } = useInventoryData()
   const [selectedItem, setSelectedItem] = useState<InventoryItemRecord | null>(null)
 
-  // Aggregate usage logs across all items, most recent first
+  /** Aggregates and sorts usage logs from all items, most recent first, enriched with item metadata. */
   const allLogs = items
     .flatMap((item) =>
       item.usageHistory.map((log) => ({

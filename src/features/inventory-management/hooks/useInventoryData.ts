@@ -36,6 +36,11 @@ function getInitialData(): { items: InventoryItemRecord[]; requests: InventoryAp
   }
 }
 
+/**
+ * Custom hook for managing inventory items and approval requests.
+ * Provides state and methods for recording usage, requesting stock, and approving/rejecting requests.
+ * Syncs data to localStorage and restores it on mount.
+ */
 export const useInventoryData = () => {
   const [items, setItems] = useState<InventoryItemRecord[]>(() => getInitialData().items)
   const [requests, setRequests] = useState<InventoryApprovalRequest[]>(
@@ -89,7 +94,10 @@ export const useInventoryData = () => {
     return updated
   }
 
-  /** Creates a new pending stock request. */
+  /**
+   * Creates and stores a new stock replenishment request with "Pending Approval" status.
+   * Returns the newly created request.
+   */
   const requestStock = (details: {
     itemName: string
     quantityRequested: number

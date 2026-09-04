@@ -8,6 +8,10 @@ interface RejectRequestModalProps {
   onReject: (requestId: string, reason: string) => void
 }
 
+/**
+ * Modal form for rejecting a pending inventory request.
+ * Collects a reason and calls onReject with the request ID and reason.
+ */
 export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
   isOpen,
   onClose,
@@ -24,6 +28,7 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
 
   if (!isOpen || !request) return null
 
+  /** Validates rejection reason and calls onReject with the request ID and reason. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onReject(request.id, reason)

@@ -14,14 +14,21 @@ const BAR_COLOR: Record<ItemStatus, string> = {
   'Out of Stock': 'bg-[#A31736]',
 }
 
+/**
+ * Displays a visual progress bar showing current stock level relative to maximum,
+ * with a marker indicating the reorder threshold. Color changes based on item status.
+ */
 export const AvailabilityBar: React.FC<AvailabilityBarProps> = ({
   quantityAvailable,
   reorderLevel,
   maxStock,
   status,
 }) => {
+  // Calculate safe maximum for percentage math (prevents division by zero)
   const safeMax = Math.max(maxStock, reorderLevel, quantityAvailable, 1)
+  // Percentage of bar to fill based on current quantity
   const fillPercent = Math.min(100, Math.round((quantityAvailable / safeMax) * 100))
+  // Percentage position of reorder threshold marker
   const reorderPercent = Math.min(100, Math.round((reorderLevel / safeMax) * 100))
 
   return (

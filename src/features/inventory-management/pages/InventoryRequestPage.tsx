@@ -4,6 +4,10 @@ import { useInventoryData } from '../hooks/useInventoryData'
 import { RequestStockModal } from '../components/RequestStockModal'
 import { ApprovalStatusBadge } from '../components/StatusBadges'
 
+/**
+ * Page for staff to submit stock replenishment requests.
+ * Displays submission form and history of all requests with their current approval status.
+ */
 const InventoryRequestPage: React.FC = () => {
   const { requests, requestStock } = useInventoryData()
   const [isModalOpen, setIsModalOpen] = useState(false)

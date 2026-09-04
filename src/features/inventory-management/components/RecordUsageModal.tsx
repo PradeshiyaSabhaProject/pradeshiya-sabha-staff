@@ -11,6 +11,10 @@ interface RecordUsageModalProps {
   ) => InventoryItemRecord | null
 }
 
+/**
+ * Modal form for recording consumption of an inventory item.
+ * Validates quantity does not exceed available stock and calls onSubmit with usage details.
+ */
 export const RecordUsageModal: React.FC<RecordUsageModalProps> = ({
   isOpen,
   onClose,
@@ -39,6 +43,7 @@ export const RecordUsageModal: React.FC<RecordUsageModalProps> = ({
 
   if (!isOpen || !item) return null
 
+  /** Validates usage quantity and department, then calls onSubmit to record the usage entry. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (quantityUsed <= 0) {

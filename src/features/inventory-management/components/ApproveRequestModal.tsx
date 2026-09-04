@@ -9,6 +9,10 @@ interface ApproveRequestModalProps {
   onReject: (requestId: string, reason: string, approverName: string) => void
 }
 
+/**
+ * Modal for reviewing and deciding on a pending inventory request.
+ * Displays request details and allows approval or rejection with optional approver name and reason.
+ */
 export const ApproveRequestModal: React.FC<ApproveRequestModalProps> = ({ isOpen, onClose, request, onApprove, onReject }) => {
   const [approverName, setApproverName] = useState('')
   const [rejectionReason, setRejectionReason] = useState('')

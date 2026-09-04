@@ -7,6 +7,10 @@ interface AddItemModalProps {
   onAdd: (item: Omit<InventoryItemRecord, 'id' | 'status' | 'usageHistory'>) => void
 }
 
+/**
+ * Modal form for registering a new inventory item.
+ * Collects item details (code, name, category, quantities, location) and calls onAdd on form submission.
+ */
 export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) => {
   const [itemCode, setItemCode] = useState('')
   const [name, setName] = useState('')
@@ -22,6 +26,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
 
   if (!isOpen) return null
 
+  /** Validates form inputs and calls onAdd with collected item data, then closes the modal. */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     if (!itemCode.trim() || !name.trim()) {

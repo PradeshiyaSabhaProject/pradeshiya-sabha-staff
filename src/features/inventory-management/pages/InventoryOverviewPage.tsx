@@ -3,6 +3,10 @@ import { Link } from 'react-router-dom'
 import { useInventoryData } from '../hooks/useInventoryData'
 import { UnavailableItemsPanel } from '../components/UnavailableItemsPanel'
 
+/**
+ * Dashboard landing page showing inventory statistics (total items, low stock, out of stock, pending requests)
+ * and quick-access links to key inventory management tasks and the unavailable items panel.
+ */
 export const InventoryOverviewPage: React.FC = () => {
   const { items, requests } = useInventoryData()
 

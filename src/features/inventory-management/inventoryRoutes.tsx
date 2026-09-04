@@ -5,6 +5,7 @@ import StockUsagePage from './pages/StockUsagePage'
 import InventoryRequestPage from './pages/InventoryRequestPage'
 import InventoryApprovePage from './pages/InventoryApprovePage'
 
+/** Route configuration for all inventory management pages (overview, browse, usage, requests, approvals). */
 export const inventoryRoutes = (
   <>
     <Route path="inventory-management" element={<Navigate to="/inventory-management/overview" replace />} />

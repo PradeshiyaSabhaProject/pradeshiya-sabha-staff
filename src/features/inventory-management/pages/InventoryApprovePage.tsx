@@ -6,6 +6,10 @@ import { RejectRequestModal } from '../components/RejectRequestModal'
 import { ApprovalStatusBadge } from '../components/StatusBadges'
 import type { InventoryApprovalRequest } from '../data/initialInventoryData'
 
+/**
+ * Page for reviewing and deciding on pending inventory stock requests.
+ * Only accessible to users with admin role. Shows pending and historical decision records.
+ */
 const InventoryApprovePage: React.FC = () => {
   const { user } = useAuth()
   const { requests, approveRequest, rejectRequest } = useInventoryData()
