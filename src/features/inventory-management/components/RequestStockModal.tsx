@@ -11,6 +11,10 @@ interface RequestStockModalProps {
   }) => void
 }
 
+/**
+ * Modal form for submitting a stock replenishment request.
+ * Collects item name, quantity, justification, and requester info, then calls onSubmit.
+ */
 export const RequestStockModal: React.FC<RequestStockModalProps> = ({
   isOpen,
   onClose,
@@ -34,6 +38,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
 
   if (!isOpen) return null
 
+  /** Collects form data and calls onSubmit with request details, then closes the modal. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onSubmit({ itemName, quantityRequested, reason, requestedBy })
@@ -52,7 +57,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
       <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden z-10 animate-fade-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#801028]" />
             <div>
               <h3 className="text-lg font-bold text-gray-900">Request New Stock</h3>
               <p className="text-xs text-gray-500">Submit a request for replenishment approval</p>
@@ -86,7 +91,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
               value={itemName}
               onChange={(e) => setItemName(e.target.value)}
               placeholder="e.g. Printer Toner Cartridge (Black)"
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
               required
             />
           </div>
@@ -101,7 +106,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
               min={1}
               value={quantityRequested}
               onChange={(e) => setQuantityRequested(Number(e.target.value))}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
               required
             />
           </div>
@@ -115,7 +120,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={3}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
               required
             />
           </div>
@@ -129,7 +134,7 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
               id="req-by"
               value={requestedBy}
               onChange={(e) => setRequestedBy(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
               required
             />
           </div>
@@ -138,13 +143,13 @@ export const RequestStockModal: React.FC<RequestStockModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-[#801028] hover:bg-[#680c20] text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
             >
               Submit Request
             </button>

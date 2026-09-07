@@ -3,12 +3,53 @@ import { useNavigate } from 'react-router-dom'
 import { MOCK_BIOMETRIC_LOGS, type BiometricLog } from './data/mockAttendanceData'
 import { BiometricSyncModal } from './components/BiometricSyncModal'
 
-function getRowBackgroundClass(isWeekend: boolean | undefined, i: number): string {
-  if (isWeekend) {
-    return 'bg-indigo-50/40'
-  }
-  return i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'
-}
+// ── Icons matching Overview style ───────────────────────────────────────────
+const UsersIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#1e3a8a]">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+)
+
+const CheckCircleIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#1e3a8a]">
+    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+    <polyline points="22 4 12 14.01 9 11.01" />
+  </svg>
+)
+
+const ClockAlertIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#1e3a8a]">
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+)
+
+const CalendarLeaveIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#1e3a8a]">
+    <rect x="3" y="4" width="18" height="18" rx="1" ry="1" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
+  </svg>
+)
+
+const TrendUpIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 text-[#c2410c] shrink-0">
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </svg>
+)
+
+const TargetIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 text-[#ea580c] shrink-0">
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </svg>
+)
 
 export const AttendanceDashboardPage: React.FC = () => {
   const navigate = useNavigate()
@@ -43,7 +84,7 @@ export const AttendanceDashboardPage: React.FC = () => {
       return false
     }
 
-    // Quick Pill Category Filter
+    // Quick Category Filter
     if (activeFilter === 'All') return true
     if (activeFilter === 'Present') return log.status === 'Present' || log.status === 'Overtime'
     if (activeFilter === 'Late') return log.status === 'Late Entry'
@@ -63,225 +104,223 @@ export const AttendanceDashboardPage: React.FC = () => {
     switch (status) {
       case 'Present':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-800 text-white border border-emerald-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 mr-1.5" />
-            <span>Present</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-emerald-100 text-emerald-800 border-emerald-300">
+            Present
           </span>
         )
       case 'Late Entry':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-amber-800 text-white border border-amber-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 mr-1.5" />
-            <span>Late Entry</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-amber-100 text-amber-800 border-amber-300">
+            Late Entry
           </span>
         )
       case 'Approved Leave':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-800 text-white border border-blue-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-300 mr-1.5" />
-            <span>Approved Leave</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-blue-100 text-blue-800 border-blue-300">
+            Approved Leave
           </span>
         )
       case 'Official Duty':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-800 text-white border border-purple-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-purple-300 mr-1.5" />
-            <span>Official Field Duty</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-purple-100 text-purple-800 border-purple-300">
+            Official Duty
           </span>
         )
       case 'Weekend Duty':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-800 text-white border border-indigo-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-300 mr-1.5 animate-pulse" />
-            <span>Weekend Duty (Sat/Sun)</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-indigo-100 text-indigo-800 border-indigo-300">
+            Weekend Duty
           </span>
         )
       case 'Overtime':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-orange-800 text-white border border-orange-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-300 mr-1.5" />
-            <span>Present + Overtime</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-orange-100 text-orange-800 border-orange-300">
+            Overtime
           </span>
         )
       case 'Missed Punch':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-rose-800 text-white border border-rose-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-rose-300 mr-1.5 animate-ping" />
-            <span>Missed Out Punch</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-red-100 text-red-700 border-red-300">
+            Missed Punch
           </span>
         )
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-800 text-white border border-gray-950 shadow-2xs tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-gray-400 mr-1.5" />
-            <span>Absent</span>
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase tracking-wide inline-block border bg-gray-200 text-gray-700 border-gray-300">
+            Absent
           </span>
         )
     }
   }
 
   return (
-    <div className="space-y-6 text-left pb-12 animate-fade-in">
-      {/* Top Banner / Breadcrumb area */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm">
+    <div className="space-y-6 text-left pb-8 animate-fade-in">
+      {/* ── 1. Top Page Header ────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">Staff Attendance & Biometric Tracking</h1>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            Real-time daily attendance monitoring, fingerprint punch sync, timecards, and multi-level leave approval.
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Staff Attendance & Biometric Tracking
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Real-time daily attendance monitoring, biometric punch sync, and punctuality audit.
           </p>
         </div>
 
-        <div className="flex items-center w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setIsSyncModalOpen(true)}
-            className="w-full sm:w-auto flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-sm transition cursor-pointer"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer flex items-center gap-1.5"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-4 h-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5">
               <path d="M23 4v6h-6" />
               <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
             </svg>
             <span>Sync Biometric Punches</span>
           </button>
+          <button
+            type="button"
+            onClick={() => navigate('/attendance/approvals')}
+            className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-3.5 py-1.5 rounded bg-white shadow-xs cursor-pointer uppercase tracking-wider"
+          >
+            Approvals Queue
+          </button>
         </div>
       </div>
 
-      {/* KPI Stats Row */}
+      {/* ── 2. Top KPI Cards (matching OverviewPage) ──────────────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Total Council Staff</p>
-            <p className="text-xl sm:text-2xl font-extrabold text-gray-900 mt-1">{totalStaff}</p>
-            <p className="text-xs text-emerald-600 font-medium mt-1">Expected today</p>
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 sm:w-6 sm:h-6">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Present Today (Punched)</p>
-            <p className="text-xl sm:text-2xl font-extrabold text-gray-900 mt-1">{presentCount}</p>
-            <p className="text-xs text-emerald-600 font-medium mt-1">90.1% attendance rate</p>
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 sm:w-6 sm:h-6">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-              <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Late Arrivals (&gt;8:45 AM)</p>
-            <p className="text-xl sm:text-2xl font-extrabold text-amber-600 mt-1">{lateCount}</p>
-            <p className="text-xs text-amber-700 font-medium mt-1">Flagged for shift grace rule</p>
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 sm:w-6 sm:h-6">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-          </div>
-        </div>
-
-        <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">On Leave / Official Duty</p>
-            <p className="text-xl sm:text-2xl font-extrabold text-purple-600 mt-1">{leaveCount}</p>
-            <p className="text-xs text-purple-700 font-medium mt-1">Multi-level approved</p>
-          </div>
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5 sm:w-6 sm:h-6">
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <line x1="16" y1="2" x2="16" y2="6" />
-              <line x1="8" y1="2" x2="8" y2="6" />
-              <line x1="3" y1="10" x2="21" y2="10" />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Roster & Filters Card - Excel Spreadsheet UI (Brand Colors) */}
-      <div className="bg-white rounded-2xl border border-gray-300 shadow-md overflow-hidden font-sans">
-        {/* Workbook Top Title & Ribbon Bar */}
-        <div className="bg-gradient-to-r from-[#801028] to-[#5c0b1c] px-5 py-3 text-white flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 border-b border-[#4a0816]">
-          <div className="flex flex-wrap items-center gap-3">
-
-            <div>
-              <div className="flex items-center space-x-2">
-                <h3 className="text-sm font-bold tracking-wide">BIOMETRIC DAILY ROSTER {selectedDate}</h3>
-              </div>
-              <p className="text-[11px] text-red-200 mt-0.5">Last synced: {lastSyncText}</p>
+        {/* Card 1: Total Staff */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-start justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 truncate mr-2">
+              Total Council Staff
+            </span>
+            <div className="p-1.5 bg-blue-50/60 rounded shrink-0">
+              <UsersIcon />
             </div>
           </div>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{totalStaff}</p>
+          </div>
+          <div className="mt-2 text-xs font-medium text-[#1d4ed8]">
+            <span>Expected roster staff today</span>
+          </div>
+        </div>
 
-          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
-            <div className="flex items-center space-x-1.5 bg-[#4a0816]/60 px-3 py-1 rounded-lg border border-[#6a0d21] flex-1 sm:flex-initial">
-              <span className="text-xs font-semibold text-red-200 shrink-0">Date:</span>
+        {/* Card 2: Present Today */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-start justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 truncate mr-2">
+              Present Today
+            </span>
+            <div className="p-1.5 bg-blue-50/60 rounded shrink-0">
+              <CheckCircleIcon />
+            </div>
+          </div>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{presentCount}</p>
+          </div>
+          <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-[#c2410c]">
+            <TrendUpIcon />
+            <span>90.1% Attendance Rate</span>
+          </div>
+        </div>
+
+        {/* Card 3: Late Arrivals */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-start justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 truncate mr-2">
+              Late Arrivals (&gt;8:45 AM)
+            </span>
+            <div className="p-1.5 bg-blue-50/60 rounded shrink-0">
+              <ClockAlertIcon />
+            </div>
+          </div>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{lateCount}</p>
+          </div>
+          <div className="mt-2 flex items-center gap-1 text-xs font-medium text-[#ea580c]">
+            <TargetIcon />
+            <span>Flagged for Shift Grace Rule</span>
+          </div>
+        </div>
+
+        {/* Card 4: On Leave / Official Duty */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-start justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600 truncate mr-2">
+              On Leave / Official Duty
+            </span>
+            <div className="p-1.5 bg-blue-50/60 rounded shrink-0">
+              <CalendarLeaveIcon />
+            </div>
+          </div>
+          <div className="mt-2 sm:mt-3">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">{leaveCount}</p>
+          </div>
+          <div className="mt-2 text-xs font-medium text-gray-500">
+            <span>Authorized by Section Head</span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── 3. Main Roster Table Container (Matching Overview Page) ────── */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
+        {/* Table Header Action Bar */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              Biometric Daily Roster — {selectedDate}
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">Last synced: {lastSyncText}</p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded border border-gray-300 text-xs">
+              <span className="text-gray-500 font-bold uppercase tracking-wider text-[11px]">Date:</span>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="bg-transparent text-xs font-bold text-white focus:outline-none cursor-pointer w-full sm:w-auto"
+                className="bg-transparent text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer"
               />
             </div>
             <button
               type="button"
-              onClick={() => alert(`Exporting BIOMETRIC_DAILY_ROSTER_${selectedDate}.xlsx spreadsheet...`)}
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-[#6a0d21] hover:bg-[#5c0b1c] text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-[#941934] shadow-2xs cursor-pointer"
+              onClick={() => alert(`Exporting BIOMETRIC_DAILY_ROSTER_${selectedDate}.csv...`)}
+              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer text-center"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5 shrink-0">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="7 10 12 15 17 10" />
-                <line x1="12" y1="15" x2="12" y2="3" />
-              </svg>
-              <span>Download .XLSX</span>
+              Export CSV
             </button>
             <button
               type="button"
               onClick={() => setIsSyncModalOpen(true)}
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1.5 border border-white/20 cursor-pointer"
+              className="bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-3.5 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer text-center"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5 shrink-0">
-                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-              </svg>
-              <span>Force Sync</span>
+              Force Sync
             </button>
             <button
               type="button"
               onClick={() => window.print()}
-              className="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center space-x-1 border border-white/20 cursor-pointer"
+              className="bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-3.5 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer text-center"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5 shrink-0">
-                <polyline points="6 9 6 2 18 2 18 9" />
-                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-                <rect x="6" y="14" width="12" height="8" />
-              </svg>
-              <span>Print</span>
+              Print
             </button>
           </div>
         </div>
 
-        {/* Filter & Search Ribbon Toolbar */}
-        <div className="bg-gray-100/90 px-4 py-3 border-b border-gray-300 space-y-2.5">
-          {/* Top Row: Department Dropdown, Status Dropdown, and Search */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        {/* Filter & Search Toolbar */}
+        <div className="p-4 border-b border-gray-200 bg-gray-50/30 space-y-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
               {/* Department Dropdown */}
-              <div className="flex items-center space-x-1.5 bg-white px-2.5 py-1 rounded-lg border border-gray-300 shadow-2xs">
-                <span className="text-xs font-bold text-gray-500 uppercase">Dept:</span>
+              <div className="flex items-center space-x-1.5 bg-white px-2.5 py-1 rounded border border-gray-300">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Dept:</span>
                 <select
                   value={selectedDepartment}
                   onChange={(e) => setSelectedDepartment(e.target.value)}
-                  className="bg-transparent text-xs font-bold text-gray-800 focus:outline-none cursor-pointer pr-1"
+                  className="bg-transparent text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer pr-1"
                 >
                   <option value="All">All Departments ({uniqueDepartments.length})</option>
                   {uniqueDepartments.map((dept) => (
@@ -293,17 +332,17 @@ export const AttendanceDashboardPage: React.FC = () => {
               </div>
 
               {/* Status Dropdown */}
-              <div className="flex items-center space-x-1.5 bg-white px-2.5 py-1 rounded-lg border border-gray-300 shadow-2xs">
-                <span className="text-xs font-bold text-gray-500 uppercase">Status:</span>
+              <div className="flex items-center space-x-1.5 bg-white px-2.5 py-1 rounded border border-gray-300">
+                <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Status:</span>
                 <select
                   value={selectedStatus}
                   onChange={(e) => {
                     setSelectedStatus(e.target.value)
                     if (e.target.value !== 'All') {
-                      setActiveFilter('All') // reset category pills so dropdown status takes exact effect
+                      setActiveFilter('All')
                     }
                   }}
-                  className="bg-transparent text-xs font-bold text-gray-800 focus:outline-none cursor-pointer pr-1"
+                  className="bg-transparent text-xs font-semibold text-gray-800 focus:outline-none cursor-pointer pr-1"
                 >
                   <option value="All">All Statuses ({uniqueStatuses.length})</option>
                   {uniqueStatuses.map((st) => (
@@ -323,7 +362,7 @@ export const AttendanceDashboardPage: React.FC = () => {
                     setActiveFilter('All')
                     setSearchQuery('')
                   }}
-                  className="px-2.5 py-1 rounded-lg bg-red-100 text-red-800 border border-red-200 hover:bg-red-200 text-xs font-bold transition flex items-center space-x-1 cursor-pointer"
+                  className="px-2.5 py-1 rounded bg-red-100 text-red-800 border border-red-200 hover:bg-red-200 text-xs font-bold transition flex items-center space-x-1 cursor-pointer uppercase tracking-wider"
                 >
                   <span>Reset Filters</span>
                 </button>
@@ -333,17 +372,17 @@ export const AttendanceDashboardPage: React.FC = () => {
             <div className="relative w-full md:w-64">
               <input
                 type="text"
-                placeholder="Search staff, ID, or department..."
+                placeholder="Search staff, ID, department..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#801028] shadow-2xs"
+                className="w-full pl-8 pr-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-medium focus:outline-none focus:border-[#1e3a8a] focus:ring-1 focus:ring-[#1e3a8a]"
               />
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
-                className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5"
+                className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5"
               >
                 <circle cx="11" cy="11" r="8" />
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -351,9 +390,9 @@ export const AttendanceDashboardPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Bottom Row: Quick Category Pills */}
-          <div className="flex flex-wrap items-center gap-1.5 pt-1 border-t border-gray-200/80">
-            <span className="text-xs font-bold text-gray-500 uppercase mr-1">Quick Category:</span>
+          {/* Quick Category Tabs */}
+          <div className="flex flex-wrap items-center gap-1.5 pt-2 border-t border-gray-200">
+            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mr-1">Quick Filter:</span>
             {['All', 'Present', 'Late', 'Weekend', 'Overtime', 'Leave', 'Missed'].map((filter) => (
               <button
                 type="button"
@@ -361,13 +400,14 @@ export const AttendanceDashboardPage: React.FC = () => {
                 onClick={() => {
                   setActiveFilter(filter)
                   if (filter !== 'All') {
-                    setSelectedStatus('All') // reset exact status dropdown when clicking quick pill
+                    setSelectedStatus('All')
                   }
                 }}
-                className={`px-3 py-1 rounded-lg text-xs font-bold transition cursor-pointer border ${activeFilter === filter
-                  ? 'bg-[#801028] text-white border-[#6a0d21] shadow-2xs'
-                  : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
-                  }`}
+                className={`px-3 py-1 rounded text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer border ${
+                  activeFilter === filter
+                    ? 'bg-[#A31736] text-white border-[#A31736] shadow-xs'
+                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
+                }`}
               >
                 {filter}
               </button>
@@ -375,168 +415,102 @@ export const AttendanceDashboardPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Excel Spreadsheet Grid Structure */}
-        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
-          <table className="w-full text-left border-collapse font-mono text-xs min-w-[900px]">
-            {/* Column Letter Headers (A, B, C...) */}
+        {/* Table View */}
+        <div className="overflow-x-auto flex-1 relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[880px]">
             <thead>
-              <tr className="bg-gray-100 text-gray-700 font-bold border-b border-gray-300 select-none">
-                <th className="py-2 px-2 border-r border-gray-300 w-10 text-center bg-gray-200/80 text-gray-600">#</th>
-                <th className="py-2 px-3 border-r border-gray-300 min-w-[210px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">A</span>
-                    <span className="font-sans uppercase text-[11px]">Employee Name &amp; ID</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 min-w-[160px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">B</span>
-                    <span className="font-sans uppercase text-[11px]">Department</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 min-w-[170px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">C</span>
-                    <span className="font-sans uppercase text-[11px]">Scheduled Shift</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 text-right min-w-[130px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">D</span>
-                    <span className="font-sans uppercase text-[11px]">Check-In (Fingerprint)</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 text-right min-w-[110px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">E</span>
-                    <span className="font-sans uppercase text-[11px]">Check-Out</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 text-right min-w-[150px] bg-red-50/50">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-[#801028] font-sans font-extrabold mr-1">F</span>
-                    <span className="font-sans uppercase text-[11px] text-[#801028]">Worked Hrs &amp; OT</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 min-w-[160px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">G</span>
-                    <span className="font-sans uppercase text-[11px]">Scanner Source</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 border-r border-gray-300 min-w-[160px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">H</span>
-                    <span className="font-sans uppercase text-[11px]">Status</span>
-                  </div>
-                </th>
-                <th className="py-2 px-3 text-center min-w-[120px]">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] text-gray-400 font-sans font-extrabold mr-1">I</span>
-                    <span className="font-sans uppercase text-[11px]">Action</span>
-                  </div>
-                </th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-4 sm:px-6 w-12 text-center">#</th>
+                <th className="py-3 px-4 sm:px-6">EMPLOYEE NAME & ID</th>
+                <th className="py-3 px-4 sm:px-6">DEPARTMENT</th>
+                <th className="py-3 px-4 sm:px-6">SCHEDULED SHIFT</th>
+                <th className="py-3 px-4 sm:px-6">CHECK-IN</th>
+                <th className="py-3 px-4 sm:px-6">CHECK-OUT</th>
+                <th className="py-3 px-4 sm:px-6">WORKED HRS & OT</th>
+                <th className="py-3 px-4 sm:px-6">DEVICE SOURCE</th>
+                <th className="py-3 px-4 sm:px-6">STATUS</th>
+                <th className="py-3 px-4 sm:px-6 text-right">ACTION</th>
               </tr>
             </thead>
 
-            {/* Grid Body */}
-            <tbody className="divide-y divide-gray-300">
-              {filteredLogs.map((log, i) => (
-                <tr
-                  key={log.id}
-                  className={`group hover:bg-red-50/30 transition cursor-pointer ${getRowBackgroundClass(log.isWeekend, i)}`}
-                >
-                  {/* Row Index Number (1, 2, 3...) */}
-                  <td className="py-2.5 px-2 border-r border-gray-300 bg-gray-100 text-gray-600 text-center font-bold font-mono text-[11px] select-none group-hover:bg-[#801028]/15 group-hover:text-[#801028] transition">
-                    {i + 1}
-                  </td>
-
-                  {/* Col A: Employee */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 font-sans">
-                    <div className="flex items-center space-x-2.5">
-                      <div className="w-7 h-7 rounded bg-gradient-to-br from-[#801028] to-[#5c0b1c] text-white font-bold flex items-center justify-center text-[10px] shrink-0 font-mono shadow-2xs">
-                        {log.employeeName.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                      </div>
-                      <div className="truncate max-w-[160px]">
-                        <div className="font-bold text-gray-900 text-xs leading-tight">{log.employeeName}</div>
-                        <div className="text-[10px] text-gray-500 font-mono">{log.employeeId} • {log.designation}</div>
-                      </div>
-                    </div>
-                  </td>
-
-                  {/* Col B: Department */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 font-sans text-gray-700 text-xs truncate max-w-[150px]">
-                    {log.department}
-                  </td>
-
-                  {/* Col C: Scheduled Shift */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 font-sans">
-                    {log.shiftCode ? (
-                      <div className="flex items-center space-x-1.5">
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-blue-600 text-white font-mono">
-                          {log.shiftCode}
-                        </span>
-                        <span className="text-[11px] font-bold text-gray-900">{log.shiftTiming}</span>
-                      </div>
-                    ) : (
-                      <span className="text-[11px] text-gray-400 font-medium">Standard (08:30-04:30)</span>
-                    )}
-                  </td>
-
-                  {/* Col D: Check-In */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 text-right">
-                    <div className="font-bold text-gray-900">{log.checkIn}</div>
-                    {log.lateMinutes && (
-                      <span className="text-[9px] font-bold text-white bg-amber-800 border border-amber-950 px-1 py-0.2 rounded font-sans inline-block mt-0.5 shadow-2xs">
-                        +{log.lateMinutes}m Late
-                      </span>
-                    )}
-                  </td>
-
-                  {/* Col E: Check-Out */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 text-right font-bold text-gray-900">
-                    {log.checkOut}
-                  </td>
-
-                  {/* Col F: Worked Hrs & OT */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 text-right bg-red-50/20 group-hover:bg-red-50/50">
-                    <div className="flex items-center justify-end space-x-1 flex-wrap gap-y-1 font-sans">
-                      <span className="font-extrabold text-[#801028] font-mono text-xs">{log.workingHours}</span>
-                      {log.overtimeHours && (
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-orange-800 text-white border border-orange-950 shadow-2xs">
-                          +{log.overtimeHours} OT
-                        </span>
-                      )}
-                      {log.isWeekend && (
-                        <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-indigo-800 text-white border border-indigo-950 shadow-2xs">
-                          Sat/Sun
-                        </span>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Col G: Scanner Source */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 text-[11px] text-gray-600 truncate max-w-[150px] font-sans">
-                    {log.deviceLocation}
-                  </td>
-
-                  {/* Col H: Status */}
-                  <td className="py-2.5 px-3 border-r border-gray-300 font-sans">
-                    {getStatusBadge(log.status)}
-                  </td>
-
-                  {/* Col I: Action */}
-                  <td className="py-2.5 px-3 text-center font-sans">
-                    <button
-                      type="button"
-                      onClick={() => navigate('/attendance/request-regularization')}
-                      className="text-[11px] font-bold text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2.5 py-1 rounded border border-blue-200 transition cursor-pointer"
-                    >
-                      Regularize
-                    </button>
+            <tbody className="divide-y divide-gray-200 text-sm">
+              {filteredLogs.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="py-8 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    No biometric records found matching current criteria.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                filteredLogs.map((log, i) => (
+                  <tr key={log.id} className="hover:bg-gray-50 transition-colors group">
+                    <td className="py-3 px-4 sm:px-6 font-mono text-xs font-semibold text-gray-500 text-center">
+                      {i + 1}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6">
+                      <div className="font-bold text-gray-900 text-xs">{log.employeeName}</div>
+                      <div className="text-[11px] text-gray-500 font-mono">
+                        {log.employeeId} • {log.designation}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-xs text-gray-800 font-medium whitespace-nowrap">
+                      {log.department}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-xs text-gray-700 whitespace-nowrap">
+                      {log.shiftCode ? (
+                        <span className="inline-flex items-center gap-1.5">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                            {log.shiftCode}
+                          </span>
+                          <span className="font-semibold text-gray-800">{log.shiftTiming}</span>
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 font-medium">Standard (08:30-04:30)</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-xs font-semibold text-gray-900 whitespace-nowrap">
+                      <div>{log.checkIn}</div>
+                      {log.lateMinutes && (
+                        <span className="text-[10px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-1 rounded inline-block mt-0.5">
+                          +{log.lateMinutes}m Late
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-xs font-semibold text-gray-900 whitespace-nowrap">
+                      {log.checkOut}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-bold text-gray-900">{log.workingHours}</span>
+                        {log.overtimeHours && (
+                          <span className="text-[10px] font-bold bg-orange-100 text-orange-800 border border-orange-300 px-1.5 py-0.5 rounded">
+                            +{log.overtimeHours} OT
+                          </span>
+                        )}
+                        {log.isWeekend && (
+                          <span className="text-[10px] font-bold bg-indigo-100 text-indigo-800 border border-indigo-300 px-1.5 py-0.5 rounded">
+                            Sat/Sun
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-xs text-gray-600 truncate max-w-[150px]">
+                      {log.deviceLocation}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 whitespace-nowrap">
+                      {getStatusBadge(log.status)}
+                    </td>
+                    <td className="py-3 px-4 sm:px-6 text-right whitespace-nowrap">
+                      <button
+                        type="button"
+                        onClick={() => navigate('/attendance/my-corrections')}
+                        className="border border-[#1e3a8a] text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white transition-all text-xs font-semibold px-3 py-1 rounded bg-white shadow-xs cursor-pointer uppercase tracking-wider"
+                      >
+                        Regularize
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -552,3 +526,4 @@ export const AttendanceDashboardPage: React.FC = () => {
   )
 }
 
+export default AttendanceDashboardPage

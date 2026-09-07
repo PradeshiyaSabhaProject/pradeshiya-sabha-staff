@@ -1,61 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import L from 'leaflet'
+import { Info, Layers, LocateFixed, Minus, Plus, Search } from 'lucide-react'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 import { useFleetData } from '../fleet-management/hooks/useFleetData'
 import type { VehicleRecord } from '../fleet-management/data/initialFleetData'
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Icons
-// ─────────────────────────────────────────────────────────────────────────────
-const SearchIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
-    <circle cx="11" cy="11" r="8" />
-    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-  </svg>
-)
-
-const LayersIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-500">
-    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-    <polyline points="2 17 12 22 22 17" />
-    <polyline points="2 12 12 17 22 12" />
-  </svg>
-)
-
-const LocateIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-700">
-    <circle cx="12" cy="12" r="3" />
-    <line x1="12" y1="2" x2="12" y2="6" />
-    <line x1="12" y1="18" x2="12" y2="22" />
-    <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
-    <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
-    <line x1="2" y1="12" x2="6" y2="12" />
-    <line x1="18" y1="12" x2="22" y2="12" />
-    <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
-    <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
-  </svg>
-)
-
-const PlusIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
-    <line x1="12" y1="5" x2="12" y2="19" />
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-)
-
-const MinusIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
-    <line x1="5" y1="12" x2="19" y2="12" />
-  </svg>
-)
-
-const InfoIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#A31736]">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="16" x2="12" y2="12" />
-    <line x1="12" y1="8" x2="12.01" y2="8" />
-  </svg>
-)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Layer Definitions
@@ -77,6 +25,7 @@ const LAYER_OPTIONS: LayerOption[] = [
   { id: 'vehicles_gps', label: 'Garbage Tractors (Live GPS)', colorClass: 'bg-orange-600 animate-pulse', categories: ['Vehicle', 'Machinery & Equipment'] },
 ]
 
+/** Renders the interactive GIS map with asset layers and live vehicle telemetry. */
 export const InteractiveGISMappingPage: React.FC = () => {
   const { assets } = useAssetData()
   const { vehicles } = useFleetData()
@@ -100,16 +49,19 @@ export const InteractiveGISMappingPage: React.FC = () => {
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersLayerGroupRef = useRef<L.LayerGroup | null>(null)
 
+  /** Toggles visibility for a map layer. */
   const toggleLayer = (layerId: string) => {
     setActiveLayers((prev) => ({ ...prev, [layerId]: !prev[layerId] }))
   }
 
+  /** Toggles a priority group in the map filter. */
   const togglePriority = (priority: string) => {
     setPriorityFilter((prev) =>
       prev.includes(priority) ? prev.filter((p) => p !== priority) : [...prev, priority]
     )
   }
 
+  /** Maps an asset or vehicle status to a display priority group. */
   const getAssetPriorityGroup = (status: string) => {
     if (status === 'Disputed' || status === 'Audit Pending' || status === 'Permit Due') return 'High Priority'
     if (status === 'Under Maintenance' || status === 'In Maintenance') return 'Maintenance'
@@ -334,8 +286,11 @@ export const InteractiveGISMappingPage: React.FC = () => {
     })
   }, [visibleAssets, visibleVehicles])
 
+  /** Increases the Leaflet map zoom level. */
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn()
+  /** Decreases the Leaflet map zoom level. */
   const handleZoomOut = () => mapInstanceRef.current?.zoomOut()
+  /** Centers the Leaflet map on the default jurisdiction location. */
   const handleCenterMap = () => mapInstanceRef.current?.setView([6.8432, 79.9968], 13, { animate: true })
 
   return (
@@ -348,7 +303,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
         </div>
         <div className="relative w-full sm:w-80">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-            <SearchIcon />
+            <Search className="w-4 h-4 text-gray-400" />
           </span>
           <input
             type="text"
@@ -370,14 +325,14 @@ export const InteractiveGISMappingPage: React.FC = () => {
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
             <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
               <button onClick={handleZoomIn} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full" title="Zoom In">
-                <PlusIcon />
+                <Plus className="w-4 h-4 text-gray-700" />
               </button>
               <button onClick={handleZoomOut} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full" title="Zoom Out">
-                <MinusIcon />
+                <Minus className="w-4 h-4 text-gray-700" />
               </button>
             </div>
             <button onClick={handleCenterMap} className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700" title="Center Map">
-              <LocateIcon />
+              <LocateFixed className="w-4 h-4 text-gray-700" />
             </button>
           </div>
 
@@ -403,7 +358,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Card 1: ASSET & GPS LAYERS */}
           <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-xs font-bold text-gray-600 tracking-wider uppercase">
-              <LayersIcon />
+              <Layers className="w-4 h-4 text-gray-500" />
               <span>GIS MAP LAYERS</span>
             </div>
             <div className="space-y-3">
@@ -456,7 +411,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Card 3: Selected Asset / Inspector */}
           <div className="bg-gray-50 rounded border border-gray-300 p-5">
             <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
-              <InfoIcon />
+              <Info className="w-5 h-5 text-[#A31736]" />
               <span>{selectedAsset ? 'Inspector & Telemetry' : 'Interactive GIS Guide'}</span>
             </div>
             {selectedAsset ? (

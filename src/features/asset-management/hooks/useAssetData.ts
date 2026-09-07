@@ -217,6 +217,7 @@ const INITIAL_ASSETS: AssetRecord[] = [
   }
 ]
 
+/** Provides asset records, filtering, pagination, statistics, and mutations. */
 export function useAssetData() {
   const [assets, setAssets] = useState<AssetRecord[]>(() => {
     const saved = localStorage.getItem('pradeshiya_sabha_assets')
@@ -237,6 +238,7 @@ export function useAssetData() {
   const [statusFilter, setStatusFilter] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
 
+  /** Persists the supplied asset records in state and local storage. */
   const saveAssets = (newAssets: AssetRecord[]) => {
     setAssets(newAssets)
     localStorage.setItem('pradeshiya_sabha_assets', JSON.stringify(newAssets))
@@ -325,6 +327,7 @@ export function useAssetData() {
     }
   }, [assets])
 
+  /** Creates, persists, and returns a new asset record. */
   const addAsset = (newAssetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => {
     let prefix = 'ASSET-LN'
     if (newAssetData.category === 'Road') prefix = 'ASSET-RD'
@@ -340,6 +343,7 @@ export function useAssetData() {
     const randNum = 1000 + (randomBuffer[0] % 9000)
     const newId = `${prefix}-${randNum}`
 
+    /** Formats a date using the asset list's display format. */
     const formatDate = (date: Date) => {
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`
@@ -356,6 +360,7 @@ export function useAssetData() {
     return newRecord
   }
 
+  /** Updates and persists an existing asset record by identifier. */
   const updateAsset = (
     id: string,
     updatedData: Partial<Omit<AssetRecord, 'id' | 'dateAdded'>>

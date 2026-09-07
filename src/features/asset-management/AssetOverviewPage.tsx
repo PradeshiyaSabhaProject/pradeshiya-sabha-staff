@@ -5,6 +5,7 @@ import AddAssetModal from './components/AddAssetModal'
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
+/** Renders the add-record document icon. */
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -14,6 +15,7 @@ const AddIcon = () => (
   </svg>
 )
 
+/** Renders the export/download icon. */
 const ExportIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -22,6 +24,7 @@ const ExportIcon = () => (
   </svg>
 )
 
+/** Renders the print icon. */
 const PrintIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0">
     <polyline points="6 9 6 2 18 2 18 9" />
@@ -30,6 +33,7 @@ const PrintIcon = () => (
   </svg>
 )
 
+/** Renders the dropdown indicator used by select fields. */
 const ChevronDownIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-3.5 h-3.5 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
@@ -37,6 +41,7 @@ const ChevronDownIcon = () => (
 )
 
 // Category Icons
+/** Renders the land category icon. */
 const LandIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-emerald-600 shrink-0">
     <path d="M12 2L2 22h20L12 2z" />
@@ -44,6 +49,7 @@ const LandIcon = () => (
   </svg>
 )
 
+/** Renders the road category icon. */
 const RoadIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-slate-500 shrink-0">
     <rect x="4" y="2" width="16" height="20" rx="2" />
@@ -51,6 +57,7 @@ const RoadIcon = () => (
   </svg>
 )
 
+/** Renders the building category icon. */
 const BuildingIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-blue-600 shrink-0">
     <rect x="4" y="2" width="16" height="20" rx="2" />
@@ -62,6 +69,7 @@ const BuildingIcon = () => (
   </svg>
 )
 
+/** Renders the vehicle category icon. */
 const VehicleIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-orange-600 shrink-0">
     <rect x="1" y="3" width="22" height="13" rx="2" />
@@ -71,6 +79,7 @@ const VehicleIcon = () => (
   </svg>
 )
 
+/** Renders the machinery category icon. */
 const MachineryIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-amber-600 shrink-0">
     <circle cx="12" cy="12" r="3" />
@@ -78,6 +87,7 @@ const MachineryIcon = () => (
   </svg>
 )
 
+/** Renders the utility category icon. */
 const UtilityIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-violet-600 shrink-0">
     <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
@@ -85,6 +95,7 @@ const UtilityIcon = () => (
 )
 
 // KPI Card SVG Icons
+/** Renders the lands KPI card icon. */
 const LandsCardIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-blue-700">
     <path d="M3 20h18L12 4z" />
@@ -92,6 +103,7 @@ const LandsCardIcon = () => (
   </svg>
 )
 
+/** Renders the road KPI card icon. */
 const RoadCardIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-emerald-700">
     <path d="M3 12h18" />
@@ -99,6 +111,7 @@ const RoadCardIcon = () => (
   </svg>
 )
 
+/** Renders the building KPI card icon. */
 const BuildingCardIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-blue-800">
     <path d="M3 21h18M5 21V7l7-4 7 4v14" />
@@ -106,6 +119,7 @@ const BuildingCardIcon = () => (
   </svg>
 )
 
+/** Renders the material-assets KPI card icon. */
 const MaterialCardIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-slate-800">
     <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
@@ -115,6 +129,7 @@ const MaterialCardIcon = () => (
 )
 
 // Small pencil/edit icon for the new Edit button
+/** Renders the edit icon used by asset details controls. */
 const EditIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5 shrink-0">
     <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z" />
@@ -124,6 +139,7 @@ const EditIcon = () => (
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
+/** Renders the asset overview with KPIs, records, and detail editing. */
 const AssetOverviewPage: React.FC = () => {
   const {
     loading,
@@ -152,12 +168,14 @@ const AssetOverviewPage: React.FC = () => {
   const [editFormData, setEditFormData] = useState<AssetRecord | null>(null)
 
   // Opens the detail popup in READ mode (used by Asset ID link + Manage button)
+  /** Opens an asset's detail panel in read-only mode. */
   const openAssetDetails = (asset: AssetRecord) => {
     setActiveAssetDetails(asset)
     setIsEditingDetails(false)
     setEditFormData(asset)
   }
 
+  /** Closes the asset detail panel and clears its editing state. */
   const closeAssetDetails = () => {
     setActiveAssetDetails(null)
     setIsEditingDetails(false)
@@ -165,6 +183,7 @@ const AssetOverviewPage: React.FC = () => {
   }
 
   // Switches the popup into EDIT mode
+  /** Switches the active asset detail panel into edit mode. */
   const startEditing = () => {
     if (!activeAssetDetails) return
     setEditFormData(activeAssetDetails)
@@ -172,6 +191,7 @@ const AssetOverviewPage: React.FC = () => {
   }
 
   // Cancels edit mode, goes back to read-only view (popup stays open)
+  /** Cancels detail editing and restores the active asset values. */
   const cancelEditing = () => {
     setEditFormData(activeAssetDetails)
     setIsEditingDetails(false)
@@ -179,6 +199,7 @@ const AssetOverviewPage: React.FC = () => {
 
   // Saves changes -> updates the hook's data (and therefore the table),
   // then updates the popup's own view, and exits edit mode.
+  /** Persists changes to the active asset and exits edit mode. */
   const handleUpdateAsset = () => {
     if (!editFormData) return
     const saved = updateAsset(editFormData.id, {
@@ -194,6 +215,7 @@ const AssetOverviewPage: React.FC = () => {
   }
 
   // Status Style Badges
+  /** Returns styling classes for an asset status badge. */
   const getStatusBadgeStyle = (status: string) => {
     switch (status.toUpperCase()) {
       case 'VERIFIED':
@@ -212,6 +234,7 @@ const AssetOverviewPage: React.FC = () => {
   }
 
   // Category Icon Resolver
+  /** Resolves the icon component for an asset category. */
   const renderCategoryIcon = (category: string) => {
     switch (category) {
       case 'Land':
@@ -232,6 +255,7 @@ const AssetOverviewPage: React.FC = () => {
   }
 
   // Format Dynamic Stat values
+  /** Formats a KPI value with its category-specific unit. */
   const formatStatValue = (val: number, label: string) => {
     if (label === 'Road Infrastructure') return `${val} KM`
     if (label === 'Municipal Lands') return `${val} Plots`
@@ -245,6 +269,7 @@ const AssetOverviewPage: React.FC = () => {
     return val
   }
 
+  /** Renders a loading placeholder with the requested height. */
   const skeleton = (h = 'h-28') => (
     <div className={`${h} bg-gray-100 rounded-2xl animate-pulse`} />
   )

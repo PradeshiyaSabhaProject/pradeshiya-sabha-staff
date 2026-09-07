@@ -7,6 +7,7 @@ interface AddAssetModalProps {
   onSubmit: (assetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => void
 }
 
+/** Renders the close icon used by the modal header. */
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -14,12 +15,14 @@ const CloseIcon = () => (
   </svg>
 )
 
+/** Renders the dropdown indicator used by select fields. */
 const ChevronDownIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 )
 
+/** Renders a form modal for adding a digital asset record. */
 export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [name, setName] = useState('')
   const [category, setCategory] = useState<AssetRecord['category']>('Land')
@@ -28,6 +31,7 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
   const [value, setValue] = useState<number>(1)
   const [unit, setUnit] = useState('Plots')
 
+  /** Returns the default measurement unit for an asset category. */
   const getDefaultUnit = (cat: string) => {
     switch (cat) {
       case 'Land': return 'Plots'
@@ -53,6 +57,7 @@ export const AddAssetModal: React.FC<AddAssetModalProps> = ({ isOpen, onClose, o
 
   if (!isOpen) return null
 
+  /** Validates the form and submits the new asset record. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim() || !location.trim()) {

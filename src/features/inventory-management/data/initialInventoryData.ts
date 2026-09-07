@@ -57,6 +57,7 @@ export function computeItemStatus(quantityAvailable: number, reorderLevel: numbe
   return 'In Stock'
 }
 
+/** Seed data for initial inventory items (used on first load or when localStorage is cleared). */
 export const INITIAL_ITEMS: InventoryItemRecord[] = [
   {
     id: 'inv-001',
@@ -190,6 +191,7 @@ export const INITIAL_ITEMS: InventoryItemRecord[] = [
   },
 ]
 
+/** Seed data for initial approval requests (used on first load or when localStorage is cleared). */
 export const INITIAL_REQUESTS: InventoryApprovalRequest[] = [
   {
     id: 'req-001',

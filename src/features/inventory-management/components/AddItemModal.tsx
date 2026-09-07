@@ -7,6 +7,10 @@ interface AddItemModalProps {
   onAdd: (item: Omit<InventoryItemRecord, 'id' | 'status' | 'usageHistory'>) => void
 }
 
+/**
+ * Modal form for registering a new inventory item.
+ * Collects item details (code, name, category, quantities, location) and calls onAdd on form submission.
+ */
 export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onAdd }) => {
   const [itemCode, setItemCode] = useState('')
   const [name, setName] = useState('')
@@ -22,6 +26,7 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
 
   if (!isOpen) return null
 
+  /** Validates form inputs and calls onAdd with collected item data, then closes the modal. */
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault()
     if (!itemCode.trim() || !name.trim()) {
@@ -51,13 +56,16 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button type="button" className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs" onClick={onClose} aria-label="Close modal" />
-      <div className="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-10 animate-fade-in">
+      <div className="relative bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden z-10 animate-fade-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-          <div>
-            <h3 className="text-lg font-bold text-gray-900">Register New Inventory Item</h3>
-            <p className="text-xs text-gray-500">Add a new stock item with quantity and reorder threshold.</p>
+          <div className="flex items-center gap-2.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#801028]" />
+            <div>
+              <h3 className="text-lg font-bold text-gray-900">Register New Inventory Item</h3>
+              <p className="text-xs text-gray-500">Add a new stock item with quantity and reorder threshold.</p>
+            </div>
           </div>
-          <button type="button" onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 text-lg font-bold">×</button>
+          <button type="button" onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg">×</button>
         </div>
 
         <form onSubmit={handleSubmit} className="p-6 space-y-5">
@@ -66,18 +74,18 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Item Code *</label>
-              <input value={itemCode} onChange={(e) => setItemCode(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" required />
+              <input value={itemCode} onChange={(e) => setItemCode(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" required />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Item Name *</label>
-              <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" required />
+              <input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" required />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Category</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value as ItemCategory)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm">
+              <select value={category} onChange={(e) => setCategory(e.target.value as ItemCategory)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all">
                 <option value="Office Supplies">Office Supplies</option>
                 <option value="Cleaning Supplies">Cleaning Supplies</option>
                 <option value="IT Equipment">IT Equipment</option>
@@ -88,46 +96,46 @@ export const AddItemModal: React.FC<AddItemModalProps> = ({ isOpen, onClose, onA
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Department</label>
-              <input value={department} onChange={(e) => setDepartment(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input value={department} onChange={(e) => setDepartment(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Unit</label>
-              <input value={unit} onChange={(e) => setUnit(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input value={unit} onChange={(e) => setUnit(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Quantity</label>
-              <input type="number" min="0" value={quantityAvailable} onChange={(e) => setQuantityAvailable(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input type="number" min="0" value={quantityAvailable} onChange={(e) => setQuantityAvailable(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Reorder Level</label>
-              <input type="number" min="0" value={reorderLevel} onChange={(e) => setReorderLevel(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input type="number" min="0" value={reorderLevel} onChange={(e) => setReorderLevel(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Maximum Stock</label>
-              <input type="number" min="0" value={maxStock} onChange={(e) => setMaxStock(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input type="number" min="0" value={maxStock} onChange={(e) => setMaxStock(Number(e.target.value))} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Location</label>
-              <input value={location} onChange={(e) => setLocation(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input value={location} onChange={(e) => setLocation(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
             <div>
               <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-gray-600">Last Updated</label>
-              <input type="date" value={lastUpdated} onChange={(e) => setLastUpdated(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm" />
+              <input type="date" value={lastUpdated} onChange={(e) => setLastUpdated(e.target.value)} className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all" />
             </div>
           </div>
 
           <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
-            <button type="button" onClick={onClose} className="rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-semibold text-gray-700">Cancel</button>
-            <button type="submit" className="rounded-xl bg-[#A31736] px-4 py-2.5 text-sm font-semibold text-white">Save Item</button>
+            <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer">Cancel</button>
+            <button type="submit" className="px-6 py-2.5 rounded-xl bg-[#801028] hover:bg-[#680c20] text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer">Save Item</button>
           </div>
         </form>
       </div>
