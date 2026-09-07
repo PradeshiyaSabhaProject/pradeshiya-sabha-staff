@@ -64,12 +64,6 @@ export const InventoryOverviewPage: React.FC = () => {
   const lowStockCount = items.filter((i) => i.status === 'Low Stock').length
   const outOfStockCount = items.filter((i) => i.status === 'Out of Stock').length
   const pendingRequests = requests.filter((r) => r.status === 'Pending Approval').length
-  const needsAttention = lowStockCount + outOfStockCount
-
-  // Calculate average availability percentage for progress bars
-  const avgAvailability = totalItems > 0 
-    ? Math.round((items.filter(i => i.status === 'In Stock').length / totalItems) * 100)
-    : 0
 
 
   const handleAddItem = (newItem: any) => {

@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useInventoryData } from '../hooks/useInventoryData'
 import { ItemStatusBadge } from '../components/StatusBadges'
 import { AvailabilityBar } from '../components/AvailabilityBar'
