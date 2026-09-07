@@ -196,6 +196,7 @@ const navItems: NavItem[] = [
     path: '/inventory-management',
     icon: <InventoryIcon />,
     children: [
+      { label: 'Overview', path: '/inventory-management/overview' },
       { label: 'All Inventory', path: '/inventory-management/all' },
       { label: 'Stock Usage', path: '/inventory-management/usage' },
       { label: 'Inventory Request', path: '/inventory-management/request' },
