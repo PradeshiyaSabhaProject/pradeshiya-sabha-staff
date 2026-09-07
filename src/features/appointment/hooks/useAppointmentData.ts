@@ -9,7 +9,7 @@ export interface UseAppointmentDataProps {
 export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   const { user } = useAuth();
   
-  // Local state initialized from localStorage if available, else getAppointments()
+  // Restore staff changes after reload, or initialize from the local appointment source.
   const [appointments, setAppointments] = useState<AppointmentItem[]>(() => {
     const saved = localStorage.getItem('pradeshiya_appointments');
     if (saved) {
@@ -24,21 +24,18 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
 
   const [loading, setLoading] = useState(true);
 
-  // Sync to localStorage
+  // Persist status and reschedule updates made from the staff appointment screens.
   useEffect(() => {
     localStorage.setItem('pradeshiya_appointments', JSON.stringify(appointments));
   }, [appointments]);
 
-  // Loading simulation on mount
+  // Simulate the initial loading state used while the appointment list is prepared.
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(t);
   }, []);
 
-  // View Mode: 'list' table vs 'agenda' daily timeline
-  const [viewMode, setViewMode] = useState<'list' | 'agenda'>('list');
-
-  // Filters State
+  // Filter changes reset the page so a new result set always starts at page one.
   const [activeTab, setActiveTab] = useState('All Appointment');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
@@ -80,7 +77,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     setCurrentPage(1);
   };
 
-  // 1. Filter by mode (All vs My)
+  // Select the complete queue or only appointments assigned to the signed-in staff member.
   const modeFiltered = useMemo(() => {
     if (mode === 'my') {
       const userName = user?.name || '';
@@ -91,7 +88,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     return appointments;
   }, [appointments, mode, user]);
 
-  // 2. Compute tab counts and statistics based on the mode-filtered list
+  // Counts are based on the whole mode-specific list, not only the current page.
   const tabCounts = useMemo(() => {
     const counts = {
       all: modeFiltered.length,
@@ -113,7 +110,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     return counts;
   }, [modeFiltered]);
 
-  // 3. Apply active tab filter
+  // Narrow the mode-specific list to the selected status tab.
   const tabFiltered = useMemo(() => {
     return modeFiltered.filter((app) => {
       switch (activeTab) {
@@ -135,24 +132,10 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     });
   }, [modeFiltered, activeTab]);
 
-  // 4. Apply search & filter controls
+  // Apply the remaining date, service, status, and officer controls.
   const fullyFiltered = useMemo(() => {
     return tabFiltered.filter((app) => {
-      // Live text search
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchesName = app.citizenName.toLowerCase().includes(q);
-        const matchesNIC = app.nicNumber.toLowerCase().includes(q);
-        const matchesId = app.id.toLowerCase().includes(q);
-        const matchesPhone = app.phone.toLowerCase().includes(q);
-        const matchesService = app.service.toLowerCase().includes(q);
-        const matchesOfficer = app.assignedOfficer.toLowerCase().includes(q);
-        if (!matchesName && !matchesNIC && !matchesId && !matchesPhone && !matchesService && !matchesOfficer) {
-          return false;
-        }
-      }
-
-      // Exact Date Filter
+      // The date is the first part of the stored date-time string.
       if (selectedDate && !app.dateTime.startsWith(selectedDate)) {
         return false;
       }
@@ -161,8 +144,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
       if (selectedService !== 'All Services' && app.service !== selectedService) {
         return false;
       }
-
-      // Status Filter
+      // This can further narrow an already selected status tab.
       if (selectedStatus !== 'All Statuses' && app.status !== selectedStatus) {
         return false;
       }
@@ -176,7 +158,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     });
   }, [tabFiltered, searchQuery, selectedDate, selectedService, selectedStatus, selectedOfficer]);
 
-  // 5. Pagination
+  // Paginate only after all mode, tab, and control filters are applied.
   const paginatedAppointments = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return fullyFiltered.slice(startIndex, startIndex + itemsPerPage);
@@ -186,8 +168,8 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     return Math.max(1, Math.ceil(fullyFiltered.length / itemsPerPage));
   }, [fullyFiltered]);
 
-  // 6. Action handlers
-  const updateStatus = (id: string, newStatus: AppointmentStatus, rejectionReason?: string, resolutionNotes?: string) => {
+  // Update the source list; derived counts and visible rows recalculate automatically.
+  const updateStatus = (id: string, newStatus: AppointmentStatus) => {
     setAppointments((prev) =>
       prev.map((app) =>
         app.id === id

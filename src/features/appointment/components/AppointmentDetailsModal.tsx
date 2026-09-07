@@ -76,8 +76,10 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
   const [rejectionReason, setRejectionReason] = useState('');
   const [resolutionNotes, setResolutionNotes] = useState('');
 
+  // The modal is controlled by the page and needs a selected record to render.
   if (!isOpen || !appointment) return null;
 
+  // Available actions depend on both staff mode and the appointment status.
   const isMyMode = mode === 'my';
   const showPendingActions = isMyMode && appointment.status === 'PENDING';
   const showApprovedActions = isMyMode && (appointment.status === 'APPROVED' || appointment.status === 'RESCHEDULED');
@@ -103,9 +105,19 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
   const handleRescheduleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newDate) return;
-    const formattedDateTime = `${newDate} ${newTime}`;
-    onReschedule(appointment.id, formattedDateTime, newOfficer || appointment.assignedOfficer, newCounter);
+    if (!newDate || !newTime) {
+      setRescheduleError('Please select both date and time.');
+      return;
+    }
+    // Convert the time input to the date-time format used by the appointment data.
+    const [hours24, minutes] = newTime.split(':');
+    const hrs = Number.parseInt(hours24, 10);
+    const ampm = hrs >= 12 ? 'PM' : 'AM';
+    const hrs12 = hrs % 12 || 12;
+    const formattedTime = `${hrs12.toString().padStart(2, '0')}.${minutes} ${ampm}`;
+    const formattedDateTime = `${newDate} ${formattedTime}`;
+
+    onReschedule(appointment.id, formattedDateTime);
     setIsRescheduling(false);
   };
 
@@ -314,65 +326,16 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
 
             </div>
 
-            {/* Reschedule Drawer Panel */}
-            {isRescheduling && (
-              <form onSubmit={handleRescheduleSubmit} className="p-4 bg-blue-50 border border-blue-200 rounded space-y-3">
-                <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-[#1e3a8a] uppercase tracking-wider">
-                    Reschedule Appointment Slot
-                  </h4>
-                  <button
-                    type="button"
-                    onClick={() => setIsRescheduling(false)}
-                    className="text-xs text-gray-500 hover:text-gray-800"
-                  >
-                    Cancel
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      New Date
-                    </label>
-                    <input
-                      type="date"
-                      required
-                      value={newDate}
-                      onChange={(e) => setNewDate(e.target.value)}
-                      className="w-full text-xs border border-gray-300 rounded px-3 py-1.5 bg-white text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      New Time Slot
-                    </label>
-                    <select
-                      value={newTime}
-                      onChange={(e) => setNewTime(e.target.value)}
-                      className="w-full text-xs border border-gray-300 rounded px-3 py-1.5 bg-white text-gray-900"
-                    >
-                      {TIME_SLOTS.map((t) => (
-                        <option key={t} value={t}>
-                          {t}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-700 mb-1">
-                      Reassigned Officer
-                    </label>
-                    <select
-                      value={newOfficer || appointment.assignedOfficer}
-                      onChange={(e) => setNewOfficer(e.target.value)}
-                      className="w-full text-xs border border-gray-300 rounded px-3 py-1.5 bg-white text-gray-900"
-                    >
-                      {OFFICERS_LIST.map((o) => (
-                        <option key={o} value={o}>
-                          {o}
-                        </option>
-                      ))}
-                    </select>
+          {/* Documents belong to the selected appointment and are read-only here. */}
+          <div className="md:col-span-5 space-y-3">
+            {appointment.documents.map((doc) => (
+              <div
+                key={doc.name}
+                className="flex items-center justify-between border border-gray-200/80 rounded-xl p-3 bg-white hover:bg-gray-50/50 hover:border-gray-300 transition-colors shadow-2xs group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="shrink-0">
+                    <FileIcon />
                   </div>
                   <div>
                     <label className="block text-[11px] font-semibold text-gray-700 mb-1">
@@ -562,16 +525,21 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
         </div>
       </div>
 
-      {/* Citizen SMS/Email Notification Modal */}
-      {showNotificationModal && (
-        <div className="fixed inset-0 z-[65] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
-          <div className="w-full max-w-md bg-white border border-gray-300 rounded shadow-2xl overflow-hidden p-6 space-y-4">
-            <div className="flex items-center gap-2.5 border-b border-gray-200 pb-3">
-              <div className="p-1.5 bg-[#A31736]/10 text-[#A31736] rounded">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
-                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                  <polyline points="22 4 12 14.01 9 11.01" />
-                </svg>
+        {/* While editing the schedule, show the form instead of the normal actions. */}
+        {isRescheduling && (
+          <form onSubmit={handleRescheduleSubmit} className="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 mb-6 space-y-3.5 animate-fade-in">
+            <h4 className="text-sm font-bold text-[#1e3a8a]">Reschedule Appointment</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="newDateInput" className="block text-xs font-bold text-gray-600 mb-1">Select New Date</label>
+                <input
+                  id="newDateInput"
+                  type="date"
+                  required
+                  value={newDate}
+                  onChange={(e) => setNewDate(e.target.value)}
+                  className="w-full text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-800 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                />
               </div>
               <div>
                 <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
@@ -613,8 +581,60 @@ export const AppointmentDetailsModal: React.FC<AppointmentDetailsModalProps> = (
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Show the notification content as a confirmation preview for staff. */}
+        {showNotificationModal && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fade-in">
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
+              <div className="bg-gradient-to-r from-[#A31736]/10 via-white to-[#A31736]/5 p-6 flex flex-col items-center">
+                <div className="mb-4 rounded-full bg-[#A31736]/10 p-3">
+                  <CheckCircleIcon />
+                </div>
+                <h3 className="text-lg font-bold text-[#A31736] text-center mb-2">
+                  Notification Sent Successfully
+                </h3>
+                <p className="text-sm text-gray-700 text-center">
+                  The client has been notified about the appointment approval.
+                </p>
+              </div>
+              <div className="p-6 space-y-4">
+                <div className="bg-[#A31736]/5 border border-[#A31736]/20 rounded-lg p-4">
+                  <p className="text-xs font-bold text-[#A31736] mb-2">Appointment Details:</p>
+                  <div className="space-y-1.5 text-xs text-gray-700">
+                    <p>
+                      <span className="font-semibold text-gray-900">Client:</span> {appointment.citizenName}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Service:</span> {appointment.service}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Scheduled:</span> {appointment.dateTime}
+                    </p>
+                    <p>
+                      <span className="font-semibold text-gray-900">Contact:</span> {appointment.phone} / {appointment.email}
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-[#A31736]/5 border border-[#A31736]/20 rounded-lg p-4">
+                  <p className="text-xs font-bold text-[#A31736] mb-1">Notification Message:</p>
+                  <p className="text-xs text-gray-700 italic leading-relaxed">
+                    "Dear {appointment.citizenName}, Your appointment for {appointment.service} has been approved by {appointment.assignedOfficer}. Your scheduled appointment is on {appointment.dateTime}. Please come prepared with the necessary documents. If you have any questions, please contact us at the Pradeshiya Sabha office."
+                  </p>
+                </div>
+              </div>
+              <div className="bg-gray-50 border-t border-gray-100 p-4 flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowNotificationModal(false)}
+                  className="px-6 py-2.5 border border-[#A31736]/20 text-white text-sm font-bold rounded-lg bg-[#A31736] hover:bg-[#801028] transition-all cursor-pointer shadow-sm"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       {/* Slip Modal */}
       <AppointmentSlipModal

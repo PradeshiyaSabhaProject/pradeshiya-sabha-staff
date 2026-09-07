@@ -2,7 +2,7 @@ import { Route } from 'react-router-dom';
 import AppointmentPage from './AppointmentPage';
 import ScheduleAppointmentPage from './ScheduleAppointmentPage';
 
-// Feature-scoped routes for Appointment Management
+// The page supports both the complete appointment queue and the signed-in staff queue.
 export const appointmentRoutes = (
   <>
     <Route path="appointments/schedule" element={<ScheduleAppointmentPage />} />

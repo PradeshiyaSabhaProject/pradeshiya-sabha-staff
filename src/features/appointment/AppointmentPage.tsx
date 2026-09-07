@@ -94,7 +94,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
     endIndex,
   } = useAppointmentData({ mode });
 
-  // Modal State
+  // Keep the selected row here so the table and details modal share one source of truth.
   const [selectedAppointment, setSelectedAppointment] = useState<AppointmentItem | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [slipAppointment, setSlipAppointment] = useState<AppointmentItem | null>(null);
@@ -114,8 +114,9 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
   };
 
   const handleExportCSV = () => {
-    const headers = 'ID,Citizen Name,NIC,Phone,Email,Service,Date & Time,Assigned Officer,Desk/Counter,Status,Remark\n';
-    const rows = allAppointments
+    // Export the appointments currently visible after the active filters and page are applied.
+    const headers = 'ID,Citizen Name,Phone,Email,Service,Date & Time,Assigned Officer,Status,Remark\n';
+    const rows = appointments
       .map(
         (a) =>
           `"${a.id}","${a.citizenName}","${a.nicNumber}","${a.phone}","${a.email}","${a.service}","${a.dateTime}","${a.assignedOfficer}","${a.counter || 'Counter 01'}","${a.status}","${a.remark.replaceAll('"', '""')}"`
@@ -247,6 +248,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
   };
 
   const getTableBodyContent = () => {
+    // Keep loading, empty, and populated states together so the table layout remains consistent.
     if (loading) {
       return [1, 2, 3, 4, 5].map((i) => (
         <tr key={i}>
@@ -327,17 +329,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               <EyeIcon />
             </button>
 
-            {/* Print Slip */}
-            <button
-              type="button"
-              onClick={() => openSlip(app)}
-              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded transition-colors cursor-pointer shadow-3xs"
-              title="Print Visitor Pass"
-            >
-              <PrintSmallIcon />
-            </button>
-
-            {/* Quick Approve & Reject for My pending appointments */}
+            {/* Only the staff member's pending appointments expose quick actions here. */}
             {mode === 'my' && app.status === 'PENDING' && (
               <>
                 <button
