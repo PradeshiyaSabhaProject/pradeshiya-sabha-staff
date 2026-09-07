@@ -53,7 +53,7 @@ const AllInventoryPage: React.FC = () => {
               All Inventory
             </span>
           </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#801028] tracking-tight">
             Office Inventory Stock List
           </h1>
           <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
@@ -61,24 +61,24 @@ const AllInventoryPage: React.FC = () => {
           </p>
         </div>
 
-        <span className="px-3.5 py-1.5 bg-orange-50 border border-orange-200 text-orange-800 rounded text-xs font-bold uppercase tracking-wider">
+        <span className="px-3.5 py-1.5 bg-orange-50 border border-orange-200 text-orange-800 rounded-full text-xs font-bold uppercase tracking-wider shadow-2xs">
           {lowOrOutCount} Items Need Attention
         </span>
       </div>
 
-      <div className="bg-white p-4 border border-gray-300 rounded shadow-sm flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
+      <div className="bg-white p-4 border border-gray-200/80 rounded-2xl shadow-xs flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
         <input
           type="text"
           placeholder="Search item name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full sm:w-80 bg-white border border-gray-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736]"
+          className="w-full sm:w-80 bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
         />
 
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as ItemCategory | 'All')}
-          className="w-full sm:w-56 bg-white border border-gray-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736]"
+          className="w-full sm:w-56 bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
         >
           {ALL_CATEGORIES.map((c) => (
             <option key={c} value={c}>
@@ -90,10 +90,10 @@ const AllInventoryPage: React.FC = () => {
         <button
           type="button"
           onClick={() => setUnavailableOnly((v) => !v)}
-          className={`shrink-0 px-3.5 py-2 rounded text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer ${
+          className={`shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer shadow-2xs ${
             unavailableOnly
-              ? 'bg-[#A31736] border-[#A31736] text-white'
-              : 'bg-white border-gray-300 text-gray-600 hover:border-gray-400'
+              ? 'bg-[#801028] border-[#801028] text-white shadow-xs'
+              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
           }`}
         >
           {unavailableOnly ? '✓ Unavailable Only' : 'Show Unavailable Only'}
@@ -104,11 +104,11 @@ const AllInventoryPage: React.FC = () => {
         </span>
       </div>
 
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
         <div className="overflow-x-auto relative">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">ITEM</th>
                 <th className="py-4 px-6">CATEGORY</th>
                 <th className="py-4 px-6">AVAILABILITY</th>

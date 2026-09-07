@@ -27,15 +27,15 @@ const InventoryApprovePage: React.FC = () => {
     return (
       <div className="space-y-6 animate-fade-in pb-8">
         <div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#801028] tracking-tight">
             Inventory Approvals
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
             Review pending inventory requests and approve or reject them.
           </p>
         </div>
 
-        <div className="rounded border border-amber-200 bg-amber-50 p-6 text-sm text-amber-800 shadow-sm">
+        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-6 text-sm text-amber-800 shadow-xs">
           Access to this approvals board is restricted to administrators for now. A real
           role-based guard should be connected to the authentication service later.
         </div>
@@ -59,7 +59,7 @@ const InventoryApprovePage: React.FC = () => {
               Approvals
             </span>
           </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#801028] tracking-tight">
             Inventory Request Approvals
           </h1>
           <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
@@ -68,14 +68,14 @@ const InventoryApprovePage: React.FC = () => {
           </p>
         </div>
 
-        <span className="px-3.5 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded text-xs font-bold uppercase tracking-wider">
+        <span className="px-3.5 py-1.5 bg-amber-50 border border-amber-200 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wider shadow-2xs">
           {pendingRequests.length} Awaiting Review
         </span>
       </div>
 
       {/* ── Pending Requests ── */}
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Pending Requests</h2>
           <p className="text-xs text-gray-500">Awaiting a decision</p>
         </div>
@@ -93,7 +93,7 @@ const InventoryApprovePage: React.FC = () => {
               >
                 <div className="space-y-1.5">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                    <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
                       {request.requestNumber}
                     </span>
                     <ApprovalStatusBadge status={request.status} />
@@ -112,14 +112,14 @@ const InventoryApprovePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => approveRequest(request.id, user?.name || 'Administrator')}
-                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-2xs transition-all cursor-pointer"
                   >
                     Approve
                   </button>
                   <button
                     type="button"
                     onClick={() => setRejectTarget(request)}
-                    className="px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+                    className="px-4 py-2 bg-gray-700 hover:bg-gray-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-2xs transition-all cursor-pointer"
                   >
                     Reject
                   </button>
@@ -131,8 +131,8 @@ const InventoryApprovePage: React.FC = () => {
       </div>
 
       {/* ── Decision History ── */}
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Decision History</h2>
           <p className="text-xs text-gray-500">Previously approved or rejected requests</p>
         </div>
@@ -140,7 +140,7 @@ const InventoryApprovePage: React.FC = () => {
         <div className="overflow-x-auto relative">
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">REQUEST #</th>
                 <th className="py-4 px-6">ITEM</th>
                 <th className="py-4 px-6">QUANTITY</th>

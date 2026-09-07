@@ -17,9 +17,9 @@ export const InventoryOverviewPage: React.FC = () => {
 
   const cards = [
     { label: 'Total Inventory Items', value: totalItems, accent: 'text-[#0f172a]', bg: 'bg-white' },
-    { label: 'Low Stock Items', value: lowStockCount, accent: 'text-orange-700', bg: 'bg-orange-50' },
-    { label: 'Out of Stock Items', value: outOfStockCount, accent: 'text-[#A31736]', bg: 'bg-red-50' },
-    { label: 'Pending Requests', value: pendingRequests, accent: 'text-amber-700', bg: 'bg-amber-50' },
+    { label: 'Low Stock Items', value: lowStockCount, accent: 'text-orange-700', bg: 'bg-orange-50/80' },
+    { label: 'Out of Stock Items', value: outOfStockCount, accent: 'text-[#801028]', bg: 'bg-red-50/80' },
+    { label: 'Pending Requests', value: pendingRequests, accent: 'text-amber-700', bg: 'bg-amber-50/80' },
   ]
 
   const quickLinks = [
@@ -32,7 +32,7 @@ export const InventoryOverviewPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       <div>
-        <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#801028] tracking-tight">
           Inventory Management Overview
         </h1>
         <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
@@ -45,7 +45,7 @@ export const InventoryOverviewPage: React.FC = () => {
         {cards.map((card) => (
           <div
             key={card.label}
-            className={`${card.bg} rounded border border-gray-300 shadow-sm p-5`}
+            className={`${card.bg} rounded-2xl border border-gray-200/80 shadow-xs hover:shadow-md transition-all p-5`}
           >
             <p className="text-[11px] uppercase tracking-wider font-bold text-gray-500">
               {card.label}
@@ -55,8 +55,8 @@ export const InventoryOverviewPage: React.FC = () => {
         ))}
       </div>
 
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Quick Access</h2>
           <p className="text-xs text-gray-500">Jump straight to a task</p>
         </div>
@@ -65,7 +65,7 @@ export const InventoryOverviewPage: React.FC = () => {
             <Link
               key={link.to}
               to={link.to}
-              className="p-4 rounded border border-gray-300 bg-gray-50/60 hover:bg-gray-50 hover:border-[#A31736]/40 transition-all"
+              className="p-4 rounded-xl border border-gray-200 bg-gray-50/60 hover:bg-gray-50 hover:border-[#801028]/40 transition-all shadow-2xs hover:shadow-xs"
             >
               <h3 className="text-sm font-bold text-gray-900">{link.label}</h3>
               <p className="text-xs text-gray-500 mt-1">{link.desc}</p>

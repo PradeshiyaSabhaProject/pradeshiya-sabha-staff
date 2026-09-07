@@ -11,7 +11,7 @@ interface AvailabilityBarProps {
 const BAR_COLOR: Record<ItemStatus, string> = {
   'In Stock': 'bg-emerald-500',
   'Low Stock': 'bg-orange-500',
-  'Out of Stock': 'bg-[#A31736]',
+  'Out of Stock': 'bg-[#801028]',
 }
 
 /**

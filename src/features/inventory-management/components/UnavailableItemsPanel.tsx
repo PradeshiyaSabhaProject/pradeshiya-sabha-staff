@@ -34,8 +34,8 @@ export const UnavailableItemsPanel: React.FC<UnavailableItemsPanelProps> = ({
     })
 
   return (
-    <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-      <div className="p-5 border-b border-gray-200 flex items-center justify-between gap-3">
+    <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+      <div className="p-5 border-b border-gray-100 flex items-center justify-between gap-3">
         <div>
           <h2 className="text-base font-bold text-gray-900">Needs Attention</h2>
           <p className="text-xs text-gray-500">
@@ -43,7 +43,7 @@ export const UnavailableItemsPanel: React.FC<UnavailableItemsPanelProps> = ({
           </p>
         </div>
         <div className="flex items-center gap-3 shrink-0">
-          <span className="px-3.5 py-1.5 bg-red-50 border border-red-200 text-[#A31736] rounded text-xs font-bold uppercase tracking-wider">
+          <span className="px-3.5 py-1.5 bg-red-50 border border-red-200 text-[#801028] rounded-full text-xs font-bold uppercase tracking-wider shadow-2xs">
             {unavailable.length} Item{unavailable.length === 1 ? '' : 's'}
           </span>
           {showViewAllLink && (
@@ -65,7 +65,7 @@ export const UnavailableItemsPanel: React.FC<UnavailableItemsPanelProps> = ({
         <div className="overflow-x-auto relative">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">ITEM</th>
                 <th className="py-4 px-6">STATUS</th>
                 <th className="py-4 px-6">AVAILABLE</th>
