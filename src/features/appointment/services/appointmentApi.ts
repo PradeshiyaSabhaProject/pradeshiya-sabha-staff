@@ -20,7 +20,37 @@ export interface AppointmentItem {
   status: AppointmentStatus;
   remark: string;
   documents: AttachmentItem[];
+  counter?: string;
+  division?: string;
+  priority?: 'NORMAL' | 'URGENT' | 'VIP';
+  resolutionNotes?: string;
+  rejectionReason?: string;
 }
+
+export const GN_DIVISIONS = [
+  'Homagama Town',
+  'Homagama North',
+  'Homagama South',
+  'Meegoda',
+  'Pitipana North',
+  'Pitipana South',
+  'Katuwana',
+  'Godagama North',
+  'Godagama South',
+  'Magammana',
+  'Diyagama',
+  'Mattegoda',
+];
+
+export const MUNICIPAL_COUNTERS = [
+  'Counter 01 - Citizen Reception & Helpdesk',
+  'Counter 02 - Revenue & Assessment Taxes',
+  'Counter 03 - Business & Trade Licenses',
+  'Counter 04 - Planning & Building Approvals',
+  'Counter 05 - Public Health & Sanitation',
+  'Counter 06 - Land & Deeds Validation',
+  'Executive Suite - Secretary & Chairman Office',
+];
 
 export interface AppointmentStats {
   pending: number;

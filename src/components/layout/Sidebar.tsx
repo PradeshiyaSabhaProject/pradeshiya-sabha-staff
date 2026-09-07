@@ -176,6 +176,7 @@ const navItems: NavItem[] = [
     path: '/appointments',
     icon: <CalendarIcon />,
     children: [
+      { label: 'Schedule Appointment', path: '/appointments/schedule', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
       { label: 'All Appointments', path: '/appointments/all', roles: ['admin', 'manager'] },
       { label: 'My Appointments', path: '/appointments/my', roles: ['admin', 'staff', 'manager', 'user', 'citizen'] },
       { label: 'System Audits (Restricted)', path: '/appointments/audits', roles: ['superadmin'] },

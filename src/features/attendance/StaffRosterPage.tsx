@@ -14,64 +14,64 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
     id: 's-day',
     code: 'GEN',
     name: 'General Office Shift',
-    timing: '08:30 AM - 04:30 PM',
-    colorClass: 'border-blue-200 bg-blue-50/70 text-blue-800',
-    badgeClass: 'bg-blue-600 text-white'
+    timing: '08:30 - 04:30',
+    colorClass: 'border-blue-300 bg-blue-50 text-blue-800',
+    badgeClass: 'bg-[#1e3a8a] text-white'
   },
   {
     id: 's-morn',
     code: 'MRN',
-    name: 'Early Morning Sanitation',
-    timing: '06:00 AM - 02:00 PM',
-    colorClass: 'border-emerald-200 bg-emerald-50/70 text-emerald-800',
+    name: 'Morning Sanitation',
+    timing: '06:00 - 02:00',
+    colorClass: 'border-emerald-300 bg-emerald-50 text-emerald-800',
     badgeClass: 'bg-emerald-600 text-white'
   },
   {
     id: 's-eve',
     code: 'EVE',
-    name: 'Evening Patrol / Works',
-    timing: '02:00 PM - 10:00 PM',
-    colorClass: 'border-amber-200 bg-amber-50/70 text-amber-800',
+    name: 'Evening Patrol',
+    timing: '02:00 - 10:00',
+    colorClass: 'border-amber-300 bg-amber-50 text-amber-800',
     badgeClass: 'bg-amber-600 text-white'
   },
   {
     id: 's-ngt',
     code: 'NGT',
-    name: 'Night Security / Desk',
-    timing: '10:00 PM - 06:00 AM',
-    colorClass: 'border-purple-200 bg-purple-50/70 text-purple-800',
+    name: 'Night Security',
+    timing: '10:00 - 06:00',
+    colorClass: 'border-purple-300 bg-purple-50 text-purple-800',
     badgeClass: 'bg-purple-600 text-white'
   },
   {
     id: 's-wkd',
     code: 'WKD',
-    name: 'Weekend Special Duty',
-    timing: '08:30 AM - 02:30 PM (Sat/Sun)',
-    colorClass: 'border-indigo-200 bg-indigo-50/70 text-indigo-800',
+    name: 'Weekend Duty',
+    timing: '08:30 - 02:30',
+    colorClass: 'border-indigo-300 bg-indigo-50 text-indigo-800',
     badgeClass: 'bg-indigo-600 text-white'
   },
   {
     id: 's-ot',
     code: 'OT+',
-    name: 'Extended Overtime Shift',
-    timing: '08:30 AM - 07:30 PM (+3h OT)',
-    colorClass: 'border-orange-200 bg-orange-50/70 text-orange-800',
+    name: 'Extended Overtime',
+    timing: '08:30 - 07:30',
+    colorClass: 'border-orange-300 bg-orange-50 text-orange-800',
     badgeClass: 'bg-orange-600 text-white'
   },
   {
     id: 's-emg',
     code: 'EMG',
     name: 'Emergency Callout',
-    timing: 'On-Call 2.0x Rate',
-    colorClass: 'border-rose-200 bg-rose-50/70 text-rose-800',
-    badgeClass: 'bg-rose-600 text-white'
+    timing: 'On-Call',
+    colorClass: 'border-red-300 bg-red-50 text-red-800',
+    badgeClass: 'bg-red-600 text-white'
   },
   {
     id: 's-off',
     code: 'OFF',
-    name: 'Weekly / Rest Day Off',
+    name: 'Rest Day Off',
     timing: 'Rest Day',
-    colorClass: 'border-gray-200 bg-gray-100 text-gray-500',
+    colorClass: 'border-gray-300 bg-gray-100 text-gray-600',
     badgeClass: 'bg-gray-400 text-white'
   }
 ]
@@ -79,9 +79,9 @@ const SHIFT_TEMPLATES: ShiftTemplate[] = [
 const UNASSIGNED_TEMPLATE: ShiftTemplate = {
   id: 's-null',
   code: '-',
-  name: 'Unassigned (Null)',
-  timing: 'Not Assigned',
-  colorClass: 'border-dashed border-gray-300 bg-gray-50/60 text-gray-400 hover:border-gray-400 hover:text-gray-600',
+  name: 'Unassigned',
+  timing: 'Not Set',
+  colorClass: 'border-dashed border-gray-300 bg-gray-50 text-gray-400',
   badgeClass: 'bg-gray-300 text-gray-700'
 }
 
@@ -100,13 +100,13 @@ const ALL_MONTHS = [
   'December 2026'
 ]
 
-const CURRENT_MONTH_INDEX = 6 // July 2026 is current active month (0-indexed: Jan=0...Jun=5, Jul=6)
+const CURRENT_MONTH_INDEX = 6 // July 2026 is current active month
 
 const getMonthIndex = (monthStr: string) => {
   const name = monthStr.split(' ')[0]
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
   const idx = months.indexOf(name)
-  return idx >= 0 ? idx : 6 // Default July
+  return idx >= 0 ? idx : 6
 }
 
 const isPastMonth = (monthStr: string) => {
@@ -203,10 +203,9 @@ interface MonthlyRosterRow {
   department: string
   avatarInitials: string
   month: string
-  days: Record<number, string> // day (1 to 31) -> shiftCode
+  days: Record<number, string>
 }
 
-// Generate default shifts for any given month
 function getOfficeShift(d: number, weekend: boolean): string {
   if (d === 4 || d === 11 || d === 18) return 'WKD'
   if (d === 9 || d === 23) return 'OT+'
@@ -275,7 +274,6 @@ export const StaffRosterPage: React.FC = () => {
   const [rosterData, setRosterData] = useState<MonthlyRosterRow[]>(INITIAL_MONTHLY_ROSTER)
   const [selectedDept, setSelectedDept] = useState('All')
 
-  // Quick cell editor state
   const [editingCell, setEditingCell] = useState<{
     empId: string
     day: number
@@ -284,7 +282,7 @@ export const StaffRosterPage: React.FC = () => {
   const isCurrentMonthLocked = isPastMonth(selectedMonth)
 
   const handleCellChange = (empId: string, dayNum: number, newCode: string) => {
-    if (isCurrentMonthLocked) return // Prevent edit if past month
+    if (isCurrentMonthLocked) return
     const hasRow = rosterData.some((r) => r.employeeId === empId && r.month === selectedMonth)
     if (hasRow) {
       setRosterData(
@@ -341,26 +339,26 @@ export const StaffRosterPage: React.FC = () => {
     return SHIFT_TEMPLATES.find((t) => t.code === code) || UNASSIGNED_TEMPLATE
   }
 
-  // Check if month has any generated roster rows
   const monthHasAnyRoster = rosterData.some((r) => r.month === selectedMonth)
 
   return (
-    <div className="space-y-6 text-left pb-12 animate-fade-in">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="space-y-6 text-left pb-8 animate-fade-in">
+      {/* ── 1. Top Page Header ────────────────────────────────────────── */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Monthly Duty Rosters & Scheduling</h1>
-          <p className="text-xs sm:text-sm text-gray-500">
-            Select a month to view all Council employees and edit their shifts individually.
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Monthly Duty Rosters &amp; Scheduling
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Select a month to audit shift assignments across all departments and edit daily schedules.
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full md:w-auto">
-          {/* Month Selector */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-gray-300 bg-white text-xs sm:text-sm font-bold text-gray-800 shadow-xs cursor-pointer"
+            className="px-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1e3a8a] cursor-pointer"
           >
             {ALL_MONTHS.map((m) => {
               const past = isPastMonth(m)
@@ -376,86 +374,91 @@ export const StaffRosterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => handleInitializeMonthRoster(selectedMonth)}
-              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-md transition flex items-center space-x-2 cursor-pointer"
+              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer"
             >
-              <span>+ Initialize All Staff Roster</span>
+              + Initialize Roster
             </button>
           )}
         </div>
       </div>
 
-      {/* Monthly Summary & Shift Legend */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-9 gap-3">
-        {SHIFT_TEMPLATES.map((tpl) => (
-          <div
-            key={tpl.id}
-            className={`rounded-xl border p-3 flex flex-col justify-between ${tpl.colorClass} transition`}
-          >
-            <div className="flex items-center justify-between">
-              <span className={`px-2 py-0.5 rounded text-[11px] font-extrabold ${tpl.badgeClass}`}>
-                {tpl.code}
-              </span>
-              <span className="text-[11px] font-semibold opacity-80">{tpl.timing}</span>
+      {/* ── 2. Shift Templates Palette (Overview Style Card) ─────────── */}
+      <div className="bg-white border border-gray-300 rounded p-4 shadow-sm">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-gray-600 mb-3">Shift Codes &amp; Timing Reference</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+          {SHIFT_TEMPLATES.map((tpl) => (
+            <div
+              key={tpl.id}
+              className={`rounded border p-2 flex flex-col justify-between ${tpl.colorClass}`}
+            >
+              <div className="flex items-center justify-between">
+                <span className={`px-1.5 py-0.2 rounded text-[10px] font-bold ${tpl.badgeClass}`}>
+                  {tpl.code}
+                </span>
+                <span className="text-[10px] font-semibold opacity-80">{tpl.timing}</span>
+              </div>
+              <div className="text-[11px] font-bold mt-1.5 truncate">{tpl.name}</div>
             </div>
-            <div className="text-xs font-bold mt-2 truncate">{tpl.name}</div>
-          </div>
-        ))}
-        {/* Unassigned Legend Badge */}
-        <div className={`rounded-xl border p-3 flex flex-col justify-between ${UNASSIGNED_TEMPLATE.colorClass} transition`}>
-          <div className="flex items-center justify-between">
-            <span className={`px-2 py-0.5 rounded text-[11px] font-extrabold ${UNASSIGNED_TEMPLATE.badgeClass}`}>
-              {UNASSIGNED_TEMPLATE.code}
-            </span>
-            <span className="text-[11px] font-semibold opacity-80">{UNASSIGNED_TEMPLATE.timing}</span>
-          </div>
-          <div className="text-xs font-bold mt-2 truncate">{UNASSIGNED_TEMPLATE.name}</div>
+          ))}
         </div>
       </div>
 
-      {/* Filter & Toolbar with Department Dropdown */}
-      <div className="bg-white p-4 rounded-2xl border border-gray-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
-          <span className="text-xs font-bold text-gray-500 uppercase">Department:</span>
+      {/* ── 3. Filters Toolbar ────────────────────────────────────────── */}
+      <div className="bg-white border border-gray-300 rounded p-3.5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex items-center space-x-2">
+          <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Department:</span>
           <select
             value={selectedDept}
             onChange={(e) => setSelectedDept(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded-xl border border-gray-300 bg-white text-xs font-bold text-gray-800 shadow-2xs cursor-pointer"
+            className="px-2.5 py-1 rounded border border-gray-300 bg-white text-xs font-semibold text-gray-800 focus:outline-none focus:border-[#1e3a8a] cursor-pointer"
           >
             <option value="All">All Departments</option>
-            <option value="Revenue">Revenue & Finance</option>
-            <option value="Sanitation">Public Health & Sanitation</option>
-            <option value="Security">Municipal Security Desk</option>
-            <option value="Water Works">Water Works & Engineering</option>
+            <option value="Revenue">Revenue &amp; Finance</option>
+            <option value="Sanitation">Public Health &amp; Sanitation</option>
+            <option value="Security">Municipal Security</option>
+            <option value="Water Works">Water Works &amp; Engineering</option>
             <option value="Administration">Administration</option>
           </select>
         </div>
 
-        <div className="flex items-center space-x-3 w-full sm:w-auto justify-start sm:justify-end">
+        <div className="flex items-center gap-2">
           {isCurrentMonthLocked ? (
-            <span className="text-xs font-bold text-amber-800 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 flex items-center space-x-1.5 w-full sm:w-auto text-center justify-center">
-              <span>🔒 Past Month - Read Only (Locked)</span>
+            <span className="text-[11px] font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-1 rounded uppercase tracking-wide">
+              🔒 Past Month (Read-Only)
             </span>
           ) : (
-            <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 w-full sm:w-auto text-center justify-center">
-              {selectedMonth} Roster - Active & Editable
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded uppercase tracking-wide">
+              {selectedMonth} (Active &amp; Editable)
             </span>
           )}
-          <span className="text-xs text-gray-500 font-medium hidden md:inline">
-            {isCurrentMonthLocked
-              ? 'Past months cannot be modified'
-              : 'Click any day cell to assign or edit shift individually'}
-          </span>
         </div>
       </div>
 
-      {/* Monthly Roster Grid Table */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
-          <table className="w-full text-left border-collapse min-w-[1200px]">
+      {/* ── 4. Main Roster Grid Table Container (Overview Table Style) ─── */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              Staff Shift Calendar — {selectedMonth}
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">Click any cell to update or assign duty shift</p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="bg-white hover:bg-gray-100 text-gray-700 text-xs font-semibold px-3.5 py-1.5 rounded border border-gray-300 transition-colors uppercase tracking-wider cursor-pointer"
+          >
+            Print Roster
+          </button>
+        </div>
+
+        <div className="overflow-x-auto flex-1 relative [-webkit-overflow-scrolling:touch]">
+          <table className="w-full text-left border-collapse min-w-[1100px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold uppercase text-gray-500">
-                <th className="py-3.5 px-4 min-w-[230px] sticky left-0 bg-gray-50 z-10 border-r border-gray-200">
-                  Officer & Department
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-4 min-w-[210px] sticky left-0 bg-gray-100 z-10 border-r border-gray-300">
+                  OFFICER &amp; DEPARTMENT
                 </th>
                 {monthDays.map((d) => {
                   const weekend = isWeekendDay(selectedMonth, d)
@@ -463,8 +466,8 @@ export const StaffRosterPage: React.FC = () => {
                   return (
                     <th
                       key={d}
-                      className={`py-3 px-1.5 text-center min-w-[42px] border-r border-gray-100 ${
-                        weekend ? 'bg-amber-50/70 text-amber-800' : ''
+                      className={`py-2 px-1 text-center min-w-[36px] border-r border-gray-200 ${
+                        weekend ? 'bg-amber-100/70 text-amber-900' : ''
                       }`}
                     >
                       <div>{d}</div>
@@ -481,23 +484,21 @@ export const StaffRosterPage: React.FC = () => {
                 )
 
                 return (
-                  <tr key={`${selectedMonth}-${emp.employeeId}`} className="hover:bg-gray-50/60 transition group">
-                    {/* Sticky Officer Info Column */}
-                    <td className="py-3.5 px-4 sticky left-0 bg-white z-10 border-r border-gray-200 shadow-xs">
+                  <tr key={`${selectedMonth}-${emp.employeeId}`} className="hover:bg-gray-50 transition-colors group">
+                    <td className="py-2.5 px-4 sticky left-0 bg-white z-10 border-r border-gray-300 group-hover:bg-gray-50">
                       <div className="flex items-center space-x-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 font-bold flex items-center justify-center text-xs border border-blue-100 shrink-0">
+                        <div className="w-7 h-7 rounded bg-blue-50 text-[#1e3a8a] font-bold flex items-center justify-center text-[10px] border border-blue-200 shrink-0 font-mono uppercase">
                           {emp.avatarInitials}
                         </div>
                         <div className="truncate max-w-[145px]">
-                          <div className="font-bold text-gray-900 truncate">{emp.employeeName}</div>
-                          <div className="text-[10px] text-gray-500 truncate">
+                          <div className="font-bold text-gray-900 truncate text-xs">{emp.employeeName}</div>
+                          <div className="text-[10px] text-gray-500 truncate font-mono">
                             {emp.employeeId} • {emp.department}
                           </div>
                         </div>
                       </div>
                     </td>
 
-                    {/* Daily Shift Cells (Defaults to null '-' if roster not made) */}
                     {monthDays.map((d) => {
                       const shiftCode = existingRow?.days[d] ?? ''
                       const shiftTpl = getShiftDetails(shiftCode)
@@ -507,20 +508,20 @@ export const StaffRosterPage: React.FC = () => {
                       return (
                         <td
                           key={d}
-                          className={`py-2 px-1 text-center relative border-r border-gray-100 ${
-                            weekend ? 'bg-amber-50/30' : ''
+                          className={`py-1.5 px-0.5 text-center relative border-r border-gray-200 ${
+                            weekend ? 'bg-amber-50/40' : ''
                           }`}
                         >
                           {isEditing && !isCurrentMonthLocked ? (
-                            <div className="absolute inset-0 z-20 bg-white border-2 border-blue-600 rounded-lg p-1 shadow-xl flex items-center justify-center">
+                            <div className="absolute inset-0 z-20 bg-white border border-[#1e3a8a] rounded p-0.5 shadow-md flex items-center justify-center">
                               <select
                                 autoFocus
                                 value={shiftCode}
                                 onChange={(e) => handleCellChange(emp.employeeId, d, e.target.value)}
                                 onBlur={() => setEditingCell(null)}
-                                className="text-[10px] font-extrabold bg-blue-50 text-blue-800 rounded px-1 py-0.5 border border-blue-300 outline-none cursor-pointer"
+                                className="text-[10px] font-bold bg-blue-50 text-[#1e3a8a] rounded px-0.5 py-0.2 border border-blue-300 outline-none cursor-pointer"
                               >
-                                <option value="">- (Null / Unassigned)</option>
+                                <option value="">- (Null)</option>
                                 {SHIFT_TEMPLATES.map((t) => (
                                   <option key={t.code} value={t.code}>
                                     {t.code}
@@ -537,15 +538,15 @@ export const StaffRosterPage: React.FC = () => {
                                   setEditingCell({ empId: emp.employeeId, day: d })
                                 }
                               }}
-                              className={`w-full py-1 px-1 rounded-lg border text-[10px] font-extrabold transition ${
+                              className={`w-full py-0.5 px-0.5 rounded border text-[10px] font-bold transition-all ${
                                 isCurrentMonthLocked
                                   ? 'cursor-not-allowed opacity-80'
-                                  : 'hover:scale-110 shadow-2xs cursor-pointer'
+                                  : 'hover:scale-105 cursor-pointer shadow-2xs'
                               } ${shiftTpl.colorClass}`}
                               title={
                                 isCurrentMonthLocked
                                   ? `Past Month Locked (${selectedMonth})`
-                                  : `Day ${d}: ${shiftTpl.name} (Click to assign/edit)`
+                                  : `Day ${d}: ${shiftTpl.name}`
                               }
                             >
                               {shiftTpl.code}
@@ -565,5 +566,4 @@ export const StaffRosterPage: React.FC = () => {
   )
 }
 
-
-
+export default StaffRosterPage

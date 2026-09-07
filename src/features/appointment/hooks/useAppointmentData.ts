@@ -31,13 +31,18 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
 
   // Loading simulation on mount
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 500);
+    const t = setTimeout(() => setLoading(false), 400);
     return () => clearTimeout(t);
   }, []);
 
+  // View Mode: 'list' table vs 'agenda' daily timeline
+  const [viewMode, setViewMode] = useState<'list' | 'agenda'>('list');
+
   // Filters State
   const [activeTab, setActiveTab] = useState('All Appointment');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
+  const [dateFilterShortcut, setDateFilterShortcut] = useState<'all' | 'today' | 'tomorrow' | 'this-week'>('all');
   const [selectedService, setSelectedService] = useState('All Services');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [selectedOfficer, setSelectedOfficer] = useState('All Officers');
@@ -48,8 +53,18 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     setActiveTab(tab);
     setCurrentPage(1);
   };
+  const handleSearchQueryChange = (q: string) => {
+    setSearchQuery(q);
+    setCurrentPage(1);
+  };
   const handleSelectedDateChange = (date: string) => {
     setSelectedDate(date);
+    setDateFilterShortcut('all');
+    setCurrentPage(1);
+  };
+  const handleDateFilterShortcutChange = (shortcut: 'all' | 'today' | 'tomorrow' | 'this-week') => {
+    setDateFilterShortcut(shortcut);
+    setSelectedDate('');
     setCurrentPage(1);
   };
   const handleSelectedServiceChange = (service: string) => {
@@ -120,28 +135,46 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
     });
   }, [modeFiltered, activeTab]);
 
-  // 4. Apply search control filters
+  // 4. Apply search & filter controls
   const fullyFiltered = useMemo(() => {
     return tabFiltered.filter((app) => {
-      // Date Filter: checking starting sequence (e.g. 2026-06-05)
+      // Live text search
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchesName = app.citizenName.toLowerCase().includes(q);
+        const matchesNIC = app.nicNumber.toLowerCase().includes(q);
+        const matchesId = app.id.toLowerCase().includes(q);
+        const matchesPhone = app.phone.toLowerCase().includes(q);
+        const matchesService = app.service.toLowerCase().includes(q);
+        const matchesOfficer = app.assignedOfficer.toLowerCase().includes(q);
+        if (!matchesName && !matchesNIC && !matchesId && !matchesPhone && !matchesService && !matchesOfficer) {
+          return false;
+        }
+      }
+
+      // Exact Date Filter
       if (selectedDate && !app.dateTime.startsWith(selectedDate)) {
         return false;
       }
+
       // Service Filter
       if (selectedService !== 'All Services' && app.service !== selectedService) {
         return false;
       }
-      // Status Filter (redundant if using tabs, but useful for search bar)
+
+      // Status Filter
       if (selectedStatus !== 'All Statuses' && app.status !== selectedStatus) {
         return false;
       }
+
       // Officer Filter
       if (selectedOfficer !== 'All Officers' && app.assignedOfficer !== selectedOfficer) {
         return false;
       }
+
       return true;
     });
-  }, [tabFiltered, selectedDate, selectedService, selectedStatus, selectedOfficer]);
+  }, [tabFiltered, searchQuery, selectedDate, selectedService, selectedStatus, selectedOfficer]);
 
   // 5. Pagination
   const paginatedAppointments = useMemo(() => {
@@ -154,20 +187,52 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   }, [fullyFiltered]);
 
   // 6. Action handlers
-  const updateStatus = (id: string, newStatus: AppointmentStatus) => {
+  const updateStatus = (id: string, newStatus: AppointmentStatus, rejectionReason?: string, resolutionNotes?: string) => {
     setAppointments((prev) =>
-      prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app))
+      prev.map((app) =>
+        app.id === id
+          ? {
+              ...app,
+              status: newStatus,
+              rejectionReason: rejectionReason || app.rejectionReason,
+              resolutionNotes: resolutionNotes || app.resolutionNotes,
+            }
+          : app
+      )
     );
   };
 
-  const rescheduleAppointment = (id: string, newDateTime: string) => {
+  const rescheduleAppointment = (id: string, newDateTime: string, newOfficer?: string, counter?: string) => {
     setAppointments((prev) =>
-      prev.map((app) => (app.id === id ? { ...app, status: 'RESCHEDULED', dateTime: newDateTime } : app))
+      prev.map((app) =>
+        app.id === id
+          ? {
+              ...app,
+              status: 'RESCHEDULED',
+              dateTime: newDateTime,
+              assignedOfficer: newOfficer || app.assignedOfficer,
+              counter: counter || app.counter,
+            }
+          : app
+      )
     );
+  };
+
+  const addAppointment = (newApp: Omit<AppointmentItem, 'id' | 'status'> & { status?: AppointmentStatus }) => {
+    const newId = `#PS-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+    const created: AppointmentItem = {
+      ...newApp,
+      id: newId,
+      status: newApp.status || 'PENDING',
+    };
+    setAppointments((prev) => [created, ...prev]);
+    return created;
   };
 
   const resetFilters = () => {
+    setSearchQuery('');
     setSelectedDate('');
+    setDateFilterShortcut('all');
     setSelectedService('All Services');
     setSelectedStatus('All Statuses');
     setSelectedOfficer('All Officers');
@@ -177,23 +242,31 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   return {
     loading,
     appointments: paginatedAppointments,
+    allAppointments: fullyFiltered,
     allAppointmentsCount: fullyFiltered.length,
     tabCounts,
     activeTab,
     setActiveTab: handleActiveTabChange,
+    searchQuery,
+    setSearchQuery: handleSearchQueryChange,
     selectedDate,
     setSelectedDate: handleSelectedDateChange,
+    dateFilterShortcut,
+    setDateFilterShortcut: handleDateFilterShortcutChange,
     selectedService,
     setSelectedService: handleSelectedServiceChange,
     selectedStatus,
     setSelectedStatus: handleSelectedStatusChange,
     selectedOfficer,
     setSelectedOfficer: handleSelectedOfficerChange,
+    viewMode,
+    setViewMode,
     currentPage,
     setCurrentPage,
     totalPages,
     updateStatus,
     rescheduleAppointment,
+    addAppointment,
     resetFilters,
     startIndex: (currentPage - 1) * itemsPerPage + 1,
     endIndex: Math.min(currentPage * itemsPerPage, fullyFiltered.length),
