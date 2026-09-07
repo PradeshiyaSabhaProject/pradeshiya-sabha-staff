@@ -10,6 +10,7 @@ interface AddAssetWizardModalProps {
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
+/** Renders the close icon used by the wizard modal. */
 const CloseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
     <line x1="18" y1="6" x2="6" y2="18" />
@@ -17,18 +18,21 @@ const CloseIcon = () => (
   </svg>
 )
 
+/** Renders the completion check icon used by the stepper. */
 const CheckIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-4 h-4">
     <polyline points="20 6 9 17 4 12" />
   </svg>
 )
 
+/** Renders the dropdown indicator used by select fields. */
 const ChevronDownIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 )
 
+/** Renders the information icon used by notice panels. */
 const InfoIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#A31736] shrink-0">
     <circle cx="12" cy="12" r="10" />
@@ -37,6 +41,7 @@ const InfoIcon = () => (
   </svg>
 )
 
+/** Renders the map pin icon used by location controls. */
 const MapPinIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 shrink-0">
     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -44,6 +49,7 @@ const MapPinIcon = () => (
   </svg>
 )
 
+/** Renders the cloud upload icon used by the attachment uploader. */
 const CloudUploadIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#A31736]">
     <path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z" />
@@ -52,6 +58,7 @@ const CloudUploadIcon = () => (
   </svg>
 )
 
+/** Renders the document file icon used for non-image attachments. */
 const FileDocIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-gray-500">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -62,6 +69,7 @@ const FileDocIcon = () => (
   </svg>
 )
 
+/** Renders the image file icon used for image attachments. */
 const FileImageIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-gray-500">
     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
@@ -70,6 +78,7 @@ const FileImageIcon = () => (
   </svg>
 )
 
+/** Renders the attachment removal icon. */
 const TrashIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 hover:text-red-600 transition-colors">
     <polyline points="3 6 5 6 21 6" />
@@ -77,6 +86,7 @@ const TrashIcon = () => (
   </svg>
 )
 
+/** Renders the edit icon used by review sections. */
 const EditIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5 mr-1 inline-block">
     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -84,6 +94,7 @@ const EditIcon = () => (
   </svg>
 )
 
+/** Renders the multi-step wizard for registering a digital asset. */
 export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen, onClose, onSubmit }) => {
   const [step, setStep] = useState<number>(1)
 
@@ -91,6 +102,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   const [name, setName] = useState('')
   const [category, setCategory] = useState<AssetRecord['category']>('Land')
   const [location, setLocation] = useState('')
+  /** Generates a four-digit suffix for a new asset identifier. */
   function generateRandomSuffix(): string {
     const randomBytes = new Uint32Array(1)
     crypto.getRandomValues(randomBytes)
@@ -122,6 +134,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
   
 
+  /** Returns the default unit and identifier prefix for an asset category. */
   const getCategoryDefaults = (cat: string) => {
     const randomBytes = new Uint32Array(1)
     crypto.getRandomValues(randomBytes)
@@ -154,6 +167,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
 
   if (!isOpen) return null
 
+  /** Selects simulated GIS coordinates for the asset location. */
   const handlePickFromMap = () => {
     // Simulate interactive GIS mapping coordinate selection in Homagama
     const randomBytes = new Uint32Array(2)
@@ -165,6 +179,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     setMapPicked(true)
   }
 
+  /** Adds selected files to the attachment list. */
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const newFiles: AssetAttachment[] = Array.from(e.target.files).map((file) => ({
@@ -177,16 +192,19 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     }
   }
 
+  /** Removes an attachment by its list index. */
   const handleRemoveAttachment = (index: number) => {
     setAttachments((prev) => prev.filter((_, i) => i !== index))
   }
 
+  /** Returns styling classes for an attachment status badge. */
   const getStatusBadgeClass = (status?: string) => {
     if (status === 'Verified') return 'bg-emerald-100 text-emerald-800'
     if (status === 'Image') return 'bg-blue-100 text-blue-800'
     return 'bg-purple-100 text-purple-800'
   }
 
+  /** Validates the current step and advances the wizard. */
   const handleNext = () => {
     if (step === 1 && (!name.trim() || !location.trim())) {
       alert('Please fill in Asset Name and Ward / Location to proceed.')
@@ -195,10 +213,12 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     if (step < 5) setStep(step + 1)
   }
 
+  /** Moves the wizard back to the previous step. */
   const handleBack = () => {
     if (step > 1) setStep(step - 1)
   }
 
+  /** Submits the completed asset registration and closes the modal. */
   const handleFinalSubmit = () => {
     onSubmit({
       name: name.trim() || 'Untitled Asset',
@@ -227,18 +247,21 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
     'Review',
   ]
 
+  /** Returns styling classes for a stepper circle state. */
   const getStepCircleClass = (isActive: boolean, isCompleted: boolean) => {
     if (isActive) return 'bg-[#A31736] text-white ring-4 ring-[#A31736]/15 scale-105'
     if (isCompleted) return 'bg-[#A31736] text-white'
     return 'bg-white border-2 border-gray-200 text-gray-400'
   }
 
+  /** Returns styling classes for a stepper title state. */
   const getStepTitleClass = (isActive: boolean, isCompleted: boolean) => {
     if (isActive) return 'text-[#A31736]'
     if (isCompleted) return 'text-gray-700'
     return 'text-gray-400'
   }
 
+  /** Returns the descriptive subtitle for the current wizard step. */
   const getSubtitle = () => {
     switch (step) {
       case 1:

@@ -5,6 +5,7 @@ import AddAssetWizardModal from './components/AddAssetWizardModal'
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
+/** Renders the add-asset document icon. */
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -14,6 +15,7 @@ const AddIcon = () => (
   </svg>
 )
 
+/** Renders the bank icon for the total-assets summary. */
 const BankIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#A31736]">
     <path d="M3 21h18" />
@@ -27,6 +29,7 @@ const BankIcon = () => (
   </svg>
 )
 
+/** Renders the money icon for the valuation summary. */
 const MoneyIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-gray-600">
     <rect x="2" y="6" width="20" height="12" rx="2" />
@@ -35,6 +38,7 @@ const MoneyIcon = () => (
   </svg>
 )
 
+/** Renders the inspection icon for the pending-inspections summary. */
 const InspectionIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-orange-600">
     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
@@ -44,30 +48,35 @@ const InspectionIcon = () => (
   </svg>
 )
 
+/** Renders the filter icon for the advanced filters section. */
 const FilterIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-700">
     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
   </svg>
 )
 
+/** Renders the dropdown indicator used by select fields. */
 const ChevronDownIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 )
 
+/** Renders the previous-page pagination icon. */
 const ChevronLeftIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
     <polyline points="15 18 9 12 15 6" />
   </svg>
 )
 
+/** Renders the next-page pagination icon. */
 const ChevronRightIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
     <polyline points="9 18 15 12 9 6" />
   </svg>
 )
 
+/** Renders the asset directory with filters, pagination, and asset details. */
 export const AssetDirectoryPage: React.FC = () => {
   const {
     assets,
@@ -98,6 +107,7 @@ export const AssetDirectoryPage: React.FC = () => {
     currentPageLocal * pageSizeLocal
   )
 
+  /** Resets all asset filters and returns to the first page. */
   const handleClearFilters = () => {
     setCategoryFilter('')
     setStatusFilter('')
@@ -106,11 +116,13 @@ export const AssetDirectoryPage: React.FC = () => {
     setCurrentPageLocal(1)
   }
 
+  /** Adds a newly submitted asset to the asset data store. */
   const handleAddAssetSubmit = (newAssetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => {
     addAsset(newAssetData)
   }
 
   // Calculate formatted valuation string
+  /** Formats an asset valuation, calculating a fallback when needed. */
   const formatValuation = (asset: AssetRecord) => {
     if (asset.valuation) {
       return `Rs. ${asset.valuation.toLocaleString('en-US', { minimumFractionDigits: 0 })}`
@@ -120,6 +132,7 @@ export const AssetDirectoryPage: React.FC = () => {
     return `Rs. ${(baseVal * (asset.value || 1)).toLocaleString('en-US')}`
   }
 
+  /** Returns the fallback valuation base for an asset category. */
   const getCategoryBaseValue = (category: string) => {
     if (category === 'Land') return 124500000
     if (category === 'Road') return 45200000
@@ -127,12 +140,14 @@ export const AssetDirectoryPage: React.FC = () => {
     return 85000000
   }
 
+  /** Returns the status indicator color for an asset row. */
   const getStatusDotClass = (isOperational: boolean, isMaintenance: boolean) => {
     if (isOperational) return 'bg-emerald-500'
     if (isMaintenance) return 'bg-red-500'
     return 'bg-gray-400'
   }
 
+  /** Returns the status text color for an asset row. */
   const getStatusTextClass = (isOperational: boolean, isMaintenance: boolean) => {
     if (isOperational) return 'text-emerald-700'
     if (isMaintenance) return 'text-red-600'
