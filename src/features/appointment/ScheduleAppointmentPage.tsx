@@ -134,10 +134,10 @@ export const ScheduleAppointmentPage: React.FC = () => {
       {/* ── Institutional Header ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Schedule Citizen Appointment
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Front-desk municipal intake, citizen registration, time slot reservation, and counter allocation.
           </p>
         </div>
@@ -276,13 +276,16 @@ export const ScheduleAppointmentPage: React.FC = () => {
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden">
         
         {/* Form Header Bar */}
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/75 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">
-              Citizen Intake & Appointment Form
-            </span>
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/75 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              Citizen Intake & Appointment Booking Form
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Enter citizen profile, allocate available council officer, and issue verified token slip.
+            </p>
           </div>
-          <span className="text-[11px] font-semibold text-gray-500">
+          <span className="text-[11px] font-semibold text-gray-500 whitespace-nowrap">
             Fields marked with <span className="text-red-500">*</span> are mandatory
           </span>
         </div>

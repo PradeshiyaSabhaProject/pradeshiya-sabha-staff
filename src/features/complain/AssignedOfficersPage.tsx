@@ -11,22 +11,26 @@ const AssignedOfficersPage: React.FC = () => {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Assigned Officers</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and review all assigned officers</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Assigned Investigation Officers
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Departmental technical officers, grievance inquiry assignment status, and field inspection workload.
+          </p>
         </div>
         <div>
-          <button type="button" className="flex items-center gap-2 bg-white border border-gray-200 text-sm font-semibold px-4 py-2 rounded-lg shadow-sm hover:bg-gray-50 transition-colors cursor-pointer">
-            <span className="text-gray-700">QUICK STATS</span>
-            <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block" /> 12 PENDING
+          <div className="flex items-center gap-1.5 bg-white border border-gray-300 text-xs font-semibold px-3 py-1.5 rounded shadow-3xs">
+            <span className="text-gray-600 uppercase tracking-wider text-[11px]">Active Inquiries:</span>
+            <span className="font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 text-[10px]">
+              12 PENDING
             </span>
-          </button>
+          </div>
         </div>
       </div>
 
       {loading ? (
         <div className="space-y-6">
-          <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-96 bg-gray-100 rounded animate-pulse" />
         </div>
       ) : (
         <OfficerTable officers={officers} />

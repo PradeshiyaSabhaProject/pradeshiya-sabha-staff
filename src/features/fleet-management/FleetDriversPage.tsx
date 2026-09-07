@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
 import { AssignDriverModal } from './components/AssignDriverModal'
@@ -23,20 +22,13 @@ export const FleetDriversPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Page Header matching Letter/Asset Management ── */}
+      {/* ── Page Header matching Overview Design Language ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/fleet/overview" className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline">
-              Fleet Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Driver Directory</span>
-          </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Driver & Equipment Operator Roster
           </h1>
-          <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-2xl">
             Manage licensed municipal drivers, verify license categories, and assign operators to council transport vehicles.
           </p>
         </div>

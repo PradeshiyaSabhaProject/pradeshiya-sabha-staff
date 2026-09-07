@@ -119,51 +119,59 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
       
       {/* Tabs */}
       {showTabs && (
-        <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
-          {TABS.map((tab) => {
-            const isActive = activeTab === tab.id
-            const count = getTabCount(tab.id, tab.status)
-            return (
-              <button
-                type="button"
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
-                  isActive 
-                    ? 'border-[#801028] text-[#801028]' 
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50'
-                }`}
-              >
-                {tab.label}
-                <span className="text-xs font-bold text-gray-400">({count})</span>
-              </button>
-            )
-          })}
+        <div className="overflow-x-auto border-b border-gray-200 bg-white">
+          <div className="flex px-4 min-w-[700px]">
+            {TABS.map((tab) => {
+              const isActive = activeTab === tab.id
+              const count = getTabCount(tab.id, tab.status)
+              return (
+                <button
+                  type="button"
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`py-3 px-4 text-xs font-bold transition-all border-b-2 cursor-pointer outline-none whitespace-nowrap flex items-center gap-2 ${
+                    isActive 
+                      ? 'border-[#A31736] text-[#A31736]' 
+                      : 'border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-200'
+                  }`}
+                >
+                  <span>{tab.label}</span>
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.2 rounded-full ${
+                      isActive ? 'bg-[#A31736]/10 text-[#A31736]' : 'bg-gray-100 text-gray-600'
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
         </div>
       )}
 
       {/* Filters */}
-      <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
-        <div className="flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028] px-3">
+      <div className="p-4 bg-gray-50/50 border-b border-gray-200 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+        <div className="flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#A31736] px-3 h-9">
           <CalendarIcon />
           <input 
             type="date"
             value={filters.date} 
             onChange={(e) => setFilters({...filters, date: e.target.value})}
-            className="w-full outline-none text-sm text-gray-600 bg-transparent py-2 pl-2 cursor-pointer"
+            className="w-full outline-none text-xs text-gray-800 bg-transparent py-1 pl-2 cursor-pointer font-medium"
             title="Filter by Date"
           />
         </div>
 
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+        <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#A31736] h-9">
           <select 
             value={filters.category} 
             onChange={(e) => setFilters({...filters, category: e.target.value})}
-            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+            className="w-full appearance-none outline-none text-xs text-gray-800 bg-transparent py-1 pl-3 pr-8 cursor-pointer font-medium"
           >
             <option value="">All Categories</option>
             {uniqueCategories.map(c => <option key={c} value={c}>{c}</option>)}
@@ -173,11 +181,11 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
           </div>
         </div>
 
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+        <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#A31736] h-9">
           <select 
             value={filters.status} 
             onChange={(e) => setFilters({...filters, status: e.target.value})}
-            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+            className="w-full appearance-none outline-none text-xs text-gray-800 bg-transparent py-1 pl-3 pr-8 cursor-pointer font-medium"
           >
             <option value="">All Statuses</option>
             {uniqueStatuses.map(s => <option key={s} value={s}>{s}</option>)}
@@ -188,11 +196,11 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
         </div>
 
         {showOfficer && (
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#A31736] h-9">
             <select 
               value={filters.officer} 
               onChange={(e) => setFilters({...filters, officer: e.target.value})}
-              className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+              className="w-full appearance-none outline-none text-xs text-gray-800 bg-transparent py-1 pl-3 pr-8 cursor-pointer font-medium"
             >
               <option value="">All Officers</option>
               {uniqueOfficers.map(o => <option key={o} value={o}>{o}</option>)}
@@ -207,7 +215,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
           <button 
             type="button"
             onClick={handleFilter}
-            className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded uppercase tracking-wider transition-colors shadow-3xs cursor-pointer h-9"
           >
             Filter
           </button>
@@ -215,7 +223,7 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
             <button 
               type="button"
               onClick={handleReset}
-              className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
+              className="text-xs font-bold text-gray-500 hover:text-[#A31736] px-2 py-2 uppercase tracking-wider transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -227,20 +235,20 @@ const ComplainTable: React.FC<ComplainTableProps> = ({ complaints, onView, showT
       <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
         <table className="w-full text-left border-collapse min-w-[950px]">
           <thead>
-            <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-              <th className="py-4 px-6">ID</th>
-              <th className="py-4 px-6">CITIZEN NAME</th>
-              <th className="py-4 px-6">CATEGORY</th>
-              <th className="py-4 px-6">RECEIVED DATE</th>
+            <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+              <th className="py-3 px-6">ID</th>
+              <th className="py-3 px-6">CITIZEN NAME</th>
+              <th className="py-3 px-6">CATEGORY</th>
+              <th className="py-3 px-6">RECEIVED DATE</th>
               {showDeadline && (
                 <>
-                  <th className="py-4 px-6">DEADLINE</th>
-                  <th className="py-4 px-6">DEADLINE STATUS</th>
+                  <th className="py-3 px-6">DEADLINE</th>
+                  <th className="py-3 px-6">DEADLINE STATUS</th>
                 </>
               )}
-              {showOfficer && <th className="py-4 px-6">ASSIGNED OFFICER</th>}
-              <th className="py-4 px-6">STATUS</th>
-              <th className="py-4 px-6 text-center">ACTION</th>
+              {showOfficer && <th className="py-3 px-6">ASSIGNED OFFICER</th>}
+              <th className="py-3 px-6">STATUS</th>
+              <th className="py-3 px-6 text-center">ACTION</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 text-sm">

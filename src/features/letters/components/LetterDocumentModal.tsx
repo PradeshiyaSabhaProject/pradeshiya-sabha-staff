@@ -121,13 +121,13 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-fade-in print:p-0 print:bg-white print:static">
-      <div className="bg-white rounded shadow-lg w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden print:shadow-none print:max-h-none print:max-w-none print:w-full print:rounded-none border border-gray-300">
+      <div className="bg-white rounded shadow-2xl w-full max-w-3xl flex flex-col max-h-[92vh] overflow-hidden print:shadow-none print:max-h-none print:max-w-none print:w-full print:rounded-none border border-gray-300">
         
         {/* Modal Toolbar (Hidden when printing) */}
         <div className="flex items-center justify-between px-6 py-4 bg-gray-900 text-white border-b border-gray-800 shrink-0 print:hidden">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block"></span>
-            <h2 className="text-sm font-bold tracking-wider uppercase text-gray-200">
+            <span className="w-2.5 h-2.5 rounded bg-[#A31736] inline-block"></span>
+            <h2 className="text-xs font-bold tracking-wider uppercase text-gray-200">
               Official Letter Document Preview
             </h2>
           </div>
@@ -144,7 +144,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             <button
               type="button"
               onClick={handleDownloadFile}
-              className="flex items-center gap-2 bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer shadow-md uppercase tracking-wider"
+              className="flex items-center gap-2 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2 rounded transition-colors cursor-pointer shadow-md uppercase tracking-wider"
               title="Download formatted document"
             >
               <DownloadIcon />
@@ -165,13 +165,13 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
         <div className="flex-1 overflow-y-auto p-8 md:p-12 bg-[#fdfdfc] text-gray-900 font-serif print:p-8 print:overflow-visible">
           
           {/* Letterhead Banner */}
-          <div className="text-center border-b-4 border-[#801028] pb-6 mb-8 relative">
+          <div className="text-center border-b-4 border-[#A31736] pb-6 mb-8 relative">
             <div className="absolute left-0 top-0 hidden sm:block">
-              <div className="w-12 h-12 rounded-full border-2 border-[#801028] flex items-center justify-center text-[#801028] font-extrabold text-xs tracking-tighter">
+              <div className="w-12 h-12 rounded border-2 border-[#A31736] flex items-center justify-center text-[#A31736] font-extrabold text-xs tracking-tighter">
                 HPS
               </div>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-[#801028] tracking-wide uppercase font-sans">
+            <h1 className="text-2xl md:text-3xl font-extrabold text-[#A31736] tracking-wide uppercase font-sans">
               Homagama Pradeshiya Sabha
             </h1>
             <p className="text-sm md:text-base text-gray-600 font-sans mt-1 font-semibold">
@@ -183,10 +183,10 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
           </div>
 
           {/* Auto-Filled Metadata Card Grid */}
-          <div className="bg-gray-50/80 border-2 border-gray-200 rounded-xl p-5 mb-8 font-sans text-xs md:text-sm grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6 shadow-xs">
+          <div className="bg-gray-50/80 border border-gray-300 rounded p-5 mb-8 font-sans text-xs md:text-sm grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-6 shadow-xs">
             <div className="flex justify-between border-b border-gray-200/60 pb-2 md:border-0 md:pb-0">
               <span className="font-bold text-gray-500 uppercase">Reference No:</span>
-              <span className="font-extrabold text-[#801028] font-mono text-base">{letter.refNo}</span>
+              <span className="font-extrabold text-[#A31736] font-mono text-base">{letter.refNo}</span>
             </div>
             <div className="flex justify-between border-b border-gray-200/60 pb-2 md:border-0 md:pb-0">
               <span className="font-bold text-gray-500 uppercase">Date &amp; Time:</span>
@@ -198,7 +198,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             </div>
             <div className="flex justify-between border-b border-gray-200/60 pb-2 md:border-0 md:pb-0">
               <span className="font-bold text-gray-500 uppercase">Status:</span>
-              <span className="px-2.5 py-0.5 rounded-full bg-green-100 text-green-800 font-bold text-xs uppercase tracking-wider">
+              <span className="px-2.5 py-0.5 rounded bg-green-100 text-green-800 font-bold text-xs uppercase tracking-wider border border-green-200">
                 {letter.status}
               </span>
             </div>
@@ -208,13 +208,13 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
             </div>
             <div className="flex justify-between md:col-span-2">
               <span className="font-bold text-gray-500 uppercase">Recipient Officer:</span>
-              <span className="font-bold text-[#801028]">{letter.recipientOfficer}</span>
+              <span className="font-bold text-[#A31736]">{letter.recipientOfficer}</span>
             </div>
           </div>
 
           {/* Subject Line */}
           <div className="mb-6">
-            <p className="text-base md:text-lg font-bold text-gray-900 underline underline-offset-4 decoration-[#801028] decoration-2 leading-relaxed">
+            <p className="text-base md:text-lg font-bold text-gray-900 underline underline-offset-4 decoration-[#A31736] decoration-2 leading-relaxed font-sans">
               SUBJECT: {letter.subject}
             </p>
           </div>
@@ -232,8 +232,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               </p>
               <div className="flex flex-wrap gap-2">
                 {letter.attachments.map(att => (
-                  <span key={att.id} className="inline-flex items-center gap-2 bg-gray-100 border border-gray-300 text-gray-800 text-xs font-medium px-3 py-1.5 rounded-lg">
-                    <span>ðŸ“„</span>
+                  <span key={att.id} className="inline-flex items-center gap-2 bg-gray-100 border border-gray-300 text-gray-800 text-xs font-medium px-3 py-1.5 rounded">
                     <span className="font-bold">{att.name}</span>
                     <span className="text-gray-400">({att.size})</span>
                   </span>
@@ -252,7 +251,7 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
               <p className="text-xs text-gray-400">Employee ID: {letter.senderId}</p>
             </div>
             <div className="hidden sm:block text-right">
-              <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center text-gray-300 text-[10px] font-bold uppercase text-center p-2 transform -rotate-12">
+              <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400 text-[10px] font-bold uppercase text-center p-2">
                 Official<br/>Municipal<br/>Stamp
               </div>
             </div>
@@ -266,14 +265,14 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
         </div>
 
         {/* Modal Footer Toolbar (Hidden when printing) */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between shrink-0 print:hidden font-sans">
+        <div className="px-6 py-3.5 bg-gray-50 border-t border-gray-200 flex items-center justify-between shrink-0 print:hidden font-sans">
           <span className="text-xs text-gray-500 font-medium">
-            ðŸ’¡ Click <strong>Download Letter</strong> to save a standalone HTML document or <strong>Print</strong> for PDF save.
+            Click <strong>Download Letter</strong> to save a standalone HTML document or <strong>Print</strong> for PDF save.
           </span>
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-semibold text-sm rounded-lg transition-colors cursor-pointer shadow-2xs"
+            className="px-6 py-2 bg-gray-800 hover:bg-gray-900 text-white font-bold text-xs uppercase tracking-wider rounded transition-colors cursor-pointer shadow-sm"
           >
             Close Preview
           </button>
@@ -285,4 +284,5 @@ const LetterDocumentModal: React.FC<LetterDocumentModalProps> = ({ letter, onClo
 }
 
 export default LetterDocumentModal
+
 

@@ -1,9 +1,57 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import L from 'leaflet'
-import { Info, Layers, LocateFixed, Minus, Plus, Search } from 'lucide-react'
 import { useAssetData, type AssetRecord } from './hooks/useAssetData'
 import { useFleetData } from '../fleet-management/hooks/useFleetData'
 import type { VehicleRecord } from '../fleet-management/data/initialFleetData'
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pure SVG Icons (Matching Overview Design System)
+// ─────────────────────────────────────────────────────────────────────────────
+const SearchIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400">
+    <circle cx="11" cy="11" r="8" />
+    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+  </svg>
+)
+
+const LayersIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-500">
+    <polygon points="12 2 2 7 12 12 22 7 12 2" />
+    <polyline points="2 17 12 22 22 17" />
+    <polyline points="2 12 12 17 22 12" />
+  </svg>
+)
+
+const LocateIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-700">
+    <circle cx="12" cy="12" r="3" />
+    <line x1="12" y1="2" x2="12" y2="6" />
+    <line x1="12" y1="18" x2="12" y2="22" />
+    <line x1="2" y1="12" x2="6" y2="12" />
+    <line x1="18" y1="12" x2="22" y2="12" />
+  </svg>
+)
+
+const PlusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+)
+
+const MinusIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 text-gray-700">
+    <line x1="5" y1="12" x2="19" y2="12" />
+  </svg>
+)
+
+const InfoIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#A31736]">
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
+  </svg>
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Layer Definitions
@@ -67,7 +115,6 @@ export const InteractiveGISMappingPage: React.FC = () => {
     if (status === 'Under Maintenance' || status === 'In Maintenance') return 'Maintenance'
     return 'Operational'
   }
-
 
   // Filter assets based on active layers, priority, and search
   const visibleAssets = useMemo(() => {
@@ -298,19 +345,19 @@ export const InteractiveGISMappingPage: React.FC = () => {
       {/* Top Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0 gap-3">
         <div>
-          <h1 className="text-xl font-bold text-[#800000] tracking-tight">Interactive GIS Map & Live GPS Telemetry</h1>
-          <p className="text-xs text-gray-500">Streetlamps, Lands, Roads, Grounds, and Garbage Tractors Live GPS Tracking</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">Interactive GIS Map & Live GPS Telemetry</h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">Streetlamps, Lands, Roads, Grounds, and Municipal Fleet Live GPS Tracking</p>
         </div>
         <div className="relative w-full sm:w-80">
           <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-gray-400">
-            <Search className="w-4 h-4 text-gray-400" />
+            <SearchIcon />
           </span>
           <input
             type="text"
             placeholder="Search streetlamps, lands, roads, tractors..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-300 rounded text-xs text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736] transition-all shadow-sm"
           />
         </div>
       </div>
@@ -324,29 +371,29 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Map Controls */}
           <div className="absolute bottom-20 left-6 z-[400] flex items-center gap-2">
             <div className="bg-white rounded shadow-sm border border-gray-300 divide-y divide-gray-200 overflow-hidden">
-              <button onClick={handleZoomIn} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full" title="Zoom In">
-                <Plus className="w-4 h-4 text-gray-700" />
+              <button onClick={handleZoomIn} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full cursor-pointer" title="Zoom In">
+                <PlusIcon />
               </button>
-              <button onClick={handleZoomOut} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full" title="Zoom Out">
-                <Minus className="w-4 h-4 text-gray-700" />
+              <button onClick={handleZoomOut} className="p-2.5 hover:bg-gray-50 text-gray-700 block w-full cursor-pointer" title="Zoom Out">
+                <MinusIcon />
               </button>
             </div>
-            <button onClick={handleCenterMap} className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700" title="Center Map">
-              <LocateFixed className="w-4 h-4 text-gray-700" />
+            <button onClick={handleCenterMap} className="bg-white p-2.5 rounded shadow-sm border border-gray-300 hover:bg-gray-50 text-gray-700 cursor-pointer" title="Center Map">
+              <LocateIcon />
             </button>
           </div>
 
           {/* Priority Legend Overlay */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-[400] bg-white/95 px-4 sm:px-6 py-2 rounded shadow-sm border border-gray-300 flex flex-wrap items-center justify-center gap-3 sm:gap-6 text-[11px] font-semibold text-gray-700 select-none uppercase tracking-wider">
-            <button onClick={() => togglePriority('High Priority')} className={`flex items-center gap-2 ${priorityFilter.includes('High Priority') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+            <button onClick={() => togglePriority('High Priority')} className={`flex items-center gap-2 cursor-pointer ${priorityFilter.includes('High Priority') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
               <span className="w-3.5 h-3.5 rounded bg-red-700 shadow-sm" />
               <span>High Priority</span>
             </button>
-            <button onClick={() => togglePriority('Maintenance')} className={`flex items-center gap-2 ${priorityFilter.includes('Maintenance') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+            <button onClick={() => togglePriority('Maintenance')} className={`flex items-center gap-2 cursor-pointer ${priorityFilter.includes('Maintenance') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
               <span className="w-3.5 h-3.5 rounded bg-amber-800 shadow-sm" />
               <span>Maintenance</span>
             </button>
-            <button onClick={() => togglePriority('Operational')} className={`flex items-center gap-2 ${priorityFilter.includes('Operational') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
+            <button onClick={() => togglePriority('Operational')} className={`flex items-center gap-2 cursor-pointer ${priorityFilter.includes('Operational') ? 'opacity-100 font-bold' : 'opacity-40'}`}>
               <span className="w-3.5 h-3.5 rounded bg-emerald-600 shadow-sm" />
               <span>Operational</span>
             </button>
@@ -358,7 +405,7 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Card 1: ASSET & GPS LAYERS */}
           <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4 text-xs font-bold text-gray-600 tracking-wider uppercase">
-              <Layers className="w-4 h-4 text-gray-500" />
+              <LayersIcon />
               <span>GIS MAP LAYERS</span>
             </div>
             <div className="space-y-3">
@@ -388,22 +435,22 @@ export const InteractiveGISMappingPage: React.FC = () => {
           <div className="bg-white rounded border border-gray-300 p-5 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <span className="text-xs font-bold text-gray-600 tracking-wider uppercase">ACTIVE VIEW STATS</span>
-              <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">
+              <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-bold rounded uppercase tracking-wide border border-emerald-200">
                 Live GPS Active
               </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-gray-50 rounded p-3.5 border border-gray-200">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                   TOTAL VISIBLE
                 </div>
-                <div className="text-2xl font-black text-gray-800">{visibleAssetsCount}</div>
+                <div className="text-2xl font-black text-gray-900">{visibleAssetsCount}</div>
               </div>
               <div className="bg-gray-50 rounded p-3.5 border border-gray-200">
-                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
+                <div className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">
                   MAINTENANCE / RISKS
                 </div>
-                <div className="text-2xl font-black text-red-600">{riskAlertsCount}</div>
+                <div className="text-2xl font-black text-red-700">{riskAlertsCount}</div>
               </div>
             </div>
           </div>
@@ -411,14 +458,14 @@ export const InteractiveGISMappingPage: React.FC = () => {
           {/* Card 3: Selected Asset / Inspector */}
           <div className="bg-gray-50 rounded border border-gray-300 p-5">
             <div className="flex items-center gap-2 mb-3 text-xs font-bold text-gray-600 uppercase tracking-wider">
-              <Info className="w-5 h-5 text-[#A31736]" />
+              <InfoIcon />
               <span>{selectedAsset ? 'Inspector & Telemetry' : 'Interactive GIS Guide'}</span>
             </div>
             {selectedAsset ? (
               <div className="space-y-3 text-xs">
                 <div>
-                  <span className="text-[11px] font-bold text-gray-400 uppercase block">{selectedAsset.id || (selectedAsset as any).registrationNumber}</span>
-                  <h4 className="text-base font-bold text-gray-900 leading-snug">{selectedAsset.name}</h4>
+                  <span className="text-[11px] font-bold text-gray-500 uppercase block">{selectedAsset.id || (selectedAsset as any).registrationNumber}</span>
+                  <h4 className="text-sm font-bold text-gray-900 leading-snug">{selectedAsset.name}</h4>
                 </div>
                 <div className="text-gray-700 space-y-1">
                   <div><strong>Location:</strong> {(selectedAsset as any).location || (selectedAsset as any).currentLocation}</div>

@@ -106,16 +106,16 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-fade-in">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden border border-gray-200">
+      <div className="bg-white rounded shadow-2xl w-full max-w-3xl flex flex-col max-h-[90vh] overflow-hidden border border-gray-300">
         
-        {/* Clean White Header matching Letter / Complain Modal */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-white">
+        {/* Clean Header */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-gray-50/80">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#801028]/10 border border-[#801028]/20 flex items-center justify-center font-bold text-[#801028] text-sm shrink-0">
+            <div className="w-9 h-9 rounded bg-[#A31736]/10 border border-[#A31736]/20 flex items-center justify-center font-bold text-[#A31736] text-xs shrink-0">
               {user.avatarInitials || 'U'}
             </div>
             <div className="min-w-0">
-              <h2 className="text-lg font-bold text-gray-900 truncate">Manage Sidebar Access Permissions</h2>
+              <h2 className="text-sm sm:text-base font-bold text-gray-900 uppercase tracking-tight truncate">Manage Sidebar Access Permissions</h2>
               <p className="text-xs text-gray-500 truncate">
                 Configure module authorizations for <span className="font-bold text-gray-800">{user.employeeName}</span> ({user.designation})
               </p>
@@ -124,34 +124,34 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 rounded-lg transition-colors cursor-pointer shrink-0"
+            className="text-gray-400 hover:text-gray-700 hover:bg-gray-100 p-1.5 rounded transition-colors cursor-pointer shrink-0"
           >
             <CloseIcon />
           </button>
         </div>
 
         {/* Quick Presets Bar */}
-        <div className="bg-gray-50 px-6 py-3 border-b border-gray-200 flex items-center justify-between flex-wrap gap-3">
-          <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Quick Presets:</span>
+        <div className="bg-gray-50/50 px-5 py-2.5 border-b border-gray-200 flex items-center justify-between flex-wrap gap-2.5">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500">Quick Presets:</span>
           <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
               onClick={() => handlePreset('All')}
-              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200 rounded hover:bg-emerald-100 transition-colors cursor-pointer"
             >
               Select All (Admin)
             </button>
             <button
               type="button"
               onClick={() => handlePreset('Staff')}
-              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-200 rounded hover:bg-blue-100 transition-colors cursor-pointer"
             >
               Standard Staff
             </button>
             <button
               type="button"
               onClick={() => handlePreset('Clear')}
-              className="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-gray-200 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-300 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-xs font-bold uppercase tracking-wider bg-gray-200 text-gray-700 border border-gray-300 rounded hover:bg-gray-300 transition-colors cursor-pointer"
             >
               Clear All
             </button>
@@ -159,8 +159,8 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
         </div>
 
         {/* Permissions Grid */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-5 overflow-y-auto flex-1 space-y-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {AVAILABLE_FEATURES.map((feature) => {
               const isChecked = selectedFeatures.includes(feature.id)
               const childrenIds = feature.children?.map((c) => c.id) || []
@@ -171,27 +171,27 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
               return (
                 <div
                   key={feature.id}
-                  className={`border rounded-xl transition-all overflow-hidden ${
+                  className={`border rounded transition-all overflow-hidden ${
                     isChecked
-                      ? 'border-[#801028]/40 bg-[#801028]/[0.02] shadow-xs'
+                      ? 'border-[#A31736]/40 bg-[#A31736]/[0.02] shadow-xs'
                       : 'border-gray-200 bg-white hover:border-gray-300'
                   }`}
                 >
-                  <div className="p-3.5 flex items-start justify-between gap-3 bg-gray-50/60 border-b border-gray-100">
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <div className="p-3 flex items-start justify-between gap-3 bg-gray-50/60 border-b border-gray-100">
+                    <div className="flex items-start gap-2.5 flex-1 min-w-0">
                       <input
                         id={`feature-chk-${feature.id}`}
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => toggleFeature(feature.id, childrenIds)}
-                        className="mt-1 w-4 h-4 text-[#801028] border-gray-300 rounded focus:ring-[#801028] cursor-pointer shrink-0"
+                        className="mt-0.5 w-4 h-4 text-[#A31736] border-gray-300 rounded focus:ring-[#A31736] cursor-pointer shrink-0"
                       />
                       <label
                         htmlFor={`feature-chk-${feature.id}`}
                         className="flex-1 min-w-0 cursor-pointer select-none"
                       >
-                        <span className="block font-bold text-sm text-gray-900 truncate">{feature.label}</span>
-                        <span className="block text-xs text-gray-500 mt-0.5 line-clamp-2 font-normal">{feature.description}</span>
+                        <span className="block font-bold text-xs text-gray-900 truncate">{feature.label}</span>
+                        <span className="block text-[11px] text-gray-500 mt-0.5 line-clamp-2 font-normal">{feature.description}</span>
                       </label>
                     </div>
 
@@ -199,7 +199,7 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
                       <button
                         type="button"
                         onClick={() => toggleExpand(feature.id)}
-                        className="text-xs font-semibold px-2 py-1 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 flex items-center gap-1 shrink-0 text-gray-600 cursor-pointer"
+                        className="text-[11px] font-semibold px-2 py-0.5 bg-white border border-gray-200 rounded hover:bg-gray-100 flex items-center gap-1 shrink-0 text-gray-600 cursor-pointer"
                       >
                         <span>{checkedChildrenCount}/{childrenIds.length}</span>
                         <svg
@@ -216,23 +216,23 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
 
                   {/* Children list */}
                   {hasChildren && isExpanded && (
-                    <div className="p-3 bg-white space-y-1.5">
+                    <div className="p-2.5 bg-white space-y-1">
                       {feature.children?.map((child) => {
                         const childChecked = selectedFeatures.includes(child.id)
                         return (
                           <div
                             key={child.id}
-                            className={`flex items-center justify-between p-2 rounded-lg text-xs transition-colors cursor-pointer select-none ${
-                              childChecked ? 'bg-[#801028]/10 text-[#801028] font-bold' : 'text-gray-600 hover:bg-gray-50'
+                            className={`flex items-center justify-between p-1.5 rounded text-xs transition-colors cursor-pointer select-none ${
+                              childChecked ? 'bg-[#A31736]/10 text-[#A31736] font-bold' : 'text-gray-600 hover:bg-gray-50'
                             }`}
                           >
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
                               <input
                                 id={`child-chk-${child.id}`}
                                 type="checkbox"
                                 checked={childChecked}
                                 onChange={() => toggleChildFeature(feature.id, child.id)}
-                                className="w-3.5 h-3.5 text-[#801028] border-gray-300 rounded focus:ring-[#801028] cursor-pointer shrink-0"
+                                className="w-3.5 h-3.5 text-[#A31736] border-gray-300 rounded focus:ring-[#A31736] cursor-pointer shrink-0"
                               />
                               <label
                                 htmlFor={`child-chk-${child.id}`}
@@ -254,22 +254,22 @@ export const EditPermissionsModal: React.FC<EditPermissionsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
+        <div className="px-5 py-3.5 bg-gray-50 border-t border-gray-200 flex items-center justify-between gap-3">
           <div className="text-xs text-gray-500">
             <span className="font-bold text-gray-900">{selectedFeatures.length}</span> permissions selected
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-xs rounded-lg transition-colors cursor-pointer uppercase tracking-wider"
+              className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-xs rounded transition-colors cursor-pointer uppercase tracking-wider"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={handleSave}
-              className="px-6 py-2.5 bg-[#801028] hover:bg-[#600a1c] text-white rounded-lg text-xs font-bold uppercase tracking-wider shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+              className="px-5 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <CheckIcon />
               Save Permissions

@@ -22,25 +22,29 @@ const AllLettersPage: React.FC = () => {
       {/* Header section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">All Letters</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage and review all citizen-submitted letters</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Citizen Letters &amp; Official Dispatches
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Manage, review, and track all citizen-submitted formal representations, inquiries, and departmental petitions.
+          </p>
         </div>
         <div>
-          <button type="button" className="flex items-center gap-2 bg-white border border-gray-300 text-xs font-semibold px-4 py-2 rounded shadow-sm hover:bg-gray-50 transition-colors uppercase tracking-wider">
-            <span className="text-gray-700">Quick Stats</span>
-            <span className="flex items-center gap-1 text-[10px] bg-orange-100 text-orange-700 px-2 py-0.5 rounded uppercase tracking-wider font-bold border border-orange-200">
-              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 block" /> {stats.pending} PENDING
+          <div className="flex items-center gap-1.5 bg-white border border-gray-300 text-xs font-semibold px-3 py-1.5 rounded shadow-3xs">
+            <span className="text-gray-600 uppercase tracking-wider text-[11px]">Intake Queue:</span>
+            <span className="font-bold text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200 text-[10px]">
+              {stats.pending} PENDING
             </span>
-          </button>
+          </div>
         </div>
       </div>
 
       {loading ? (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-gray-100 rounded-xl animate-pulse" />)}
+            {[1, 2, 3, 4].map(i => <div key={i} className="h-32 bg-gray-100 rounded animate-pulse" />)}
           </div>
-          <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-96 bg-gray-100 rounded animate-pulse" />
         </div>
       ) : (
         <>
@@ -64,4 +68,5 @@ const AllLettersPage: React.FC = () => {
 }
 
 export default AllLettersPage
+
 

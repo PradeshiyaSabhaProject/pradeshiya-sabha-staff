@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
 import { PutInMaintenanceModal } from './components/PutInMaintenanceModal'
@@ -24,20 +23,13 @@ export const FleetMaintenancePage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Page Header matching Letter/Asset Management ── */}
+      {/* ── Page Header matching Overview Design Language ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/fleet/overview" className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline">
-              Fleet Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Maintenance Workshop</span>
-          </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Fleet Maintenance & Workshop Hub
           </h1>
-          <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-2xl">
             Schedule vehicle repairs, monitor mechanical service orders at municipal garages, and authorize return to active fleet duty.
           </p>
         </div>
@@ -51,9 +43,9 @@ export const FleetMaintenancePage: React.FC = () => {
 
       {/* ── Active Maintenance Workshop Orders ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
-          <h2 className="text-base font-bold text-gray-900">Vehicles Currently In Workshop</h2>
-          <p className="text-xs text-gray-500">Vehicles stationed at service garages awaiting repair completion</p>
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">Vehicles Currently In Workshop</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Vehicles stationed at service garages awaiting repair completion</p>
         </div>
 
         {inMaintenanceVehicles.length === 0 ? (
@@ -153,22 +145,22 @@ export const FleetMaintenancePage: React.FC = () => {
 
       {/* ── Comprehensive Service History Log ── */}
       <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
-          <h2 className="text-base font-bold text-gray-900">Comprehensive Council Maintenance History</h2>
-          <p className="text-xs text-gray-500">Historical log of all workshop repairs and routine services</p>
+        <div className="px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">Comprehensive Council Maintenance History</h2>
+          <p className="text-xs text-gray-500 mt-0.5">Historical log of all workshop repairs and routine services</p>
         </div>
 
         <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">REGISTRATION #</th>
-                <th className="py-4 px-6">VEHICLE</th>
-                <th className="py-4 px-6">WORKSHOP</th>
-                <th className="py-4 px-6">MAINTENANCE SCOPE</th>
-                <th className="py-4 px-6">DATES</th>
-                <th className="py-4 px-6">COST (LKR)</th>
-                <th className="py-4 px-6">STATUS</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-6">REGISTRATION #</th>
+                <th className="py-3 px-6">VEHICLE</th>
+                <th className="py-3 px-6">WORKSHOP</th>
+                <th className="py-3 px-6">MAINTENANCE SCOPE</th>
+                <th className="py-3 px-6">DATES</th>
+                <th className="py-3 px-6">COST (LKR)</th>
+                <th className="py-3 px-6">STATUS</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">

@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useFleetData } from './hooks/useFleetData'
 import type { FleetApprovalRequest, ApprovalStatus } from './data/initialFleetData'
 
 export const FleetApprovalsPage: React.FC = () => {
-  const location = useLocation()
   const { approvalRequests, approveRequest, rejectRequest } = useFleetData()
 
   const [activeTab, setActiveTab] = useState<'All' | ApprovalStatus>('Pending Approval')
@@ -86,18 +85,15 @@ export const FleetApprovalsPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      {/* Top Breadcrumb & Title */}
+    <div className="space-y-6 animate-fade-in pb-8">
+      {/* Top Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1">
-            Pradeshiya Sabha Administration • Fleet Management
-          </div>
-          <h1 className="text-2xl font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Fleet Governance & Management Approvals
           </h1>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Authorize vehicle dispatch orders, workshop repairs, driver assignments, and asset registrations
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Authorize vehicle dispatch orders, workshop repairs, driver assignments, and asset registrations.
           </p>
         </div>
       </div>
@@ -106,125 +102,95 @@ export const FleetApprovalsPage: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2 border-b border-gray-200 pb-2">
         <Link
           to="/fleet/overview"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
-            location.pathname.includes('/overview')
-              ? 'bg-[#A31736] text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-xs font-semibold uppercase tracking-wider transition-colors"
         >
           Overview
         </Link>
         <Link
           to="/fleet/vehicles"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
-            location.pathname.includes('/vehicles')
-              ? 'bg-[#A31736] text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-xs font-semibold uppercase tracking-wider transition-colors"
         >
           Vehicle Directory
         </Link>
         <Link
           to="/fleet/dispatch"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
-            location.pathname.includes('/dispatch')
-              ? 'bg-[#A31736] text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-xs font-semibold uppercase tracking-wider transition-colors"
         >
           Mission Dispatch
         </Link>
         <Link
           to="/fleet/maintenance"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
-            location.pathname.includes('/maintenance')
-              ? 'bg-[#A31736] text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-xs font-semibold uppercase tracking-wider transition-colors"
         >
           Maintenance Hub
         </Link>
         <Link
           to="/fleet/drivers"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors ${
-            location.pathname.includes('/drivers')
-              ? 'bg-[#A31736] text-white'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-white text-gray-700 hover:bg-gray-50 border border-gray-300 text-xs font-semibold uppercase tracking-wider transition-colors"
         >
           Drivers & Operators
         </Link>
         <Link
           to="/fleet/approvals"
-          className={`px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 ${
-            location.pathname.includes('/approvals')
-              ? 'bg-[#A31736] text-white shadow-sm'
-              : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
-          }`}
+          className="px-4 py-2 rounded bg-[#A31736] text-white text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2"
         >
-          <span>Approvals Desk</span>
+          <span>Authorizations Desk</span>
           {pendingCount > 0 && (
-            <span
-              className={`px-1.5 py-0.5 rounded-full text-[10px] font-extrabold ${
-                location.pathname.includes('/approvals')
-                  ? 'bg-white text-[#A31736]'
-                  : 'bg-amber-100 text-amber-800'
-              }`}
-            >
+            <span className="px-1.5 py-0.2 bg-white text-[#A31736] rounded-full text-[10px] font-black">
               {pendingCount}
             </span>
           )}
         </Link>
       </div>
 
-      {/* KPI Stats Cards */}
+      {/* Approval KPI Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 sm:p-5 rounded border border-gray-300 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
-              Pending Authorization
+            <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+              Awaiting Executive Sign-off
             </span>
-            <span className="text-2xl font-extrabold text-amber-600">{pendingCount}</span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-amber-700">{pendingCount}</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-            !
+          <div className="p-2 bg-amber-50 text-amber-800 rounded border border-amber-200 font-bold">
+            Pending
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 sm:p-5 rounded border border-gray-300 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
-              Authorized & Executed
+            <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+              Approved Operations
             </span>
-            <span className="text-2xl font-extrabold text-emerald-600">{approvedCount}</span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-emerald-700">{approvedCount}</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-            ✓
+          <div className="p-2 bg-emerald-50 text-emerald-800 rounded border border-emerald-200 font-bold">
+            ✓ Signed
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white p-4 sm:p-5 rounded border border-gray-300 shadow-sm flex items-center justify-between">
           <div>
-            <span className="text-xs font-bold text-gray-400 uppercase tracking-wider block mb-1">
+            <span className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
               Declined / Rejected
             </span>
-            <span className="text-2xl font-extrabold text-[#A31736]">{rejectedCount}</span>
+            <span className="text-2xl sm:text-3xl font-extrabold text-[#A31736]">{rejectedCount}</span>
           </div>
-          <div className="w-10 h-10 rounded-xl bg-red-50 text-[#A31736] flex items-center justify-center font-bold">
-            ×
+          <div className="p-2 bg-red-50 text-[#A31736] rounded border border-red-200 font-bold">
+            × Refused
           </div>
         </div>
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white p-4 rounded border border-gray-300 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto">
           {(['Pending Approval', 'All', 'Approved', 'Rejected'] as const).map((tab) => (
             <button
               key={tab}
               type="button"
               onClick={() => setActiveTab(tab)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
+              className={`px-3.5 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition-all cursor-pointer whitespace-nowrap ${
                 activeTab === tab
                   ? 'bg-[#A31736] text-white shadow-xs'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -241,13 +207,13 @@ export const FleetApprovalsPage: React.FC = () => {
             placeholder="Search request #, vehicle, or title..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs focus:outline-none focus:border-[#A31736]"
+            className="w-full bg-white border border-gray-300 rounded px-3.5 py-2 text-xs text-gray-800 focus:outline-none focus:border-[#A31736]"
           />
         </div>
       </div>
 
       {/* Requests Table / Cards */}
-      <div className="bg-white rounded-2xl border border-gray-200 shadow-xs overflow-hidden">
+      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
         {filteredRequests.length === 0 ? (
           <div className="text-center py-12 text-gray-400 text-xs font-semibold">
             No approval requests match the current filters.
@@ -256,7 +222,7 @@ export const FleetApprovalsPage: React.FC = () => {
           <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
             <table className="w-full text-left border-collapse min-w-[950px]">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
                   <th className="py-3 px-4">REQUEST ID</th>
                   <th className="py-3 px-4">OPERATION TYPE</th>
                   <th className="py-3 px-4">ACTION & DETAILS</th>

@@ -47,29 +47,29 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
       
       {/* Filters Bar */}
-      <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
-        <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[200px] max-w-full sm:max-w-sm hover:border-gray-400 focus-within:border-[#801028]">
+      <div className="p-3.5 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 border-b border-gray-200 bg-gray-50/30">
+        <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[200px] max-w-full sm:max-w-sm h-9 hover:border-gray-400 focus-within:border-[#A31736]">
           <select 
             value={departmentFilter} 
             onChange={(e) => setDepartmentFilter(e.target.value)}
-            className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+            className="w-full appearance-none outline-none text-xs font-medium text-gray-700 bg-transparent py-1.5 pl-3 pr-8 cursor-pointer"
           >
             <option value="">All Municipal Departments</option>
             {departments.map(d => <option key={d} value={d}>{d}</option>)}
           </select>
-          <div className="absolute right-3 pointer-events-none">
+          <div className="absolute right-2.5 pointer-events-none">
             <ChevronDownIcon />
           </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="flex items-center gap-2">
           <button 
             type="button"
             onClick={handleFilter}
-            className="bg-white border border-gray-300 text-gray-700 font-semibold px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-5 h-9 rounded uppercase tracking-wider transition-colors cursor-pointer shadow-xs"
           >
             Filter
           </button>
@@ -77,7 +77,7 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
             <button 
               type="button"
               onClick={handleReset}
-              className="text-gray-500 hover:text-[#801028] font-medium px-2 py-2 text-sm transition-colors cursor-pointer"
+              className="text-xs font-bold text-gray-500 hover:text-[#A31736] px-2 h-9 uppercase tracking-wider transition-colors cursor-pointer"
             >
               Reset
             </button>
@@ -89,40 +89,40 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
       <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
         <table className="w-full text-left border-collapse min-w-[900px]">
           <thead>
-            <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-              <th className="py-4 px-6">OFFICER ID &amp; NAME</th>
-              <th className="py-4 px-6">DEPARTMENT</th>
-              <th className="py-4 px-6">SPECIALIZED CATEGORY FOCUS</th>
-              <th className="py-4 px-6 text-center">TOTAL ASSIGNED</th>
-              <th className="py-4 px-6 text-center">COMPLETED</th>
-              <th className="py-4 px-6 text-center">PENDING REVIEW</th>
+            <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+              <th className="py-3 px-4">OFFICER ID &amp; NAME</th>
+              <th className="py-3 px-4">DEPARTMENT</th>
+              <th className="py-3 px-4">SPECIALIZED CATEGORY FOCUS</th>
+              <th className="py-3 px-4 text-center">TOTAL ASSIGNED</th>
+              <th className="py-3 px-4 text-center">COMPLETED</th>
+              <th className="py-3 px-4 text-center">PENDING REVIEW</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 text-sm">
+          <tbody className="divide-y divide-gray-200 text-xs">
             {filteredOfficers.map((officer) => (
               <tr key={officer.id} className="hover:bg-gray-50/60 transition-colors">
-                <td className="py-4 px-6 whitespace-nowrap">
+                <td className="py-3.5 px-4 whitespace-nowrap">
                   <div className="font-bold text-gray-900">{officer.name}</div>
-                  <div className="text-xs text-gray-400 mt-0.5">{officer.role}</div>
+                  <div className="text-[11px] text-gray-500 mt-0.5">{officer.role}</div>
                 </td>
-                <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">
-                  <span className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-800 inline-block">
+                <td className="py-3.5 px-4 font-semibold text-gray-700 whitespace-nowrap">
+                  <span className="px-2.5 py-0.5 bg-gray-100 border border-gray-300 rounded text-[11px] font-bold text-gray-800 inline-block uppercase">
                     {officer.department}
                   </span>
                 </td>
-                <td className="py-4 px-6">
-                  <span className="bg-orange-50 text-orange-800 border border-orange-200 px-2.5 py-1 rounded text-xs font-semibold inline-block">
+                <td className="py-3.5 px-4">
+                  <span className="bg-orange-50 text-orange-800 border border-orange-200 px-2 py-0.5 rounded text-[11px] font-semibold inline-block">
                     {officer.categoryFocus}
                   </span>
                 </td>
-                <td className="py-4 px-6 text-center font-extrabold text-gray-900 whitespace-nowrap">
+                <td className="py-3.5 px-4 text-center font-bold text-gray-900 whitespace-nowrap">
                   {officer.assignedApplications}
                 </td>
-                <td className="py-4 px-6 text-center font-bold text-green-700 whitespace-nowrap">
+                <td className="py-3.5 px-4 text-center font-bold text-emerald-700 whitespace-nowrap">
                   {officer.completedApplications}
                 </td>
-                <td className="py-4 px-6 text-center whitespace-nowrap">
-                  <span className={`px-3 py-1 rounded-full border text-xs font-bold ${getRemainingBadgeStyle(officer.remainingApplications)}`}>
+                <td className="py-3.5 px-4 text-center whitespace-nowrap">
+                  <span className={`px-2.5 py-0.5 rounded border text-[11px] font-bold uppercase tracking-wider ${getRemainingBadgeStyle(officer.remainingApplications)}`}>
                     {officer.remainingApplications} Pending
                   </span>
                 </td>
@@ -130,7 +130,7 @@ const ApplicationOfficerTable: React.FC<ApplicationOfficerTableProps> = ({ offic
             ))}
             {filteredOfficers.length === 0 && (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-gray-500">
+                <td colSpan={6} className="py-8 text-center text-gray-500 text-xs">
                   No officers match the selected departmental filter.
                 </td>
               </tr>

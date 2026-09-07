@@ -67,17 +67,10 @@ export const FleetDirectoryPage: React.FC = () => {
       {/* ── Page Header ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/fleet/overview" className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline">
-              Fleet Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Vehicle Directory</span>
-          </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Municipal Vehicle Directory
           </h1>
-          <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-2xl">
             Complete inventory of Pradeshiya Sabha municipal vehicles, permit validity dates, driver assignments, and current real-time locations.
           </p>
         </div>
@@ -109,42 +102,43 @@ export const FleetDirectoryPage: React.FC = () => {
             placeholder="Search reg number, name, department..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full sm:w-80 bg-white border border-gray-300 rounded px-3.5 py-2 text-sm text-gray-800 focus:outline-none focus:border-[#A31736]"
+            className="w-full sm:w-64 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#A31736] h-9"
           />
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
+            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:border-[#A31736] h-9 cursor-pointer"
           >
-            <option value="All">All Categories ({vehicles.length})</option>
+            <option value="All">All Vehicle Types</option>
             <option value="Garbage Compactor">Garbage Compactor</option>
             <option value="Water Bowser">Water Bowser</option>
-            <option value="Heavy Equipment (JCB)">Heavy Equipment (JCB)</option>
-            <option value="Official Vehicle (Cab/Van)">Official Vehicle (Cab/Van)</option>
-            <option value="Tractor & Trailer">Tractor & Trailer</option>
-            <option value="Gully Bowser">Gully Bowser</option>
+            <option value="Tractor">Tractor</option>
+            <option value="Backhoe / JCB">Backhoe / JCB</option>
+            <option value="Cab / Inspection Vehicle">Cab / Inspection Vehicle</option>
+            <option value="Ambulance / Health">Ambulance / Health</option>
+            <option value="Motorcycle">Motorcycle</option>
           </select>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full sm:w-auto px-3.5 py-2 rounded border border-gray-300 text-sm font-medium text-gray-700 bg-white"
+            className="bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:border-[#A31736] h-9 cursor-pointer"
           >
-            <option value="All">All Statuses</option>
-            <option value="Available">Available</option>
-            <option value="On Mission">On Mission</option>
-            <option value="In Maintenance">In Maintenance</option>
-            <option value="Permit Due">Permit Due</option>
+            <option value="All">All Operations Status</option>
+            <option value="Available">Available at Depot</option>
+            <option value="On Mission">Active On Mission</option>
+            <option value="In Maintenance">In Workshop</option>
+            <option value="Permit Due">Permit Attention</option>
           </select>
 
           <button
             type="button"
             onClick={() => setShowOnlyPermitAlerts(!showOnlyPermitAlerts)}
-            className={`w-full sm:w-auto px-4 py-2 rounded border text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer text-center ${
+            className={`px-3 py-1.5 rounded text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer h-9 ${
               showOnlyPermitAlerts
-                ? 'bg-[#A31736] border-[#A31736] text-white shadow-sm'
-                : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                ? 'bg-[#A31736] text-white'
+                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
             }`}
           >
             {showOnlyPermitAlerts ? '✓ Permits Due Only' : 'Filter Permits Due'}
@@ -161,15 +155,15 @@ export const FleetDirectoryPage: React.FC = () => {
         <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
           <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">REGISTRATION #</th>
-                <th className="py-4 px-6">VEHICLE MAKE & MODEL</th>
-                <th className="py-4 px-6">CATEGORY & DEPT</th>
-                <th className="py-4 px-6">WHERE IT IS AT THE MOMENT</th>
-                <th className="py-4 px-6">ASSIGNED DRIVER</th>
-                <th className="py-4 px-6">PERMIT VALIDITY</th>
-                <th className="py-4 px-6">STATUS</th>
-                <th className="py-4 px-6 text-right">ACTIONS</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-6">REGISTRATION #</th>
+                <th className="py-3 px-6">VEHICLE MAKE & MODEL</th>
+                <th className="py-3 px-6">CATEGORY & DEPT</th>
+                <th className="py-3 px-6">WHERE IT IS AT THE MOMENT</th>
+                <th className="py-3 px-6">ASSIGNED DRIVER</th>
+                <th className="py-3 px-6">PERMIT VALIDITY</th>
+                <th className="py-3 px-6">STATUS</th>
+                <th className="py-3 px-6 text-right">ACTIONS</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">

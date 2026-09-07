@@ -149,7 +149,7 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
   return (
     <div className="space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4">
-        <h2 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-gray-700 flex items-center gap-2">
+        <h2 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-gray-800 flex items-center gap-2">
           <BuildingIcon />
           <span>Municipal Facilities Directory & Availability</span>
         </h2>
@@ -157,7 +157,7 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
           <button
             type="button"
             onClick={() => onSelectFacility?.('')}
-            className="self-start sm:self-auto text-xs font-bold text-[#801028] hover:underline bg-[#801028]/10 px-3 py-1 rounded-full border border-[#801028]/20 cursor-pointer"
+            className="self-start sm:self-auto text-xs font-bold text-[#A31736] hover:underline bg-[#A31736]/10 px-2.5 py-0.5 rounded border border-[#A31736]/20 cursor-pointer uppercase tracking-wider"
           >
             Clear Filter ({selectedFacility}) ×
           </button>
@@ -176,8 +176,8 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
               type="button"
               key={fac.name}
               onClick={() => onSelectFacility?.(isSelected ? '' : fac.name)}
-              className={`relative bg-white border rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all cursor-pointer flex flex-col justify-between text-left font-normal w-full ${
-                isSelected ? 'ring-2 ring-[#801028] border-[#801028] bg-rose-50/20' : 'border-gray-300 hover:border-gray-400'
+              className={`relative bg-white border rounded p-4 shadow-sm hover:shadow transition-all cursor-pointer flex flex-col justify-between text-left font-normal w-full ${
+                isSelected ? 'ring-2 ring-[#A31736] border-[#A31736] bg-rose-50/20' : 'border-gray-300 hover:border-gray-400'
               }`}
             >
               <span className="block w-full">
@@ -186,39 +186,39 @@ const FacilityCards: React.FC<FacilityCardsProps> = ({ bookings, onSelectFacilit
                     <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-600 inline-block">
                       {fac.category}
                     </span>
-                    <span className="block text-base font-extrabold text-gray-900 mt-1.5 leading-snug">
+                    <span className="block text-sm font-bold text-gray-900 mt-1.5 leading-snug">
                       {fac.name}
                     </span>
                   </span>
-                  <span className={`p-2.5 rounded-xl bg-gradient-to-br ${fac.imageBg} border shrink-0 flex items-center justify-center shadow-2xs`}>
+                  <span className={`p-2 rounded bg-gradient-to-br ${fac.imageBg} border shrink-0 flex items-center justify-center shadow-2xs`}>
                     {fac.icon}
                   </span>
                 </span>
 
-                <span className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs font-semibold text-gray-500 my-3">
+                <span className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs font-medium text-gray-500 my-2.5">
                   <span className="flex items-center gap-1.5">
                     <UsersGroupIcon />
                     {fac.capacity}
                   </span>
                   <span className="text-gray-300 hidden sm:inline">|</span>
-                  <span className="text-[#801028] font-bold">{fac.rate}</span>
+                  <span className="text-[#A31736] font-bold">{fac.rate}</span>
                 </span>
               </span>
 
-              <span className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs w-full block">
+              <span className="pt-2.5 border-t border-gray-100 flex items-center justify-between text-xs w-full block">
                 <span className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  <span className="flex items-center gap-1.5 text-gray-600 font-semibold">
-                    <span className="w-2 h-2 rounded-full bg-green-500"></span>
+                  <span className="flex items-center gap-1.5 text-gray-600 font-semibold text-[11px]">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                     {approvedCount} Reserved
                   </span>
                   {pendingCount > 0 && (
-                    <span className="flex items-center gap-1.5 text-orange-700 font-bold bg-orange-100 px-2 py-0.5 rounded-full border border-orange-200">
+                    <span className="flex items-center gap-1 text-orange-700 font-bold bg-orange-50 px-2 py-0.5 rounded text-[10px] border border-orange-200 uppercase tracking-wider">
                       <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse"></span>
                       {pendingCount} Pending
                     </span>
                   )}
                 </span>
-                <span className="text-[11px] font-bold text-[#801028] uppercase tracking-wider shrink-0 block">
+                <span className="text-[11px] font-bold text-[#A31736] uppercase tracking-wider shrink-0 block">
                   {isSelected ? 'Active Filter' : 'Filter →'}
                 </span>
               </span>

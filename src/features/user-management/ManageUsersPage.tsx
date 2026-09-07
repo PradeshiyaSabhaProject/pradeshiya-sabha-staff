@@ -182,91 +182,102 @@ export const ManageUsersPage: React.FC = () => {
       id: 'total',
       label: 'Total Portal Users',
       value: totalCount,
+      percentage: 100,
       icon: <UsersIcon />,
       colorClass: 'text-blue-600',
-      borderClass: 'border-blue-200',
-      bgClass: 'bg-blue-50/60'
+      bgClass: 'bg-blue-50',
+      barColorClass: 'bg-blue-500'
     },
     {
       id: 'active',
       label: 'Active Accounts',
       value: activeCount,
+      percentage: totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 0,
       icon: <CheckCircleIcon />,
       colorClass: 'text-green-600',
-      borderClass: 'border-green-200',
-      bgClass: 'bg-green-50/60'
+      bgClass: 'bg-green-50',
+      barColorClass: 'bg-green-500'
     },
     {
       id: 'pending',
       label: 'Pending First Login',
       value: pendingLoginCount,
+      percentage: totalCount > 0 ? Math.round((pendingLoginCount / totalCount) * 100) : 0,
       icon: <ClockIcon />,
       colorClass: 'text-amber-600',
-      borderClass: 'border-amber-200',
-      bgClass: 'bg-amber-50/60'
+      bgClass: 'bg-amber-50',
+      barColorClass: 'bg-amber-500'
     },
     {
       id: 'suspended',
       label: 'Suspended / Inactive',
       value: suspendedCount,
+      percentage: totalCount > 0 ? Math.round((suspendedCount / totalCount) * 100) : 0,
       icon: <XCircleIcon />,
       colorClass: 'text-red-600',
-      borderClass: 'border-red-200',
-      bgClass: 'bg-red-50/60'
+      bgClass: 'bg-red-50',
+      barColorClass: 'bg-red-500'
     }
   ]
 
   return (
-    <div className="space-y-6 animate-fade-in pb-8 max-w-7xl mx-auto">
-      {/* Header Block matching AllLettersPage & ComplainPage */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+    <div className="space-y-6 animate-fade-in pb-8">
+      {/* Top Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block" />
-            <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Manage Portal Users</h1>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            User Management &amp; Portal Access
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Inspect authorized accounts, modify sidebar module permissions, reset temporary passwords, and control account statuses.
           </p>
         </div>
-        <div>
+        <div className="flex flex-wrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => navigate('/users/create')}
-            className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
             <PlusIcon />
-            <span>Create New User Account</span>
+            <span>+ Create New User Account</span>
           </button>
         </div>
       </div>
 
-      {/* Summary Stats Cards matching LetterStats & ComplainStats */}
+      {/* Summary Stats Cards matching Overview Page layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsCards.map((card) => (
           <div
             key={card.id}
-            className={`flex flex-col items-center justify-center p-5 bg-white border rounded-xl shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
+            className="bg-white p-5 rounded border border-gray-300 shadow-sm flex flex-col justify-between relative overflow-hidden group hover:border-gray-400 transition-colors"
           >
-            <div className="flex items-center gap-2 mb-2.5">
-              <div className={`p-1.5 rounded-lg ${card.bgClass}`}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{card.label}</span>
+              <div className={`p-2 rounded ${card.bgClass} ${card.colorClass}`}>
                 {card.icon}
               </div>
-              <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
             </div>
-            <p className={`text-3xl font-extrabold ${card.colorClass}`}>
-              {card.value.toString().padStart(2, '0')}
-            </p>
+            <div>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                {card.value.toString().padStart(2, '0')}
+              </span>
+            </div>
+            <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mt-3">
+              <div
+                className={`h-full rounded-full ${card.barColorClass}`}
+                style={{ width: `${card.percentage}%` }}
+              />
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Filter Bar & Table Container matching LetterTable */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+      {/* Filter Bar & Table Container */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         {/* Filters Top Bar */}
-        <div className="p-4 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-100">
+        <div className="p-3.5 flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 border-b border-gray-200 bg-gray-50/30">
           {/* Search Input */}
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[200px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[200px] h-9 hover:border-gray-400 focus-within:border-[#A31736]">
             <div className="absolute left-3">
               <SearchIcon />
             </div>
@@ -275,16 +286,16 @@ export const ManageUsersPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, ID, email..."
-              className="w-full text-sm text-gray-700 bg-transparent py-2 pl-9 pr-4 outline-none placeholder:text-gray-400"
+              className="w-full text-xs text-gray-700 bg-transparent py-2 pl-9 pr-4 outline-none placeholder:text-gray-400"
             />
           </div>
 
           {/* Department Filter */}
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[160px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[160px] h-9 hover:border-gray-400 focus-within:border-[#A31736]">
             <select
               value={selectedDepartment}
               onChange={(e) => setSelectedDepartment(e.target.value)}
-              className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+              className="w-full appearance-none outline-none text-xs text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
             >
               {departments.map((dept) => (
                 <option key={dept} value={dept}>
@@ -298,11 +309,11 @@ export const ManageUsersPage: React.FC = () => {
           </div>
 
           {/* Status Filter */}
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[140px] h-9 hover:border-gray-400 focus-within:border-[#A31736]">
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+              className="w-full appearance-none outline-none text-xs text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
             >
               <option value="All">All Statuses</option>
               <option value="Active">Active</option>
@@ -315,11 +326,11 @@ export const ManageUsersPage: React.FC = () => {
           </div>
 
           {/* Role Filter */}
-          <div className="relative flex items-center border border-gray-300 rounded-lg bg-white flex-1 min-w-[150px] hover:border-gray-400 focus-within:border-[#801028]">
+          <div className="relative flex items-center border border-gray-300 rounded bg-white flex-1 min-w-[140px] h-9 hover:border-gray-400 focus-within:border-[#A31736]">
             <select
               value={selectedRole}
               onChange={(e) => setSelectedRole(e.target.value)}
-              className="w-full appearance-none outline-none text-sm text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
+              className="w-full appearance-none outline-none text-xs text-gray-600 bg-transparent py-2 pl-3 pr-8 cursor-pointer"
             >
               <option value="All">All Role Presets</option>
               <option value="Admin">Admin</option>
@@ -338,7 +349,7 @@ export const ManageUsersPage: React.FC = () => {
               <button
                 type="button"
                 onClick={handleResetFilters}
-                className="text-gray-500 hover:text-[#801028] font-medium px-3 py-2 text-sm transition-colors cursor-pointer"
+                className="text-gray-500 hover:text-[#A31736] font-semibold px-2 py-1 text-xs transition-colors cursor-pointer uppercase tracking-wider"
               >
                 Reset
               </button>
@@ -350,15 +361,15 @@ export const ManageUsersPage: React.FC = () => {
         <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
           <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
-              <tr className="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">USER / EMPLOYEE</th>
-                <th className="py-4 px-6">DEPARTMENT &amp; EMAIL</th>
-                <th className="py-4 px-6">SIDEBAR ACCESS</th>
-                <th className="py-4 px-6">STATUS &amp; LOGIN</th>
-                <th className="py-4 px-6 text-right">ACTION</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-4 text-left font-semibold">User / Employee</th>
+                <th className="py-3 px-4 text-left font-semibold">Department &amp; Email</th>
+                <th className="py-3 px-4 text-left font-semibold">Sidebar Access</th>
+                <th className="py-3 px-4 text-left font-semibold">Status &amp; Login</th>
+                <th className="py-3 px-4 text-right font-semibold">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
+            <tbody className="divide-y divide-gray-200 text-xs">
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="py-12 text-center text-gray-400">
@@ -371,29 +382,29 @@ export const ManageUsersPage: React.FC = () => {
 
                   return (
                     <tr key={u.id} className="hover:bg-gray-50/60 transition-colors group">
-                      <td className="py-4 px-6">
+                      <td className="py-3 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-[#801028]/10 text-[#801028] border border-[#801028]/20 font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+                          <div className="w-9 h-9 rounded bg-[#A31736]/10 text-[#A31736] border border-[#A31736]/20 font-bold text-xs flex items-center justify-center shrink-0">
                             {u.avatarInitials || 'U'}
                           </div>
                           <div>
                             <div className="font-bold text-gray-900 flex items-center gap-2">
                               {u.employeeName || 'Unknown User'}
-                              <span className="text-[11px] bg-gray-100 px-2 py-0.5 rounded font-mono text-gray-600">
+                              <span className="text-[10px] bg-gray-100 px-1.5 py-0.5 rounded font-mono text-gray-600 border border-gray-200">
                                 {u.employeeId || 'No ID'}
                               </span>
                             </div>
-                            <p className="text-xs text-gray-500">{u.designation || '-'}</p>
+                            <p className="text-[11px] text-gray-500 mt-0.5">{u.designation || '-'}</p>
                           </div>
                         </div>
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-3 px-4">
                         <p className="font-semibold text-gray-800 text-xs">{u.department}</p>
-                        <p className="text-xs text-gray-400 mt-0.5 truncate max-w-xs">{u.email}</p>
+                        <p className="text-[11px] text-gray-400 mt-0.5 truncate max-w-xs">{u.email}</p>
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-3 px-4">
                         <div className="flex flex-wrap items-center gap-1.5 max-w-xs">
                           <span
                             className={`text-[10px] px-2 py-0.5 rounded font-bold uppercase tracking-wider border ${getRoleBadgeStyle(u.rolePreset)}`}
@@ -404,7 +415,7 @@ export const ManageUsersPage: React.FC = () => {
                           {topFeatures.slice(0, 3).map((fid) => (
                             <span
                               key={fid}
-                              className="text-[11px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-medium border border-gray-200"
+                              className="text-[10px] bg-gray-100 text-gray-700 px-2 py-0.5 rounded font-medium border border-gray-200"
                             >
                               {getFeatureLabel(fid).split(' ')[0]}
                             </span>
@@ -412,7 +423,7 @@ export const ManageUsersPage: React.FC = () => {
 
                           {topFeatures.length > 3 && (
                             <span
-                              className="text-[11px] bg-[#801028]/10 text-[#801028] px-2 py-0.5 rounded font-bold border border-[#801028]/20"
+                              className="text-[10px] bg-[#A31736]/10 text-[#A31736] px-1.5 py-0.5 rounded font-bold border border-[#A31736]/20"
                               title={topFeatures.slice(3).map(getFeatureLabel).join(', ')}
                             >
                               +{topFeatures.length - 3} more
@@ -421,7 +432,7 @@ export const ManageUsersPage: React.FC = () => {
                         </div>
                       </td>
 
-                      <td className="py-4 px-6">
+                      <td className="py-3 px-4">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span
@@ -437,18 +448,18 @@ export const ManageUsersPage: React.FC = () => {
                               <option value="Deactivated">Deactivated</option>
                             </select>
                           </div>
-                          <p className="text-[11px] text-gray-400 pl-4">
+                          <p className="text-[10px] text-gray-400 pl-4">
                             Last: {u.lastLogin || 'Never'}
                           </p>
                         </div>
                       </td>
 
-                      <td className="py-4 px-6 text-right">
-                        <div className="flex items-center justify-end gap-2">
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1">
                           <button
                             type="button"
                             onClick={() => handleOpenEditPermissions(u)}
-                            className="p-2 text-gray-500 hover:text-[#801028] hover:bg-[#801028]/5 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-gray-500 hover:text-[#A31736] hover:bg-[#A31736]/10 rounded transition-colors cursor-pointer"
                             title="Edit Sidebar Permissions"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -459,7 +470,7 @@ export const ManageUsersPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleOpenResetPassword(u)}
-                            className="p-2 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded transition-colors cursor-pointer"
                             title="Reset Temporary Password"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -470,7 +481,7 @@ export const ManageUsersPage: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleDeleteUser(u)}
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                            className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors cursor-pointer"
                             title="Delete User Account"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

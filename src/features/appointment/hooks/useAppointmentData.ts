@@ -43,6 +43,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   const [selectedService, setSelectedService] = useState('All Services');
   const [selectedStatus, setSelectedStatus] = useState('All Statuses');
   const [selectedOfficer, setSelectedOfficer] = useState('All Officers');
+  const [viewMode, setViewMode] = useState<'list' | 'agenda'>('list');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
@@ -169,7 +170,7 @@ export function useAppointmentData({ mode }: UseAppointmentDataProps) {
   }, [fullyFiltered]);
 
   // Update the source list; derived counts and visible rows recalculate automatically.
-  const updateStatus = (id: string, newStatus: AppointmentStatus) => {
+  const updateStatus = (id: string, newStatus: AppointmentStatus, rejectionReason?: string, resolutionNotes?: string) => {
     setAppointments((prev) =>
       prev.map((app) =>
         app.id === id

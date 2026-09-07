@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { type AssetRecord, type AssetAttachment } from '../hooks/useAssetData'
 
 interface AddAssetWizardModalProps {
@@ -280,31 +280,23 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-      {/* Backdrop */}
-      <button
-        type="button"
-        aria-label="Close wizard modal"
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity"
-        onClick={onClose}
-      />
-
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
       {/* Modal Container */}
-      <div className="relative bg-white w-full max-w-3xl rounded-2xl shadow-2xl border border-gray-200 overflow-hidden z-10 animate-fade-in flex flex-col max-h-[92vh]">
+      <div className="relative bg-white w-full max-w-3xl rounded border border-gray-300 shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh]">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/70 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50/75 shrink-0">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
-              <h3 className="text-lg font-bold text-gray-900">Asset Registration</h3>
+              <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">Register Municipal Asset</h3>
             </div>
-            <p className="text-xs text-gray-500 mt-0.5">{getSubtitle()}</p>
+            <p className="text-xs text-gray-500 mt-0.5 font-medium">{getSubtitle()}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-200/50 transition-all cursor-pointer"
+            className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <CloseIcon />
           </button>
@@ -909,7 +901,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
                 </div>
                 <div className="space-y-2">
                   {attachments.map((file) => (
-                    <div key={file.name} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded-lg border border-gray-150">
+                    <div key={file.name} className="flex items-center gap-2.5 text-xs bg-gray-50 px-3 py-2 rounded border border-gray-200">
                       <FileDocIcon />
                       <span className="font-semibold text-gray-800 truncate flex-1">{file.name}</span>
                       <span className="text-[11px] text-gray-500">{file.size.split('•')[0]}</span>
@@ -923,23 +915,23 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
         </div>
 
         {/* Footer Actions */}
-        <div className="flex items-center justify-between px-6 sm:px-8 py-4 border-t border-gray-200/80 bg-gray-50/70 shrink-0">
+        <div className="flex items-center justify-between px-6 sm:px-8 py-3.5 border-t border-gray-200 bg-gray-50/75 shrink-0">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors cursor-pointer"
+            className="px-4 py-2 border border-gray-300 rounded text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors uppercase tracking-wider cursor-pointer"
           >
             Cancel
           </button>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {step > 1 && (
               <button
                 type="button"
                 onClick={handleBack}
-                className="px-5 py-2 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer flex items-center gap-1.5"
+                className="px-4 py-2 border border-gray-300 rounded text-xs font-bold text-gray-700 hover:bg-gray-100 transition-colors uppercase tracking-wider cursor-pointer flex items-center gap-1.5"
               >
-                ← Back
+                ← Back
               </button>
             )}
 
@@ -947,7 +939,7 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <button
                 type="button"
                 onClick={handleNext}
-                className="px-6 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
               >
                 Continue →
               </button>
@@ -955,9 +947,9 @@ export const AddAssetWizardModal: React.FC<AddAssetWizardModalProps> = ({ isOpen
               <button
                 type="button"
                 onClick={handleFinalSubmit}
-                className="px-6 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center gap-1.5"
+                className="px-6 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer flex items-center gap-1.5"
               >
-                Save Asset ➢
+                Save Asset Record
               </button>
             )}
           </div>

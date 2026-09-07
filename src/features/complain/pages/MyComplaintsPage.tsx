@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react'
+import React, { useState } from 'react'
 import { useComplainData, type Complaint } from '../hooks/useComplainData'
 import ComplainTable from '../components/ComplainTable'
 import ComplainDetailModal from '../components/ComplainDetailModal'
@@ -22,23 +22,24 @@ const MyComplaintsPage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-8">
       
       {/* Header section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-[#801028] inline-block"></span>
-            <h1 className="text-2xl font-bold text-gray-900">My Complaints</h1>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">Review and manage public grievances assigned to your user account</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            My Assigned Grievances & Inquiries
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Review and manage citizen complaints, dispute resolutions, and field inspections assigned to your user desk.
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-extrabold bg-red-100 text-[#801028] px-3 py-1.5 rounded-full uppercase tracking-wider">
+          <span className="text-xs font-bold bg-[#A31736]/10 text-[#A31736] border border-[#A31736]/20 px-3 py-1.5 rounded uppercase tracking-wider">
             {myComplaints.length} Assigned to You
           </span>
         </div>
       </div>
 
       {loading ? (
-        <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="h-96 bg-gray-100 rounded animate-pulse" />
       ) : (
         <ComplainTable 
           complaints={myComplaints} 

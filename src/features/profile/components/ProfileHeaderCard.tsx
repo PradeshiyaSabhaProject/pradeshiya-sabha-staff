@@ -79,46 +79,50 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
       id: 'status',
       label: 'Account Status',
       value: profile.verificationStatus,
+      percentage: 100,
       icon: <CheckCircleIcon />,
       colorClass: 'text-green-600',
-      borderClass: 'border-green-200',
-      bgClass: 'bg-green-50/60',
+      bgClass: 'bg-green-50',
+      barColorClass: 'bg-green-500'
     },
     {
       id: 'nfc',
       label: 'Biometric Turnstile',
       value: 'Synchronized',
+      percentage: 100,
       icon: <ClockIcon />,
       colorClass: 'text-blue-600',
-      borderClass: 'border-blue-200',
-      bgClass: 'bg-blue-50/60',
+      bgClass: 'bg-blue-50',
+      barColorClass: 'bg-blue-500'
     },
     {
       id: 'sessions',
       label: 'Active Devices',
       value: `${activeSessionsCount} Device${activeSessionsCount === 1 ? '' : 's'}`,
+      percentage: activeSessionsCount > 0 ? Math.min(activeSessionsCount * 25, 100) : 0,
       icon: <ShieldCheckIcon />,
       colorClass: 'text-purple-600',
-      borderClass: 'border-purple-200',
-      bgClass: 'bg-purple-50/60',
+      bgClass: 'bg-purple-50',
+      barColorClass: 'bg-purple-500'
     },
     {
       id: 'leave',
       label: 'Annual Leave Remaining',
       value: `${leaveRemaining} Days`,
+      percentage: Math.round((leaveRemaining / 14) * 100),
       icon: <CalendarIcon />,
-      colorClass: 'text-orange-600',
-      borderClass: 'border-orange-200',
-      bgClass: 'bg-orange-50/60',
+      colorClass: 'text-[#A31736]',
+      bgClass: 'bg-[#A31736]/10',
+      barColorClass: 'bg-[#A31736]'
     },
   ]
 
   return (
     <>
-      {/* Header Block matching ManageUsersPage & AllLettersPage */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+      {/* Staff Identity Card */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded border border-gray-300 shadow-sm">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 rounded-xl bg-[#801028]/10 text-[#801028] border border-[#801028]/20 flex items-center justify-center font-black text-lg shrink-0">
+          <div className="w-12 h-12 rounded bg-[#A31736]/10 text-[#A31736] border border-[#A31736]/20 flex items-center justify-center font-black text-base shrink-0">
             {profile.fullName
               .split(' ')
               .slice(0, 2)
@@ -127,21 +131,20 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block" />
-              <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{profile.fullName}</h1>
-              <span className="text-xs font-bold px-2.5 py-0.5 rounded uppercase bg-gray-100 text-gray-700 border border-gray-300 font-mono">
+              <h2 className="text-lg sm:text-xl font-bold text-gray-900 tracking-tight uppercase">{profile.fullName}</h2>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded uppercase bg-gray-100 text-gray-700 border border-gray-300 font-mono">
                 {profile.empId}
               </span>
             </div>
-            <p className="text-sm font-semibold text-[#801028] mt-0.5">{profile.designation}</p>
-            <p className="text-xs text-gray-500 mt-1 flex flex-wrap items-center gap-2">
+            <p className="text-xs sm:text-sm font-semibold text-[#A31736] mt-0.5">{profile.designation}</p>
+            <p className="text-xs text-gray-500 mt-0.5 flex flex-wrap items-center gap-2">
               <span>{profile.department}</span>
               <span>•</span>
               <button
                 type="button"
                 onClick={handleCopyNfc}
                 title="Click to copy NFC Token ID"
-                className="font-mono text-xs text-gray-600 hover:text-[#801028] underline cursor-pointer"
+                className="font-mono text-xs text-gray-600 hover:text-[#A31736] underline cursor-pointer"
               >
                 {copiedNfc ? 'Copied NFC!' : `NFC: ${profile.biometricNfcId}`}
               </button>
@@ -149,11 +152,11 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
           <button
             type="button"
             onClick={() => setShowIdModal(true)}
-            className="w-full sm:w-auto bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded-lg shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+            className="w-full sm:w-auto bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2 rounded shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
           >
             <BadgeIcon />
             <span>ID Badge</span>
@@ -162,8 +165,8 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
           <button
             type="button"
             onClick={onEditClick}
-            className={`w-full sm:w-auto text-white text-xs font-semibold px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider ${
-              isEditing ? 'bg-gray-700 hover:bg-gray-800' : 'bg-[#801028] hover:bg-[#600a1c]'
+            className={`w-full sm:w-auto text-white text-xs font-semibold px-4 py-2 rounded shadow-xs hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider ${
+              isEditing ? 'bg-gray-700 hover:bg-gray-800' : 'bg-[#A31736] hover:bg-[#801028]'
             }`}
           >
             <PlusIcon />
@@ -172,22 +175,30 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
         </div>
       </div>
 
-      {/* Summary Stats Cards matching ManageUsersPage & LetterStats */}
+      {/* Summary Stats Cards matching Overview Page layout */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {statsCards.map((card) => (
           <div
             key={card.id}
-            className={`flex flex-col items-center justify-center p-5 bg-white border rounded-xl shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
+            className="bg-white p-5 rounded border border-gray-300 shadow-sm flex flex-col justify-between relative overflow-hidden group hover:border-gray-400 transition-colors"
           >
-            <div className="flex items-center gap-2 mb-2.5">
-              <div className={`p-1.5 rounded-lg ${card.bgClass}`}>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{card.label}</span>
+              <div className={`p-2 rounded ${card.bgClass} ${card.colorClass}`}>
                 {card.icon}
               </div>
-              <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
             </div>
-            <p className={`text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight`}>
-              {card.value}
-            </p>
+            <div>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">
+                {card.value}
+              </span>
+            </div>
+            <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden mt-3">
+              <div
+                className={`h-full rounded-full ${card.barColorClass}`}
+                style={{ width: `${card.percentage}%` }}
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -195,31 +206,31 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
       {/* Digital ID Card Modal */}
       <Modal isOpen={showIdModal} onClose={() => setShowIdModal(false)} title="Official Staff Identity Credential">
         <div className="flex flex-col items-center">
-          <div className="w-full max-w-sm rounded-xl bg-white border border-gray-300 p-6 text-gray-900 shadow-md">
-            <div className="flex items-center justify-between pb-4 border-b border-gray-200">
+          <div className="w-full max-w-sm rounded bg-white border border-gray-300 p-5 text-gray-900 shadow-sm">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-200">
               <div>
-                <p className="text-[10px] uppercase font-bold tracking-widest text-[#801028]">Homagama Pradeshiya Sabha</p>
+                <p className="text-[10px] uppercase font-bold tracking-widest text-[#A31736]">Homagama Pradeshiya Sabha</p>
                 <p className="text-xs font-bold uppercase tracking-wide text-gray-800">Staff Identity Badge</p>
               </div>
-              <div className="w-8 h-8 rounded bg-[#801028] text-white flex items-center justify-center font-bold text-xs">
+              <div className="w-7 h-7 rounded bg-[#A31736] text-white flex items-center justify-center font-bold text-xs">
                 HPS
               </div>
             </div>
 
-            <div className="py-6 flex flex-col items-center text-center">
-              <div className="w-20 h-20 rounded-xl bg-[#801028]/10 text-[#801028] font-bold text-2xl flex items-center justify-center border border-[#801028]/20 mb-3">
+            <div className="py-5 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded bg-[#A31736]/10 text-[#A31736] font-bold text-xl flex items-center justify-center border border-[#A31736]/20 mb-2.5">
                 {profile.fullName
                   .split(' ')
                   .slice(0, 2)
                   .map((n) => n[0])
                   .join('')}
               </div>
-              <h4 className="font-bold text-base text-gray-900">{profile.nameWithInitials}</h4>
-              <p className="text-xs text-[#801028] font-semibold mt-0.5">{profile.designation}</p>
+              <h4 className="font-bold text-sm text-gray-900">{profile.nameWithInitials}</h4>
+              <p className="text-xs text-[#A31736] font-semibold mt-0.5">{profile.designation}</p>
               <p className="text-[11px] text-gray-500 mt-0.5">{profile.department}</p>
             </div>
 
-            <div className="bg-gray-50 rounded-lg p-3 text-xs space-y-2 border border-gray-200">
+            <div className="bg-gray-50 rounded p-3 text-xs space-y-2 border border-gray-200">
               <div className="flex justify-between border-b border-gray-200 pb-1.5">
                 <span className="text-gray-500 font-medium">Employee No:</span>
                 <span className="font-mono font-bold text-gray-900">{profile.empId}</span>
@@ -239,7 +250,7 @@ export const ProfileHeaderCard: React.FC<ProfileHeaderCardProps> = ({
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3 w-full max-w-sm">
+          <div className="mt-5 flex gap-2.5 w-full max-w-sm">
             <Button
               onClick={() => window.print()}
               variant="primary"

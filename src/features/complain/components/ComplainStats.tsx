@@ -1,21 +1,21 @@
-﻿import React from 'react'
+import React from 'react'
 
 const ClockIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-orange-500 shrink-0">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-amber-700">
     <circle cx="12" cy="12" r="10" />
     <polyline points="12 6 12 12 16 14" />
   </svg>
 )
 
 const CheckCircleIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-green-500 shrink-0">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-emerald-700">
     <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
     <polyline points="22 4 12 14.01 9 11.01" />
   </svg>
 )
 
 const XCircleIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-red-500 shrink-0">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-red-700">
     <circle cx="12" cy="12" r="10" />
     <line x1="15" y1="9" x2="9" y2="15" />
     <line x1="9" y1="9" x2="15" y2="15" />
@@ -23,7 +23,7 @@ const XCircleIcon = () => (
 )
 
 const ClipboardCheckIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-purple-500 shrink-0">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-purple-700">
     <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
     <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
     <path d="M9 14l2 2 4-4" />
@@ -43,40 +43,52 @@ const ComplainStats: React.FC<ComplainStatsProps> = ({ stats }) => {
   const cards = [
     {
       id: 'pending',
-      label: 'Pending Complaints',
+      label: 'Pending Inquiries',
       value: stats.pending,
       icon: <ClockIcon />,
-      colorClass: 'text-orange-500',
-      borderClass: 'border-orange-300',
-      bgClass: 'bg-orange-50/30'
+      iconBg: 'bg-amber-50',
+      valColor: 'text-amber-700',
+      badgeColor: 'text-amber-800 bg-amber-50 border-amber-200',
+      badgeText: 'Needs Action',
+      barColor: 'bg-amber-600',
+      barWidth: '75%',
     },
     {
       id: 'approved',
-      label: 'Approved Complaints',
+      label: 'Approved & Assigned',
       value: stats.approved,
       icon: <CheckCircleIcon />,
-      colorClass: 'text-green-500',
-      borderClass: 'border-green-300',
-      bgClass: 'bg-green-50/30'
-    },
-    {
-      id: 'rejected',
-      label: 'Rejected Complaints',
-      value: stats.rejected,
-      icon: <XCircleIcon />,
-      colorClass: 'text-red-500',
-      borderClass: 'border-red-300',
-      bgClass: 'bg-red-50/30'
+      iconBg: 'bg-emerald-50',
+      valColor: 'text-emerald-700',
+      badgeColor: 'text-emerald-800 bg-emerald-50 border-emerald-200',
+      badgeText: 'In Progress',
+      barColor: 'bg-emerald-600',
+      barWidth: '60%',
     },
     {
       id: 'completed',
-      label: 'Completed Complaints',
+      label: 'Resolved Grievances',
       value: stats.completed,
       icon: <ClipboardCheckIcon />,
-      colorClass: 'text-purple-500',
-      borderClass: 'border-purple-300',
-      bgClass: 'bg-purple-50/30'
-    }
+      iconBg: 'bg-purple-50',
+      valColor: 'text-purple-700',
+      badgeColor: 'text-purple-800 bg-purple-50 border-purple-200',
+      badgeText: 'Fulfilled',
+      barColor: 'bg-purple-600',
+      barWidth: '90%',
+    },
+    {
+      id: 'rejected',
+      label: 'Declined / Disputed',
+      value: stats.rejected,
+      icon: <XCircleIcon />,
+      iconBg: 'bg-red-50',
+      valColor: 'text-red-700',
+      badgeColor: 'text-red-800 bg-red-50 border-red-200',
+      badgeText: 'Closed',
+      barColor: 'bg-red-600',
+      barWidth: '25%',
+    },
   ]
 
   return (
@@ -84,17 +96,27 @@ const ComplainStats: React.FC<ComplainStatsProps> = ({ stats }) => {
       {cards.map((card) => (
         <div
           key={card.id}
-          className={`flex flex-col items-center justify-center p-5 bg-white border rounded shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
+          className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default"
         >
-          <div className="flex items-center gap-2 mb-2.5">
-            <div className={`p-1.5 rounded ${card.bgClass}`}>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              {card.label}
+            </span>
+            <div className={`p-1.5 rounded ${card.iconBg}`}>
               {card.icon}
             </div>
-            <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
           </div>
-          <p className={`text-3xl font-extrabold ${card.colorClass}`}>
-            {card.value.toString().padStart(2, '0')}
-          </p>
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${card.valColor}`}>
+              {card.value.toString().padStart(2, '0')}
+            </p>
+            <span className={`text-[11px] font-bold px-2 py-0.5 rounded border ${card.badgeColor}`}>
+              {card.badgeText}
+            </span>
+          </div>
+          <div className="w-full bg-gray-200 h-1.5 rounded-sm mt-3 overflow-hidden">
+            <div className={`${card.barColor} h-1.5 rounded-sm transition-all duration-1000`} style={{ width: card.barWidth }} />
+          </div>
         </div>
       ))}
     </div>

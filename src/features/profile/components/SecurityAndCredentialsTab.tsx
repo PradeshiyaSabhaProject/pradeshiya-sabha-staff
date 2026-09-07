@@ -11,7 +11,7 @@ interface SecurityAndCredentialsTabProps {
 
 
 const LockIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#801028]">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#A31736]">
     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
   </svg>
@@ -97,22 +97,22 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Update Security Credentials Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-xs space-y-5">
-        <div className="flex items-center gap-2.5 border-b border-gray-100 pb-3">
-          <div className="p-1.5 rounded bg-[#801028]/10">
+      <div className="bg-white border border-gray-300 rounded p-5 shadow-sm space-y-4">
+        <div className="flex items-center gap-2.5 border-b border-gray-200 pb-3">
+          <div className="p-1.5 rounded bg-[#A31736]/10">
             <LockIcon />
           </div>
           <div>
-            <h3 className="font-bold text-gray-900 text-base">Update Security Credentials</h3>
+            <h3 className="font-bold text-gray-900 text-sm sm:text-base uppercase tracking-tight">Update Security Credentials</h3>
             <p className="text-xs text-gray-500">Modify your council terminal login password (requires SMS OTP verification)</p>
           </div>
         </div>
 
         {passMessage && (
           <div
-            className={`p-3 rounded-lg text-xs font-semibold flex items-center gap-2 border ${passMessage.type === 'success'
+            className={`p-3 rounded text-xs font-semibold flex items-center gap-2 border ${passMessage.type === 'success'
                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                 : 'bg-red-50 text-red-800 border-red-200'
               }`}
@@ -123,10 +123,10 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
         )}
 
         {isVerifyingPasswordOtp ? (
-          <div className="bg-red-50/50 border border-[#801028]/30 rounded-xl p-5 space-y-4 animate-fade-in max-w-2xl">
-            <div className="flex items-center gap-2.5 text-[#801028]">
+          <div className="bg-red-50/40 border border-[#A31736]/30 rounded p-4 space-y-3.5 animate-fade-in max-w-2xl">
+            <div className="flex items-center gap-2 text-[#A31736]">
               <PhoneIcon />
-              <h4 className="font-bold text-sm">SMS OTP Verification Required</h4>
+              <h4 className="font-bold text-xs uppercase tracking-wider">SMS OTP Verification Required</h4>
             </div>
             <p className="text-xs text-gray-700 leading-relaxed">
               To complete updating your security credentials, please enter the 6-digit verification code sent via SMS to your registered mobile <strong className="font-mono text-gray-900">{registeredPhone}</strong>.
@@ -139,7 +139,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
             )}
 
             <div>
-              <label htmlFor="passwordOtpCode" className="block text-[11px] font-bold uppercase tracking-wider text-gray-600 mb-1.5">
+              <label htmlFor="passwordOtpCode" className="block text-[10px] font-bold uppercase tracking-wider text-gray-600 mb-1">
                 Enter 6-Digit SMS OTP
               </label>
               <div className="flex gap-2 max-w-md">
@@ -151,12 +151,12 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
                   placeholder="e.g. 894215"
                   value={passwordOtpCode}
                   onChange={(e) => setPasswordOtpCode(e.target.value.replace(/\D/g, ''))}
-                  className="flex-1 bg-white border border-gray-300 rounded-lg px-3.5 py-2 font-mono font-bold text-base tracking-widest text-center text-[#801028] focus:outline-none focus:ring-2 focus:ring-[#801028] focus:border-transparent"
+                  className="flex-1 bg-white border border-gray-300 rounded px-3 py-1.5 font-mono font-bold text-sm tracking-widest text-center text-[#A31736] focus:outline-none focus:ring-1 focus:ring-[#A31736] focus:border-[#A31736]"
                 />
                 <button
                   type="button"
                   onClick={() => setPasswordOtpCode('894215')}
-                  className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-xs font-bold transition-colors cursor-pointer shrink-0"
+                  className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-800 border border-gray-300 rounded text-xs font-bold transition-colors cursor-pointer shrink-0 uppercase tracking-wider"
                 >
                   Auto-fill Demo
                 </button>
@@ -167,7 +167,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
               <button
                 type="button"
                 onClick={() => setIsVerifyingPasswordOtp(false)}
-                className="text-xs font-semibold text-gray-600 hover:text-gray-900 cursor-pointer"
+                className="text-xs font-semibold text-gray-600 hover:text-gray-900 cursor-pointer uppercase tracking-wider"
               >
                 Cancel
               </button>
@@ -176,7 +176,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
                   type="button"
                   variant="primary"
                   onClick={handleConfirmPasswordOtp}
-                  className="text-xs py-2 uppercase tracking-wider shadow-sm"
+                  className="text-xs py-1.5 uppercase tracking-wider shadow-xs"
                 >
                   Verify & Update Credentials
                 </Button>
@@ -184,7 +184,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
             </div>
           </div>
         ) : (
-          <form onSubmit={handlePasswordSubmit} className="space-y-4 max-w-2xl">
+          <form onSubmit={handlePasswordSubmit} className="space-y-3.5 max-w-2xl">
             <Input
               label="Current Password"
               type="password"
@@ -207,17 +207,17 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
               onChange={(e) => setConfirmPass(e.target.value)}
             />
 
-            <div className="bg-gray-50 p-3.5 rounded-lg border border-gray-200 text-xs space-y-1.5 text-gray-600">
-              <p className="font-bold text-gray-700">Council Password & Credential Policy:</p>
+            <div className="bg-gray-50 p-3 rounded border border-gray-200 text-xs space-y-1 text-gray-600">
+              <p className="font-bold text-gray-700 uppercase tracking-wider text-[11px]">Council Password &amp; Credential Policy:</p>
               <ul className="list-disc pl-4 space-y-0.5 text-[11px]">
                 <li>Minimum 8 characters (12+ recommended for Grade I / II Officers)</li>
                 <li>At least one uppercase letter and one numeric digit</li>
-                <li>At least one special symbol (! @ # $ % &)</li>
+                <li>At least one special symbol (! @ # $ % &amp;)</li>
                 <li>Requires SMS OTP verification sent to registered mobile before updating</li>
               </ul>
             </div>
 
-            <Button type="submit" variant="primary" className="justify-center shadow-sm uppercase tracking-wider">
+            <Button type="submit" variant="primary" className="justify-center shadow-xs uppercase tracking-wider text-xs font-bold px-5 py-2">
               Update Security Credentials
             </Button>
           </form>
@@ -225,18 +225,18 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
       </div>
 
       {/* Active Sessions Card */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-xs space-y-4">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+      <div className="bg-white border border-gray-300 rounded p-5 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded bg-emerald-50">
               <GlobeIcon />
             </div>
             <div>
-              <h3 className="font-bold text-gray-900 text-base">Active Logged-In Sessions</h3>
+              <h3 className="font-bold text-gray-900 text-sm sm:text-base uppercase tracking-tight">Active Logged-In Sessions</h3>
               <p className="text-xs text-gray-500">Manage all devices currently accessing your administrative profile</p>
             </div>
           </div>
-          <span className="text-xs font-bold bg-gray-100 px-3 py-1 rounded-full text-gray-700 border border-gray-200">
+          <span className="text-[11px] font-bold bg-gray-100 px-2.5 py-0.5 rounded text-gray-700 border border-gray-200 uppercase tracking-wider">
             {sessions.length} {sessions.length === 1 ? 'Active Device' : 'Active Devices'}
           </span>
         </div>
@@ -245,20 +245,20 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
           {sessions.map((session) => (
             <div
               key={session.id}
-              className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${session.isCurrent
-                  ? 'bg-red-50/20 border-[#801028]/30 shadow-2xs'
-                  : 'bg-white border-gray-200 hover:border-gray-300'
+              className={`p-3.5 rounded border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${session.isCurrent
+                  ? 'bg-red-50/20 border-[#A31736]/30 shadow-2xs'
+                  : 'bg-white border-gray-300 hover:border-gray-400'
                 }`}
             >
-              <div className="flex items-start gap-3.5">
-                <div className="p-2.5 rounded-xl bg-gray-100 border border-gray-200 shrink-0 mt-0.5">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded bg-gray-100 border border-gray-200 shrink-0 mt-0.5">
                   <MonitorIcon />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h4 className="font-bold text-sm text-gray-900">{session.device}</h4>
+                    <h4 className="font-bold text-xs sm:text-sm text-gray-900">{session.device}</h4>
                     {session.isCurrent && (
-                      <span className="bg-[#801028] text-white text-[10px] font-black uppercase px-2 py-0.5 rounded">
+                      <span className="bg-[#A31736] text-white text-[9px] font-black uppercase px-1.5 py-0.5 rounded">
                         Current Session
                       </span>
                     )}
@@ -288,7 +288,7 @@ export const SecurityAndCredentialsTab: React.FC<SecurityAndCredentialsTabProps>
           ))}
 
           {sessions.length === 0 && (
-            <div className="text-center py-8 text-gray-500 text-sm">No active sessions recorded.</div>
+            <div className="text-center py-8 text-gray-500 text-xs">No active sessions recorded.</div>
           )}
         </div>
       </div>

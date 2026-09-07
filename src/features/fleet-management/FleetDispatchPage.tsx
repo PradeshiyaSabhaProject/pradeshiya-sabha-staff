@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
-import { Link } from 'react-router-dom'
 import L from 'leaflet'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord, VehicleStatus } from './data/initialFleetData'
@@ -303,16 +302,12 @@ export const FleetDispatchPage: React.FC = () => {
       {/* ── Top GIS Toolbar matching Interactive GIS Mapping ── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 bg-white border-b border-gray-200 shrink-0 gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link to="/fleet/overview" className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline">
-              Fleet Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">Live GIS Dispatch Map</span>
-          </div>
-          <h1 className="text-xl font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Real-Time Vehicle Telemetry & Interactive GIS Tracking
           </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Live GPS telemetry, speed monitoring, and municipal route dispatch tracking for Homagama jurisdiction.
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">

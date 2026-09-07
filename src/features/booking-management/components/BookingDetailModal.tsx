@@ -75,16 +75,16 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const getStatusStyle = (status: BookingStatus) => {
     switch (status) {
       case 'PENDING':
-        return 'bg-orange-100 text-orange-800 border-orange-300'
+        return 'bg-orange-50 text-orange-700 border-orange-200'
       case 'APPROVED':
-        return 'bg-green-100 text-green-800 border-green-300'
+        return 'bg-emerald-50 text-emerald-700 border-emerald-200'
       case 'REJECTED':
       case 'CANCELLED':
-        return 'bg-red-100 text-red-800 border-red-300'
+        return 'bg-red-50 text-red-700 border-red-200'
       case 'COMPLETED':
-        return 'bg-indigo-100 text-indigo-800 border-indigo-300'
+        return 'bg-indigo-50 text-indigo-700 border-indigo-200'
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300'
+        return 'bg-gray-50 text-gray-700 border-gray-200'
     }
   }
 
@@ -115,30 +115,27 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl border border-gray-200 animate-scale-up flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/50 backdrop-blur-xs flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-white rounded border border-gray-300 max-w-4xl w-full overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
         {/* Modal Header */}
-        <div className="bg-gradient-to-r from-gray-900 via-[#801028] to-gray-900 text-white px-6 py-5 flex items-center justify-between shrink-0">
+        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/80 flex items-center justify-between shrink-0">
           <div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-extrabold font-mono tracking-wider bg-white/20 px-2.5 py-0.5 rounded-md border border-white/30">
-                {booking.refId}
-              </span>
-              <span className={`text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider border ${getStatusStyle(booking.status)}`}>
+            <div className="flex items-center gap-2">
+              <h2 className="text-base font-bold text-gray-900 uppercase tracking-tight">
+                Booking Dossier - {booking.refId}
+              </h2>
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border ${getStatusStyle(booking.status)}`}>
                 {booking.status}
               </span>
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-white mt-1.5 leading-snug">
-              {booking.eventTitle}
-            </h2>
-            <p className="text-xs text-rose-200 font-medium mt-0.5">
-              Submitted on {booking.submittedDate} at {booking.submittedTime} • Facility: {booking.facilityName}
+            <p className="text-xs text-gray-500 font-medium mt-0.5">
+              Submitted on {booking.submittedDate} at {booking.submittedTime} • Facility: <span className="font-bold text-gray-800">{booking.facilityName}</span>
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 text-white/70 hover:text-white rounded-full hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+            className="text-gray-400 hover:text-gray-700 hover:bg-gray-200 p-1 rounded transition-colors cursor-pointer shrink-0"
           >
             <CloseIcon />
           </button>
@@ -146,8 +143,8 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
         {/* Success Banner if action just taken */}
         {actionSuccess && (
-          <div className={`px-6 py-3.5 text-sm font-bold flex items-center gap-2 ${
-            actionSuccess === 'APPROVED' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'
+          <div className={`px-6 py-3 text-xs font-bold flex items-center gap-2 ${
+            actionSuccess === 'APPROVED' ? 'bg-emerald-700 text-white' : 'bg-[#A31736] text-white'
           }`}>
             <CheckIcon />
             <span>
@@ -157,66 +154,66 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         )}
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6 flex-1 text-sm text-gray-700">
+        <div className="p-6 overflow-y-auto space-y-5 flex-1 text-xs text-gray-700">
           {/* Grid: Citizen & Event Schedule */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Section 1: Citizen Details */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4.5 space-y-3">
-              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#801028] border-b border-gray-200 pb-2 flex items-center justify-between">
+            <div className="bg-gray-50 border border-gray-200 rounded p-3.5 space-y-2.5">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-700 border-b border-gray-200 pb-1.5 flex items-center justify-between">
                 <span>Citizen Applicant Profile</span>
                 <span className="text-gray-400 font-mono text-[10px]">Verified NIC</span>
               </h3>
-              <div className="grid grid-cols-2 gap-y-2.5 text-xs">
+              <div className="grid grid-cols-2 gap-y-2 text-xs">
                 <div>
-                  <span className="text-gray-400 font-semibold block">Full Name</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Full Name</span>
                   <span className="font-bold text-gray-900">{booking.citizenName}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">National ID (NIC)</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">National ID (NIC)</span>
                   <span className="font-bold text-gray-900 font-mono">{booking.citizenNic}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Phone Number</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Phone Number</span>
                   <span className="font-bold text-gray-900">{booking.citizenPhone}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Email Address</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Email Address</span>
                   <span className="font-bold text-gray-900 truncate block">{booking.citizenEmail}</span>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-gray-400 font-semibold block">Residential Address</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Residential Address</span>
                   <span className="font-medium text-gray-800">{booking.citizenAddress}</span>
                 </div>
               </div>
             </div>
 
             {/* Section 2: Reservation Schedule */}
-            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4.5 space-y-3">
-              <h3 className="text-xs font-extrabold uppercase tracking-wider text-[#801028] border-b border-gray-200 pb-2 flex items-center justify-between">
-                <span>Facility & Event Allocation</span>
+            <div className="bg-gray-50 border border-gray-200 rounded p-3.5 space-y-2.5">
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-700 border-b border-gray-200 pb-1.5 flex items-center justify-between">
+                <span>Facility &amp; Event Allocation</span>
                 <span className="text-gray-400 font-mono text-[10px]">Time Slot Allocation</span>
               </h3>
-              <div className="grid grid-cols-2 gap-y-2.5 text-xs">
+              <div className="grid grid-cols-2 gap-y-2 text-xs">
                 <div className="col-span-2">
-                  <span className="text-gray-400 font-semibold block">Target Municipal Venue</span>
-                  <span className="font-black text-gray-900 text-sm bg-white px-2.5 py-1 rounded border border-gray-200 inline-block mt-0.5">
+                  <span className="text-gray-400 font-semibold block text-[11px]">Target Municipal Venue</span>
+                  <span className="font-bold text-gray-900 text-xs bg-white px-2 py-0.5 rounded border border-gray-200 inline-block mt-0.5">
                     🏢 {booking.facilityName}
                   </span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Booking Date</span>
-                  <span className="font-extrabold text-[#801028]">{booking.bookingDate}</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Booking Date</span>
+                  <span className="font-bold text-[#A31736]">{booking.bookingDate}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Reserved Time Slot</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Reserved Time Slot</span>
                   <span className="font-bold text-gray-900">{booking.timeSlot}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Event Category</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Event Category</span>
                   <span className="font-bold text-gray-800">{booking.eventType}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-semibold block">Expected Attendees</span>
+                  <span className="text-gray-400 font-semibold block text-[11px]">Expected Attendees</span>
                   <span className="font-bold text-gray-800">~{booking.expectedAttendees} Persons</span>
                 </div>
               </div>
@@ -225,9 +222,9 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
           {/* Special Requirements */}
           {booking.specialRequirements && (
-            <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4 text-xs">
-              <span className="font-extrabold text-amber-900 uppercase tracking-wider block mb-1">
-                ⭐ Citizen Special Requests & Setup Requirements
+            <div className="bg-amber-50/50 border border-amber-200 rounded p-3 text-xs">
+              <span className="font-bold text-amber-900 uppercase tracking-wider block mb-0.5 text-[11px]">
+                Citizen Special Requests &amp; Setup Requirements
               </span>
               <p className="text-amber-950 font-medium leading-relaxed">
                 {booking.specialRequirements}
@@ -236,33 +233,33 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           )}
 
           {/* Section 3: Financial Summary */}
-          <div className="bg-white border border-gray-200 rounded-xl p-4">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-700 border-b border-gray-100 pb-2 mb-3">
-              Financial Tariff & Payment Verification
+          <div className="bg-white border border-gray-200 rounded p-3.5">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-700 border-b border-gray-100 pb-1.5 mb-2.5">
+              Financial Tariff &amp; Payment Verification
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <span className="text-gray-500 font-semibold block">Base Rental Fee</span>
-                <span className="text-base font-extrabold text-gray-900 mt-1 block">
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+              <div className="bg-gray-50 p-2.5 rounded border border-gray-200">
+                <span className="text-gray-500 font-semibold block text-[11px]">Base Rental Fee</span>
+                <span className="text-sm font-bold text-gray-900 mt-0.5 block">
                   Rs. {booking.rentalFee.toLocaleString()}
                 </span>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <span className="text-gray-500 font-semibold block">Refundable Security Deposit</span>
-                <span className="text-base font-extrabold text-gray-900 mt-1 block">
+              <div className="bg-gray-50 p-2.5 rounded border border-gray-200">
+                <span className="text-gray-500 font-semibold block text-[11px]">Refundable Security Deposit</span>
+                <span className="text-sm font-bold text-gray-900 mt-0.5 block">
                   Rs. {booking.securityDeposit.toLocaleString()}
                 </span>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <span className="text-gray-500 font-semibold block">Total Tariff</span>
-                <span className="text-base font-extrabold text-[#801028] mt-1 block">
+              <div className="bg-gray-50 p-2.5 rounded border border-gray-200">
+                <span className="text-gray-500 font-semibold block text-[11px]">Total Tariff</span>
+                <span className="text-sm font-bold text-[#A31736] mt-0.5 block">
                   Rs. {(booking.rentalFee + booking.securityDeposit).toLocaleString()}
                 </span>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200 flex flex-col justify-between">
-                <span className="text-gray-500 font-semibold block">Payment Status</span>
+              <div className="bg-gray-50 p-2.5 rounded border border-gray-200 flex flex-col justify-between">
+                <span className="text-gray-500 font-semibold block text-[11px]">Payment Status</span>
                 <div>
-                  <span className={`text-xs font-black px-2.5 py-1 rounded uppercase inline-block mt-1 ${
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase inline-block mt-0.5 ${
                     booking.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-amber-100 text-amber-800 border border-amber-300'
                   }`}>
                     ✓ {booking.paymentStatus}
@@ -273,14 +270,14 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           </div>
 
           {/* Section 4: Attachments */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-700 flex items-center justify-between">
+          <div className="space-y-2.5">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-700 flex items-center justify-between">
               <span>Attached Verification Documents ({booking.attachments.length})</span>
               <span className="text-gray-400 text-[10px] font-normal">Submitted by citizen upon intake</span>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
               {booking.attachments.map((att) => (
-                <div key={att.id} className="flex items-center gap-3 p-3 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors">
+                <div key={att.id} className="flex items-center gap-2.5 p-2.5 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 transition-colors">
                   <div className="shrink-0">
                     {att.type === 'pdf' ? <PdfIcon /> : <ImageIcon />}
                   </div>
@@ -291,7 +288,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                   <a
                     href={att.url}
                     onClick={(e) => { e.preventDefault(); alert(`Previewing document: ${att.name}`) }}
-                    className="text-xs font-bold text-[#801028] hover:underline shrink-0"
+                    className="text-xs font-bold text-[#A31736] hover:underline shrink-0 uppercase tracking-wider"
                   >
                     View →
                   </a>
@@ -301,22 +298,22 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           </div>
 
           {/* Section 5: Remarks & Timeline */}
-          <div className="space-y-3 pt-2">
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-700 border-b border-gray-200 pb-2">
-              Staff Review History & Audit Log
+          <div className="space-y-2.5 pt-1">
+            <h3 className="text-[11px] font-bold uppercase tracking-wider text-gray-700 border-b border-gray-200 pb-1.5">
+              Staff Review History &amp; Audit Log
             </h3>
             {(!booking.remarks || booking.remarks.length === 0) ? (
-              <p className="text-xs text-gray-400 italic py-2">No audit remarks or review logs recorded for this booking yet.</p>
+              <p className="text-xs text-gray-400 italic py-1">No audit remarks or review logs recorded for this booking yet.</p>
             ) : (
-              <div className="space-y-2.5 max-h-48 overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                 {booking.remarks.map((rem) => (
-                  <div key={rem.id} className={`p-3.5 rounded-xl border text-xs ${getRemarkCardStyle(rem.action)}`}>
-                    <div className="flex items-center justify-between font-bold mb-1">
+                  <div key={rem.id} className={`p-2.5 rounded border text-xs ${getRemarkCardStyle(rem.action)}`}>
+                    <div className="flex items-center justify-between font-bold mb-0.5 text-[11px]">
                       <span className="text-gray-900 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#801028]"></span>
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#A31736]"></span>
                         {rem.author}
                       </span>
-                      <span className="text-gray-400 text-[11px]">{rem.date} at {rem.time}</span>
+                      <span className="text-gray-400 text-[10px]">{rem.date} at {rem.time}</span>
                     </div>
                     <p className="leading-relaxed">{rem.text}</p>
                   </div>
@@ -326,18 +323,18 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
             {/* Add Note Form */}
             {onAddRemark && (
-              <form onSubmit={handleAddRemarkSubmit} className="flex gap-2 pt-2">
+              <form onSubmit={handleAddRemarkSubmit} className="flex gap-2 pt-1">
                 <input
                   type="text"
                   placeholder="Add internal staff note or inspection comment..."
                   value={newRemarkText}
                   onChange={(e) => setNewRemarkText(e.target.value)}
-                  className="flex-1 bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2 text-xs text-gray-800 outline-none focus:border-[#801028]"
+                  className="flex-1 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 outline-none focus:border-[#A31736]"
                 />
                 <button
                   type="submit"
                   disabled={!newRemarkText.trim()}
-                  className="px-4 py-2 bg-gray-800 hover:bg-black disabled:bg-gray-300 text-white font-bold text-xs rounded-xl transition-colors shrink-0 cursor-pointer"
+                  className="px-4 py-1.5 bg-gray-800 hover:bg-black disabled:bg-gray-300 text-white font-bold text-xs rounded transition-colors shrink-0 cursor-pointer uppercase tracking-wider"
                 >
                   Add Note
                 </button>
@@ -347,18 +344,18 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
         </div>
 
         {/* Modal Footer: Action Controls */}
-        <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
+        <div className="bg-gray-50 px-6 py-3.5 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-3 shrink-0">
           <div className="text-xs text-gray-500 flex items-center gap-2">
             <span>Assigned Officer: <strong className="text-gray-800">{booking.assignedOfficer || 'Unassigned Intake'}</strong></span>
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 w-full sm:w-auto justify-end">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full sm:w-auto justify-end">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer flex-1 sm:flex-initial text-center"
+              className="px-4 py-1.5 bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 font-bold text-xs rounded uppercase tracking-wider transition-colors cursor-pointer"
             >
-              Close Dossier
+              Close
             </button>
 
             {/* Approval & Rejection buttons */}
@@ -367,7 +364,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowRejectionForm(true)}
-                  className="px-4.5 py-2 bg-red-600 hover:bg-red-700 text-white font-extrabold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer flex-1 sm:flex-initial"
+                  className="px-4 py-1.5 bg-[#A31736] hover:bg-[#801028] text-white font-bold text-xs rounded uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <XIcon />
                   <span>Reject</span>
@@ -375,7 +372,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowApproveForm(true)}
-                  className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white font-extrabold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm cursor-pointer flex-1 sm:flex-initial"
+                  className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
                 >
                   <CheckIcon />
                   <span>Approve</span>
@@ -387,15 +384,15 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
         {/* Inline Approve Confirmation Drawer */}
         {showApproveForm && (
-          <div className="bg-green-50 px-6 py-4 border-t border-green-200 flex flex-col gap-3 animate-fade-in">
-            <div className="flex items-center justify-between text-xs font-bold text-green-900">
+          <div className="bg-green-50 px-6 py-3.5 border-t border-green-200 flex flex-col gap-2.5 animate-fade-in">
+            <div className="flex items-center justify-between text-xs font-bold text-green-900 uppercase tracking-wider">
               <span>Confirm Official Approval for Venue Reservation</span>
               <button
                 type="button"
                 onClick={() => setShowApproveForm(false)}
                 className="text-gray-500 hover:text-gray-800 font-bold cursor-pointer"
               >
-                Cancel ×
+                ✕ Cancel
               </button>
             </div>
             <input
@@ -403,13 +400,13 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               placeholder="Optional approval remark or confirmation note (e.g., 'Sound permit checked. Hall reserved')..."
               value={approveRemark}
               onChange={(e) => setApproveRemark(e.target.value)}
-              className="w-full bg-white border border-green-300 rounded-xl px-3.5 py-2 text-xs text-gray-800 outline-none focus:border-green-600"
+              className="w-full bg-white border border-green-300 rounded px-3 py-1.5 text-xs text-gray-800 outline-none focus:border-green-600"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 type="button"
                 onClick={handleConfirmApprove}
-                className="px-5 py-2 bg-green-700 hover:bg-green-800 text-white font-extrabold text-xs rounded-xl transition-colors shadow-sm cursor-pointer"
+                className="px-4 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded uppercase tracking-wider transition-colors shadow-xs cursor-pointer"
               >
                 ✓ Confirm Official Approval
               </button>
@@ -419,15 +416,15 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
         {/* Inline Rejection Reason Drawer */}
         {showRejectionForm && (
-          <form onSubmit={handleConfirmReject} className="bg-red-50 px-6 py-4 border-t border-red-200 flex flex-col gap-3 animate-fade-in">
-            <div className="flex items-center justify-between text-xs font-bold text-red-900">
+          <form onSubmit={handleConfirmReject} className="bg-red-50 px-6 py-3.5 border-t border-red-200 flex flex-col gap-2.5 animate-fade-in">
+            <div className="flex items-center justify-between text-xs font-bold text-red-900 uppercase tracking-wider">
               <span>Mandatory Rejection Reason (Notified to Citizen)</span>
               <button
                 type="button"
                 onClick={() => setShowRejectionForm(false)}
                 className="text-gray-500 hover:text-gray-800 font-bold cursor-pointer"
               >
-                Cancel ×
+                ✕ Cancel
               </button>
             </div>
             <textarea
@@ -436,14 +433,14 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
               placeholder="State clear reasons for rejection (e.g., 'Facility already booked for official council session on this date', 'Required police clearance missing')..."
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
-              className="w-full bg-white border border-red-300 rounded-xl p-3 text-xs text-gray-800 outline-none focus:border-red-600"
+              className="w-full bg-white border border-red-300 rounded p-2.5 text-xs text-gray-800 outline-none focus:border-red-600"
             />
             <div className="flex items-center justify-end gap-2">
               <button
                 type="submit"
-                className="px-5 py-2 bg-red-700 hover:bg-red-800 text-white font-extrabold text-xs rounded-xl transition-colors shadow-sm cursor-pointer"
+                className="px-4 py-1.5 bg-[#A31736] hover:bg-[#801028] text-white font-bold text-xs rounded uppercase tracking-wider transition-colors shadow-xs cursor-pointer"
               >
-                Confirm Rejection & Notify
+                Confirm Rejection &amp; Notify
               </button>
             </div>
           </form>

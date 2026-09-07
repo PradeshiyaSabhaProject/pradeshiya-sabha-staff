@@ -265,14 +265,14 @@ export const FleetOverviewPage: React.FC = () => {
         <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
           <table className="w-full text-left border-collapse min-w-[950px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">REG NUMBER</th>
-                <th className="py-4 px-6">VEHICLE & CATEGORY</th>
-                <th className="py-4 px-6">WHERE IT IS AT THE MOMENT</th>
-                <th className="py-4 px-6">DRIVER</th>
-                <th className="py-4 px-6">STATUS</th>
-                <th className="py-4 px-6">PERMIT EXPIRY</th>
-                <th className="py-4 px-6 text-right">ACTIONS</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-6">REG NUMBER</th>
+                <th className="py-3 px-6">VEHICLE & CATEGORY</th>
+                <th className="py-3 px-6">WHERE IT IS AT THE MOMENT</th>
+                <th className="py-3 px-6">DRIVER</th>
+                <th className="py-3 px-6">STATUS</th>
+                <th className="py-3 px-6">PERMIT EXPIRY</th>
+                <th className="py-3 px-6 text-right">ACTIONS</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">
@@ -353,13 +353,13 @@ export const FleetOverviewPage: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      {/* ── Page Header matching Letter/Asset Management ── */}
+      {/* ── Page Header matching Overview Design Language ── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             Fleet Management Dashboard
           </h1>
-          <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-2xl">
             Real-time monitoring of municipal transport vehicles, active field dispatches, workshop maintenance orders, and regulatory route permit compliance.
           </p>
         </div>

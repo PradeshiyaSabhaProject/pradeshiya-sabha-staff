@@ -45,30 +45,25 @@ const AllBookingsPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight">
-              Facility Booking Management
-            </h1>
-            <span className="bg-[#801028]/10 text-[#801028] text-xs font-bold px-3 py-1 rounded-full border border-[#801028]/20 uppercase tracking-wider">
-              Citizen Reservations
-            </span>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Review and manage all citizen facility booking applications submitted online across Homagama Pradeshiya Sabha
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Facility Booking Management
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Review and manage all citizen facility booking applications submitted online across Homagama Pradeshiya Sabha.
           </p>
         </div>
 
-        <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
           <button
             type="button"
             onClick={() => navigate('/bookings/approvals')}
-            className="flex items-center justify-center gap-2.5 bg-[#801028] hover:bg-[#680c20] text-white text-xs font-extrabold px-4.5 py-2.5 rounded-xl shadow-sm transition-colors uppercase tracking-wider cursor-pointer flex-1 sm:flex-initial"
+            className="flex items-center justify-center gap-2 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-3.5 py-1.5 rounded shadow-xs transition-colors uppercase tracking-wider cursor-pointer"
           >
             <span>Approvals Queue</span>
             {stats.pending > 0 && (
-              <span className="bg-amber-400 text-gray-950 px-2 py-0.5 rounded-full text-[11px] font-black">
+              <span className="bg-amber-400 text-gray-950 px-1.5 py-0.2 rounded text-[10px] font-extrabold">
                 {stats.pending}
               </span>
             )}
@@ -76,9 +71,9 @@ const AllBookingsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => navigate('/bookings/schedule')}
-            className="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer flex-1 sm:flex-initial"
+            className="flex items-center justify-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold px-3.5 py-1.5 rounded shadow-xs transition-colors uppercase tracking-wider cursor-pointer"
           >
-            <span>📅 Facility Schedule</span>
+            <span>Facility Schedule</span>
           </button>
         </div>
       </div>
@@ -87,10 +82,10 @@ const AllBookingsPage: React.FC = () => {
         <div className="space-y-6">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i} className="h-28 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-28 bg-gray-100 rounded animate-pulse border border-gray-200" />
             ))}
           </div>
-          <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+          <div className="h-96 bg-gray-100 rounded animate-pulse border border-gray-200" />
         </div>
       ) : (
         <>

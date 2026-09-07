@@ -101,25 +101,26 @@ const WriteLetterPage: React.FC = () => {
     setSelectedDocLetter(created)
   }
 
+  const totalSent = stats.totalSent || 1
+
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       
       {/* Header section with Write Letter Button */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-6 rounded border border-gray-300 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded bg-[#801028] inline-block"></span>
-            <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Write Letter &amp; Sent Correspondence</h1>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Create, view, and download formal letters sent by your user account to municipal departments &amp; officers.
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Write Letter &amp; Sent Correspondence
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Create, view, and download formal letters dispatched by your officer desk to municipal departments.
           </p>
         </div>
         <div>
           <button
             type="button"
             onClick={() => setIsWriteModalOpen(true)}
-            className="w-full sm:w-auto bg-[#801028] hover:bg-[#600a1c] text-white text-xs font-semibold px-5 py-2.5 rounded shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
           >
             <PlusIcon />
             <span>Write a Letter</span>
@@ -135,64 +136,91 @@ const WriteLetterPage: React.FC = () => {
             label: 'Total Sent Letters',
             value: stats.totalSent,
             icon: <MailIcon />,
-            colorClass: 'text-blue-500',
-            borderClass: 'border-blue-300',
-            bgClass: 'bg-blue-50/30'
+            colorClass: 'text-blue-800 bg-blue-50 border-blue-200',
+            iconBoxClass: 'bg-blue-50 text-blue-700 border border-blue-100',
+            progressClass: 'bg-blue-600',
+            percentage: 100,
+            desc: 'All recorded letters'
           },
           {
             id: 'delivered',
-            label: 'Delivered',
+            label: 'Delivered Letters',
             value: stats.delivered,
             icon: <CheckCircleIcon />,
-            colorClass: 'text-green-500',
-            borderClass: 'border-green-300',
-            bgClass: 'bg-green-50/30'
+            colorClass: 'text-green-800 bg-green-50 border-green-200',
+            iconBoxClass: 'bg-green-50 text-green-700 border border-green-100',
+            progressClass: 'bg-green-600',
+            percentage: Math.round((stats.delivered / totalSent) * 100),
+            desc: 'Received by officer'
           },
           {
             id: 'inReview',
-            label: 'In Review',
+            label: 'In Review Queue',
             value: stats.inReview,
             icon: <ClockIcon />,
-            colorClass: 'text-amber-500',
-            borderClass: 'border-amber-300',
-            bgClass: 'bg-amber-50/30'
+            colorClass: 'text-amber-800 bg-amber-50 border-amber-200',
+            iconBoxClass: 'bg-amber-50 text-amber-700 border border-amber-100',
+            progressClass: 'bg-amber-500',
+            percentage: Math.round((stats.inReview / totalSent) * 100),
+            desc: 'Awaiting assessment'
           },
           {
             id: 'approved',
-            label: 'Approved',
+            label: 'Action Approved',
             value: stats.approved,
             icon: <ClipboardCheckIcon />,
-            colorClass: 'text-purple-500',
-            borderClass: 'border-purple-300',
-            bgClass: 'bg-purple-50/30'
+            colorClass: 'text-purple-800 bg-purple-50 border-purple-200',
+            iconBoxClass: 'bg-purple-50 text-purple-700 border border-purple-100',
+            progressClass: 'bg-purple-600',
+            percentage: Math.round((stats.approved / totalSent) * 100),
+            desc: 'Formally cleared'
           }
         ].map((card) => (
           <div
             key={card.id}
-            className={`flex flex-col items-center justify-center p-5 bg-white border rounded shadow-sm hover:shadow transition-shadow ${card.borderClass}`}
+            className="bg-white border border-gray-300 rounded p-4 shadow-sm hover:shadow transition-shadow flex flex-col justify-between"
           >
-            <div className="flex items-center gap-2 mb-2.5">
-              <div className={`p-1.5 rounded ${card.bgClass}`}>
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-500">
+                  {card.label}
+                </p>
+                <p className="text-2xl font-bold text-gray-900 mt-1 font-mono tracking-tight">
+                  {card.value.toString().padStart(2, '0')}
+                </p>
+              </div>
+              <div className={`p-2 rounded ${card.iconBoxClass}`}>
                 {card.icon}
               </div>
-              <span className={`text-xs font-bold uppercase tracking-wider ${card.colorClass}`}>{card.label}</span>
             </div>
-            <p className={`text-3xl font-extrabold ${card.colorClass}`}>
-              {card.value.toString().padStart(2, '0')}
-            </p>
+
+            <div className="mt-4 pt-3 border-t border-gray-100">
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="text-[11px] text-gray-500 font-medium">{card.desc}</span>
+                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded border ${card.colorClass}`}>
+                  {card.percentage}%
+                </span>
+              </div>
+              <div className="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${card.progressClass}`}
+                  style={{ width: `${card.percentage}%` }}
+                />
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Filter and Search Toolbar */}
-      <div className="bg-white border border-gray-300 rounded p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="bg-white border border-gray-300 rounded p-3 sm:p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-3 bg-gray-50/40">
         <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 flex-1">
           {/* Department Filter */}
-          <div className="relative w-full sm:w-auto min-w-[180px]">
+          <div className="relative w-full sm:w-auto min-w-[170px] h-9">
             <select
               value={deptFilter}
               onChange={(e) => setDeptFilter(e.target.value)}
-              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
+              className="w-full h-full appearance-none bg-white border border-gray-300 rounded px-3 text-xs font-medium text-gray-700 focus:outline-none focus:border-[#A31736] pr-8 cursor-pointer"
             >
               <option value="">All Departments</option>
               {departments.map(d => (
@@ -205,11 +233,11 @@ const WriteLetterPage: React.FC = () => {
           </div>
 
           {/* Status Filter */}
-          <div className="relative w-full sm:w-auto min-w-[150px]">
+          <div className="relative w-full sm:w-auto min-w-[140px] h-9">
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="w-full appearance-none bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:border-[#801028] pr-8 cursor-pointer"
+              className="w-full h-full appearance-none bg-white border border-gray-300 rounded px-3 text-xs font-medium text-gray-700 focus:outline-none focus:border-[#A31736] pr-8 cursor-pointer"
             >
               <option value="">All Statuses</option>
               <option value="SENT">SENT</option>
@@ -226,64 +254,64 @@ const WriteLetterPage: React.FC = () => {
             <button
               type="button"
               onClick={() => { setDeptFilter(''); setStatusFilter(''); setSearchQuery(''); }}
-              className="text-xs font-bold text-gray-500 hover:text-[#801028] px-2 py-1 transition-colors cursor-pointer uppercase tracking-wider text-left sm:text-center"
+              className="text-xs font-bold text-gray-600 hover:text-[#A31736] px-3 h-9 rounded hover:bg-gray-100 transition-colors cursor-pointer uppercase tracking-wider text-left sm:text-center flex items-center"
             >
-              Reset Filters
+              Reset
             </button>
           )}
         </div>
 
         {/* Search Input */}
-        <div className="w-full sm:w-72">
+        <div className="w-full sm:w-72 h-9">
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search ref no, subject, officer..."
-            className="w-full bg-gray-50 border border-gray-300 rounded px-3.5 py-2 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#801028] transition-all"
+            className="w-full h-full bg-white border border-gray-300 rounded px-3 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#A31736] transition-all"
           />
         </div>
       </div>
 
       {/* Sent Letters Table */}
       {loading ? (
-        <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="h-96 bg-gray-100 rounded animate-pulse" />
       ) : (
         <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
           <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch] flex-1">
             <table className="w-full text-left border-collapse min-w-[850px]">
               <thead>
-                <tr className="border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider bg-gray-50">
-                  <th className="py-3.5 px-6">REFERENCE NO</th>
-                  <th className="py-3.5 px-6">SENT DATE &amp; TIME</th>
-                  <th className="py-3.5 px-6">TO DEPARTMENT</th>
-                  <th className="py-3.5 px-6">RECIPIENT OFFICER</th>
-                  <th className="py-3.5 px-6">SUBJECT</th>
-                  <th className="py-3.5 px-6">STATUS</th>
-                  <th className="py-3.5 px-6 text-center">ACTIONS</th>
+                <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                  <th className="py-3 px-6">REFERENCE NO</th>
+                  <th className="py-3 px-6">SENT DATE &amp; TIME</th>
+                  <th className="py-3 px-6">TO DEPARTMENT</th>
+                  <th className="py-3 px-6">RECIPIENT OFFICER</th>
+                  <th className="py-3 px-6">SUBJECT</th>
+                  <th className="py-3 px-6">STATUS</th>
+                  <th className="py-3 px-6 text-center">ACTIONS</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100 text-sm">
+              <tbody className="divide-y divide-gray-200 text-sm">
                 {filteredLetters.map((letter) => (
-                  <tr key={letter.id} className="hover:bg-gray-50/70 transition-colors">
-                    <td className="py-4 px-6 font-bold text-[#801028] font-mono whitespace-nowrap">{letter.refNo}</td>
-                    <td className="py-4 px-6 whitespace-nowrap text-xs font-semibold text-gray-600">{letter.dateTime}</td>
-                    <td className="py-4 px-6 font-bold text-gray-900 whitespace-nowrap">{letter.department}</td>
-                    <td className="py-4 px-6 font-semibold text-gray-700 whitespace-nowrap">{letter.recipientOfficer}</td>
-                    <td className="py-4 px-6 font-medium text-gray-800 max-w-xs truncate" title={letter.subject}>
+                  <tr key={letter.id} className="hover:bg-gray-50/60 transition-colors">
+                    <td className="py-3.5 px-6 font-bold text-[#A31736] font-mono whitespace-nowrap">{letter.refNo}</td>
+                    <td className="py-3.5 px-6 whitespace-nowrap text-xs font-semibold text-gray-700">{letter.dateTime}</td>
+                    <td className="py-3.5 px-6 font-bold text-gray-900 whitespace-nowrap">{letter.department}</td>
+                    <td className="py-3.5 px-6 font-semibold text-gray-700 whitespace-nowrap">{letter.recipientOfficer}</td>
+                    <td className="py-3.5 px-6 font-medium text-gray-800 max-w-xs truncate" title={letter.subject}>
                       {letter.subject}
                     </td>
-                    <td className="py-4 px-6 whitespace-nowrap">
-                      <span className={`px-3 py-1 rounded text-[10px] font-bold uppercase border inline-block ${getStatusStyle(letter.status)}`}>
+                    <td className="py-3.5 px-6 whitespace-nowrap">
+                      <span className={`px-2.5 py-0.5 rounded text-[10px] font-bold uppercase border inline-block ${getStatusStyle(letter.status)}`}>
                         {letter.status}
                       </span>
                     </td>
-                    <td className="py-4 px-6 text-center whitespace-nowrap">
+                    <td className="py-3.5 px-6 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
                         <button
                           type="button"
                           onClick={() => setSelectedDocLetter(letter)}
-                          className="p-1.5 border border-gray-300 bg-white rounded hover:bg-gray-100 transition-colors group cursor-pointer shadow-xs"
+                          className="p-1.5 border border-gray-300 bg-white rounded hover:bg-gray-100 text-gray-600 hover:text-[#A31736] transition-colors group cursor-pointer shadow-2xs"
                           title="View letter document format"
                         >
                           <EyeIcon />
@@ -291,7 +319,7 @@ const WriteLetterPage: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setSelectedDocLetter(letter)}
-                          className="p-1.5 border border-[#801028]/20 bg-white rounded hover:bg-[#801028]/10 text-[#801028] transition-colors group cursor-pointer shadow-xs"
+                          className="p-1.5 border border-gray-300 bg-white rounded hover:bg-gray-100 text-gray-600 hover:text-[#A31736] transition-colors group cursor-pointer shadow-2xs"
                           title="Download / Print official letter"
                         >
                           <DownloadIcon />
@@ -302,7 +330,7 @@ const WriteLetterPage: React.FC = () => {
                 ))}
                 {filteredLetters.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-gray-500">
+                    <td colSpan={7} className="py-12 text-center text-gray-500 font-medium">
                       No sent letters match your criteria. Click <strong>+ Write a Letter</strong> to compose one!
                     </td>
                   </tr>
@@ -312,7 +340,7 @@ const WriteLetterPage: React.FC = () => {
           </div>
 
           {/* Table Footer */}
-          <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/30 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500 font-semibold text-center sm:text-left">
+          <div className="px-6 py-3.5 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500 font-semibold text-center sm:text-left">
             <span>Showing {filteredLetters.length} of {sentLetters.length} sent letters</span>
             <span>✓ All correspondence auto-logged with sender ID: EMP-2026-042</span>
           </div>
@@ -337,4 +365,5 @@ const WriteLetterPage: React.FC = () => {
 }
 
 export default WriteLetterPage
+
 

@@ -5,78 +5,61 @@ import AddAssetWizardModal from './components/AddAssetWizardModal'
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
-/** Renders the add-asset document icon. */
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-    <polyline points="14 2 14 8 20 8" />
-    <line x1="12" y1="18" x2="12" y2="12" />
-    <line x1="9" y1="15" x2="15" y2="15" />
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
 
-/** Renders the bank icon for the total-assets summary. */
 const BankIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-[#A31736]">
-    <path d="M3 21h18" />
-    <path d="M3 10h18" />
-    <path d="M5 6l7-3 7 3" />
-    <path d="M4 10v11" />
-    <path d="M20 10v11" />
-    <path d="M8 14v3" />
-    <path d="M12 14v3" />
-    <path d="M16 14v3" />
-  </svg>
+  <div className="p-1.5 bg-blue-50/60 rounded text-blue-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <path d="M3 21h18" />
+      <path d="M3 10h18" />
+      <path d="M5 6l7-3 7 3" />
+      <path d="M4 10v11" />
+      <path d="M20 10v11" />
+      <path d="M8 14v3" />
+      <path d="M12 14v3" />
+      <path d="M16 14v3" />
+    </svg>
+  </div>
 )
 
-/** Renders the money icon for the valuation summary. */
 const MoneyIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-gray-600">
-    <rect x="2" y="6" width="20" height="12" rx="2" />
-    <circle cx="12" cy="12" r="2" />
-    <path d="M6 12h.01M18 12h.01" />
-  </svg>
+  <div className="p-1.5 bg-emerald-50/60 rounded text-emerald-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <rect x="2" y="6" width="20" height="12" rx="2" />
+      <circle cx="12" cy="12" r="2" />
+      <path d="M6 12h.01M18 12h.01" />
+    </svg>
+  </div>
 )
 
-/** Renders the inspection icon for the pending-inspections summary. */
 const InspectionIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-orange-600">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-    <polyline points="14 2 14 8 20 8" />
-    <circle cx="12" cy="14" r="2" />
-    <path d="M12 12v-1" />
-  </svg>
+  <div className="p-1.5 bg-amber-50/60 rounded text-amber-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <circle cx="12" cy="14" r="2" />
+      <path d="M12 12v-1" />
+    </svg>
+  </div>
 )
 
-/** Renders the filter icon for the advanced filters section. */
 const FilterIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-700">
     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
   </svg>
 )
 
-/** Renders the dropdown indicator used by select fields. */
 const ChevronDownIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 shrink-0 pointer-events-none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 )
 
-/** Renders the previous-page pagination icon. */
-const ChevronLeftIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-    <polyline points="15 18 9 12 15 6" />
-  </svg>
-)
-
-/** Renders the next-page pagination icon. */
-const ChevronRightIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-    <polyline points="9 18 15 12 9 6" />
-  </svg>
-)
-
-/** Renders the asset directory with filters, pagination, and asset details. */
 export const AssetDirectoryPage: React.FC = () => {
   const {
     assets,
@@ -92,7 +75,7 @@ export const AssetDirectoryPage: React.FC = () => {
   const [wardFilter, setWardFilter] = useState('')
   const [selectedAssetForView, setSelectedAssetForView] = useState<AssetRecord | null>(null)
   const [currentPageLocal, setCurrentPageLocal] = useState(1)
-  const pageSizeLocal = 4
+  const pageSizeLocal = 6
 
   // Filter assets by ward if selected
   const displayedAssets = assets.filter((asset) => {
@@ -100,14 +83,13 @@ export const AssetDirectoryPage: React.FC = () => {
     return asset.location.toLowerCase().includes(wardFilter.toLowerCase())
   })
 
-  // Local pagination to match screenshot (showing 4 items per page)
+  // Local pagination
   const totalPagesLocal = Math.ceil(displayedAssets.length / pageSizeLocal) || 1
   const paginatedList = displayedAssets.slice(
     (currentPageLocal - 1) * pageSizeLocal,
     currentPageLocal * pageSizeLocal
   )
 
-  /** Resets all asset filters and returns to the first page. */
   const handleClearFilters = () => {
     setCategoryFilter('')
     setStatusFilter('')
@@ -116,23 +98,18 @@ export const AssetDirectoryPage: React.FC = () => {
     setCurrentPageLocal(1)
   }
 
-  /** Adds a newly submitted asset to the asset data store. */
   const handleAddAssetSubmit = (newAssetData: Omit<AssetRecord, 'id' | 'dateAdded'>) => {
     addAsset(newAssetData)
   }
 
-  // Calculate formatted valuation string
-  /** Formats an asset valuation, calculating a fallback when needed. */
   const formatValuation = (asset: AssetRecord) => {
     if (asset.valuation) {
       return `Rs. ${asset.valuation.toLocaleString('en-US', { minimumFractionDigits: 0 })}`
     }
-    // Default mock valuation calculation if not set
     const baseVal = getCategoryBaseValue(asset.category)
     return `Rs. ${(baseVal * (asset.value || 1)).toLocaleString('en-US')}`
   }
 
-  /** Returns the fallback valuation base for an asset category. */
   const getCategoryBaseValue = (category: string) => {
     if (category === 'Land') return 124500000
     if (category === 'Road') return 45200000
@@ -140,454 +117,408 @@ export const AssetDirectoryPage: React.FC = () => {
     return 85000000
   }
 
-  /** Returns the status indicator color for an asset row. */
-  const getStatusDotClass = (isOperational: boolean, isMaintenance: boolean) => {
-    if (isOperational) return 'bg-emerald-500'
-    if (isMaintenance) return 'bg-red-500'
-    return 'bg-gray-400'
-  }
-
-  /** Returns the status text color for an asset row. */
-  const getStatusTextClass = (isOperational: boolean, isMaintenance: boolean) => {
-    if (isOperational) return 'text-emerald-700'
-    if (isMaintenance) return 'text-red-600'
-    return 'text-gray-600'
+  const getStatusBadgeStyle = (status: string) => {
+    switch (status.toUpperCase()) {
+      case 'VERIFIED':
+      case 'OPERATIONAL':
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200'
+      case 'DIGITIZED':
+        return 'bg-blue-50 text-blue-800 border-blue-200'
+      case 'AUDIT PENDING':
+      case 'DISPUTED':
+        return 'bg-red-50 text-red-800 border-red-200 font-bold'
+      case 'UNDER MAINTENANCE':
+        return 'bg-amber-50 text-amber-800 border-amber-200'
+      default:
+        return 'bg-gray-50 text-gray-700 border-gray-300'
+    }
   }
 
   return (
-    <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-6 animate-fade-in pb-16">
+    <div className="space-y-6 animate-fade-in pb-8">
       
-      {/* ── PAGE HEADER ─────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
+      {/* ── Page Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#800020] tracking-tight">
-            Asset Directory
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Municipal Asset Directory
           </h1>
-          <p className="text-sm text-gray-600 mt-1 font-medium">
-            Manage and track all local government physical infrastructure and assets.
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Manage, verify, and track all local government physical infrastructure and asset registers.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => setIsWizardOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#800020] hover:bg-[#600018] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
+          className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm self-start sm:self-auto"
         >
           <AddIcon />
-          Add New Asset
+          <span>+ Add New Asset</span>
         </button>
       </div>
 
-      {/* ── 3 SUMMARY KPI CARDS ─────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* ── 3 Summary KPI Cards (Overview Styling) ── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         
         {/* Card 1: Total Assets */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-red-50/80 border border-red-100 rounded-2xl shrink-0">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Total Municipal Assets
+            </span>
             <BankIcon />
           </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              TOTAL ASSETS
-            </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 block tracking-tight">
-              1,482
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              {assets.length.toLocaleString()}
+            </p>
+            <span className="text-[11px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+              Verified Register
             </span>
           </div>
         </div>
 
         {/* Card 2: Total Valuation */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-gray-100/80 border border-gray-200 rounded-2xl shrink-0">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Total Capital Valuation
+            </span>
             <MoneyIcon />
           </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              TOTAL VALUATION
-            </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 block tracking-tight">
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-800 tracking-tight">
               Rs. 842.5M
+            </p>
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              Active Inventory
             </span>
           </div>
         </div>
 
         {/* Card 3: Pending Inspections */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-orange-50/80 border border-orange-100 rounded-2xl shrink-0">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Pending Audit & Inspections
+            </span>
             <InspectionIcon />
           </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              PENDING INSPECTIONS
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-800 tracking-tight">
+              {assets.filter(a => a.status === 'Audit Pending' || a.status === 'Under Maintenance').length}
+            </p>
+            <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+              Action Required
             </span>
-            <div className="flex items-center gap-3 mt-1">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                24
-              </span>
-              <span className="bg-red-100 text-red-700 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
-                Priority
-              </span>
-            </div>
           </div>
         </div>
 
       </div>
 
-      {/* ── ADVANCED FILTERS BAR ────────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs">
-        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+      {/* ── Main Container: Advanced Filter Toolbar + Table ── */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
+        
+        {/* Table Header Action Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              Municipal Asset Ledger & Valuation Roster
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Comprehensive catalog of council properties, road networks, vehicles, and equipment.
+            </p>
+          </div>
           <div className="flex items-center gap-2">
-            <FilterIcon />
-            <h3 className="text-sm font-extrabold text-gray-800 tracking-wider uppercase">
-              ADVANCED FILTERS
-            </h3>
-          </div>
-          <button
-            type="button"
-            onClick={handleClearFilters}
-            className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
-          >
-            Clear All
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mt-4 items-end">
-          
-          {/* Asset Type Dropdown */}
-          <div>
-            <label htmlFor="assetTypeSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Asset Type
-            </label>
-            <div className="relative">
-              <select
-                id="assetTypeSelect"
-                value={categoryFilter}
-                onChange={(e) => {
-                  setCategoryFilter(e.target.value)
-                  setCurrentPageLocal(1)
-                }}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] pr-10 cursor-pointer"
-              >
-                <option value="">All Types</option>
-                <option value="Land">Land</option>
-                <option value="Road">Road</option>
-                <option value="Building">Building</option>
-                <option value="Streetlamp">Streetlamp</option>
-                <option value="Grounds">Grounds</option>
-                <option value="Vehicle">Vehicle</option>
-                <option value="Machinery & Equipment">Machinery & Equipment</option>
-                <option value="Utility / Infrastructure">Utility / Infrastructure</option>
-              </select>
-              <div className="absolute right-3.5 top-3.5 pointer-events-none">
-                <ChevronDownIcon />
-              </div>
-            </div>
-          </div>
-
-          {/* Status Dropdown */}
-          <div>
-            <label htmlFor="statusSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Status
-            </label>
-            <div className="relative">
-              <select
-                id="statusSelect"
-                value={statusFilter}
-                onChange={(e) => {
-                  setStatusFilter(e.target.value)
-                  setCurrentPageLocal(1)
-                }}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] pr-10 cursor-pointer"
-              >
-                <option value="">All Statuses</option>
-                <option value="Operational">Operational</option>
-                <option value="Under Maintenance">Under Maintenance</option>
-                <option value="Disputed">Disputed</option>
-                <option value="Verified">Verified</option>
-                <option value="Digitized">Digitized</option>
-                <option value="Audit Pending">Audit Pending</option>
-              </select>
-              <div className="absolute right-3.5 top-3.5 pointer-events-none">
-                <ChevronDownIcon />
-              </div>
-            </div>
-          </div>
-
-          {/* Location / Ward Dropdown */}
-          <div>
-            <label htmlFor="wardSelect" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Location / Ward
-            </label>
-            <div className="relative">
-              <select
-                id="wardSelect"
-                value={wardFilter}
-                onChange={(e) => {
-                  setWardFilter(e.target.value)
-                  setCurrentPageLocal(1)
-                }}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] pr-10 cursor-pointer"
-              >
-                <option value="">All Wards</option>
-                <option value="Ward 01">Ward 01 - Town Center</option>
-                <option value="Ward 02">Ward 02 - Central Junction</option>
-                <option value="Ward 03">Ward 03 - Homagama</option>
-                <option value="Ward 04">Ward 04 - West Point</option>
-                <option value="Ward 05">Ward 05 - Godagama</option>
-              </select>
-              <div className="absolute right-3.5 top-3.5 pointer-events-none">
-                <ChevronDownIcon />
-              </div>
-            </div>
-          </div>
-
-          {/* Apply Search Button */}
-          <div>
             <button
               type="button"
-              onClick={() => setCurrentPageLocal(1)}
-              className="w-full bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 font-bold py-2.5 px-6 rounded-xl transition-all cursor-pointer shadow-xs text-sm"
+              onClick={() => alert('Exporting ASSET_DIRECTORY.csv...')}
+              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer text-center"
             >
-              Apply Search
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        {/* Filter Toolbar */}
+        <div className="p-4 bg-gray-50/50 border-b border-gray-200 space-y-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <FilterIcon />
+              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                Directory Filters & Criteria
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="text-xs font-bold text-[#A31736] hover:text-[#801028] transition-colors cursor-pointer uppercase tracking-wider self-start md:self-auto"
+            >
+              Clear All Filters
             </button>
           </div>
 
-        </div>
-      </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {/* Category Filter */}
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Asset Category
+              </label>
+              <div className="relative">
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  <option value="">All Categories</option>
+                  <option value="Land">Land</option>
+                  <option value="Road">Road</option>
+                  <option value="Building">Building</option>
+                  <option value="Vehicle">Vehicle</option>
+                  <option value="Machinery & Equipment">Machinery & Equipment</option>
+                  <option value="Utility / Infrastructure">Utility / Infrastructure</option>
+                  <option value="Streetlamp">Streetlamp</option>
+                  <option value="Grounds">Grounds</option>
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
+              </div>
+            </div>
 
-      {/* ── ASSETS DIRECTORY TABLE ──────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl shadow-xs overflow-hidden">
+            {/* Status Filter */}
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Asset Status
+              </label>
+              <div className="relative">
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  <option value="">All Statuses</option>
+                  <option value="Operational">Operational</option>
+                  <option value="Under Maintenance">Under Maintenance</option>
+                  <option value="Disputed">Disputed</option>
+                  <option value="Verified">Verified</option>
+                  <option value="Digitized">Digitized</option>
+                  <option value="Audit Pending">Audit Pending</option>
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
+              </div>
+            </div>
+
+            {/* Ward / Location Filter */}
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Ward / Electoral Division
+              </label>
+              <div className="relative">
+                <select
+                  value={wardFilter}
+                  onChange={(e) => setWardFilter(e.target.value)}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  <option value="">All Wards & Zones</option>
+                  <option value="Homagama">Homagama Central</option>
+                  <option value="Meegoda">Meegoda Ward</option>
+                  <option value="Pitipana">Pitipana Ward</option>
+                  <option value="Godagama">Godagama Ward</option>
+                  <option value="Katuwana">Katuwana Ward</option>
+                  <option value="Mattegoda">Mattegoda Ward</option>
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Responsive Table */}
         <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
-          <table className="w-full text-left border-collapse min-w-[950px]">
+          <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">ASSET ID</th>
-                <th className="py-4 px-6">NAME</th>
-                <th className="py-4 px-6">CATEGORY</th>
-                <th className="py-4 px-6">LOCATION</th>
-                <th className="py-4 px-6">CURRENT VALUATION</th>
-                <th className="py-4 px-6">STATUS</th>
-                <th className="py-4 px-6 text-right">ACTIONS</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-6 w-36">Asset Code</th>
+                <th className="py-3 px-6">Asset Name & Details</th>
+                <th className="py-3 px-6">Location / Ward</th>
+                <th className="py-3 px-6">Valuation</th>
+                <th className="py-3 px-6 text-center">Status</th>
+                <th className="py-3 px-6 text-right w-28">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
-              {paginatedList.length === 0 ? (
+            <tbody className="divide-y divide-gray-200 text-sm">
+              {paginatedList.map((asset) => (
+                <tr key={asset.id} className="hover:bg-gray-50 transition-colors">
+                  
+                  {/* Asset Code */}
+                  <td className="py-3.5 px-6 whitespace-nowrap">
+                    <span className="font-mono text-xs font-bold text-[#1e3a8a]">
+                      {asset.id}
+                    </span>
+                  </td>
+
+                  {/* Asset Name */}
+                  <td className="py-3.5 px-6 whitespace-nowrap">
+                    <div>
+                      <p className="font-bold text-gray-900 text-xs">{asset.name}</p>
+                      <p className="text-[11px] text-gray-500 font-medium">{asset.category} • {asset.value} {asset.unit}</p>
+                    </div>
+                  </td>
+
+                  {/* Location */}
+                  <td className="py-3.5 px-6 text-xs text-gray-700 font-medium whitespace-nowrap">
+                    {asset.location}
+                  </td>
+
+                  {/* Valuation */}
+                  <td className="py-3.5 px-6 text-xs font-bold text-gray-900 whitespace-nowrap">
+                    {formatValuation(asset)}
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="py-3.5 px-6 text-center whitespace-nowrap">
+                    <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded uppercase tracking-wide inline-block border ${getStatusBadgeStyle(asset.status)}`}>
+                      {asset.status}
+                    </span>
+                  </td>
+
+                  {/* Action Link */}
+                  <td className="py-3.5 px-6 text-right whitespace-nowrap">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedAssetForView(asset)}
+                      className="text-xs font-bold text-[#1e3a8a] hover:underline cursor-pointer uppercase tracking-wider"
+                    >
+                      Inspect &rarr;
+                    </button>
+                  </td>
+
+                </tr>
+              ))}
+
+              {paginatedList.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-gray-400 italic">
-                    No assets found matching the selected filters.
+                  <td colSpan={6} className="py-12 text-center text-gray-500 font-medium italic">
+                    No asset records found matching the specified directory criteria.
                   </td>
                 </tr>
-              ) : (
-                paginatedList.map((asset) => {
-                  const isOperational = asset.status === 'Operational' || asset.status === 'Verified'
-                  const isMaintenance = asset.status === 'Under Maintenance' || asset.status === 'Audit Pending'
-                  
-                  return (
-                    <tr key={asset.id} className="hover:bg-gray-50/60 transition-colors">
-                      {/* Asset ID */}
-                      <td className="py-4 px-6 font-mono text-xs font-bold text-[#800020]">
-                        {asset.id}
-                      </td>
-
-                      {/* Name */}
-                      <td className="py-4 px-6">
-                        <span className="font-bold text-gray-900 block">{asset.name}</span>
-                        <span className="text-[11px] text-gray-400 font-medium mt-0.5 block">
-                          Added: {asset.dateAdded}
-                        </span>
-                      </td>
-
-                      {/* Category Badge */}
-                      <td className="py-4 px-6">
-                        <span className="bg-gray-150 border border-gray-200/80 text-gray-700 text-[10px] font-extrabold px-2.5 py-1 rounded uppercase tracking-wider inline-block">
-                          {asset.category}
-                        </span>
-                      </td>
-
-                      {/* Location */}
-                      <td className="py-4 px-6 text-gray-700 font-medium">
-                        {asset.location}
-                      </td>
-
-                      {/* Valuation */}
-                      <td className="py-4 px-6 font-bold text-gray-900">
-                        {formatValuation(asset)}
-                      </td>
-
-                      {/* Status Dot */}
-                      <td className="py-4 px-6">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`w-2 h-2 rounded-full ${getStatusDotClass(isOperational, isMaintenance)}`}
-                          />
-                          <span
-                            className={`text-xs font-semibold ${getStatusTextClass(isOperational, isMaintenance)}`}
-                          >
-                            {asset.status}
-                          </span>
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="py-4 px-6 text-right">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedAssetForView(asset)}
-                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setSelectedAssetForView(asset); } }}
-                          className="text-xs font-bold text-[#800020] hover:underline cursor-pointer"
-                        >
-                          View Details
-                        </button>
-                      </td>
-                    </tr>
-                  )
-                })
               )}
             </tbody>
           </table>
         </div>
 
-        {/* Table Footer / Pagination */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 bg-gray-50/50 border-t border-gray-200 text-xs text-gray-600">
-          <div>
-            Showing <span className="font-bold text-gray-800">1-{paginatedList.length}</span> of{' '}
-            <span className="font-bold text-gray-800">1,482</span> assets
-          </div>
+        {/* Table Pagination */}
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-xs text-gray-600 font-semibold">
+            Showing {displayedAssets.length > 0 ? (currentPageLocal - 1) * pageSizeLocal + 1 : 0} to{' '}
+            {Math.min(currentPageLocal * pageSizeLocal, displayedAssets.length)} of {displayedAssets.length} assets
+          </span>
 
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => setCurrentPageLocal((p) => Math.max(1, p - 1))}
-              disabled={currentPageLocal === 1}
-              className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              <ChevronLeftIcon />
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => setCurrentPageLocal(1)}
-              className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
-                currentPageLocal === 1
-                  ? 'bg-[#800020] text-white shadow-xs'
-                  : 'hover:bg-gray-100 text-gray-700'
-              }`}
-            >
-              1
-            </button>
-
-            {totalPagesLocal >= 2 && (
+          {totalPagesLocal > 1 && (
+            <div className="flex items-center gap-1.5">
               <button
                 type="button"
-                onClick={() => setCurrentPageLocal(2)}
-                className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
-                  currentPageLocal === 2
-                    ? 'bg-[#800020] text-white shadow-xs'
-                    : 'hover:bg-gray-100 text-gray-700'
-                }`}
+                disabled={currentPageLocal === 1}
+                onClick={() => setCurrentPageLocal((c) => Math.max(1, c - 1))}
+                className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs text-xs font-bold"
               >
-                2
+                &lt;
               </button>
-            )}
 
-            {totalPagesLocal >= 3 && (
+              {Array.from({ length: totalPagesLocal }).map((_, idx) => {
+                const p = idx + 1
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setCurrentPageLocal(p)}
+                    className={`w-8 h-8 rounded text-xs font-bold transition-all cursor-pointer ${
+                      currentPageLocal === p
+                        ? 'bg-[#A31736] text-white'
+                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              })}
+
               <button
                 type="button"
-                onClick={() => setCurrentPageLocal(3)}
-                className={`w-8 h-8 rounded-lg font-bold flex items-center justify-center transition-colors cursor-pointer ${
-                  currentPageLocal === 3
-                    ? 'bg-[#800020] text-white shadow-xs'
-                    : 'hover:bg-gray-100 text-gray-700'
-                }`}
+                disabled={currentPageLocal === totalPagesLocal}
+                onClick={() => setCurrentPageLocal((c) => Math.min(totalPagesLocal, c + 1))}
+                className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs text-xs font-bold"
               >
-                3
+                &gt;
               </button>
-            )}
-
-            <span className="px-1 text-gray-400">...</span>
-
-            <button
-              type="button"
-              onClick={() => setCurrentPageLocal(371)}
-              className="w-10 h-8 rounded-lg font-bold hover:bg-gray-100 text-gray-700 flex items-center justify-center transition-colors cursor-pointer"
-            >
-              371
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setCurrentPageLocal((p) => Math.min(totalPagesLocal, p + 1))}
-              disabled={currentPageLocal === totalPagesLocal}
-              className="p-1.5 rounded-lg border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
-            >
-              <ChevronRightIcon />
-            </button>
-          </div>
+            </div>
+          )}
         </div>
+
       </div>
 
-      {/* ── 5-STAGE ADD ASSET WIZARD MODAL ─────────────────────────────── */}
-      <AddAssetWizardModal
-        isOpen={isWizardOpen}
-        onClose={() => setIsWizardOpen(false)}
-        onSubmit={handleAddAssetSubmit}
-      />
-
-      {/* ── SIMPLE ASSET DETAILS VIEW MODAL ─────────────────────────────── */}
+      {/* ── Asset Inspection Drawer Modal ── */}
       {selectedAssetForView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <button
-            type="button"
-            aria-label="Close asset details"
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs"
-            onClick={() => setSelectedAssetForView(null)}
-          />
-          <div className="relative bg-white w-full max-w-md rounded-2xl p-6 shadow-2xl border border-gray-200 z-10 animate-fade-in space-y-4">
-            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-              <h3 className="text-lg font-bold text-gray-900">Asset Record Details</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded border border-gray-300 shadow-2xl p-6 max-w-md w-full relative z-10 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+              <div>
+                <span className="font-mono text-xs font-bold text-[#1e3a8a]">{selectedAssetForView.id}</span>
+                <h3 className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                  Asset Inspection Dossier
+                </h3>
+              </div>
               <button
                 type="button"
                 onClick={() => setSelectedAssetForView(null)}
-                className="text-gray-400 hover:text-gray-700 font-bold"
+                className="text-gray-400 hover:text-gray-700 font-bold text-base cursor-pointer p-1"
               >
                 ✕
               </button>
             </div>
-            <div className="space-y-2.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Asset ID:</span>
-                <span className="font-mono font-bold text-[#800020]">{selectedAssetForView.id}</span>
+
+            <div className="space-y-2.5 text-xs text-gray-700">
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Asset Name:</span>
+                <span className="font-bold text-gray-900 text-right">{selectedAssetForView.name}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Name:</span>
-                <span className="font-bold text-gray-900">{selectedAssetForView.name}</span>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Category:</span>
+                <span className="font-semibold text-gray-900">{selectedAssetForView.category}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Category:</span>
-                <span className="font-semibold">{selectedAssetForView.category}</span>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Location:</span>
+                <span className="font-medium text-gray-900 text-right">{selectedAssetForView.location}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Location:</span>
-                <span className="font-semibold">{selectedAssetForView.location}</span>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Estimated Valuation:</span>
+                <span className="font-bold text-emerald-800">{formatValuation(selectedAssetForView)}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Valuation:</span>
-                <span className="font-bold">{formatValuation(selectedAssetForView)}</span>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Operating Status:</span>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase ${getStatusBadgeStyle(selectedAssetForView.status)}`}>
+                  {selectedAssetForView.status}
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Status:</span>
-                <span className="font-semibold text-emerald-600">{selectedAssetForView.status}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 font-medium">Date Added:</span>
-                <span className="text-gray-600">{selectedAssetForView.dateAdded}</span>
-              </div>
+              {selectedAssetForView.conditionStatus && (
+                <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                  <span className="font-semibold text-gray-500">Condition Report:</span>
+                  <span className="font-medium text-gray-900">{selectedAssetForView.conditionStatus}</span>
+                </div>
+              )}
             </div>
-            <div className="pt-3 border-t border-gray-100 flex justify-end">
+
+            <div className="pt-3 border-t border-gray-200 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setSelectedAssetForView(null)}
-                className="px-4 py-2 bg-[#800020] text-white rounded-xl text-xs font-bold cursor-pointer"
+                className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -596,8 +527,15 @@ export const AssetDirectoryPage: React.FC = () => {
         </div>
       )}
 
+      {/* ── Wizard Modal ── */}
+      <AddAssetWizardModal
+        isOpen={isWizardOpen}
+        onClose={() => setIsWizardOpen(false)}
+        onSubmit={handleAddAssetSubmit}
+      />
+
     </div>
   )
 }
-export default AssetDirectoryPage
 
+export default AssetDirectoryPage

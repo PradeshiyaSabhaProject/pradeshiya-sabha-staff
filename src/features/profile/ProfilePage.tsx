@@ -88,11 +88,11 @@ export const ProfilePage: React.FC = () => {
   ]
 
   return (
-    <div className="space-y-6 animate-fade-in pb-8 max-w-7xl mx-auto text-left relative">
+    <div className="space-y-6 animate-fade-in pb-8 relative">
       {/* Toast feedback notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl border border-gray-700 flex items-center gap-3 animate-fade-in text-xs sm:text-sm font-semibold">
-          <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse"></span>
+        <div className="fixed bottom-6 right-6 z-50 bg-gray-900 text-white px-4 py-3 rounded shadow-2xl border border-gray-700 flex items-center gap-3 animate-fade-in text-xs font-semibold">
+          <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
           <span>{toast}</span>
           <button type="button" onClick={() => setToast(null)} className="ml-2 text-gray-400 hover:text-white font-bold cursor-pointer">
             ✕
@@ -100,7 +100,33 @@ export const ProfilePage: React.FC = () => {
         </div>
       )}
 
-      {/* Header Block & Summary Stats matching ManageUsersPage / AllLettersPage */}
+      {/* Top Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Staff Profile &amp; Official Records
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Manage your personal contact details, biometric turnstile credentials, multi-factor authentication, and account activity log.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-white border border-gray-300 text-xs font-semibold px-3 py-1.5 rounded shadow-3xs">
+            <span className="text-gray-600 uppercase tracking-wider text-[11px]">Employee ID:</span>
+            <span className="font-bold text-[#A31736] bg-[#A31736]/10 px-1.5 py-0.2 rounded border border-[#A31736]/20 text-[10px] font-mono">
+              {profile.empId}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 bg-white border border-gray-300 text-xs font-semibold px-3 py-1.5 rounded shadow-3xs">
+            <span className="text-gray-600 uppercase tracking-wider text-[11px]">Account Status:</span>
+            <span className="font-bold text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200 text-[10px]">
+              {profile.verificationStatus.toUpperCase()}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Header Block & Summary Stats matching Overview page */}
       <ProfileHeaderCard
         profile={profile}
         onEditClick={() => setIsEditing(!isEditing)}
@@ -109,8 +135,8 @@ export const ProfilePage: React.FC = () => {
         leaveRemaining={STAFF_LEAVE_SUMMARY.annualTotal - STAFF_LEAVE_SUMMARY.annualUsed}
       />
 
-      {/* Tabbed Content Container matching LetterTable / ManageUsersPage */}
-      <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+      {/* Tabbed Content Container */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         {/* Navigation Tabs Bar */}
         <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar bg-gray-50/50">
           {tabs.map((tab) => {
@@ -120,15 +146,15 @@ export const ProfilePage: React.FC = () => {
                 key={tab.key}
                 type="button"
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-1.5 px-6 py-4 text-sm font-semibold transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
+                className={`flex items-center gap-1.5 px-5 py-3.5 text-xs font-bold uppercase tracking-wider transition-colors border-b-2 whitespace-nowrap cursor-pointer ${
                   isActive
-                    ? 'border-[#801028] text-[#801028] bg-white font-bold shadow-2xs'
+                    ? 'border-[#A31736] text-[#A31736] bg-white'
                     : 'border-transparent text-gray-600 hover:text-gray-900 hover:bg-gray-100/60'
                 }`}
               >
                 <span>{tab.label}</span>
                 {tab.count !== undefined && (
-                  <span className={`text-xs font-bold ${isActive ? 'text-[#801028]' : 'text-gray-400'}`}>
+                  <span className={`text-[11px] font-bold ${isActive ? 'text-[#A31736]' : 'text-gray-400'}`}>
                     ({tab.count})
                   </span>
                 )}
@@ -138,7 +164,7 @@ export const ProfilePage: React.FC = () => {
         </div>
 
         {/* Tab Content Panel */}
-        <div className="p-6">
+        <div className="p-5 sm:p-6">
           {activeTab === 'personal' && (
             <PersonalDetailsTab
               profile={profile}

@@ -66,7 +66,7 @@ export const InventoryOverviewPage: React.FC = () => {
   const pendingRequests = requests.filter((r) => r.status === 'Pending Approval').length
 
 
-  const handleAddItem = (newItem: any) => {
+  const handleAddItem = (_newItem?: any) => {
     // Items are added through the useInventoryData hook
     setIsAddModalOpen(false)
   }

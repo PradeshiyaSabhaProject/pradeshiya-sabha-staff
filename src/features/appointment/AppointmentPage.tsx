@@ -329,6 +329,16 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
               <EyeIcon />
             </button>
 
+            {/* Print Slip Pass */}
+            <button
+              type="button"
+              onClick={() => openSlip(app)}
+              className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 p-1.5 rounded transition-colors cursor-pointer shadow-3xs"
+              title="Print Token Slip"
+            >
+              <PrintSmallIcon />
+            </button>
+
             {/* Only the staff member's pending appointments expose quick actions here. */}
             {mode === 'my' && app.status === 'PENDING' && (
               <>
@@ -361,10 +371,10 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
       {/* ── Institutional Header Banner ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
             {mode === 'my' ? 'My Assigned Appointments' : 'Council Appointment Management'}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
             Citizen consultation schedules, municipal counter booking, and visitor token records.
           </p>
         </div>
@@ -374,7 +384,7 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
           <button
             type="button"
             onClick={handleExportCSV}
-            className="border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold px-3 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-xs"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer flex items-center gap-1.5"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -466,6 +476,18 @@ export const AppointmentPage: React.FC<AppointmentPageProps> = ({ mode }) => {
       {/* ── Main Container: Status Tabs + Search & Filters Toolbar + Table / Agenda ── */}
       <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
         
+        {/* Table Header Action Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              {mode === 'my' ? 'My Assigned Consultations' : 'Citizen Appointments & Token Ledger'}
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Review scheduled citizen sessions, manage consultation statuses, and print visitor token slips.
+            </p>
+          </div>
+        </div>
+
         {/* Status Navigation Tabs Bar */}
         <div className="overflow-x-auto border-b border-gray-200 bg-white">
           <div className="flex px-4 min-w-[700px]">

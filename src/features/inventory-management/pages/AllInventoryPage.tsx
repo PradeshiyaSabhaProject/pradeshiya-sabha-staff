@@ -93,7 +93,7 @@ const AllInventoryPage: React.FC = () => {
     setUnavailableOnly(false)
   }
 
-  const handleAddItem = (newItem: any) => {
+  const handleAddItem = (_newItem?: any) => {
     // Items are added through the useInventoryData hook
     setIsAddModalOpen(false)
   }

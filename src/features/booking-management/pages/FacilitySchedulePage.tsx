@@ -4,15 +4,6 @@ import { useBookingData } from '../hooks/useBookingData'
 import type { FacilityBooking } from '../types'
 import BookingDetailModal from '../components/BookingDetailModal'
 
-const CalendarIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5 text-[#801028]">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-    <line x1="16" y1="2" x2="16" y2="6" />
-    <line x1="8" y1="2" x2="8" y2="6" />
-    <line x1="3" y1="10" x2="21" y2="10" />
-  </svg>
-)
-
 function getStatusBadgeStyle(status: string): string {
   switch (status) {
     case 'APPROVED':
@@ -67,40 +58,34 @@ const FacilitySchedulePage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
-              <CalendarIcon />
-              <span>Municipal Facility Schedule & Availability</span>
-            </h1>
-            <span className="bg-[#801028]/10 text-[#801028] text-xs font-bold px-3 py-1 rounded-full border border-[#801028]/20 uppercase tracking-wider">
-              Council Timeline
-            </span>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">
-            Visual roster of upcoming events, public ceremonies, and reserved slots across council venues
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Facility Schedule &amp; Availability
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Visual roster of upcoming events, public ceremonies, and reserved slots across council venues.
           </p>
         </div>
 
         <button
           type="button"
           onClick={() => navigate('/bookings/all')}
-          className="flex items-center gap-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-xs font-bold px-4 py-2.5 rounded-xl shadow-xs transition-colors uppercase tracking-wider cursor-pointer self-start sm:self-auto"
+          className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-bold px-3.5 py-1.5 rounded shadow-xs transition-colors uppercase tracking-wider cursor-pointer self-start md:self-auto"
         >
-          <span>← Back to All Bookings</span>
+          <span>All Bookings</span>
         </button>
       </div>
 
       {/* Filter by facility */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-sm font-bold text-gray-700">
+      <div className="bg-white border border-gray-300 rounded p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-sm bg-gray-50/30">
+        <div className="text-xs font-bold uppercase tracking-wider text-gray-700">
           Filter Timeline by Facility:
         </div>
         <select
           value={selectedFacility}
           onChange={(e) => setSelectedFacility(e.target.value)}
-          className="w-full sm:w-80 bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800 outline-none cursor-pointer"
+          className="w-full sm:w-80 bg-white border border-gray-300 rounded px-3 py-1.5 text-xs font-medium text-gray-700 outline-none cursor-pointer focus:border-[#A31736]"
         >
           <option value="">All Municipal Facilities (Combined Schedule)</option>
           <option value="Pradeshiya Sabha Town Hall">Pradeshiya Sabha Town Hall</option>
@@ -113,35 +98,35 @@ const FacilitySchedulePage: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="h-96 bg-gray-100 rounded-xl animate-pulse" />
+        <div className="h-96 bg-gray-100 rounded animate-pulse border border-gray-200" />
       ) : activeBookings.length === 0 ? (
-        <div className="bg-white border border-gray-200 rounded-2xl p-12 text-center text-gray-400 font-semibold">
+        <div className="bg-white border border-gray-300 rounded p-12 text-center text-gray-400 font-semibold text-xs shadow-sm">
           No scheduled reservations found for the selected facility view.
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {activeBookings.map((booking) => (
             <button
               type="button"
               key={booking.id}
               onClick={() => handleView(booking)}
-              className="w-full text-left font-normal bg-white border border-gray-200 hover:border-[#801028] rounded-xl p-5 shadow-xs hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="w-full text-left font-normal bg-white border border-gray-300 hover:border-[#A31736] rounded p-4 shadow-sm hover:shadow transition-all cursor-pointer flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
               <span className="flex items-start gap-4">
-                <span className="bg-gray-100 border border-gray-200 rounded-xl p-3 text-center min-w-[85px] shrink-0 block">
+                <span className="bg-gray-100 border border-gray-200 rounded p-2.5 text-center min-w-[80px] shrink-0 block">
                   <span className="text-[10px] font-bold text-gray-500 uppercase block">Date</span>
-                  <span className="text-sm font-black text-[#801028] block mt-0.5">{booking.bookingDate}</span>
+                  <span className="text-xs font-bold text-[#A31736] block mt-0.5">{booking.bookingDate}</span>
                 </span>
                 <span className="block">
                   <span className="flex items-center gap-2">
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-gray-100 text-gray-700">
                       {booking.facilityName}
                     </span>
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider border ${getStatusBadgeStyle(booking.status)}`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider border ${getStatusBadgeStyle(booking.status)}`}>
                       {booking.status}
                     </span>
                   </span>
-                  <span className="block text-base font-black text-gray-900 mt-1.5 leading-snug">
+                  <span className="block text-sm font-bold text-gray-900 mt-1 leading-snug">
                     {booking.eventTitle}
                   </span>
                   <span className="text-xs text-gray-500 font-medium mt-1 flex flex-wrap items-center gap-2 sm:gap-4">
@@ -154,10 +139,10 @@ const FacilitySchedulePage: React.FC = () => {
 
               <span className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-2 sm:pt-0 border-t sm:border-0 border-gray-100">
                 <span className="text-right hidden md:block">
-                  <span className="text-[11px] font-bold text-gray-400 uppercase block">Ref ID</span>
-                  <span className="text-xs font-extrabold text-[#801028] font-mono">{booking.refId}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase block">Ref ID</span>
+                  <span className="text-xs font-bold text-[#A31736] font-mono">{booking.refId}</span>
                 </span>
-                <span className="w-full sm:w-auto px-4 py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-xl text-xs font-bold text-center block">
+                <span className="w-full sm:w-auto px-3 py-1.5 bg-gray-50 text-gray-700 border border-gray-300 rounded text-xs font-bold text-center uppercase tracking-wider block hover:bg-gray-100 transition-colors">
                   Dossier & Actions →
                 </span>
               </span>
