@@ -84,7 +84,7 @@ export const InventoryOverviewPage: React.FC = () => {
       {/* ── Page Header with Action Buttons ─────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">Inventory Management Overview</h1>
+          <h1 className="text-[26px] font-extrabold text-black tracking-tight">Inventory Management Overview</h1>
           <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
             Monitor office stock levels, track usage, and manage stock requests across all departments.
           </p>

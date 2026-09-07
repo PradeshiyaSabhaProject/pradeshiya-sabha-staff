@@ -104,7 +104,7 @@ const AllInventoryPage: React.FC = () => {
       {/* ── PAGE HEADER with Action Button ──────────────────────────────── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#800020] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
             Office Inventory Stock List
           </h1>
           <p className="text-sm text-gray-600 mt-1 font-medium">

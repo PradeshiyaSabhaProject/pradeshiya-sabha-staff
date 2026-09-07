@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useInventoryData } from '../hooks/useInventoryData'
 import { RecordUsageModal } from '../components/RecordUsageModal'
 import { ItemStatusBadge } from '../components/StatusBadges'
@@ -30,19 +29,7 @@ const StockUsagePage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link
-              to="/inventory-management/overview"
-              className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline"
-            >
-              Inventory Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-              Stock Usage
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#801028] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
             Record Stock Usage
           </h1>
           <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
