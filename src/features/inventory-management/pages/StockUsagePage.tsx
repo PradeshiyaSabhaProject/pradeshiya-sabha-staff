@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { useInventoryData } from '../hooks/useInventoryData'
 import { RecordUsageModal } from '../components/RecordUsageModal'
 import { ItemStatusBadge } from '../components/StatusBadges'
 import { AvailabilityBar } from '../components/AvailabilityBar'
 import type { InventoryItemRecord } from '../data/initialInventoryData'
 
+/**
+ * Page for recording stock consumption against inventory items.
+ * Shows selectable items and a chronological log of all recorded usage across the inventory.
+ */
 const StockUsagePage: React.FC = () => {
   const { items, recordUsage } = useInventoryData()
   const [selectedItem, setSelectedItem] = useState<InventoryItemRecord | null>(null)
 
-  // Aggregate usage logs across all items, most recent first
+  /** Aggregates and sorts usage logs from all items, most recent first, enriched with item metadata. */
   const allLogs = items
     .flatMap((item) =>
       item.usageHistory.map((log) => ({
@@ -26,19 +29,7 @@ const StockUsagePage: React.FC = () => {
     <div className="space-y-6 animate-fade-in pb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Link
-              to="/inventory-management/overview"
-              className="text-xs font-bold uppercase tracking-wider text-[#1e3a8a] hover:underline"
-            >
-              Inventory Management
-            </Link>
-            <span className="text-gray-300">/</span>
-            <span className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-              Stock Usage
-            </span>
-          </div>
-          <h1 className="text-[26px] font-extrabold text-[#0f172a] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
             Record Stock Usage
           </h1>
           <p className="text-gray-500 text-sm mt-1 max-w-2xl leading-relaxed">
@@ -48,8 +39,8 @@ const StockUsagePage: React.FC = () => {
       </div>
 
       {/* ── Item Grid: pick an item to record usage against ── */}
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Select an Item</h2>
           <p className="text-xs text-gray-500">Click "Record Usage" to log consumption</p>
         </div>
@@ -58,11 +49,11 @@ const StockUsagePage: React.FC = () => {
           {items.map((item) => (
             <div
               key={item.id}
-              className="p-4 rounded border border-gray-300 bg-gray-50/60 flex flex-col gap-3"
+              className="p-4 rounded-xl border border-gray-200 bg-gray-50/50 flex flex-col gap-3 transition-all hover:border-gray-300"
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
+                  <span className="font-mono text-xs font-bold text-[#1e3a8a] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded-md">
                     {item.itemCode}
                   </span>
                   <h4 className="text-sm font-bold text-gray-900 mt-1">{item.name}</h4>
@@ -82,7 +73,7 @@ const StockUsagePage: React.FC = () => {
                 type="button"
                 disabled={item.quantityAvailable <= 0}
                 onClick={() => setSelectedItem(item)}
-                className="mt-auto px-3.5 py-1.5 bg-[#A31736] hover:bg-[#801028] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded text-xs font-semibold uppercase tracking-wider shadow-sm cursor-pointer"
+                className="mt-auto px-3.5 py-2 bg-[#801028] hover:bg-[#680c20] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-2xs transition-all cursor-pointer"
               >
                 Record Usage
               </button>
@@ -92,8 +83,8 @@ const StockUsagePage: React.FC = () => {
       </div>
 
       {/* ── Usage History ── */}
-      <div className="bg-white rounded border border-gray-300 shadow-sm overflow-hidden">
-        <div className="p-5 border-b border-gray-200">
+      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
+        <div className="p-5 border-b border-gray-100">
           <h2 className="text-base font-bold text-gray-900">Usage History</h2>
           <p className="text-xs text-gray-500">Log of all recorded stock consumption</p>
         </div>
@@ -101,7 +92,7 @@ const StockUsagePage: React.FC = () => {
         <div className="overflow-x-auto relative">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200 text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
                 <th className="py-4 px-6">ITEM</th>
                 <th className="py-4 px-6">QUANTITY USED</th>
                 <th className="py-4 px-6">USED BY</th>

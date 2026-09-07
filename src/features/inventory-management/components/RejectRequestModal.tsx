@@ -8,6 +8,10 @@ interface RejectRequestModalProps {
   onReject: (requestId: string, reason: string) => void
 }
 
+/**
+ * Modal form for rejecting a pending inventory request.
+ * Collects a reason and calls onReject with the request ID and reason.
+ */
 export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
   isOpen,
   onClose,
@@ -24,6 +28,7 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
 
   if (!isOpen || !request) return null
 
+  /** Validates rejection reason and calls onReject with the request ID and reason. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     onReject(request.id, reason)
@@ -42,7 +47,7 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
       <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden z-10 animate-fade-in">
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#801028]" />
             <div>
               <h3 className="text-lg font-bold text-gray-900">Reject Request</h3>
               <p className="text-xs text-gray-500 font-mono">{request.requestNumber}</p>
@@ -59,7 +64,7 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
 
         <form onSubmit={handleFormSubmit} className="p-6 space-y-4">
           <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-[#A31736] shrink-0" />
+            <div className="w-2 h-2 rounded-full bg-[#801028] shrink-0" />
             <span>
               Rejecting <strong>{request.itemName}</strong> ({request.quantityRequested} units) will
               notify the requester. Please provide a reason.
@@ -76,7 +81,7 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
               onChange={(e) => setReason(e.target.value)}
               rows={3}
               placeholder="e.g. Budget not available this quarter"
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#A31736] focus:ring-1 focus:ring-[#A31736]"
+              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
               required
             />
           </div>
@@ -85,13 +90,13 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold uppercase tracking-wider shadow-sm transition-all cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-[#801028] hover:bg-[#680c20] text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
             >
               Confirm Rejection
             </button>
