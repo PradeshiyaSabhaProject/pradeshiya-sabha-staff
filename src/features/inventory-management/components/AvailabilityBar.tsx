@@ -9,14 +9,14 @@ interface AvailabilityBarProps {
 }
 
 const BAR_COLOR: Record<ItemStatus, string> = {
-  'In Stock': 'bg-emerald-500',
-  'Low Stock': 'bg-orange-500',
-  'Out of Stock': 'bg-[#801028]',
+  'In Stock': 'bg-emerald-600',
+  'Low Stock': 'bg-amber-500',
+  'Out of Stock': 'bg-red-600',
 }
 
 /**
  * Displays a visual progress bar showing current stock level relative to maximum,
- * with a marker indicating the reorder threshold. Color changes based on item status.
+ * with a marker indicating the reorder threshold.
  */
 export const AvailabilityBar: React.FC<AvailabilityBarProps> = ({
   quantityAvailable,
@@ -34,25 +34,28 @@ export const AvailabilityBar: React.FC<AvailabilityBarProps> = ({
   return (
     <div className="w-full">
       <div className="flex items-center justify-between mb-1">
-        <span className="text-xs font-bold text-gray-800">
-          {quantityAvailable} <span className="font-normal text-gray-400">available</span>
+        <span className="text-xs font-bold text-gray-900">
+          {quantityAvailable} <span className="font-normal text-gray-500">avail</span>
         </span>
-        <span className="text-[10px] text-gray-400">reorder at {reorderLevel}</span>
+        <span className="text-[10px] font-medium text-gray-500">Reorder at {reorderLevel}</span>
       </div>
 
-      <div className="relative w-full h-2.5 rounded-full bg-gray-100 overflow-hidden">
+      <div className="relative w-full h-1.5 rounded-sm bg-gray-200 overflow-hidden">
         {/* Fill representing current stock level */}
         <div
-          className={`h-full rounded-full transition-all duration-300 ${BAR_COLOR[status]}`}
+          className={`h-full rounded-sm transition-all duration-500 ${BAR_COLOR[status] || 'bg-gray-400'}`}
           style={{ width: `${fillPercent}%` }}
         />
         {/* Marker showing where the reorder threshold sits */}
         <div
-          className="absolute top-0 h-full w-[2px] bg-gray-500/60"
+          className="absolute top-0 h-full w-[2px] bg-gray-600/80"
           style={{ left: `${reorderPercent}%` }}
-          title={`Reorder level: ${reorderLevel}`}
+          title={`Reorder threshold: ${reorderLevel}`}
         />
       </div>
     </div>
   )
 }
+
+export default AvailabilityBar
+

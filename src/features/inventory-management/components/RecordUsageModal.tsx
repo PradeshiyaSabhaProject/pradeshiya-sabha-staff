@@ -63,46 +63,43 @@ export const RecordUsageModal: React.FC<RecordUsageModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <button
-        type="button"
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
-        onClick={onClose}
-        aria-label="Close modal"
-      />
-
-      <div className="relative bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden z-10 animate-fade-in">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#801028]" />
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Record Stock Usage</h3>
-              <p className="text-xs text-gray-500 font-mono">
-                {item.itemCode} • {item.name}
-              </p>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div className="bg-white rounded border border-gray-300 shadow-2xl p-6 max-w-lg w-full relative z-10 space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div>
+            <span className="font-mono text-xs font-bold text-[#1e3a8a]">{item.itemCode}</span>
+            <h3 className="font-bold text-gray-900 text-base uppercase tracking-wide">
+              Record Stock Usage
+            </h3>
           </div>
           <button
             onClick={onClose}
             type="button"
-            className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
+            className="text-gray-400 hover:text-gray-700 font-bold text-base cursor-pointer p-1"
           >
-            ×
+            ✕
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-6 space-y-4">
-          <div className="p-3.5 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-800 flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-[#1e3a8a] shrink-0" />
+        <form onSubmit={handleFormSubmit} className="space-y-4 pt-1">
+          <div className="p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900 flex items-center gap-2">
+            <span className="font-bold">Notice:</span>
             <span>
-              Recording usage reduces this item's available quantity immediately. Currently{' '}
-              <strong>{item.quantityAvailable} {item.unit}</strong> in stock.
+              Reduces current stock immediately. Currently{' '}
+              <strong>{item.quantityAvailable} {item.unit}</strong> available in store.
             </span>
           </div>
 
+          {error && (
+            <div className="rounded border border-red-200 bg-red-50 p-2.5 text-xs text-red-800 font-semibold">
+              {error}
+            </div>
+          )}
+
           <div>
-            <label htmlFor="usage-quantity" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
-              Quantity Used ({item.unit})
+            <label htmlFor="usage-quantity" className="block text-[11px] font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              Quantity Used ({item.unit}) *
             </label>
             <input
               type="number"
@@ -111,71 +108,69 @@ export const RecordUsageModal: React.FC<RecordUsageModalProps> = ({
               max={item.quantityAvailable}
               value={quantityUsed}
               onChange={(e) => setQuantityUsed(Number(e.target.value))}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
+              className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="usage-by" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
-              Used By
+            <label htmlFor="usage-by" className="block text-[11px] font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              Staff Member / Taken By *
             </label>
             <input
               type="text"
               id="usage-by"
               value={usedBy}
               onChange={(e) => setUsedBy(e.target.value)}
-              placeholder="Staff member name"
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
+              placeholder="e.g. Nimali Perera"
+              className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="usage-department" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
-              Department
+            <label htmlFor="usage-department" className="block text-[11px] font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              Department / Section *
             </label>
             <input
               type="text"
               id="usage-department"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
+              placeholder="e.g. Administration, Works & Engineering"
+              className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="usage-notes" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
-              Notes (optional)
+            <label htmlFor="usage-notes" className="block text-[11px] font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              Usage Purpose / Notes (Optional)
             </label>
             <textarea
               id="usage-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={2}
-              placeholder="e.g. Used for council meeting handouts"
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
+              placeholder="e.g. Used for monthly council meeting handouts"
+              className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#A31736]"
             />
           </div>
 
-          {error && (
-            <p className="text-xs font-semibold text-[#801028]">{error}</p>
-          )}
-
-          <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+          {/* Footer buttons */}
+          <div className="flex justify-end gap-2.5 border-t border-gray-200 pt-4 mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#801028] hover:bg-[#680c20] text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
+              className="px-4 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
             >
-              Record Usage
+              Confirm Usage
             </button>
           </div>
         </form>
@@ -183,3 +178,6 @@ export const RecordUsageModal: React.FC<RecordUsageModalProps> = ({
     </div>
   )
 }
+
+export default RecordUsageModal
+

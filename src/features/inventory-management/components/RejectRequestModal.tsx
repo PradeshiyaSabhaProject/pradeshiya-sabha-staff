@@ -19,11 +19,15 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
   onReject,
 }) => {
   const [reason, setReason] = useState('')
+  const [error, setError] = useState('')
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
 
   if (isOpen !== prevIsOpen) {
     setPrevIsOpen(isOpen)
-    if (isOpen) setReason('')
+    if (isOpen) {
+      setReason('')
+      setError('')
+    }
   }
 
   if (!isOpen || !request) return null
@@ -31,72 +35,72 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
   /** Validates rejection reason and calls onReject with the request ID and reason. */
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onReject(request.id, reason)
+    if (!reason.trim()) {
+      setError('Please provide a reason for rejecting this stock request.')
+      return
+    }
+    onReject(request.id, reason.trim())
     onClose()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <button
-        type="button"
-        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
-        onClick={onClose}
-        aria-label="Close modal"
-      />
-
-      <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200/80 overflow-hidden z-10 animate-fade-in">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#801028]" />
-            <div>
-              <h3 className="text-lg font-bold text-gray-900">Reject Request</h3>
-              <p className="text-xs text-gray-500 font-mono">{request.requestNumber}</p>
-            </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+      <div className="bg-white rounded border border-gray-300 shadow-2xl p-6 max-w-md w-full relative z-10 space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+          <div>
+            <span className="font-mono text-xs font-bold text-[#1e3a8a]">{request.requestNumber}</span>
+            <h3 className="font-bold text-gray-900 text-base uppercase tracking-wide">
+              Reject Stock Request
+            </h3>
           </div>
           <button
             onClick={onClose}
             type="button"
-            className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-lg"
+            className="text-gray-400 hover:text-gray-700 font-bold text-base cursor-pointer p-1"
           >
-            ×
+            ✕
           </button>
         </div>
 
-        <form onSubmit={handleFormSubmit} className="p-6 space-y-4">
-          <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-800 flex items-center gap-2.5">
-            <div className="w-2 h-2 rounded-full bg-[#801028] shrink-0" />
-            <span>
-              Rejecting <strong>{request.itemName}</strong> ({request.quantityRequested} units) will
-              notify the requester. Please provide a reason.
-            </span>
+        <form onSubmit={handleFormSubmit} className="space-y-4 pt-1">
+          <div className="p-3 bg-red-50 border border-red-200 rounded text-xs text-red-800">
+            Rejecting <strong>{request.itemName}</strong> ({request.quantityRequested} units requested by {request.requestedBy}).
           </div>
 
+          {error && (
+            <div className="rounded border border-red-200 bg-red-50 p-2.5 text-xs text-red-800 font-semibold">
+              {error}
+            </div>
+          )}
+
           <div>
-            <label htmlFor="reject-reason" className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">
-              Rejection Reason
+            <label htmlFor="reject-reason" className="block text-[11px] font-semibold text-gray-700 mb-1 uppercase tracking-wider">
+              Rejection Reason / Remarks *
             </label>
             <textarea
               id="reject-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               rows={3}
-              placeholder="e.g. Budget not available this quarter"
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#801028] focus:ring-1 focus:ring-[#801028] transition-all"
+              placeholder="e.g. Budget allocation exhausted for this quarter or duplicate request"
+              className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-900 focus:outline-none focus:ring-1 focus:ring-[#A31736]"
               required
             />
           </div>
 
-          <div className="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
+          {/* Footer buttons */}
+          <div className="flex justify-end gap-2.5 border-t border-gray-200 pt-4 mt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer"
+              className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-[#801028] hover:bg-[#680c20] text-white text-xs font-semibold uppercase tracking-wider shadow-xs transition-all cursor-pointer"
+              className="px-4 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
             >
               Confirm Rejection
             </button>
@@ -106,3 +110,6 @@ export const RejectRequestModal: React.FC<RejectRequestModalProps> = ({
     </div>
   )
 }
+
+export default RejectRequestModal
+

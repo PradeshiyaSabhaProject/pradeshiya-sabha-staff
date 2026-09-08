@@ -160,12 +160,57 @@ export const useInventoryData = () => {
     )
   }
 
+  /** Adds a new inventory item record. */
+  const addItem = (
+    newItem: Omit<InventoryItemRecord, 'id' | 'status' | 'usageHistory'>,
+  ): InventoryItemRecord => {
+    const today = new Date().toISOString().slice(0, 10)
+    const item: InventoryItemRecord = {
+      ...newItem,
+      id: `inv-${Date.now()}`,
+      status: computeItemStatus(newItem.quantityAvailable, newItem.reorderLevel),
+      lastUpdated: newItem.lastUpdated || today,
+      usageHistory: [],
+    }
+    setItems((current) => [item, ...current])
+    return item
+  }
+
+  /** Updates an existing inventory item. */
+  const updateItem = (
+    id: string,
+    updates: Partial<Omit<InventoryItemRecord, 'id' | 'usageHistory'>>,
+  ): InventoryItemRecord | null => {
+    let updated: InventoryItemRecord | null = null
+    const today = new Date().toISOString().slice(0, 10)
+    setItems((current) =>
+      current.map((item) => {
+        if (item.id !== id) return item
+        const newQty = updates.quantityAvailable ?? item.quantityAvailable
+        const newReorder = updates.reorderLevel ?? item.reorderLevel
+        updated = {
+          ...item,
+          ...updates,
+          quantityAvailable: newQty,
+          reorderLevel: newReorder,
+          status: computeItemStatus(newQty, newReorder),
+          lastUpdated: today,
+        }
+        return updated
+      }),
+    )
+    return updated
+  }
+
   return {
     items,
     requests,
+    addItem,
+    updateItem,
     recordUsage,
     requestStock,
     approveRequest,
     rejectRequest,
   }
 }
+

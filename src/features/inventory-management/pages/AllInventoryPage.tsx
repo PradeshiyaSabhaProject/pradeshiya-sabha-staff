@@ -3,17 +3,16 @@ import { useInventoryData } from '../hooks/useInventoryData'
 import { ItemStatusBadge } from '../components/StatusBadges'
 import { AvailabilityBar } from '../components/AvailabilityBar'
 import { AddItemModal } from '../components/AddItemModal'
-import type { ItemCategory } from '../data/initialInventoryData'
+import { RecordUsageModal } from '../components/RecordUsageModal'
+import type { InventoryItemRecord, ItemCategory, ItemStatus } from '../data/initialInventoryData'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Icons
 // ─────────────────────────────────────────────────────────────────────────────
 const AddIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="w-4 h-4 shrink-0">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-    <polyline points="14 2 14 8 20 8" />
-    <line x1="12" y1="18" x2="12" y2="12" />
-    <line x1="9" y1="15" x2="15" y2="15" />
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 )
 
@@ -24,32 +23,38 @@ const FilterIcon = () => (
 )
 
 const ChevronDownIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4 text-gray-400 shrink-0 pointer-events-none">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-3.5 h-3.5 text-gray-400 shrink-0 pointer-events-none">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 )
 
-const StorageIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-blue-700">
-    <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9z" />
-    <path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" />
-    <line x1="3" y1="12" x2="21" y2="12" />
-  </svg>
+const StorageCardIcon = () => (
+  <div className="p-1.5 bg-blue-50/60 rounded text-blue-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+      <line x1="12" y1="22.08" x2="12" y2="12" />
+    </svg>
+  </div>
 )
 
-const AlertCircleIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-orange-700">
-    <circle cx="12" cy="12" r="10" />
-    <line x1="12" y1="8" x2="12" y2="12" />
-    <line x1="12" y1="16" x2="12.01" y2="16" />
-  </svg>
+const SafeCardIcon = () => (
+  <div className="p-1.5 bg-emerald-50/60 rounded text-emerald-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+      <polyline points="22 4 12 14.01 9 11.01" />
+    </svg>
+  </div>
 )
 
-const ClipboardIcon = () => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6 text-amber-700">
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
-  </svg>
+const AlertCardIcon = () => (
+  <div className="p-1.5 bg-amber-50/60 rounded text-amber-800 shrink-0">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5">
+      <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3.05h16.94a2 2 0 0 0 1.71-3.05L13.71 3.86a2 2 0 0 0-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  </div>
 )
 
 const ALL_CATEGORIES: (ItemCategory | 'All')[] = [
@@ -63,275 +68,519 @@ const ALL_CATEGORIES: (ItemCategory | 'All')[] = [
 
 /**
  * Displays a searchable and filterable table of all inventory items.
- * Allows filtering by category and availability status, with counts of items needing attention.
+ * Allows filtering by category, department, and availability status with local pagination and inspection drawer.
  */
-const AllInventoryPage: React.FC = () => {
-  const { items } = useInventoryData()
+export const AllInventoryPage: React.FC = () => {
+  const { items, addItem, recordUsage } = useInventoryData()
   const [searchTerm, setSearchTerm] = useState('')
-  const [category, setCategory] = useState<(ItemCategory | 'All')>('All')
-  const [unavailableOnly, setUnavailableOnly] = useState(false)
+  const [category, setCategory] = useState<ItemCategory | 'All'>('All')
+  const [statusFilter, setStatusFilter] = useState<ItemStatus | 'All'>('All')
+  const [departmentFilter, setDepartmentFilter] = useState('All')
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [selectedItemForInspect, setSelectedItemForInspect] = useState<InventoryItemRecord | null>(null)
+  const [selectedItemForUsage, setSelectedItemForUsage] = useState<InventoryItemRecord | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 6
 
-  /** Filters items by search term (name), category, and availability status based on current filters. */
+  // Unique departments for filter
+  const departments = useMemo(() => {
+    const set = new Set<string>()
+    items.forEach((i) => {
+      if (i.department) set.add(i.department)
+    })
+    return ['All', ...Array.from(set)]
+  }, [items])
+
+  /** Filters items by search term, category, status, and department. */
   const filteredItems = useMemo(() => {
     const term = searchTerm.trim().toLowerCase()
     return items.filter((item) => {
-      const matchesTerm = !term || item.name.toLowerCase().includes(term)
+      const matchesTerm =
+        !term ||
+        item.name.toLowerCase().includes(term) ||
+        item.itemCode.toLowerCase().includes(term) ||
+        item.location.toLowerCase().includes(term)
       const matchesCategory = category === 'All' || item.category === category
-      const matchesAvailability = !unavailableOnly || item.status !== 'In Stock'
-      return matchesTerm && matchesCategory && matchesAvailability
+      const matchesStatus = statusFilter === 'All' || item.status === statusFilter
+      const matchesDepartment = departmentFilter === 'All' || item.department === departmentFilter
+      return matchesTerm && matchesCategory && matchesStatus && matchesDepartment
     })
-  }, [items, searchTerm, category, unavailableOnly])
+  }, [items, searchTerm, category, statusFilter, departmentFilter])
 
-  const lowOrOutCount = items.filter((i) => i.status !== 'In Stock').length
   const totalItems = items.length
-  const pendingRequests = 0 // Would come from requests data if available
+  const inStockCount = items.filter((i) => i.status === 'In Stock').length
+  const criticalCount = items.filter((i) => i.status !== 'In Stock').length
+
+  // Local pagination
+  const totalPages = Math.ceil(filteredItems.length / pageSize) || 1
+  const paginatedList = filteredItems.slice((currentPage - 1) * pageSize, currentPage * pageSize)
 
   const handleClearFilters = () => {
     setSearchTerm('')
     setCategory('All')
-    setUnavailableOnly(false)
-  }
-
-  const handleAddItem = (_newItem?: any) => {
-    // Items are added through the useInventoryData hook
-    setIsAddModalOpen(false)
+    setStatusFilter('All')
+    setDepartmentFilter('All')
+    setCurrentPage(1)
   }
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
-      
-      {/* ── PAGE HEADER with Action Button ──────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-gray-100">
+      {/* ── Page Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-black tracking-tight">
-            Office Inventory Stock List
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight uppercase">
+            Municipal Stock Directory & Store Ledger
           </h1>
-          <p className="text-sm text-gray-600 mt-1 font-medium">
-            Review current stock levels, locations, and availability across all departments.
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5">
+            Complete register of council store items, unit quantities, reorder thresholds, and physical store locations.
           </p>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setIsAddModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#800020] hover:bg-[#600018] text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer shrink-0"
-        >
-          <AddIcon />
-          Add New Item
-        </button>
-      </div>
-
-      {/* ── 3 SUMMARY STAT CARDS ────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Card 1: Total Items */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-blue-50/80 border border-blue-100 rounded-2xl shrink-0">
-            <StorageIcon />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              TOTAL ITEMS
-            </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 block tracking-tight">
-              {totalItems}
-            </span>
-          </div>
-        </div>
-
-        {/* Card 2: Items Needing Attention */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-orange-50/80 border border-orange-100 rounded-2xl shrink-0">
-            <AlertCircleIcon />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              NEEDING ATTENTION
-            </span>
-            <div className="flex items-center gap-3 mt-1">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
-                {lowOrOutCount}
-              </span>
-              {lowOrOutCount > 0 && (
-                <span className="bg-orange-100 text-orange-700 text-xs font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wide">
-                  Alert
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Card 3: Pending Requests */}
-        <div className="bg-white border border-gray-200/80 rounded-2xl p-6 flex items-center gap-5 shadow-xs hover:shadow-md transition-all">
-          <div className="p-4 bg-amber-50/80 border border-amber-100 rounded-2xl shrink-0">
-            <ClipboardIcon />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-gray-500 uppercase tracking-wider">
-              PENDING REQUESTS
-            </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1 block tracking-tight">
-              {pendingRequests}
-            </span>
-          </div>
-        </div>
-
-      </div>
-
-      {/* ── ADVANCED FILTERS PANEL ──────────────────────────────────────── */}
-      <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-xs">
-        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <FilterIcon />
-            <h3 className="text-sm font-extrabold text-gray-800 tracking-wider uppercase">
-              ADVANCED FILTERS
-            </h3>
-          </div>
+        <div className="flex items-center gap-2.5">
           <button
             type="button"
-            onClick={handleClearFilters}
-            className="text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors cursor-pointer"
+            onClick={() => setIsAddModalOpen(true)}
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm self-start sm:self-auto"
           >
-            Clear All
+            <AddIcon />
+            <span>+ Add New Item</span>
           </button>
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mt-4 items-end">
-          
-          {/* Search Input */}
+      {/* ── 3 Summary KPI Cards ── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Card 1: Total Catalog Items */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Total Stock Items
+            </span>
+            <StorageCardIcon />
+          </div>
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+              {totalItems}
+            </p>
+            <span className="text-[11px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+              Verified Register
+            </span>
+          </div>
+        </div>
+
+        {/* Card 2: Adequate Stock Level */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Adequate Stock Level
+            </span>
+            <SafeCardIcon />
+          </div>
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-emerald-800 tracking-tight">
+              {inStockCount}
+            </p>
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+              In Safe Supply
+            </span>
+          </div>
+        </div>
+
+        {/* Card 3: Critical & Low Stock */}
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-sm hover:shadow transition-all flex flex-col justify-between cursor-default">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Attention Required
+            </span>
+            <AlertCardIcon />
+          </div>
+          <div className="mt-3 flex items-baseline justify-between">
+            <p className="text-2xl sm:text-3xl font-extrabold text-amber-800 tracking-tight">
+              {criticalCount}
+            </p>
+            <span className="text-[11px] font-bold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+              Reorder Due
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main Container: Filter Toolbar + Table ── */}
+      <div className="bg-white border border-gray-300 rounded shadow-sm overflow-hidden flex flex-col">
+        {/* Table Header Action Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 sm:px-6 py-4 border-b border-gray-200 bg-gray-50/50">
           <div>
-            <label htmlFor="searchInput" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Search
-            </label>
-            <input
-              id="searchInput"
-              type="text"
-              placeholder="Item name..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-all"
-            />
+            <h2 className="text-base sm:text-lg font-bold text-gray-900 uppercase tracking-wide">
+              Municipal Inventory Stock Ledger
+            </h2>
+            <p className="text-xs text-gray-500 mt-0.5">
+              Review current stock balances, storage locations, and consumption records across all departments.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => alert('Exporting STOCK_DIRECTORY.csv...')}
+              className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-3.5 py-1.5 rounded transition-colors shadow-sm uppercase tracking-wider cursor-pointer text-center"
+            >
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        {/* Filter Toolbar */}
+        <div className="p-4 bg-gray-50/50 border-b border-gray-200 space-y-3">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <FilterIcon />
+              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
+                Directory Filters & Criteria
+              </h3>
+            </div>
+            <button
+              type="button"
+              onClick={handleClearFilters}
+              className="text-xs font-bold text-[#A31736] hover:text-[#801028] transition-colors cursor-pointer uppercase tracking-wider self-start md:self-auto"
+            >
+              Clear All Filters
+            </button>
           </div>
 
-          {/* Category Dropdown */}
-          <div>
-            <label htmlFor="categorySelect" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Category
-            </label>
-            <div className="relative">
-              <select
-                id="categorySelect"
-                value={category}
-                onChange={(e) => setCategory(e.target.value as ItemCategory | 'All')}
-                className="w-full appearance-none bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] pr-10 cursor-pointer"
-              >
-                {ALL_CATEGORIES.map((c) => (
-                  <option key={c} value={c}>
-                    {c === 'All' ? 'All Categories' : c}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-3.5 top-3.5 pointer-events-none">
-                <ChevronDownIcon />
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            {/* Search Input */}
+            <div>
+              <label htmlFor="searchInput" className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Search Code / Name
+              </label>
+              <input
+                id="searchInput"
+                type="text"
+                placeholder="Search item, code, location..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value)
+                  setCurrentPage(1)
+                }}
+                className="w-full bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#A31736] h-9 font-medium"
+              />
+            </div>
+
+            {/* Category Filter */}
+            <div>
+              <label htmlFor="categorySelect" className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Item Category
+              </label>
+              <div className="relative">
+                <select
+                  id="categorySelect"
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value as ItemCategory | 'All')
+                    setCurrentPage(1)
+                  }}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  {ALL_CATEGORIES.map((c) => (
+                    <option key={c} value={c}>
+                      {c === 'All' ? 'All Categories' : c}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
+              </div>
+            </div>
+
+            {/* Status Filter */}
+            <div>
+              <label htmlFor="statusSelect" className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Stock Status
+              </label>
+              <div className="relative">
+                <select
+                  id="statusSelect"
+                  value={statusFilter}
+                  onChange={(e) => {
+                    setStatusFilter(e.target.value as ItemStatus | 'All')
+                    setCurrentPage(1)
+                  }}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="In Stock">In Stock</option>
+                  <option value="Low Stock">Low Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
+              </div>
+            </div>
+
+            {/* Department Filter */}
+            <div>
+              <label htmlFor="departmentSelect" className="block text-[11px] font-semibold text-gray-600 mb-1">
+                Owning Department
+              </label>
+              <div className="relative">
+                <select
+                  id="departmentSelect"
+                  value={departmentFilter}
+                  onChange={(e) => {
+                    setDepartmentFilter(e.target.value)
+                    setCurrentPage(1)
+                  }}
+                  className="w-full appearance-none bg-white border border-gray-300 rounded px-3 py-1.5 text-xs text-gray-800 focus:outline-none focus:ring-1 focus:ring-[#A31736] pr-8 cursor-pointer h-9 font-medium"
+                >
+                  {departments.map((d) => (
+                    <option key={d} value={d}>
+                      {d === 'All' ? 'All Departments' : d}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute right-2.5 top-2.5 pointer-events-none">
+                  <ChevronDownIcon />
+                </div>
               </div>
             </div>
           </div>
-
-          {/* Availability Toggle */}
-          <div>
-            <label htmlFor="availabilityToggle" className="block text-xs font-bold text-gray-600 mb-1.5">
-              Availability
-            </label>
-            <button
-              id="availabilityToggle"
-              type="button"
-              onClick={() => setUnavailableOnly((v) => !v)}
-              className={`w-full px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider border transition-all cursor-pointer ${
-                unavailableOnly
-                  ? 'bg-[#800020] border-[#800020] text-white shadow-xs'
-                  : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
-              }`}
-            >
-              {unavailableOnly ? '✓ Unavailable Only' : 'All Items'}
-            </button>
-          </div>
-
-          {/* Apply Search Button */}
-          <div>
-            <button
-              type="button"
-              onClick={() => {}}
-              className="w-full bg-white hover:bg-gray-50 border border-gray-300 text-gray-800 font-bold py-2.5 px-6 rounded-xl transition-all cursor-pointer shadow-xs text-sm"
-            >
-              Apply Filters
-            </button>
-          </div>
-
         </div>
-      </div>
 
-      {/* ── INVENTORY TABLE ─────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-gray-200/80 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto relative">
+        {/* Responsive Data Table */}
+        <div className="overflow-x-auto relative [-webkit-overflow-scrolling:touch]">
           <table className="w-full text-left border-collapse min-w-[900px]">
             <thead>
-              <tr className="bg-gray-50/80 border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-wider">
-                <th className="py-4 px-6">ITEM</th>
-                <th className="py-4 px-6">CATEGORY</th>
-                <th className="py-4 px-6">AVAILABILITY</th>
-                <th className="py-4 px-6">STATUS</th>
-                <th className="py-4 px-6">LOCATION</th>
-                <th className="py-4 px-6">LAST UPDATED</th>
+              <tr className="bg-gray-100 border-y border-gray-300 text-[11px] font-bold text-gray-600 uppercase tracking-wider">
+                <th className="py-3 px-6 w-36">Item Code</th>
+                <th className="py-3 px-6">Item Name & Category</th>
+                <th className="py-3 px-6">Department</th>
+                <th className="py-3 px-6 w-52">Stock Availability</th>
+                <th className="py-3 px-6 text-center">Status</th>
+                <th className="py-3 px-6">Location</th>
+                <th className="py-3 px-6 text-right w-36">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100 text-sm">
-              {filteredItems.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="py-8 px-6 text-center text-gray-500 text-sm">
-                    No inventory items match your filters.
+            <tbody className="divide-y divide-gray-200 text-sm">
+              {paginatedList.map((item) => (
+                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  {/* Item Code */}
+                  <td className="py-3.5 px-6 whitespace-nowrap">
+                    <span className="font-mono text-xs font-bold text-[#1e3a8a]">
+                      {item.itemCode}
+                    </span>
+                  </td>
+
+                  {/* Name & Category */}
+                  <td className="py-3.5 px-6 whitespace-nowrap">
+                    <p className="font-bold text-gray-900 text-xs">{item.name}</p>
+                    <p className="text-[11px] text-gray-500 font-medium">
+                      {item.category} • {item.unit}
+                    </p>
+                  </td>
+
+                  {/* Department */}
+                  <td className="py-3.5 px-6 text-xs text-gray-700 font-medium whitespace-nowrap">
+                    {item.department}
+                  </td>
+
+                  {/* Availability Bar */}
+                  <td className="py-3.5 px-6 whitespace-nowrap">
+                    <AvailabilityBar
+                      quantityAvailable={item.quantityAvailable}
+                      reorderLevel={item.reorderLevel}
+                      maxStock={item.maxStock}
+                      status={item.status}
+                    />
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="py-3.5 px-6 text-center whitespace-nowrap">
+                    <ItemStatusBadge status={item.status} />
+                  </td>
+
+                  {/* Location */}
+                  <td className="py-3.5 px-6 text-xs text-gray-600 font-medium whitespace-nowrap">
+                    {item.location}
+                  </td>
+
+                  {/* Action Link */}
+                  <td className="py-3.5 px-6 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedItemForUsage(item)}
+                        className="text-xs font-bold text-[#A31736] hover:underline cursor-pointer uppercase tracking-wider"
+                      >
+                        Use
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedItemForInspect(item)}
+                        className="text-xs font-bold text-[#1e3a8a] hover:underline cursor-pointer uppercase tracking-wider"
+                      >
+                        Inspect &rarr;
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ) : (
-                filteredItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50/60 transition-colors">
-                    <td className="py-3.5 px-6">
-                      <div className="font-bold text-gray-900">{item.name}</div>
-                      <div className="text-xs font-mono text-gray-500">
-                        {item.itemCode} • {item.unit}
-                      </div>
-                    </td>
-                    <td className="py-3.5 px-6 text-xs font-medium text-gray-700">
-                      {item.category}
-                    </td>
-                    <td className="py-3.5 px-6 w-56">
-                      <AvailabilityBar
-                        quantityAvailable={item.quantityAvailable}
-                        reorderLevel={item.reorderLevel}
-                        maxStock={item.maxStock}
-                        status={item.status}
-                      />
-                    </td>
-                    <td className="py-3.5 px-6">
-                      <ItemStatusBadge status={item.status} />
-                    </td>
-                    <td className="py-3.5 px-6 text-xs text-gray-600">{item.location}</td>
-                    <td className="py-3.5 px-6 text-xs text-gray-600">{item.lastUpdated}</td>
-                  </tr>
-                ))
+              ))}
+
+              {paginatedList.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="py-12 text-center text-gray-500 font-medium italic">
+                    No inventory records found matching the specified directory criteria.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
         </div>
+
+        {/* Table Pagination */}
+        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <span className="text-xs text-gray-600 font-semibold">
+            Showing {filteredItems.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{' '}
+            {Math.min(currentPage * pageSize, filteredItems.length)} of {filteredItems.length} inventory items
+          </span>
+
+          {totalPages > 1 && (
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage((c) => Math.max(1, c - 1))}
+                className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs text-xs font-bold"
+              >
+                &lt;
+              </button>
+
+              {Array.from({ length: totalPages }).map((_, idx) => {
+                const p = idx + 1
+                return (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setCurrentPage(p)}
+                    className={`w-8 h-8 rounded text-xs font-bold transition-all cursor-pointer ${
+                      currentPage === p
+                        ? 'bg-[#A31736] text-white'
+                        : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                )
+              })}
+
+              <button
+                type="button"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage((c) => Math.min(totalPages, c + 1))}
+                className="w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-40 disabled:pointer-events-none transition-colors flex items-center justify-center cursor-pointer shadow-3xs text-xs font-bold"
+              >
+                &gt;
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
+      {/* ── Inspection Drawer / Modal ── */}
+      {selectedItemForInspect && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded border border-gray-300 shadow-2xl p-6 max-w-md w-full relative z-10 space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-200 pb-3">
+              <div>
+                <span className="font-mono text-xs font-bold text-[#1e3a8a]">{selectedItemForInspect.itemCode}</span>
+                <h3 className="font-bold text-gray-900 text-base uppercase tracking-wide">
+                  Store Item Inspection Dossier
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedItemForInspect(null)}
+                className="text-gray-400 hover:text-gray-700 font-bold text-base cursor-pointer p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="space-y-2.5 text-xs text-gray-700">
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Item Name:</span>
+                <span className="font-bold text-gray-900 text-right">{selectedItemForInspect.name}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Category:</span>
+                <span className="font-semibold text-gray-900">{selectedItemForInspect.category}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Owning Department:</span>
+                <span className="font-medium text-gray-900">{selectedItemForInspect.department}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Storage Location:</span>
+                <span className="font-medium text-gray-900 text-right">{selectedItemForInspect.location}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Available Quantity:</span>
+                <span className="font-bold text-gray-900">{selectedItemForInspect.quantityAvailable} {selectedItemForInspect.unit}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Reorder Threshold:</span>
+                <span className="font-medium text-amber-800">{selectedItemForInspect.reorderLevel} {selectedItemForInspect.unit}</span>
+              </div>
+              <div className="flex justify-between border-b border-gray-100 pb-1.5">
+                <span className="font-semibold text-gray-500">Stock Status:</span>
+                <ItemStatusBadge status={selectedItemForInspect.status} />
+              </div>
+              <div className="flex justify-between pb-1">
+                <span className="font-semibold text-gray-500">Last Updated:</span>
+                <span className="text-gray-600">{selectedItemForInspect.lastUpdated}</span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-gray-200 flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedItemForInspect(null)}
+                className="px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const target = selectedItemForInspect
+                  setSelectedItemForInspect(null)
+                  setSelectedItemForUsage(target)
+                }}
+                className="px-4 py-2 bg-[#A31736] hover:bg-[#801028] text-white rounded text-xs font-bold uppercase tracking-wider shadow-sm transition-colors cursor-pointer"
+              >
+                Record Usage
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modals ── */}
       <AddItemModal
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
-        onAdd={handleAddItem}
+        onAdd={addItem}
+      />
+
+      <RecordUsageModal
+        isOpen={!!selectedItemForUsage}
+        onClose={() => setSelectedItemForUsage(null)}
+        item={selectedItemForUsage}
+        onSubmit={recordUsage}
       />
     </div>
   )
 }
 
 export default AllInventoryPage
+
