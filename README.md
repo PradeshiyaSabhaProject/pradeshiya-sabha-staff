@@ -74,3 +74,11 @@ inventory-management-v2/
   new items too
 - The admin-only guard on the Approvals page is a placeholder
   (`user?.role === 'admin'`) — needs real role-based access control
+
+---
+
+## 💰 Finance Management Module (Xero-Inspired)
+
+The architectural blueprint, sidebar feature hierarchy, data schemas, and implementation roadmap for the new Finance Management module can be found in:
+👉 [FINANCE_MODULE_README.md](file:///Users/thuhina/Working/pradeshiya-sabha-staff/FINANCE_MODULE_README.md)
+
