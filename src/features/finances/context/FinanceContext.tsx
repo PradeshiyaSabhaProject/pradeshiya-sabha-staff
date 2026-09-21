@@ -37,6 +37,9 @@ interface FinanceContextType {
   journalEntries: JournalEntry[]
   kpiSummary: FinanceKpiSummary
   createInvoice: (invoice: Omit<InvoiceItem, 'id' | 'invoiceNumber'>) => void
+  updateInvoicePayment: (invoiceId: string, payment: import('../data/financeMockData').PaymentRecord) => void
+  updateInvoiceStatus: (invoiceId: string, status: InvoiceItem['status']) => void
+  sendInvoiceReminder: (invoiceId: string, channel: 'SMS' | 'Email') => void
   recordPaymentVoucher: (voucher: Omit<PaymentVoucher, 'id' | 'voucherNumber'>) => void
   importBankStatement: (bankAccountId: string, records: Omit<BankStatementRecord, 'id'>[]) => void
   postJournalEntry: (entry: Omit<JournalEntry, 'id' | 'journalNumber'>) => void
@@ -132,8 +135,8 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
     setInvoices((prev) => [fullInvoice, ...prev])
 
-    // Update watchlist account if related to Assessment or Trade
-    if (newInvoice.category === 'Assessment Tax') {
+    // Update watchlist account if related to Assessment Rates
+    if (newInvoice.category === 'Assessment Rates') {
       setWatchlistAccounts((prev) =>
         prev.map((acc) => {
           if (acc.code === 'REV-101') {
@@ -159,6 +162,60 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         })
       )
     }
+  }
+
+  const updateInvoicePayment = (
+    invoiceId: string,
+    payment: import('../data/financeMockData').PaymentRecord,
+  ) => {
+    setInvoices((prev) =>
+      prev.map((inv) => {
+        if (inv.id !== invoiceId) return inv
+        const newPaidAmount = (inv.paidAmount || 0) + payment.amount
+        const newStatus: InvoiceItem['status'] =
+          newPaidAmount >= inv.amount
+            ? 'Paid'
+            : newPaidAmount > 0
+              ? 'Partially Paid'
+              : inv.status
+        return {
+          ...inv,
+          paidAmount: newPaidAmount,
+          status: newStatus,
+          paymentHistory: [...(inv.paymentHistory || []), payment],
+        }
+      }),
+    )
+    // Also update cash flow inflows for current month
+    setMonthlyCashFlow((prev) =>
+      prev.map((item) => {
+        if (item.shortMonth === 'Sep') {
+          const newInflows = item.inflows + payment.amount
+          return { ...item, inflows: newInflows, net: newInflows - item.outflows }
+        }
+        return item
+      }),
+    )
+  }
+
+  const updateInvoiceStatus = (invoiceId: string, status: InvoiceItem['status']) => {
+    setInvoices((prev) =>
+      prev.map((inv) => (inv.id === invoiceId ? { ...inv, status } : inv)),
+    )
+  }
+
+  const sendInvoiceReminder = (invoiceId: string, _channel: 'SMS' | 'Email') => {
+    setInvoices((prev) =>
+      prev.map((inv) =>
+        inv.id === invoiceId
+          ? {
+              ...inv,
+              remindersSent: (inv.remindersSent || 0) + 1,
+              lastReminderDate: new Date().toISOString().split('T')[0],
+            }
+          : inv,
+      ),
+    )
   }
 
   const recordPaymentVoucher = (newVoucher: Omit<PaymentVoucher, 'id' | 'voucherNumber'>) => {
@@ -305,6 +362,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         journalEntries,
         kpiSummary,
         createInvoice,
+        updateInvoicePayment,
+        updateInvoiceStatus,
+        sendInvoiceReminder,
         recordPaymentVoucher,
         importBankStatement,
         postJournalEntry,

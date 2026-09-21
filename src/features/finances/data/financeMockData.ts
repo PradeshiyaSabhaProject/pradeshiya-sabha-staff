@@ -47,20 +47,67 @@ export interface WatchlistAccount {
   }[]
 }
 
+export type RevenueCategory =
+  | 'Assessment Rates'
+  | 'Shop/Stall Rentals'
+  | 'Public Ground & Property Hire'
+  | 'Building Approvals'
+  | 'Trade Licenses'
+  | 'Vehicle & Machinery Hire'
+
+export type InvoiceStatus =
+  | 'Draft'
+  | 'Approved & Issued'
+  | 'Partially Paid'
+  | 'Paid'
+  | 'Overdue'
+
+export interface PaymentRecord {
+  id: string
+  receiptNumber: string
+  date: string
+  amount: number
+  paymentMethod: 'Cash' | 'Cheque' | 'Bank Transfer' | 'Online Gateway'
+  collectedBy: string
+  notes?: string
+  customerName?: string
+}
+
+export interface RentalDetails {
+  // Vehicle/Machinery hire fields
+  machineryType?: string
+  registrationNumber?: string
+  operatorName?: string
+  hireDurationDaysOrHours?: string
+  depositAmount?: number
+  // Ground/Property hire fields
+  venueName?: string
+  eventDate?: string
+  eventType?: string
+  capacity?: number
+  securityDeposit?: number
+}
+
 export interface InvoiceItem {
   id: string
   invoiceNumber: string
   customerName: string
   customerNICorBRN: string
-  category: 'Assessment Tax' | 'Trade License' | 'Building Application Fee' | 'Market Stall Lease' | 'Gully Bowser Service' | 'Hall Booking' | 'Advertising Signboard'
+  customerPhone?: string
+  customerEmail?: string
+  category: RevenueCategory
   propertyOrRefId: string
   amount: number
+  paidAmount?: number
   issueDate: string
   dueDate: string
-  status: 'Paid' | 'Pending' | 'Overdue' | 'Partially Paid'
-  paymentMethod?: 'Cash Counter' | 'Online Gateway' | 'Bank Transfer' | 'Cheque'
+  status: InvoiceStatus
   wardNumber: string
   notes?: string
+  paymentHistory?: PaymentRecord[]
+  rentalDetails?: RentalDetails
+  remindersSent?: number
+  lastReminderDate?: string
 }
 
 export interface PaymentVoucher {
@@ -482,45 +529,276 @@ export const INITIAL_INVOICES: InvoiceItem[] = [
   {
     id: 'inv-1',
     invoiceNumber: 'INV-2026-0941',
-    customerName: 'K. D. Gunasekara Enterprises',
+    customerName: 'K. D. Gunasekara Constructions',
     customerNICorBRN: 'PV00291044',
-    category: 'Trade License',
-    propertyOrRefId: 'TL-2026-HOM-481',
-    amount: 145000,
+    customerPhone: '+94 77 123 4567',
+    customerEmail: 'kdg.constructions@gmail.com',
+    category: 'Vehicle & Machinery Hire',
+    propertyOrRefId: 'VEH-JCB-2026-041',
+    amount: 185000,
+    paidAmount: 0,
     issueDate: '2026-09-18',
     dueDate: '2026-10-05',
-    status: 'Pending',
-    wardNumber: 'Ward 02 - Homagama Town',
-    notes: 'Annual dangerous trade inspection & food hygiene certification surcharge included.',
+    status: 'Approved & Issued',
+    wardNumber: 'Ward 06 - Godigamuwa',
+    notes: 'JCB backhoe excavation for storm drain construction. Operator + fuel by council.',
+    rentalDetails: {
+      machineryType: 'JCB Backhoe Loader (CAT 428)',
+      registrationNumber: 'WP-CAT-9911',
+      operatorName: 'N. M. Rathnayake',
+      hireDurationDaysOrHours: '3 Days',
+      depositAmount: 50000,
+    },
+    remindersSent: 0,
   },
   {
     id: 'inv-2',
     invoiceNumber: 'INV-2026-0940',
-    customerName: 'Sunil Weerasinghe',
+    customerName: 'Sunil Premaratne Weerasinghe',
     customerNICorBRN: '197412903810',
-    category: 'Assessment Tax',
-    propertyOrRefId: 'AST-KAT-1029',
+    customerPhone: '+94 71 445 8821',
+    customerEmail: 'sunilweerasinghe@yahoo.com',
+    category: 'Assessment Rates',
+    propertyOrRefId: 'AST-KAT-1029-B',
     amount: 38500,
+    paidAmount: 38500,
     issueDate: '2026-09-17',
     dueDate: '2026-09-30',
     status: 'Paid',
-    paymentMethod: 'Online Gateway',
     wardNumber: 'Ward 04 - Katuwawala',
-    notes: 'Quarter 3 assessment tax with 10% on-time rebate.',
+    notes: 'Quarter 3 2026 assessment rates. 10% early-payment rebate applied.',
+    paymentHistory: [
+      {
+        id: 'pmt-001',
+        receiptNumber: 'RCP-2026-1841',
+        date: '2026-09-19',
+        amount: 38500,
+        paymentMethod: 'Online Gateway',
+        collectedBy: 'Online Self-Service Portal',
+        notes: 'Full settlement via e-payment gateway. Ref: OLG-8821-KAT',
+        customerName: 'Sunil Premaratne Weerasinghe',
+      },
+    ],
+    remindersSent: 0,
   },
   {
     id: 'inv-3',
     invoiceNumber: 'INV-2026-0939',
-    customerName: 'Apex Logistics Warehouse Ltd',
+    customerName: 'Apex Freight & Logistics (Pvt) Ltd',
     customerNICorBRN: 'PV00118239',
-    category: 'Solid Waste Surcharges & Recycling' as any,
-    propertyOrRefId: 'SW-IND-004',
+    customerPhone: '+94 11 290 4400',
+    customerEmail: 'finance@apexfreight.lk',
+    category: 'Trade Licenses',
+    propertyOrRefId: 'TL-2026-HOM-339',
     amount: 280000,
+    paidAmount: 140000,
     issueDate: '2026-09-15',
     dueDate: '2026-09-30',
-    status: 'Pending',
+    status: 'Partially Paid',
     wardNumber: 'Ward 08 - Pitipana Techno City',
-    notes: 'Monthly bulk cardboard and industrial non-hazardous waste collection.',
+    notes: 'Annual dangerous trade license for bulk freight storage & forklift operations.',
+    paymentHistory: [
+      {
+        id: 'pmt-002',
+        receiptNumber: 'RCP-2026-1835',
+        date: '2026-09-18',
+        amount: 140000,
+        paymentMethod: 'Cheque',
+        collectedBy: 'Revenue Officer - H. Jayawardena',
+        notes: 'First instalment. Cheque no: CB-001928. Remaining 140,000 due by 30 Sep.',
+        customerName: 'Apex Freight & Logistics (Pvt) Ltd',
+      },
+    ],
+    remindersSent: 1,
+    lastReminderDate: '2026-09-20',
+  },
+  {
+    id: 'inv-4',
+    invoiceNumber: 'INV-2026-0938',
+    customerName: 'Priyantha Ruwan Dissanayake',
+    customerNICorBRN: '198804201540',
+    customerPhone: '+94 76 391 0022',
+    category: 'Public Ground & Property Hire',
+    propertyOrRefId: 'GRD-HOM-TWNH-011',
+    amount: 65000,
+    paidAmount: 0,
+    issueDate: '2026-09-14',
+    dueDate: '2026-09-28',
+    status: 'Overdue',
+    wardNumber: 'Ward 01 - Homagama North',
+    notes: 'Town Hall auditorium hire for political rally event on 2026-09-25. 500-seat capacity.',
+    rentalDetails: {
+      venueName: 'Homagama Town Hall Auditorium',
+      eventDate: '2026-09-25',
+      eventType: 'Political Rally',
+      capacity: 500,
+      securityDeposit: 15000,
+    },
+    remindersSent: 2,
+    lastReminderDate: '2026-09-21',
+  },
+  {
+    id: 'inv-5',
+    invoiceNumber: 'INV-2026-0937',
+    customerName: 'Chamara Silva Building Contractors',
+    customerNICorBRN: 'PV00441820',
+    customerPhone: '+94 77 882 9910',
+    customerEmail: 'chamarabc@sltnet.lk',
+    category: 'Building Approvals',
+    propertyOrRefId: 'BLD-2026-APP-0221',
+    amount: 124500,
+    paidAmount: 124500,
+    issueDate: '2026-09-12',
+    dueDate: '2026-09-26',
+    status: 'Paid',
+    wardNumber: 'Ward 03 - Meegoda',
+    notes: 'Building plan approval fee for 2-storey commercial complex. 1,850 sq ft footprint.',
+    paymentHistory: [
+      {
+        id: 'pmt-003',
+        receiptNumber: 'RCP-2026-1822',
+        date: '2026-09-13',
+        amount: 124500,
+        paymentMethod: 'Bank Transfer',
+        collectedBy: 'Revenue Counter Officer - K. Perera',
+        notes: 'Paid via SLIPS transfer. Ref BOC-TRF-0091224.',
+        customerName: 'Chamara Silva Building Contractors',
+      },
+    ],
+    remindersSent: 0,
+  },
+  {
+    id: 'inv-6',
+    invoiceNumber: 'INV-2026-0936',
+    customerName: 'Nilmini Devika Perera',
+    customerNICorBRN: '199202814821',
+    customerPhone: '+94 70 112 9009',
+    category: 'Shop/Stall Rentals',
+    propertyOrRefId: 'MKT-STALL-B-09',
+    amount: 12500,
+    paidAmount: 0,
+    issueDate: '2026-09-01',
+    dueDate: '2026-09-15',
+    status: 'Overdue',
+    wardNumber: 'Ward 02 - Homagama Town',
+    notes: 'Monthly rental for Market Stall B-09, Homagama Municipal Market. Vegetables & dry goods.',
+    remindersSent: 3,
+    lastReminderDate: '2026-09-21',
+  },
+  {
+    id: 'inv-7',
+    invoiceNumber: 'INV-2026-0935',
+    customerName: 'Lakshmi Events Management (Pvt) Ltd',
+    customerNICorBRN: 'PV00594822',
+    customerPhone: '+94 11 344 7700',
+    customerEmail: 'events@lakshmi.lk',
+    category: 'Public Ground & Property Hire',
+    propertyOrRefId: 'GRD-HOM-PLAY-003',
+    amount: 45000,
+    paidAmount: 45000,
+    issueDate: '2026-09-05',
+    dueDate: '2026-09-20',
+    status: 'Paid',
+    wardNumber: 'Ward 05 - Siddamulla',
+    notes: 'Public playground hire for 2-day cultural festival. Includes temporary stage setup permit.',
+    rentalDetails: {
+      venueName: 'Siddamulla Community Grounds',
+      eventDate: '2026-09-22',
+      eventType: 'Cultural Festival',
+      capacity: 800,
+      securityDeposit: 10000,
+    },
+    paymentHistory: [
+      {
+        id: 'pmt-004',
+        receiptNumber: 'RCP-2026-1800',
+        date: '2026-09-08',
+        amount: 45000,
+        paymentMethod: 'Cash',
+        collectedBy: 'Revenue Counter Officer - M. Ranasinghe',
+        notes: 'Full payment cash at counter. Deposit refunded post-event.',
+        customerName: 'Lakshmi Events Management (Pvt) Ltd',
+      },
+    ],
+    remindersSent: 0,
+  },
+  {
+    id: 'inv-8',
+    invoiceNumber: 'INV-2026-0934',
+    customerName: 'Gamini Perera Farm Holdings',
+    customerNICorBRN: '196802204410',
+    customerPhone: '+94 77 001 8833',
+    category: 'Vehicle & Machinery Hire',
+    propertyOrRefId: 'VEH-TRC-2026-028',
+    amount: 55000,
+    paidAmount: 55000,
+    issueDate: '2026-09-08',
+    dueDate: '2026-09-22',
+    status: 'Paid',
+    wardNumber: 'Ward 07 - Bokundara',
+    notes: 'Tractor with attachments for land preparation at farm. 5-hour hire.',
+    rentalDetails: {
+      machineryType: 'Kubota Tractor M7040 with rotovator',
+      registrationNumber: 'WP-TRC-8814',
+      operatorName: 'W. D. Bandara',
+      hireDurationDaysOrHours: '5 Hours',
+      depositAmount: 10000,
+    },
+    paymentHistory: [
+      {
+        id: 'pmt-005',
+        receiptNumber: 'RCP-2026-1790',
+        date: '2026-09-10',
+        amount: 55000,
+        paymentMethod: 'Cash',
+        collectedBy: 'Revenue Counter Officer - K. Perera',
+        notes: 'Paid in full at counter. Deposit 10,000 refunded on vehicle return.',
+        customerName: 'Gamini Perera Farm Holdings',
+      },
+    ],
+    remindersSent: 0,
+  },
+  {
+    id: 'inv-9',
+    invoiceNumber: 'INV-2026-0933',
+    customerName: 'Ruwan Manoj Senevirathne',
+    customerNICorBRN: '198711203540',
+    customerPhone: '+94 71 628 4411',
+    category: 'Assessment Rates',
+    propertyOrRefId: 'AST-BOK-0441-C',
+    amount: 24000,
+    paidAmount: 0,
+    issueDate: '2026-08-15',
+    dueDate: '2026-08-31',
+    status: 'Overdue',
+    wardNumber: 'Ward 07 - Bokundara',
+    notes: 'Q2 assessment rates for residential property. Defaulted. SMS reminders sent x3.',
+    remindersSent: 3,
+    lastReminderDate: '2026-09-18',
+  },
+  {
+    id: 'inv-10',
+    invoiceNumber: 'INV-2026-0932',
+    customerName: 'Wasantha Kumara Jayawickrema',
+    customerNICorBRN: '197006104392',
+    customerPhone: '+94 72 441 0021',
+    category: 'Vehicle & Machinery Hire',
+    propertyOrRefId: 'VEH-GUL-2026-019',
+    amount: 38000,
+    paidAmount: 0,
+    issueDate: '2026-09-20',
+    dueDate: '2026-10-10',
+    status: 'Draft',
+    wardNumber: 'Ward 03 - Meegoda',
+    notes: 'Gully bowser hire for septic tank emptying at residential compound. 3 trips.',
+    rentalDetails: {
+      machineryType: 'Gully Bowser (3,000 Litre)',
+      registrationNumber: 'WP-GUL-3391',
+      operatorName: 'S. Wimalasena',
+      hireDurationDaysOrHours: '3 Trips',
+      depositAmount: 0,
+    },
+    remindersSent: 0,
   },
 ]
 
