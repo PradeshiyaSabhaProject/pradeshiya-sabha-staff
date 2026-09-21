@@ -106,6 +106,14 @@ const InventoryIcon = () => (
     <path d="M9 15h4" />
   </svg>
 )
+const FinanceIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <line x1="2" y1="10" x2="22" y2="10" />
+    <circle cx="12" cy="15" r="2" />
+    <path d="M6 15h.01M18 15h.01" />
+  </svg>
+)
 const LogoutIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -210,6 +218,14 @@ const navItems: NavItem[] = [
       { label: 'Drivers & Operators', path: '/fleet/drivers' },
       { label: 'Authorizations Desk', path: '/fleet/approvals' },
     ]
+  },
+  {
+    label: 'Finance Management',
+    path: '/finances',
+    icon: <FinanceIcon />,
+    children: [
+      { label: 'Finance Dashboard', path: '/finances/overview' },
+    ],
   },
   {
     label: 'Complain Management',
@@ -422,6 +438,7 @@ const Sidebar: React.FC = () => {
     '/assets': false,
     '/inventory-management': false,
     '/fleet': false,
+    '/finances': false,
     '/users': false,
   })
 

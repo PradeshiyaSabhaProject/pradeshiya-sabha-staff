@@ -13,6 +13,7 @@ import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
 import bookingRoutes from '../features/booking-management/bookingRoutes'
 import inventoryRoutes from '../features/inventory-management/inventoryRoutes'
+import financeRoutes from '../features/finances/financeRoutes'
 import profileRoutes from '../features/profile/profileRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
@@ -79,6 +80,7 @@ export const AppRoutes: React.FC = () => {
         {applicationRoutes}
         {bookingRoutes}
         {inventoryRoutes}
+        {financeRoutes}
         {userRoutes}
         {profileRoutes}
         <Route path="archive" element={<DummySection title="Data Archive" desc="Historical council records, closed complaints, and archived resolutions." />} />
