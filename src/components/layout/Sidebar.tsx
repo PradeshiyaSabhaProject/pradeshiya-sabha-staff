@@ -226,6 +226,7 @@ const navItems: NavItem[] = [
     children: [
       { label: 'Finance Dashboard', path: '/finances/overview' },
       { label: 'Bank Reconciliation', path: '/finances/reconciliation' },
+      { label: 'Financial Reports', path: '/finances/reports' },
     ],
   },
   {
