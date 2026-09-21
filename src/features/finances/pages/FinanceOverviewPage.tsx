@@ -35,6 +35,17 @@ export const FinanceOverviewPage: React.FC = () => {
 
         {/* Action Buttons Top-Right */}
         <div className="flex flex-wrap items-center gap-2.5">
+          <a
+            href="/finances/invoices"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-3.5 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span>Invoices & Revenues Module</span>
+          </a>
+
           <button
             type="button"
             onClick={handleExportSummary}
@@ -47,19 +58,6 @@ export const FinanceOverviewPage: React.FC = () => {
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             <span>{isExporting ? 'Exporting...' : 'Export Fiscal CSV'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => window.print()}
-            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded transition-colors uppercase tracking-wider flex items-center gap-1.5 cursor-pointer shadow-sm"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
-              <polyline points="6 9 6 2 18 2 18 9" />
-              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-              <rect x="6" y="14" width="12" height="8" />
-            </svg>
-            <span>Print Report</span>
           </button>
         </div>
       </div>
