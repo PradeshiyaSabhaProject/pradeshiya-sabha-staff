@@ -225,6 +225,7 @@ const navItems: NavItem[] = [
     icon: <FinanceIcon />,
     children: [
       { label: 'Finance Dashboard', path: '/finances/overview' },
+      { label: 'Municipal Budget Manager', path: '/finances/budget-manager' },
       { label: 'Bank Reconciliation', path: '/finances/reconciliation' },
     ],
   },
