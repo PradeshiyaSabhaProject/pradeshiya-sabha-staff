@@ -7,6 +7,9 @@ import type {
   BankAccountSummary,
   JournalEntry,
   BankStatementRecord,
+  PropertyAssessment,
+  QuarterlyBillingRun,
+  PropertyPaymentHistory,
 } from '../data/financeMockData'
 import {
   INITIAL_MONTHLY_CASH_FLOW,
@@ -15,6 +18,9 @@ import {
   INITIAL_INVOICES,
   INITIAL_PAYMENT_VOUCHERS,
   INITIAL_JOURNAL_ENTRIES,
+  INITIAL_PROPERTY_ASSESSMENTS,
+  INITIAL_QUARTERLY_BILLING_RUNS,
+  INITIAL_PAYMENT_HISTORIES,
 } from '../data/financeMockData'
 
 interface FinanceKpiSummary {
@@ -35,6 +41,9 @@ interface FinanceContextType {
   invoices: InvoiceItem[]
   paymentVouchers: PaymentVoucher[]
   journalEntries: JournalEntry[]
+  propertyAssessments: PropertyAssessment[]
+  billingRuns: QuarterlyBillingRun[]
+  paymentHistories: PropertyPaymentHistory[]
   kpiSummary: FinanceKpiSummary
   createInvoice: (invoice: Omit<InvoiceItem, 'id' | 'invoiceNumber'>) => void
   recordPaymentVoucher: (voucher: Omit<PaymentVoucher, 'id' | 'voucherNumber'>) => void
@@ -51,6 +60,9 @@ const STORAGE_KEYS = {
   INVOICES: 'ps_finance_invoices',
   VOUCHERS: 'ps_finance_vouchers',
   JOURNALS: 'ps_finance_journals',
+  PROPERTY_ASSESSMENTS: 'ps_finance_property_assessments',
+  BILLING_RUNS: 'ps_finance_billing_runs',
+  PAYMENT_HISTORIES: 'ps_finance_payment_histories',
 }
 
 export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -82,6 +94,21 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.JOURNALS)
     return saved ? JSON.parse(saved) : INITIAL_JOURNAL_ENTRIES
+  })
+
+  const [propertyAssessments] = useState<PropertyAssessment[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.PROPERTY_ASSESSMENTS)
+    return saved ? JSON.parse(saved) : INITIAL_PROPERTY_ASSESSMENTS
+  })
+
+  const [billingRuns] = useState<QuarterlyBillingRun[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.BILLING_RUNS)
+    return saved ? JSON.parse(saved) : INITIAL_QUARTERLY_BILLING_RUNS
+  })
+
+  const [paymentHistories] = useState<PropertyPaymentHistory[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.PAYMENT_HISTORIES)
+    return saved ? JSON.parse(saved) : INITIAL_PAYMENT_HISTORIES
   })
 
   useEffect(() => {
@@ -303,6 +330,9 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
         invoices,
         paymentVouchers,
         journalEntries,
+        propertyAssessments,
+        billingRuns,
+        paymentHistories,
         kpiSummary,
         createInvoice,
         recordPaymentVoucher,
