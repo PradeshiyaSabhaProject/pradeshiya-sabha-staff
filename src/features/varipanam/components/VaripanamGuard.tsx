@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth, DUMMY_USERS } from '../../../../context/AuthContext'
+import { useAuth, DUMMY_USERS } from '../../../context/AuthContext'
 
 interface VaripanamGuardProps {
   children: React.ReactNode
@@ -37,10 +37,10 @@ export const VaripanamGuard: React.FC<VaripanamGuardProps> = ({ children }) => {
 
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Link
-            to="/finances/overview"
+            to="/overview"
             className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all"
           >
-            Back to Finance Overview
+            Back to Overview
           </Link>
           <button
             type="button"

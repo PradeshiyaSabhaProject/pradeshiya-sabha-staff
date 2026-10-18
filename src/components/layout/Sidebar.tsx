@@ -106,6 +106,14 @@ const InventoryIcon = () => (
     <path d="M9 15h4" />
   </svg>
 )
+const VaripanamIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M3 21h18" />
+    <path d="M4 21V10l8-6 8 6v11" />
+    <path d="M9 21v-6a3 3 0 0 1 6 0v6" />
+    <circle cx="12" cy="9" r="1.5" />
+  </svg>
+)
 const LogoutIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -210,6 +218,15 @@ const navItems: NavItem[] = [
       { label: 'Drivers & Operators', path: '/fleet/drivers' },
       { label: 'Authorizations Desk', path: '/fleet/approvals' },
     ]
+  },
+  {
+    label: 'Varipanam',
+    path: '/varipanam',
+    icon: <VaripanamIcon />,
+    children: [
+      { label: 'Rates & GIS Cadastre', path: '/varipanam/dashboard' },
+      { label: 'Property Registry', path: '/varipanam/properties' },
+    ],
   },
   {
     label: 'Complain Management',
@@ -415,13 +432,14 @@ const Sidebar: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-    '/attendance': true,
+    '/attendance': false,
     '/appointments': false,
     '/letters': false,
     '/applications': false,
     '/assets': false,
     '/inventory-management': false,
     '/fleet': false,
+    '/varipanam': false,
     '/users': false,
   })
 

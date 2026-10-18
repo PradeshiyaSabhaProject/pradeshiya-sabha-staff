@@ -175,7 +175,7 @@ export const Property360Page: React.FC = () => {
         </p>
         <button
           type="button"
-          onClick={() => navigate('/finances/varipanam')}
+          onClick={() => navigate('/varipanam')}
           className="px-4 py-2 bg-[#A31736] text-white text-xs font-bold rounded-xl"
         >
           Return to Varipanam Dashboard
@@ -285,7 +285,7 @@ export const Property360Page: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs">
         <div>
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-            <Link to="/finances/varipanam" className="hover:text-[#A31736] font-semibold">
+            <Link to="/varipanam" className="hover:text-[#A31736] font-semibold">
               ← Varipanam Dashboard
             </Link>
             <span>/</span>

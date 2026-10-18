@@ -14,6 +14,7 @@ import userRoutes from '../features/user-management/userRoutes'
 import bookingRoutes from '../features/booking-management/bookingRoutes'
 import inventoryRoutes from '../features/inventory-management/inventoryRoutes'
 import profileRoutes from '../features/profile/profileRoutes'
+import varipanamRoutes from '../features/varipanam/varipanamRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -74,6 +75,7 @@ export const AppRoutes: React.FC = () => {
         {/* Other Feature Routes */}
         {assetRoutes}
         {fleetRoutes}
+        {varipanamRoutes}
         {complainRoutes}
         {letterRoutes}
         {applicationRoutes}
