@@ -4,7 +4,6 @@ import { AuthProvider } from './context/AuthContext'
 import { SidebarProvider } from './context/SidebarContext'
 import { LeaveProvider } from './context/LeaveContext'
 import { KpiProvider } from './context/KpiContext'
-import { FinanceProvider } from './features/finances/context/FinanceContext'
 import AppRoutes from './routes/AppRoutes'
 import './App.css'
 
@@ -15,11 +14,9 @@ export default function App() {
         <SidebarProvider>
           <LeaveProvider>
             <KpiProvider>
-              <FinanceProvider>
-                <BrowserRouter>
-                  <AppRoutes />
-                </BrowserRouter>
-              </FinanceProvider>
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
             </KpiProvider>
           </LeaveProvider>
         </SidebarProvider>
