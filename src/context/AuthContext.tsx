@@ -9,6 +9,12 @@ export interface User {
 }
 
 export const DUMMY_USERS: Record<string, User> = {
+  superadmin: {
+    id: '0',
+    name: 'Super Administrator',
+    email: 'superadmin@pradeshiyasabha.gov.lk',
+    role: 'superadmin',
+  },
   admin: {
     id: '1',
     name: 'Dev Admin',
@@ -47,8 +53,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback((userOrEmail: User | string) => {
     let newUser: User
     if (typeof userOrEmail === 'string') {
-      const isStaff = userOrEmail.toLowerCase().includes('staff') || userOrEmail.includes('1999703')
-      newUser = isStaff ? DUMMY_USERS.staff : DUMMY_USERS.admin
+      const lower = userOrEmail.toLowerCase()
+      if (lower.includes('super')) {
+        newUser = DUMMY_USERS.superadmin
+      } else if (lower.includes('staff') || userOrEmail.includes('1999703')) {
+        newUser = DUMMY_USERS.staff
+      } else {
+        newUser = DUMMY_USERS.admin
+      }
     } else {
       newUser = userOrEmail
     }
