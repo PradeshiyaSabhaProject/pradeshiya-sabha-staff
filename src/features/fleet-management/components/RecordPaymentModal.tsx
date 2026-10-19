@@ -35,7 +35,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
 
   // Initialize receipt number and countdown when modal opens (no effect setState)
-  if (isOpen !== prevIsOpen || booking?.id !== prevBookingId) {
+  if (isOpen !== prevIsOpen || (booking?.id ?? null) !== prevBookingId) {
     setPrevIsOpen(isOpen)
     setPrevBookingId(booking?.id || null)
     if (booking && isOpen) {

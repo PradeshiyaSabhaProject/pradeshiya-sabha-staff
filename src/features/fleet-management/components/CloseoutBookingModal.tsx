@@ -38,7 +38,7 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
 
   // Sync initial values when modal opens or booking changes (no effect setState)
-  if (isOpen !== prevIsOpen || booking?.id !== prevBookingId) {
+  if (isOpen !== prevIsOpen || (booking?.id ?? null) !== prevBookingId) {
     setPrevIsOpen(isOpen)
     setPrevBookingId(booking?.id || null)
     if (booking && isOpen) {

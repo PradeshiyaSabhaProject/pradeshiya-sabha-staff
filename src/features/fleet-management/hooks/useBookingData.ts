@@ -139,15 +139,30 @@ export function useBookingData() {
     const handleSync = () => {
       const b = localStorage.getItem(BOOKINGS_STORAGE_KEY)
       if (b) {
-        try { setBookings(JSON.parse(b)) } catch { /* ignore */ }
+        try {
+          const next = JSON.parse(b) as BookingRecord[]
+          setBookings((current) =>
+            JSON.stringify(current) === JSON.stringify(next) ? current : next
+          )
+        } catch { /* ignore */ }
       }
       const v = localStorage.getItem(VEHICLES_STORAGE_KEY)
       if (v) {
-        try { setVehicles(JSON.parse(v)) } catch { /* ignore */ }
+        try {
+          const next = JSON.parse(v) as VehicleRecord[]
+          setVehicles((current) =>
+            JSON.stringify(current) === JSON.stringify(next) ? current : next
+          )
+        } catch { /* ignore */ }
       }
       const d = localStorage.getItem(DRIVERS_STORAGE_KEY)
       if (d) {
-        try { setDrivers(JSON.parse(d)) } catch { /* ignore */ }
+        try {
+          const next = JSON.parse(d) as DriverRecord[]
+          setDrivers((current) =>
+            JSON.stringify(current) === JSON.stringify(next) ? current : next
+          )
+        } catch { /* ignore */ }
       }
     }
     window.addEventListener('storage', handleSync)

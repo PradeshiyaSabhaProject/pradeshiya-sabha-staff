@@ -45,15 +45,14 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
 
   const [prevBookingId, setPrevBookingId] = useState<string | null>(null)
 
-  // Sync active tab when booking changes (no effect setState)
-  if (booking?.id !== prevBookingId) {
-    setPrevBookingId(booking?.id || null)
+  if ((booking?.id ?? null) !== prevBookingId) {
+    setPrevBookingId(booking?.id ?? null)
     if (booking) {
-      if (booking.status === 'En Route' || booking.status === 'Service In Progress') {
-        setActiveTab('tracking')
-      } else {
-        setActiveTab('details')
-      }
+      setActiveTab(
+        booking.status === 'En Route' || booking.status === 'Service In Progress'
+          ? 'tracking'
+          : 'details'
+      )
       setGpsProgress(0.35)
     }
   }

@@ -55,7 +55,7 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
 
   // Sync default form state when modal opens or booking changes (no effect setState)
-  if (isOpen !== prevIsOpen || booking?.id !== prevBookingId) {
+  if (isOpen !== prevIsOpen || (booking?.id ?? null) !== prevBookingId) {
     setPrevIsOpen(isOpen)
     setPrevBookingId(booking?.id || null)
     if (isOpen && booking) {
