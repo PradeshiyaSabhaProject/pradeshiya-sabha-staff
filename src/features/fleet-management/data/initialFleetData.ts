@@ -99,6 +99,8 @@ export interface VehicleRecord {
   maintenanceHistory: MaintenanceLog[]
 }
 
+import { EXTRA_VEHICLES, EXTRA_DRIVERS } from './initialBookingData'
+
 export const INITIAL_DRIVERS: DriverRecord[] = [
   {
     id: 'DRV-01',
@@ -188,6 +190,7 @@ export const INITIAL_DRIVERS: DriverRecord[] = [
     assignedVehicleReg: null,
     status: 'On Duty',
   },
+  ...EXTRA_DRIVERS,
 ]
 
 export const INITIAL_VEHICLES: VehicleRecord[] = [
@@ -384,6 +387,7 @@ export const INITIAL_VEHICLES: VehicleRecord[] = [
       },
     ],
   },
+  ...EXTRA_VEHICLES,
 ]
 
 export type FleetActionType =

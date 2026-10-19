@@ -10,6 +10,7 @@ import {
   type FleetApprovalRequest,
   type FleetActionType,
 } from '../data/initialFleetData'
+import { useBookingData } from './useBookingData'
 
 const VEHICLES_STORAGE_KEY = 'ps_fleet_vehicles_v1'
 const DRIVERS_STORAGE_KEY = 'ps_fleet_drivers_v1'
@@ -76,6 +77,7 @@ export function getVehicleComplianceInfo(vehicle: VehicleRecord): FleetComplianc
 }
 
 export function useFleetData() {
+  const bookingData = useBookingData()
   const [vehicles, setVehicles] = useState<VehicleRecord[]>(() => {
     const saved = localStorage.getItem(VEHICLES_STORAGE_KEY)
     if (saved) {
@@ -129,6 +131,30 @@ export function useFleetData() {
   useEffect(() => {
     localStorage.setItem(APPROVALS_STORAGE_KEY, JSON.stringify(approvalRequests))
   }, [approvalRequests])
+
+  // Cross-component sync listener (keeps fleet pages in sync when bookings update vehicles/drivers)
+  useEffect(() => {
+    const handleSync = () => {
+      const v = localStorage.getItem(VEHICLES_STORAGE_KEY)
+      if (v) {
+        try { setVehicles(JSON.parse(v)) } catch { /* ignore */ }
+      }
+      const d = localStorage.getItem(DRIVERS_STORAGE_KEY)
+      if (d) {
+        try { setDrivers(JSON.parse(d)) } catch { /* ignore */ }
+      }
+      const a = localStorage.getItem(APPROVALS_STORAGE_KEY)
+      if (a) {
+        try { setApprovalRequests(JSON.parse(a)) } catch { /* ignore */ }
+      }
+    }
+    window.addEventListener('storage', handleSync)
+    window.addEventListener('fleet_storage_update', handleSync)
+    return () => {
+      window.removeEventListener('storage', handleSync)
+      window.removeEventListener('fleet_storage_update', handleSync)
+    }
+  }, [])
 
   // Live GPS Telemetry simulation loop for garbage tractors and fleet vehicles
   useEffect(() => {
@@ -574,6 +600,17 @@ export function useFleetData() {
     submitApprovalRequest,
     approveRequest,
     rejectRequest,
+    // Booking state & mutations from useBookingData (single source of truth for cross-page sync)
+    bookings: bookingData.bookings,
+    bookingStats: bookingData.bookingStats,
+    createBooking: bookingData.createBooking,
+    approveBooking: bookingData.approveBooking,
+    rejectBooking: bookingData.rejectBooking,
+    recordPayment: bookingData.recordPayment,
+    validateVehicleAssignment: bookingData.validateVehicleAssignment,
+    assignBookingVehicle: bookingData.assignVehicle,
+    advanceBookingJobStep: bookingData.advanceJobStep,
+    closeoutBooking: bookingData.closeoutBooking,
   }
 }
 
