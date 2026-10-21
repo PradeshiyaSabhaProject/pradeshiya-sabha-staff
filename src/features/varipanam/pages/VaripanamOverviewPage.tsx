@@ -67,7 +67,7 @@ export const VaripanamOverviewPage: React.FC = () => {
     : 0
 
   const handleOpenProperty = (propertyId: string) => {
-    navigate(`/finances/varipanam/properties/${propertyId}`)
+    navigate(`/varipanam/properties/${propertyId}`)
   }
 
   const handleExportCsv = () => {
@@ -170,7 +170,7 @@ export const VaripanamOverviewPage: React.FC = () => {
         filters={filters}
         onFilterChange={setFilters}
         onResetFilters={resetFilters}
-        onAddPropertyClick={() => navigate('/finances/varipanam/add-property')}
+        onAddPropertyClick={() => navigate('/varipanam/add-property')}
         isPickMode={false}
         totalFilteredCount={filteredProperties.length}
       />
@@ -422,7 +422,7 @@ export const VaripanamOverviewPage: React.FC = () => {
 
                   <button
                     type="button"
-                    onClick={() => navigate(`/finances/varipanam/billing?assessment=${encodeURIComponent(selectedProperty.assessmentNumber)}`)}
+                    onClick={() => navigate(`/varipanam/billing-payments?assessment=${encodeURIComponent(selectedProperty.assessmentNumber)}`)}
                     className="w-full py-2 text-xs font-bold text-[#A31736] bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <CreditCard className="w-3.5 h-3.5" />

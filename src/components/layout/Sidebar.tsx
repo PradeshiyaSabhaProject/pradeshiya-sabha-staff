@@ -106,12 +106,9 @@ const InventoryIcon = () => (
     <path d="M9 15h4" />
   </svg>
 )
-const FinanceIcon = () => (
+const VaripanamIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-    <rect x="2" y="4" width="20" height="16" rx="2" />
-    <line x1="2" y1="10" x2="22" y2="10" />
-    <circle cx="12" cy="15" r="2" />
-    <path d="M6 15h.01M18 15h.01" />
+    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
   </svg>
 )
 const LogoutIcon = () => (
@@ -222,34 +219,25 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    label: 'Finance Management',
-    path: '/finances',
-    icon: <FinanceIcon />,
+    label: 'Varipanam Management',
+    path: '/varipanam',
+    icon: <VaripanamIcon />,
+    roles: ['superadmin', 'admin'],
     children: [
-      { label: 'Finance Dashboard', path: '/finances/overview' },
-      { label: 'Invoices & Revenues', path: '/finances/invoices' },
-      { label: 'Bank Reconciliation', path: '/finances/reconciliation' },
-      {
-        label: 'Varipanam (Assessment Rates)',
-        path: '/finances/varipanam',
-        roles: ['superadmin', 'admin'],
-        children: [
-          { label: 'Overview', path: '/finances/varipanam/overview' },
-          { label: 'Properties', path: '/finances/varipanam/properties' },
-          { label: 'Add New Property', path: '/finances/varipanam/add-property' },
-          { label: 'Approvals', path: '/finances/varipanam/approvals', badge: 3 },
-          { label: 'Subdivision', path: '/finances/varipanam/subdivision' },
-          { label: 'Ownership Change', path: '/finances/varipanam/ownership-change' },
-          { label: 'Valuation & Relief', path: '/finances/varipanam/valuation-relief' },
-          { label: 'Assessment Notices', path: '/finances/varipanam/notices' },
-          { label: 'Billing & Payments', path: '/finances/varipanam/billing-payments' },
-          { label: 'Arrears & Warrants', path: '/finances/varipanam/arrears-warrants' },
-          { label: 'Field Collection', path: '/finances/varipanam/field-collection' },
-          { label: 'Historical Search', path: '/finances/varipanam/historical-search' },
-          { label: 'Reports', path: '/finances/varipanam/reports' },
-          { label: 'Settings', path: '/finances/varipanam/settings' },
-        ],
-      },
+      { label: 'Overview', path: '/varipanam/overview' },
+      { label: 'Properties', path: '/varipanam/properties' },
+      { label: 'Add New Property', path: '/varipanam/add-property' },
+      { label: 'Approvals', path: '/varipanam/approvals', badge: 3 },
+      { label: 'Subdivision', path: '/varipanam/subdivision' },
+      { label: 'Ownership Change', path: '/varipanam/ownership-change' },
+      { label: 'Valuation & Relief', path: '/varipanam/valuation-relief' },
+      { label: 'Assessment Notices', path: '/varipanam/notices' },
+      { label: 'Billing & Payments', path: '/varipanam/billing-payments' },
+      { label: 'Arrears & Warrants', path: '/varipanam/arrears-warrants' },
+      { label: 'Field Collection', path: '/varipanam/field-collection' },
+      { label: 'Historical Search', path: '/varipanam/historical-search' },
+      { label: 'Reports', path: '/varipanam/reports' },
+      { label: 'Settings', path: '/varipanam/settings' },
     ],
   },
   {
@@ -332,7 +320,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
   const active = location.pathname === item.path || location.pathname.startsWith(item.path + '/')
   const hasChildren = visibleChildren.length > 0
   const [openSubMenus, setOpenSubMenus] = useState<Record<string, boolean>>({
-    '/finances/varipanam': true,
+    '/varipanam': true,
   })
 
   const toggleSubMenu = (path: string) => {
@@ -392,6 +380,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
             const hasSubChildren = child.children && child.children.length > 0
             const childActive =
               location.pathname === child.path ||
+              (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
               (hasSubChildren && location.pathname.startsWith(child.path))
             const isSubOpen = openSubMenus[child.path] ?? location.pathname.startsWith(child.path)
 
@@ -426,6 +415,8 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
                       {child.children!.map((subChild) => {
                         const subActive =
                           location.pathname === subChild.path ||
+                          (subChild.path === '/varipanam/properties' &&
+                            location.pathname.startsWith('/varipanam/properties/')) ||
                           (subChild.path === '/finances/varipanam/properties' &&
                             location.pathname.startsWith('/finances/varipanam/properties/'))
 
@@ -460,14 +451,21 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
                 key={child.path}
                 to={child.path}
                 onClick={() => setIsMobileOpen(false)}
-                className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
+                className={`flex items-center justify-between pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
                   childActive
                     ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
                 }`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`} />
-                {child.label}
+                <div className="flex items-center min-w-0">
+                  <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`} />
+                  <span className="truncate">{child.label}</span>
+                </div>
+                {child.badge !== undefined && (
+                  <span className="ml-2 px-1.5 py-0.5 text-[10px] font-black rounded-full bg-[#A31736] text-white shrink-0">
+                    {child.badge}
+                  </span>
+                )}
               </Link>
             )
           })}
@@ -484,7 +482,10 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
             <div className="mt-1 flex flex-col gap-1 pt-1">
               {visibleChildren.map((child) => {
                 const hasSubChildren = child.children && child.children.length > 0
-                const childActive = location.pathname === child.path || (hasSubChildren && location.pathname.startsWith(child.path))
+                const childActive =
+                  location.pathname === child.path ||
+                  (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+                  (hasSubChildren && location.pathname.startsWith(child.path))
 
                 if (hasSubChildren) {
                   return (
@@ -493,7 +494,10 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
                         {child.label}
                       </div>
                       {child.children!.map((sub) => {
-                        const subActive = location.pathname === sub.path || (sub.path === '/finances/varipanam/properties' && location.pathname.startsWith('/finances/varipanam/properties/'))
+                        const subActive =
+                          location.pathname === sub.path ||
+                          (sub.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+                          (sub.path === '/finances/varipanam/properties' && location.pathname.startsWith('/finances/varipanam/properties/'))
                         return (
                           <Link
                             key={sub.path}
@@ -523,13 +527,18 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
                     key={child.path}
                     to={child.path}
                     onClick={() => setIsMobileOpen(false)}
-                    className={`text-xs py-1.5 px-2.5 rounded transition-colors block ${
+                    className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded transition-colors ${
                       childActive
                         ? 'bg-[#A31736] text-white font-semibold'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                     }`}
                   >
-                    {child.label}
+                    <span className="truncate">{child.label}</span>
+                    {child.badge !== undefined && (
+                      <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black rounded-full bg-rose-600 text-white shrink-0">
+                        {child.badge}
+                      </span>
+                    )}
                   </Link>
                 )
               })}

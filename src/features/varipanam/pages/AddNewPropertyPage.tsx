@@ -556,7 +556,7 @@ export const AddNewPropertyPage: React.FC = () => {
       setSuccessMessage(
         `Submission successfully dispatched into the Council Approval Queue! It is now active under Phase 2 review.`
       )
-      setTimeout(() => navigate('/finances/varipanam/approvals'), 1500)
+      setTimeout(() => navigate('/varipanam/approvals'), 1500)
     } catch (err: any) {
       setValidationError(err.message || 'Submission failed. Please check assessment number or try again.')
     } finally {
@@ -617,7 +617,7 @@ export const AddNewPropertyPage: React.FC = () => {
       })
 
       setSuccessMessage('Property draft saved successfully! You can track or resume it from Approvals.')
-      setTimeout(() => navigate('/finances/varipanam/approvals?tab=track'), 1500)
+      setTimeout(() => navigate('/varipanam/approvals?tab=track'), 1500)
     } catch (err: any) {
       setValidationError(err.message || 'Failed to save draft.')
     } finally {
@@ -632,7 +632,7 @@ export const AddNewPropertyPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             type="button"
-            onClick={() => navigate('/finances/varipanam')}
+            onClick={() => navigate('/varipanam')}
             className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-colors cursor-pointer shrink-0 shadow-2xs active:scale-98"
             title="Return to properties ledger"
           >
@@ -1347,7 +1347,7 @@ export const AddNewPropertyPage: React.FC = () => {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => navigate('/finances/varipanam')}
+                onClick={() => navigate('/varipanam')}
                 className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -1356,7 +1356,7 @@ export const AddNewPropertyPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => navigate('/finances/varipanam')}
+                onClick={() => navigate('/varipanam')}
                 className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
               >
                 <X className="w-4 h-4" />
@@ -1537,7 +1537,7 @@ export const AddNewPropertyPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => navigate('/finances/varipanam')}
+                onClick={() => navigate('/varipanam')}
                 className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
               >
                 <X className="w-4 h-4" />
@@ -1669,7 +1669,7 @@ export const AddNewPropertyPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => navigate('/finances/varipanam')}
+                onClick={() => navigate('/varipanam')}
                 className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
               >
                 <X className="w-4 h-4" />

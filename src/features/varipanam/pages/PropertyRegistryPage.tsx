@@ -20,7 +20,7 @@ export const PropertyRegistryPage: React.FC = () => {
   } = useVaripanam()
 
   const handleOpenProperty = (propertyId: string) => {
-    navigate(`/finances/varipanam/properties/${propertyId}`)
+    navigate(`/varipanam/properties/${propertyId}`)
   }
 
   const handleExportCsv = () => {
@@ -115,7 +115,7 @@ export const PropertyRegistryPage: React.FC = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/finances/varipanam/add-property')}
+            onClick={() => navigate('/varipanam/add-property')}
             className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#A31736] hover:bg-[#801028] rounded-xl transition-all cursor-pointer shadow-xs active:scale-98"
           >
             <Plus className="w-4 h-4" />
@@ -132,7 +132,7 @@ export const PropertyRegistryPage: React.FC = () => {
         filters={filters}
         onFilterChange={setFilters}
         onResetFilters={resetFilters}
-        onAddPropertyClick={() => navigate('/finances/varipanam/add-property')}
+        onAddPropertyClick={() => navigate('/varipanam/add-property')}
         isPickMode={false}
         totalFilteredCount={filteredProperties.length}
       />
