@@ -51,7 +51,6 @@ const FinanceContext = createContext<FinanceContextType | undefined>(undefined)
 const STORAGE_KEYS = {
   CASH_FLOW: 'ps_finance_cash_flow',
   WATCHLIST: 'ps_finance_watchlist',
-  BANK_ACCOUNTS: 'ps_finance_bank_accounts',
   INVOICES: 'ps_finance_invoices',
   VOUCHERS: 'ps_finance_vouchers',
   JOURNALS: 'ps_finance_journals',
@@ -68,10 +67,7 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return saved ? JSON.parse(saved) : INITIAL_WATCHLIST_ACCOUNTS
   })
 
-  const [bankAccounts, setBankAccounts] = useState<BankAccountSummary[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.BANK_ACCOUNTS)
-    return saved ? JSON.parse(saved) : INITIAL_BANK_ACCOUNTS
-  })
+  const [bankAccounts, setBankAccounts] = useState<BankAccountSummary[]>(INITIAL_BANK_ACCOUNTS)
 
   const [invoices, setInvoices] = useState<InvoiceItem[]>(() => {
     const saved = localStorage.getItem(STORAGE_KEYS.INVOICES)
@@ -95,10 +91,6 @@ export const FinanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.WATCHLIST, JSON.stringify(watchlistAccounts))
   }, [watchlistAccounts])
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.BANK_ACCOUNTS, JSON.stringify(bankAccounts))
-  }, [bankAccounts])
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.INVOICES, JSON.stringify(invoices))
