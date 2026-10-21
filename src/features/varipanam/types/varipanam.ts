@@ -7,6 +7,17 @@ export type PropertyType =
   | 'Religious'
   | 'Bare land'
 
+export type Designation =
+  | 'Super Admin'
+  | 'Subject Counter'
+  | 'Revenue Inspector'
+  | 'Chief Inspector'
+  | 'Secretary'
+  | 'Counter Officer'
+  | 'Distraining Officer'
+
+export type PropertyApprovalStatus = 'DRAFT' | 'PENDING_APPROVAL' | 'APPROVED' | 'SENT_BACK'
+
 export interface Zone {
   id: string
   name: string
@@ -70,6 +81,9 @@ export interface OwnershipRecord {
   endDate?: string
   deedNumber?: string
   approvedBy: string
+  actingAs?: Designation
+  documents?: { id: string; name: string; type: string }[]
+  notes?: string
 }
 
 export interface Valuation {
@@ -80,6 +94,8 @@ export interface Valuation {
   approvedBy: string
   valuationDate: string
   reportNumber?: string
+  reason?: string
+  actingAs?: Designation
 }
 
 export interface DueQuarter {
@@ -108,11 +124,16 @@ export interface Payment {
   amount: number
   date: string
   status: 'TEMPORARY' | 'OFFICIAL'
+  channel: 'counter' | 'field' | 'online'
   method: 'CASH' | 'CARD' | 'CHEQUE' | 'ONLINE'
   officerId: string
   officerName: string
+  actingAs?: Designation
   quarterAllocations: PaymentQuarterAllocation[]
   notes?: string
+  temporaryReceiptNumber?: string
+  officialReceiptNumber?: string
+  reconciliationId?: string
 }
 
 export interface Receipt {
@@ -126,6 +147,8 @@ export interface Receipt {
   reconciledBy?: string
   amount: number
   propertyId: string
+  customerName?: string
+  assessmentNumber?: string
 }
 
 export type WarrantStatus =
@@ -141,6 +164,7 @@ export interface WarrantChainStep {
   stepTitle: string
   status: 'Pending' | 'Completed' | 'Rejected'
   officer: string
+  actingAs?: Designation
   timestamp?: string
   notes?: string
 }
@@ -157,6 +181,8 @@ export interface Warrant {
   cancelReason?: string
   cancelledDate?: string
   chainSteps: WarrantChainStep[]
+  arrearsAmount?: number
+  totalEnforcementDue?: number
 }
 
 export interface FieldCollection {
@@ -168,7 +194,9 @@ export interface FieldCollection {
   amountCard: number
   totalAmount: number
   receiptIds: string[]
+  paymentIds: string[]
   status: 'Pending' | 'Reconciled'
+  reconciliationId?: string
 }
 
 export interface Reconciliation {
@@ -182,6 +210,9 @@ export interface Reconciliation {
   cashierName: string
   receiptsCount: number
   notes?: string
+  fieldCollectionId?: string
+  status: 'Reconciled'
+  actingAs?: Designation
 }
 
 export type AtdStage =
@@ -196,6 +227,7 @@ export interface AtdComment {
   id: string
   author: string
   role: string
+  actingAs?: Designation
   comment: string
   timestamp: string
 }
@@ -206,6 +238,7 @@ export interface AtdDocument {
   name: string
   uploadedAt: string
   fileSize?: string
+  fileUrl?: string
 }
 
 export interface AtdApplication {
@@ -226,8 +259,12 @@ export interface AtdApplication {
     notes: string
     officer: string
     date: string
+    actingAs?: Designation
   }
   status: 'In Progress' | 'Approved' | 'Rejected'
+  rejectionReason?: string
+  approvedDate?: string
+  certificateNumber?: string
   createdAt: string
   updatedAt: string
 }
@@ -236,10 +273,25 @@ export interface SubdivisionLink {
   id: string
   parentPropertyId: string
   childPropertyId: string
+  childAssessmentNumber: string
   surveyPlanNumber: string
   deedNumber: string
   splitRule: string
   arrearsSplitPercentage: number
+  allocatedArrears: number
+  createdDate: string
+}
+
+export interface AmalgamationLink {
+  id: string
+  parentPropertyIds: string[]
+  amalgamatedPropertyId: string
+  amalgamatedAssessmentNumber: string
+  surveyPlanNumber: string
+  surveyorName?: string
+  deedNumber: string
+  totalArrearsTransferred: number
+  consolidatedAssessedValue: number
   createdDate: string
 }
 
@@ -249,8 +301,10 @@ export interface ReliefRecord {
   type: 'Poverty' | 'ClosedBusiness'
   percentage: number
   effectiveYear: number
+  startDate: string
   expiryDate: string
   approvedBy: string
+  actingAs?: Designation
   reason: string
 }
 
@@ -268,12 +322,103 @@ export interface Notice {
 
 export interface AuditEntry {
   id: string
-  entityType: 'Property' | 'Warrant' | 'Payment' | 'Reconciliation' | 'Ownership' | 'Valuation' | 'ATD' | 'Settings'
+  entityType: 'Property' | 'Warrant' | 'Payment' | 'Reconciliation' | 'Ownership' | 'Valuation' | 'ATD' | 'Settings' | 'Subdivision' | 'Notice'
   entityId: string
   action: string
   performedBy: string
+  actingAs: Designation
   timestamp: string
   details: string | Record<string, unknown>
+}
+
+export interface PropertyUnit {
+  id: string
+  parentPropertyId: string
+  unitIdentifier: string
+  description: string
+  currentOwner: Owner
+  annualAssessedValue: number
+  dues: DueQuarter[]
+  status: PropertyPaymentStatus
+}
+
+export interface PropertySubmissionEvent {
+  id: string
+  timestamp: string
+  actor: string
+  actingAs: Designation
+  action: 'DRAFT_CREATED' | 'SUBMITTED' | 'SENT_BACK' | 'APPROVED'
+  message?: string
+}
+
+export type PropertySubmissionPurpose =
+  | 'NEW_PROPERTY'
+  | 'OWNERSHIP_CHANGE'
+  | 'DESCRIPTION_CHANGE'
+
+export interface PropertySubmission {
+  id: string
+  propertyId: string
+  assessmentNumber: string
+  propertyNumber: string
+  description: string
+  propertyType: PropertyType
+  annualAssessedValue: number
+  zoneId: string
+  wardId: string
+  roadId: string
+  ownerName: string
+  ownerNic: string
+  ownerMobile: string
+  postalAddress: string
+  latitude: number
+  longitude: number
+  status: PropertyApprovalStatus
+  submittedBy: string
+  submittedAt: string
+  daysWaiting: number
+  lastMessage?: string
+  reviewHistory: PropertySubmissionEvent[]
+  warnings?: string[]
+  attachments?: { id: string; name: string; type: string }[]
+  documents?: SubmissionDocument[]
+  currentPhase?: string
+  approvingOfficer?: string
+  submissionType?: PropertySubmissionPurpose
+}
+
+export interface SubmissionDocument {
+  id: string
+  name: string
+  type: string
+  assignedOfficer: string
+  uploadedAt: string
+  uploadedBy?: string
+  status: 'PENDING' | 'APPROVED' | 'HAS_ISSUE'
+  officerComment?: string
+  fileSize?: string
+  fileUrl?: string
+}
+
+export interface OnlinePaymentAttempt {
+  id: string
+  propertyId: string
+  assessmentNumber: string
+  nic: string
+  customerName: string
+  quarterType: 'FULL_YEAR' | 'QUARTERLY'
+  selectedQuarters: number[]
+  totalPayable: number
+  baseDue: number
+  arrears: number
+  discount: number
+  paymentMethod: 'CARD' | 'LANKA_QR' | 'BANK_APP' | 'GOV_PAY' | 'ONLINE_BANKING'
+  status: 'INITIATED' | 'SUCCESS' | 'FAILED' | 'TIMEOUT'
+  timestamp: string
+  transactionRef: string
+  receiptNumber?: string
+  smsSent: boolean
+  emailSent: boolean
 }
 
 export interface Property {
@@ -296,6 +441,16 @@ export interface Property {
   relief?: ReliefRecord
   subdivisionParentId?: string
   subdivisionChildIds?: string[]
+  amalgamatedParentIds?: string[]
+  ownerHistory?: OwnershipRecord[]
+  approvalStatus?: PropertyApprovalStatus
+  submittedBy?: string
+  submittedAt?: string
+  approvedBy?: string
+  approvedAt?: string
+  sendBackReason?: string
+  units?: PropertyUnit[]
+  attachments?: { id: string; name: string; type: string }[]
   createdAt: string
   updatedAt: string
 }
@@ -319,6 +474,15 @@ export interface VaripanamSettings {
     Q3: string // "09-30"
     Q4: string // "12-31"
   }
+  reliefRules: {
+    povertyPercentage: number // 100 -> Rs 0
+    povertyDurationMonths: number // 12
+    closedBusinessPercentage: number // 50
+    closedBusinessDurationMonths: number // 12
+  }
+  atdNumberMode: 'MANUAL' | 'AUTO'
+  approverDesignations: Designation[]
+  historicalSearchRetentionYears: number
   mapCentre: [number, number] // [6.8415, 80.0035] Homagama
   defaultZoom: number // 14
   sabhaBoundaryGeoJson?: {
@@ -331,6 +495,9 @@ export interface VaripanamSettings {
     warrantPenaltyConfirmed: boolean
     subdivisionRuleConfirmed: boolean
     dueDatesConfirmed: boolean
+    atdNumberModeConfirmed: boolean
+    approverDesignationsConfirmed: boolean
+    dueSoonWindowConfirmed: boolean
   }
 }
 
