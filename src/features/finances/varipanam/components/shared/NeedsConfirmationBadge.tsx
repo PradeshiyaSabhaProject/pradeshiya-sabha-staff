@@ -1,26 +1,31 @@
 import React from 'react'
+import { AlertCircle } from 'lucide-react'
 
 interface NeedsConfirmationBadgeProps {
   label?: string
+  settingKey?: string
   tooltip?: string
   className?: string
 }
 
 export const NeedsConfirmationBadge: React.FC<NeedsConfirmationBadgeProps> = ({
-  label = 'Needs confirmation',
-  tooltip = 'This rate or rule is subject to municipal council gazette confirmation and is configurable in Settings.',
+  label = '',
+  settingKey,
+  tooltip,
   className = '',
 }) => {
+  const titleText =
+    tooltip ||
+    (settingKey
+      ? `Policy rate or statutory workflow rule requires council gazette confirmation. Configurable under Varipanam Settings (${settingKey}).`
+      : 'Statutory policy rule requires formal council gazette confirmation. Configurable in Settings.')
+
   return (
     <span
-      title={tooltip}
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-300 cursor-help select-none ${className}`}
+      title={titleText}
+      className={`inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full shadow-xs cursor-help ${className}`}
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3 text-amber-600">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
+      <AlertCircle className="w-3 h-3 text-amber-600 shrink-0" />
       <span>{label}</span>
     </span>
   )

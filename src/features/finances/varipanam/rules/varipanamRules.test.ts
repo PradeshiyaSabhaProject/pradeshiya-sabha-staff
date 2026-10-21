@@ -4,6 +4,8 @@ import {
   computeStatus,
   validateNewProperty,
   recordLocationChange,
+  calculateReliefTax,
+  distributeSubdivisionArrears,
 } from './varipanamRules'
 import type { Property, VaripanamSettings, DueQuarter } from '../types/varipanam'
 import { DEFAULT_VARIPANAM_SETTINGS } from '../mock/varipanamMockData'
@@ -241,6 +243,42 @@ assertEquals(historyEntry.newLongitude, 80.0042, '5.B: New longitude is recorded
 assertEquals(historyEntry.reason, 'Survey boundary verified by Municipal Cartographer', '5.C: Change reason is preserved')
 assertEquals(updatedProperty.latitude, 6.8435, '5.D: Property coordinates updated to new position')
 assert(propBeforeLocationChange.latitude === 6.8421, '5.E: Original property object was not mutated directly')
+
+// ── Test Case 6: Commercial Property Tax Rate Calculation ──────────────────
+console.log('\nTest 6: Commercial Property Tax Calculation (15% rate)')
+const commCalc = calculateTax(1000000, 'Commercial', settings)
+assertEquals(commCalc.effectiveRate, 15, '6.A: Commercial effective rate is 15%')
+assertEquals(commCalc.annualTax, 150000, '6.B: Calculates annual tax of Rs. 150,000 for 1,000,000 assessed value')
+assertEquals(commCalc.quarterlyTax, 37500, '6.C: Calculates quarterly tax of Rs. 37,500')
+
+// ── Test Case 7: Valuation Relief Remissions (Poverty & Closed Business) ─────
+console.log('\nTest 7: Statutory Valuation Relief Remissions')
+const povertyRelief = calculateReliefTax(20000, 'Poverty')
+assertEquals(povertyRelief.netTax, 0, '7.A: Poverty relief grants 100% remission (net tax = Rs. 0)')
+assertEquals(povertyRelief.reliefAmount, 20000, '7.B: Poverty relief remits full Rs. 20,000')
+
+const businessClosedRelief = calculateReliefTax(20000, 'ClosedBusiness')
+assertEquals(businessClosedRelief.netTax, 10000, '7.C: Closed business grants 50% remission (net tax = Rs. 10,000)')
+assertEquals(businessClosedRelief.reliefAmount, 10000, '7.D: Closed business relief remits Rs. 10,000')
+
+// ── Test Case 8: Subdivision Arrears Distribution Rules ─────────────────────
+console.log('\nTest 8: Subdivision Arrears Distribution')
+const childPlots = [
+  { id: 'child-1', assessedValue: 600000 },
+  { id: 'child-2', assessedValue: 400000 },
+]
+
+const equalSplit = distributeSubdivisionArrears(10000, childPlots, 'EQUAL_SPLIT')
+assertEquals(equalSplit['child-1'], 5000, '8.A: Equal split divides 50% (Rs. 5,000) to child-1')
+assertEquals(equalSplit['child-2'], 5000, '8.B: Equal split divides 50% (Rs. 5,000) to child-2')
+
+const propSplit = distributeSubdivisionArrears(10000, childPlots, 'VALUE_PROPORTIONAL')
+assertEquals(propSplit['child-1'], 6000, '8.C: Proportional split allocates 60% (Rs. 6,000) based on assessed value')
+assertEquals(propSplit['child-2'], 4000, '8.D: Proportional split allocates 40% (Rs. 4,000) based on assessed value')
+
+const primarySplit = distributeSubdivisionArrears(10000, childPlots, 'ASSIGN_TO_PRIMARY')
+assertEquals(primarySplit['child-1'], 10000, '8.E: Assign to primary allocates 100% (Rs. 10,000) to primary unit')
+assertEquals(primarySplit['child-2'], 0, '8.F: Assign to primary allocates Rs. 0 to secondary unit')
 
 console.log('\n------------------------------------------------------')
 console.log(`TEST SUMMARY: ${passedCount} PASSED, ${failedCount} FAILED`)

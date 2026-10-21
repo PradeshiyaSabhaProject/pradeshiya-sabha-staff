@@ -3,6 +3,8 @@ import L from 'leaflet'
 import type { Property, VaripanamSettings, Road } from '../../types/varipanam'
 import { formatLKR } from '../../utils/formatters'
 
+import 'leaflet/dist/leaflet.css'
+
 interface VaripanamMapProps {
   properties: Property[]
   settings: VaripanamSettings
@@ -19,19 +21,21 @@ interface VaripanamMapProps {
 export const VaripanamMap: React.FC<VaripanamMapProps> = ({
   properties,
   settings,
+  roads = [],
   selectedProperty,
   onSelectProperty,
   onOpenProperty,
   isPickMode,
   pickedCoords,
   onMapClickCoord,
-  heightClass = 'h-[580px]',
+  heightClass = 'h-[520px]',
 }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const markersLayerGroupRef = useRef<L.LayerGroup | null>(null)
   const boundaryLayerRef = useRef<L.Polygon | null>(null)
   const pickMarkerRef = useRef<L.Marker | null>(null)
+  const markersMapRef = useRef<Map<string, L.Marker>>(new Map())
 
   // Status counts for legend
   const counts = {
@@ -86,7 +90,14 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
 
   // 1. Initialize Map Instance
   useEffect(() => {
-    if (!mapContainerRef.current || mapInstanceRef.current) return
+    if (!mapContainerRef.current) return
+    if (mapInstanceRef.current) return
+
+    // Clean up any lingering leaflet id
+    const containerEl = mapContainerRef.current as HTMLDivElement & { _leaflet_id?: number | null }
+    if (containerEl._leaflet_id) {
+      containerEl._leaflet_id = null
+    }
 
     const initialCenter = settings.mapCentre || [6.8415, 80.0035]
     const initialZoom = settings.defaultZoom || 14
@@ -97,14 +108,17 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
       zoomControl: false,
     })
 
-    // OpenStreetMap standard tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors | Homagama Pradeshiya Sabha GIS',
+    // High clarity Street Map tiles (reliable, unblocked, no API key required)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy; Esri &mdash; Homagama PS GIS Cadastre',
       maxZoom: 19,
     }).addTo(map)
 
     // Zoom controls at top right
     L.control.zoom({ position: 'topright' }).addTo(map)
+
+    // Scale bar at bottom right
+    L.control.scale({ position: 'bottomright', imperial: false }).addTo(map)
 
     // Markers layer group
     const markersGroup = L.layerGroup().addTo(map)
@@ -120,18 +134,33 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
         weight: 2.5,
         dashArray: '5, 8',
         fillColor: '#A31736',
-        fillOpacity: 0.04,
+        fillOpacity: 0.05,
       }).addTo(map)
       boundaryLayerRef.current = boundaryPoly
     }
 
     mapInstanceRef.current = map
 
+    // Ensure map tiles calculate correct pixel bounds
+    const resizeObserver = new ResizeObserver(() => {
+      map.invalidateSize()
+    })
+    resizeObserver.observe(mapContainerRef.current)
+
+    const timer1 = setTimeout(() => map.invalidateSize(), 100)
+    const timer2 = setTimeout(() => map.invalidateSize(), 300)
+    const timer3 = setTimeout(() => map.invalidateSize(), 600)
+
     return () => {
+      resizeObserver.disconnect()
+      clearTimeout(timer1)
+      clearTimeout(timer2)
+      clearTimeout(timer3)
       map.remove()
       mapInstanceRef.current = null
     }
-  }, [settings])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // 2. Handle Map Click in Pick Mode
   useEffect(() => {
@@ -193,59 +222,95 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
     }
   }, [isPickMode, pickedCoords, onMapClickCoord])
 
-  // 4. Update Property Markers on Filter or Selection Changes
+  // 4. Update Property Markers on Filter Changes
   useEffect(() => {
     const map = mapInstanceRef.current
     const markersGroup = markersLayerGroupRef.current
     if (!map || !markersGroup) return
 
     markersGroup.clearLayers()
+    markersMapRef.current.clear()
 
     properties.forEach((prop) => {
-      const isSelected = selectedProperty?.id === prop.id
-      const icon = createMarkerIcon(prop.status, isSelected)
+      const icon = createMarkerIcon(prop.status, false)
 
       const marker = L.marker([prop.latitude, prop.longitude], {
         icon,
-        zIndexOffset: isSelected ? 1000 : 100,
+        zIndexOffset: 100,
       })
 
-      // Calculate outstanding amount due
+      // Calculate outstanding amount due & arrears
       const amountDue = prop.dues.reduce((sum, d) => sum + (d.amount - d.paidAmount), 0)
+      const arrearsAmount = prop.dues
+        .filter((d) => d.status === 'Overdue' || d.status === 'Warrant')
+        .reduce((sum, d) => sum + (d.amount - d.paidAmount), 0)
+
+      const road = roads.find((r) => r.id === prop.roadId)
+
+      let badgeBg = '#ECFDF5'
+      let badgeColor = '#065F46'
+      let badgeBorder = '#A7F3D0'
+
+      if (prop.status === 'Due soon') {
+        badgeBg = '#FFFBEB'
+        badgeColor = '#92400E'
+        badgeBorder = '#FDE68A'
+      } else if (prop.status === 'Overdue') {
+        badgeBg = '#FEF2F2'
+        badgeColor = '#991B1B'
+        badgeBorder = '#FECACA'
+      } else if (prop.status === 'Warrant issued') {
+        badgeBg = '#FAF5FF'
+        badgeColor = '#6B21A8'
+        badgeBorder = '#E9D5FF'
+      }
 
       const popupContent = document.createElement('div')
       popupContent.className = 'p-1 text-xs text-gray-800'
       popupContent.innerHTML = `
-        <div style="min-width: 200px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
-            <span style="font-weight: 800; font-size: 14px; color: #111827;">${prop.assessmentNumber}</span>
-            <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 9999px; background: ${
-              prop.status === 'Paid'
-                ? '#ECFDF5; color: #065F46;'
-                : prop.status === 'Due soon'
-                ? '#FFFBEB; color: #92400E;'
-                : prop.status === 'Overdue'
-                ? '#FEF2F2; color: #991B1B;'
-                : '#FAF5FF; color: #6B21A8;'
-            }">${prop.status}</span>
+        <div style="min-width: 250px; font-family: inherit;">
+          <div style="display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #E5E7EB; padding-bottom: 8px; margin-bottom: 8px;">
+            <div>
+              <span style="font-weight: 900; font-size: 15px; color: #111827; letter-spacing: -0.02em;">${prop.assessmentNumber}</span>
+              <div style="font-size: 11px; font-weight: 600; color: #4B5563;">${prop.propertyNumber}</div>
+            </div>
+            <span style="font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder};">${prop.status}</span>
           </div>
-          <p style="margin: 0 0 2px 0; color: #4B5563; font-weight: 600;">${prop.currentOwner.name}</p>
-          <p style="margin: 0 0 6px 0; color: #9CA3AF; font-size: 11px;">${prop.propertyNumber} • ${prop.description}</p>
-          <div style="border-top: 1px solid #E5E7EB; padding-top: 6px; margin-top: 6px; display: flex; justify-content: space-between; align-items: center;">
-            <span style="color: #6B7280; font-size: 11px;">Amount Due:</span>
-            <strong style="color: ${amountDue > 0 ? '#DC2626' : '#059669'}; font-size: 13px;">${formatLKR(
-        amountDue
-      )}</strong>
+
+          <div style="margin-bottom: 8px; font-size: 11.5px; line-height: 1.45;">
+            <div style="font-weight: 700; color: #1F2937;">👤 ${prop.currentOwner.name}</div>
+            <div style="color: #4B5563;">NIC: <span style="font-family: monospace; font-weight: 600;">${prop.currentOwner.nic}</span> | 📞 ${prop.currentOwner.mobile}</div>
+            <div style="color: #6B7280; margin-top: 2px;">📍 ${road?.name || 'Assigned Road'} • <span style="color: #374151; font-weight: 600;">${prop.propertyType}</span></div>
           </div>
-          <button id="btn-open-prop-${prop.id}" style="width: 100%; margin-top: 10px; padding: 6px 12px; background: #A31736; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
-            <span>Open Property 360</span>
+
+          <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 11px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+              <span style="color: #6B7280;">Annual Assessed Value:</span>
+              <span style="font-weight: 700; color: #1F2937;">${formatLKR(prop.annualAssessedValue)}</span>
+            </div>
+            ${
+              arrearsAmount > 0
+                ? `<div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                     <span style="color: #DC2626; font-weight: 600;">Arrears Debt:</span>
+                     <span style="font-weight: 800; color: #DC2626;">${formatLKR(arrearsAmount)}</span>
+                   </div>`
+                : ''
+            }
+            <div style="display: flex; justify-content: space-between; border-top: 1px dashed #D1D5DB; padding-top: 4px; margin-top: 3px;">
+              <span style="color: #111827; font-weight: 700;">Total Outstanding:</span>
+              <span style="font-weight: 900; color: ${amountDue > 0 ? '#DC2626' : '#059669'}; font-size: 12px;">${formatLKR(amountDue)}</span>
+            </div>
+          </div>
+
+          <button id="btn-open-prop-${prop.id}" style="width: 100%; padding: 8px 12px; background: #A31736; color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+            <span>Open Property 360 Dossier</span>
             <span>→</span>
           </button>
         </div>
       `
 
       // Hook up button in popup
-      marker.bindPopup(popupContent, { maxWidth: 280 })
+      marker.bindPopup(popupContent, { maxWidth: 320, minWidth: 240 })
       marker.on('popupopen', () => {
         const btn = document.getElementById(`btn-open-prop-${prop.id}`)
         if (btn) {
@@ -258,30 +323,52 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
 
       marker.on('click', () => {
         onSelectProperty(prop)
+        setTimeout(() => {
+          marker.openPopup()
+        }, 50)
       })
 
       marker.addTo(markersGroup)
+      markersMapRef.current.set(prop.id, marker)
     })
-  }, [properties, selectedProperty, onSelectProperty, onOpenProperty])
+  }, [properties, roads, onOpenProperty, onSelectProperty])
 
-  // 5. Pan smoothly to selected property when selected from list
+  // 5. When selected property changes: highlight marker, pan map, and open its popup
   useEffect(() => {
     const map = mapInstanceRef.current
-    if (!map || !selectedProperty) return
+    if (!map) return
 
-    map.flyTo([selectedProperty.latitude, selectedProperty.longitude], 16, {
-      duration: 1.2,
-      easeLinearity: 0.25,
+    // Update marker icon states (selected vs unselected)
+    markersMapRef.current.forEach((marker, id) => {
+      const prop = properties.find((p) => p.id === id)
+      if (prop) {
+        const isSelected = selectedProperty?.id === id
+        marker.setIcon(createMarkerIcon(prop.status, isSelected))
+        marker.setZIndexOffset(isSelected ? 1000 : 100)
+      }
     })
-  }, [selectedProperty])
+
+    if (!selectedProperty) return
+
+    const selectedMarker = markersMapRef.current.get(selectedProperty.id)
+    if (selectedMarker) {
+      map.flyTo([selectedProperty.latitude, selectedProperty.longitude], 16, {
+        duration: 0.8,
+        easeLinearity: 0.25,
+      })
+      setTimeout(() => {
+        selectedMarker.openPopup()
+      }, 350)
+    }
+  }, [selectedProperty, properties])
 
   return (
-    <div className="relative rounded-2xl border border-gray-200 shadow-xs overflow-hidden bg-white">
+    <div className={`relative w-full ${heightClass} min-h-[500px] overflow-hidden bg-slate-100`}>
       {/* Map Container */}
-      <div ref={mapContainerRef} className={`w-full ${heightClass} z-10`} />
+      <div ref={mapContainerRef} className="w-full h-full min-h-[500px] z-10" />
 
       {/* Floating Status Legend Bar */}
-      <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md border border-gray-200/80 rounded-xl px-3.5 py-2 shadow-lg flex flex-wrap items-center gap-3 text-xs select-none">
+      <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md border border-gray-200/80 rounded-xl px-3 py-1.5 shadow-lg flex flex-wrap items-center gap-2.5 text-xs select-none">
         <span className="font-bold text-gray-500 uppercase tracking-wider text-[10px]">Tax Status:</span>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs" />
@@ -299,6 +386,17 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
           <span className="w-2.5 h-2.5 rounded-full bg-purple-600 shadow-xs" />
           <span className="text-purple-900 font-bold">Warrant ({counts.warrant})</span>
         </div>
+        <button
+          type="button"
+          onClick={() => {
+            if (mapInstanceRef.current) {
+              mapInstanceRef.current.flyTo(settings.mapCentre || [6.8415, 80.0035], settings.defaultZoom || 14)
+            }
+          }}
+          className="ml-2 px-2 py-0.5 text-[10px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-300 transition-colors cursor-pointer"
+        >
+          Reset View
+        </button>
       </div>
 
       {/* Pick Mode Active Banner */}

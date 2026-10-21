@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import type {
   Zone,
   Ward,
@@ -32,9 +32,9 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
   onCreateRoad,
 }) => {
   // Form state
-  const [zoneId, setZoneId] = useState<string>('')
-  const [wardId, setWardId] = useState<string>('')
-  const [roadId, setRoadId] = useState<string>('')
+  const [zoneId, setZoneId] = useState<string>(() => zones[0]?.id || '')
+  const [wardId, setWardId] = useState<string>(() => wards.find((w) => w.zoneId === zones[0]?.id)?.id || '')
+  const [roadId, setRoadId] = useState<string>(() => roads.find((r) => r.zoneId === zones[0]?.id)?.id || '')
   const [assessmentNumber, setAssessmentNumber] = useState<string>('')
   const [propertyNumber, setPropertyNumber] = useState<string>('')
   const [description, setDescription] = useState<string>('')
@@ -48,8 +48,15 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
   const [postalAddress, setPostalAddress] = useState<string>('')
 
   // Coordinates
-  const [latitude, setLatitude] = useState<number>(initialCoords?.latitude || 6.8415)
-  const [longitude, setLongitude] = useState<number>(initialCoords?.longitude || 80.0035)
+  const [latitude, setLatitude] = useState<number>(() => initialCoords?.latitude ?? 6.8415)
+  const [longitude, setLongitude] = useState<number>(() => initialCoords?.longitude ?? 80.0035)
+  const [prevCoords, setPrevCoords] = useState(initialCoords)
+
+  if (initialCoords && initialCoords !== prevCoords) {
+    setPrevCoords(initialCoords)
+    setLatitude(initialCoords.latitude)
+    setLongitude(initialCoords.longitude)
+  }
 
   // Modals & Warnings
   const [showNewRoadModal, setShowNewRoadModal] = useState<boolean>(false)
@@ -59,44 +66,31 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
 
   const [validationError, setValidationError] = useState<string | null>(null)
   const [proximityWarning, setProximityWarning] = useState<string | null>(null)
-  const [boundaryWarning, setBoundaryWarning] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
-  // Sync initial coordinates when picked
-  useEffect(() => {
-    if (initialCoords) {
-      setLatitude(initialCoords.latitude)
-      setLongitude(initialCoords.longitude)
-
-      // Boundary proximity check
-      if (initialCoords.latitude < 6.82 || initialCoords.latitude > 6.865 || initialCoords.longitude < 79.98 || initialCoords.longitude > 80.035) {
-        setBoundaryWarning('Notice: This coordinate lies near or outside the standard Homagama Sabha boundary polygon.')
-      } else {
-        setBoundaryWarning(null)
-      }
-    }
-  }, [initialCoords])
-
-  // Default initial zone selection
-  useEffect(() => {
-    if (!zoneId && zones.length > 0) {
-      setZoneId(zones[0].id)
-    }
-  }, [zones, zoneId])
+  // Boundary check (derived)
+  const boundaryWarning =
+    latitude < 6.82 || latitude > 6.865 || longitude < 79.98 || longitude > 80.035
+      ? 'Notice: This coordinate lies near or outside the standard Homagama Sabha boundary polygon.'
+      : null
 
   // Filter wards and roads cascading by selected zone
   const visibleWards = wards.filter((w) => w.zoneId === zoneId)
-  const visibleRoads = roads.filter((r) => r.zoneId === zoneId)
+  const visibleRoads = roads.filter((r) => r.zoneId === zoneId && (!wardId || r.wardId === wardId))
 
-  // Default ward/road when zone changes
-  useEffect(() => {
-    if (visibleWards.length > 0 && (!wardId || !visibleWards.some((w) => w.id === wardId))) {
-      setWardId(visibleWards[0].id)
-    }
-    if (visibleRoads.length > 0 && (!roadId || !visibleRoads.some((r) => r.id === roadId))) {
-      setRoadId(visibleRoads[0].id)
-    }
-  }, [zoneId, visibleWards, visibleRoads, wardId, roadId])
+  const handleZoneChange = (newZone: string) => {
+    setZoneId(newZone)
+    const firstWard = wards.find((w) => w.zoneId === newZone)?.id || ''
+    setWardId(firstWard)
+    const firstRoad = roads.find((r) => r.zoneId === newZone && (!firstWard || r.wardId === firstWard))?.id || ''
+    setRoadId(firstRoad)
+  }
+
+  const handleWardChange = (newWard: string) => {
+    setWardId(newWard)
+    const firstRoad = roads.find((r) => r.zoneId === zoneId && (!newWard || r.wardId === newWard))?.id || ''
+    setRoadId(firstRoad)
+  }
 
   if (!isOpen) return null
 
@@ -127,14 +121,21 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
 
   // Handle Create New Road under selected zone
   const handleCreateRoad = async () => {
-    if (!newRoadName.trim() || !newRoadCode.trim()) return
+    const trimmedName = newRoadName.trim()
+    if (!trimmedName) return
+    const targetZone = zoneId || zones[0]?.id || ''
+    const targetWard = wardId || visibleWards[0]?.id || wards.find((w) => w.zoneId === targetZone)?.id || ''
+    const code = newRoadCode.trim().toUpperCase() || `RD-${trimmedName.replace(/[^a-zA-Z0-9]/g, '').slice(0, 4).toUpperCase()}`
+
     try {
       const created = await onCreateRoad({
-        zoneId,
-        wardId: wardId || (visibleWards[0]?.id ?? 'ward-01'),
-        name: newRoadName.trim(),
-        code: newRoadCode.trim().toUpperCase(),
+        zoneId: targetZone,
+        wardId: targetWard,
+        name: trimmedName,
+        code,
       })
+      setZoneId(targetZone)
+      if (targetWard) setWardId(targetWard)
       setRoadId(created.id)
       setShowNewRoadModal(false)
       setNewRoadName('')
@@ -307,7 +308,7 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
                 <label className="block text-xs font-semibold text-gray-700 mb-1">Zone *</label>
                 <select
                   value={zoneId}
-                  onChange={(e) => setZoneId(e.target.value)}
+                  onChange={(e) => handleZoneChange(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#A31736]"
                 >
                   {zones.map((z) => (
@@ -322,7 +323,7 @@ export const AddPropertyDrawer: React.FC<AddPropertyDrawerProps> = ({
                 <label className="block text-xs font-semibold text-gray-700 mb-1">Ward *</label>
                 <select
                   value={wardId}
-                  onChange={(e) => setWardId(e.target.value)}
+                  onChange={(e) => handleWardChange(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#A31736]"
                 >
                   {visibleWards.map((w) => (
