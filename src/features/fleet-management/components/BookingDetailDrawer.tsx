@@ -30,6 +30,7 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
   onOpenAction,
 }) => {
   const [activeTab, setActiveTab] = useState<'details' | 'fee' | 'tracking' | 'timeline' | 'notifications'>('details')
+  const [clockNow, setClockNow] = useState(() => Date.now())
 
   // Live GPS simulation state (drawer-local interval)
   const [gpsProgress, setGpsProgress] = useState<number>(0.35) // 0 to 1 between depot and site
@@ -49,7 +50,10 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
     setPrevBookingId(booking?.id ?? null)
     if (booking) {
       setActiveTab(
-        booking.status === 'En Route' || booking.status === 'Service In Progress'
+        booking.status === 'Vehicle Assigned' ||
+        booking.status === 'En Route' ||
+        booking.status === 'Service In Progress' ||
+        booking.status === 'In Transit to Plant'
           ? 'tracking'
           : 'details'
       )
@@ -71,6 +75,13 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
 
     return () => clearInterval(interval)
   }, [booking, activeTab])
+
+  useEffect(() => {
+    if (!booking?.paymentDueBy) return
+
+    const interval = setInterval(() => setClockNow(Date.now()), 1000)
+    return () => clearInterval(interval)
+  }, [booking?.id, booking?.paymentDueBy])
 
   // Interpolated GPS position between depot and job site
   const vehicleGpsPosition = useMemo((): [number, number] => {
@@ -178,7 +189,9 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
   if (!booking || !cfg) return null
 
   // 24h countdown info
-  const paymentCountdown = booking.paymentDueBy ? paymentTimeRemaining(booking.paymentDueBy) : null
+  const paymentCountdown = booking.paymentDueBy
+    ? paymentTimeRemaining(booking.paymentDueBy, clockNow)
+    : null
   const actionText = nextActionLabel(booking)
 
   return (
@@ -274,7 +287,10 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
               }`}
             >
               <span>Live Tracking</span>
-              {(booking.status === 'En Route' || booking.status === 'Service In Progress') && (
+              {(booking.status === 'Vehicle Assigned' ||
+                booking.status === 'En Route' ||
+                booking.status === 'Service In Progress' ||
+                booking.status === 'In Transit to Plant') && (
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               )}
             </button>
@@ -561,7 +577,7 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
                     Simulated GPS Telemetry & Site Navigation
                   </h4>
                   <p className="text-[11px] text-gray-500">
-                    Live GPS tracker connecting driver bowser WP {booking.assignedVehicleReg || 'GB-5544'}
+                    Live GPS tracker connecting driver bowser {booking.assignedVehicleReg || 'WP GB-5544'}
                   </p>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5">

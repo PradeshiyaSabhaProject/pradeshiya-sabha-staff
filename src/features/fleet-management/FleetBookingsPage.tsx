@@ -95,6 +95,8 @@ export const FleetBookingsPage: React.FC = () => {
     vehicles,
     drivers,
     bookingStats,
+    resetDemoData,
+    seedAgeHours,
     createBooking,
     approveBooking,
     rejectBooking,
@@ -118,9 +120,16 @@ export const FleetBookingsPage: React.FC = () => {
   const [assignBooking, setAssignBooking] = useState<BookingRecord | null>(null)
   const [progressBooking, setProgressBooking] = useState<BookingRecord | null>(null)
   const [closeoutBookingRecord, setCloseoutBookingRecord] = useState<BookingRecord | null>(null)
+  const [isSeedNoticeDismissed, setIsSeedNoticeDismissed] = useState(false)
 
   // ── Filter logic ─────────────────────────────────────────────────────────────
-  const filtered = bookings.filter((b) => {
+  const filtered = [...bookings]
+    .sort((first, second) => {
+      const createdDifference =
+        Date.parse(second.timeline[0]?.at ?? '') - Date.parse(first.timeline[0]?.at ?? '')
+      return createdDifference || second.referenceNumber.localeCompare(first.referenceNumber)
+    })
+    .filter((b) => {
     const q = searchQuery.toLowerCase()
     const matchSearch =
       !q ||
@@ -134,7 +143,7 @@ export const FleetBookingsPage: React.FC = () => {
     const matchSource = sourceFilter === 'All' || b.source === sourceFilter
 
     return matchSearch && matchService && matchStatus && matchSource
-  })
+    })
 
   const resetFilters = useCallback(() => {
     setSearchQuery('')
@@ -149,6 +158,12 @@ export const FleetBookingsPage: React.FC = () => {
     statusFilter !== 'All',
     sourceFilter !== 'All',
   ].filter(Boolean).length
+
+  /** Resets all persisted fleet demo collections and restores the current seed. */
+  const handleResetDemoData = () => {
+    resetDemoData()
+    setIsSeedNoticeDismissed(false)
+  }
 
   /** Dispatches action button click to the appropriate workflow modal. */
   const handleOpenAction = (booking: BookingRecord) => {
@@ -201,13 +216,34 @@ export const FleetBookingsPage: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsNewBookingOpen(true)}
-            className="flex items-center gap-2 bg-[#A31736] hover:bg-[#85122b] text-white px-4 py-2 rounded text-xs sm:text-sm font-semibold transition-all shadow-sm cursor-pointer"
+            className="bg-[#A31736] hover:bg-[#801028] text-white text-xs font-semibold px-4 py-2.5 rounded shadow-sm transition-all flex items-center gap-2 cursor-pointer uppercase tracking-wider"
           >
             <PlusIcon />
             <span>New Booking</span>
           </button>
+          <button
+            type="button"
+            onClick={handleResetDemoData}
+            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
+          >
+            Reset demo data
+          </button>
         </div>
       </div>
+
+      {seedAgeHours >= 12 && !isSeedNoticeDismissed && (
+        <div className="flex items-center justify-between gap-3 rounded border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-900" role="status">
+          <p>Demo data was created {seedAgeHours} hours ago, so payment countdowns may have expired.</p>
+          <div className="flex shrink-0 items-center gap-2">
+            <button type="button" onClick={handleResetDemoData} className="font-bold underline">
+              Reset
+            </button>
+            <button type="button" onClick={() => setIsSeedNoticeDismissed(true)} aria-label="Dismiss demo data notice" className="font-bold">
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* ── KPI Summary Cards ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -247,6 +283,7 @@ export const FleetBookingsPage: React.FC = () => {
         <SummaryCard
           label="Completed"
           count={bookingStats.completed}
+          secondaryLabel={`Pending Closeout: ${bookingStats.pendingCloseout}`}
           color="green"
           active={statusFilter === 'Completed'}
           onClick={() => setStatusFilter((prev) => (prev === 'Completed' ? 'All' : 'Completed'))}
@@ -345,7 +382,7 @@ export const FleetBookingsPage: React.FC = () => {
             <strong className="text-gray-800">{bookings.length}</strong> bookings
           </span>
           <span className="text-[11px] text-gray-400">
-            Click any row to open full dossier • Action buttons open step workflow
+            Use the reference number or chevron to open a dossier • Action buttons open step workflows
           </span>
         </div>
       </div>
@@ -387,14 +424,17 @@ export const FleetBookingsPage: React.FC = () => {
                   const isAwaiting = b.status === 'Awaiting Payment'
 
                   return (
-                    <tr
-                      key={b.id}
-                      onClick={() => setSelectedBooking(b)}
-                      className="hover:bg-rose-50/30 transition-colors cursor-pointer group"
-                    >
+                    <tr key={b.id} className="hover:bg-rose-50/30 transition-colors group">
                       {/* Ref */}
                       <td className="py-3.5 px-4 font-mono font-bold text-[#A31736] whitespace-nowrap">
-                        {b.referenceNumber}
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBooking(b)}
+                          aria-label={`Open dossier for ${b.referenceNumber}`}
+                          className="font-mono font-bold text-[#A31736] hover:underline cursor-pointer"
+                        >
+                          {b.referenceNumber}
+                        </button>
                       </td>
 
                       {/* Service */}
@@ -435,7 +475,7 @@ export const FleetBookingsPage: React.FC = () => {
                       </td>
 
                       {/* Payment countdown / Action Button */}
-                      <td className="py-3.5 px-4 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-3.5 px-4 whitespace-nowrap">
                         {isAwaiting && b.paymentDueBy ? (
                           <div className="flex items-center gap-2">
                             <CountdownCell paymentDueBy={b.paymentDueBy} />
@@ -463,7 +503,14 @@ export const FleetBookingsPage: React.FC = () => {
 
                       {/* Row arrow */}
                       <td className="py-3.5 px-4 text-gray-400 group-hover:text-gray-600 transition-colors">
-                        <ChevronRightIcon />
+                        <button
+                          type="button"
+                          onClick={() => setSelectedBooking(b)}
+                          aria-label={`Open dossier for ${b.referenceNumber}`}
+                          className="cursor-pointer"
+                        >
+                          <ChevronRightIcon />
+                        </button>
                       </td>
                     </tr>
                   )
@@ -549,12 +596,13 @@ const COLOR_MAP = {
 interface SummaryCardProps {
   label: string
   count: number
+  secondaryLabel?: string
   color: keyof typeof COLOR_MAP
   active: boolean
   onClick: () => void
 }
 
-const SummaryCard: React.FC<SummaryCardProps> = ({ label, count, color, active, onClick }) => {
+const SummaryCard: React.FC<SummaryCardProps> = ({ label, count, secondaryLabel, color, active, onClick }) => {
   const c = COLOR_MAP[color]
   return (
     <button
@@ -574,6 +622,9 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ label, count, color, active, 
           </span>
         )}
       </div>
+      {secondaryLabel && (
+        <span className="mt-1 text-[10px] font-semibold text-amber-700">{secondaryLabel}</span>
+      )}
       <div className="mt-3">
         <p className={`text-3xl font-extrabold tracking-tight ${c.text}`}>{count}</p>
       </div>

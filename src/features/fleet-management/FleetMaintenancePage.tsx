@@ -10,7 +10,9 @@ export const FleetMaintenancePage: React.FC = () => {
     useState<VehicleRecord | null>(null)
 
   const inMaintenanceVehicles = vehicles.filter((v) => v.status === 'In Maintenance')
-  const availableOrActiveVehicles = vehicles.filter((v) => v.status !== 'In Maintenance')
+  const availableOrActiveVehicles = vehicles.filter(
+    (v) => v.status !== 'In Maintenance' && v.status !== 'On Mission'
+  )
 
   // Aggregate all maintenance logs across all vehicles
   const allLogs = vehicles.flatMap((v) =>
@@ -209,4 +211,3 @@ export const FleetMaintenancePage: React.FC = () => {
     </div>
   )
 }
-

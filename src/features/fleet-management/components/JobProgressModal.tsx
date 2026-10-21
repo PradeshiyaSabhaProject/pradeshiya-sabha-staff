@@ -240,10 +240,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
               </h4>
 
               <div>
-                <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                <label htmlFor="job-disposal-facility" className="block text-[11px] text-gray-600 mb-1 font-medium">
                   Treatment Plant Facility *
                 </label>
                 <select
+                  id="job-disposal-facility"
                   value={plantName}
                   onChange={(e) => setPlantName(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-medium"
@@ -262,10 +263,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
 
               <div className="grid grid-cols-3 gap-2.5">
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-weighbridge-ticket" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Ticket # *
                   </label>
                   <input
+                    id="job-weighbridge-ticket"
                     type="text"
                     required
                     value={weighbridgeTicketNo}
@@ -275,10 +277,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-disposal-volume" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Volume (L)
                   </label>
                   <input
+                    id="job-disposal-volume"
                     type="number"
                     min="100"
                     value={disposalVolumeLitres}
@@ -288,10 +291,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-disposal-weight" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Weight (kg)
                   </label>
                   <input
+                    id="job-disposal-weight"
                     type="number"
                     min="100"
                     value={disposalWeightKg}
@@ -311,10 +315,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
 
               <div className="grid grid-cols-3 gap-2.5">
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-flowmeter-start" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Meter Start (L)
                   </label>
                   <input
+                    id="job-flowmeter-start"
                     type="number"
                     value={flowmeterStart}
                     onChange={(e) => setFlowmeterStart(Number(e.target.value))}
@@ -323,10 +328,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-flowmeter-end" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Meter End (L)
                   </label>
                   <input
+                    id="job-flowmeter-end"
                     type="number"
                     value={flowmeterEnd}
                     onChange={(e) => setFlowmeterEnd(Number(e.target.value))}
@@ -335,9 +341,9 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <p className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Delivered (L)
-                  </label>
+                  </p>
                   <div className="w-full bg-blue-100/60 border border-blue-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-black text-blue-900">
                     {(flowmeterEnd - flowmeterStart).toLocaleString()} L
                   </div>
@@ -364,10 +370,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
           {/* Notes & Operator */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1 font-medium">
+              <label htmlFor="job-reporting-driver" className="block text-xs text-gray-500 mb-1 font-medium">
                 Reporting Driver / Crew Name
               </label>
               <input
+                id="job-reporting-driver"
                 type="text"
                 value={operatorName}
                 onChange={(e) => setOperatorName(e.target.value)}
@@ -376,10 +383,11 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs text-gray-500 mb-1 font-medium">
+              <label htmlFor="job-operational-notes" className="block text-xs text-gray-500 mb-1 font-medium">
                 Operational Notes (Optional)
               </label>
               <input
+                id="job-operational-notes"
                 type="text"
                 placeholder="e.g. Suction complete; no hose leaks"
                 value={operationalNotes}

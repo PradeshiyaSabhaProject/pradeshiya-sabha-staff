@@ -183,10 +183,11 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
 
           {/* Citizen Sign-Off Input */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">
+            <label htmlFor="closeout-citizen-signoff" className="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">
               Citizen / Householder Sign-Off Confirmation *
             </label>
             <input
+              id="closeout-citizen-signoff"
               type="text"
               required
               placeholder="e.g. S.K. Jayasinghe (Signed on paper service card)"
@@ -201,10 +202,11 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
 
           {/* Supervisor Closeout Audit Note */}
           <div>
-            <label className="block text-xs text-gray-600 mb-1 font-medium">
+            <label htmlFor="closeout-supervisor-note" className="block text-xs text-gray-600 mb-1 font-medium">
               Supervisor Verification & Audit Note
             </label>
             <textarea
+              id="closeout-supervisor-note"
               rows={2}
               value={supervisorNote}
               onChange={(e) => setSupervisorNote(e.target.value)}
@@ -214,10 +216,11 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
 
           {/* Supervisor Name */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1 font-medium">
+            <label htmlFor="closeout-supervisor-name" className="block text-xs text-gray-500 mb-1 font-medium">
               Closing Supervisor Name
             </label>
             <input
+              id="closeout-supervisor-name"
               type="text"
               value={supervisorName}
               onChange={(e) => setSupervisorName(e.target.value)}

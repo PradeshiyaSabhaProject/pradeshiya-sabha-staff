@@ -4,6 +4,7 @@ import { getVehicleComplianceInfo } from '../hooks/useFleetData'
 
 interface VehicleDetailDrawerProps {
   vehicle: VehicleRecord | null
+  today: string
   onClose: () => void
   onOpenPutInMaintenance: (v: VehicleRecord) => void
   onOpenDispatch: (v: VehicleRecord) => void
@@ -15,6 +16,7 @@ interface VehicleDetailDrawerProps {
 
 export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
   vehicle,
+  today,
   onClose,
   onOpenPutInMaintenance,
   onOpenDispatch,
@@ -25,7 +27,7 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
 }) => {
   if (!vehicle) return null
 
-  const compliance = getVehicleComplianceInfo(vehicle)
+  const compliance = getVehicleComplianceInfo(vehicle, today)
 
   const getStatusBadgeStyle = (status: string) => {
     switch (status) {
@@ -92,7 +94,16 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
             Quick Council Operations
           </span>
           <div className="flex flex-wrap items-center gap-2">
-            {vehicle.status !== 'In Maintenance' ? (
+            {vehicle.status === 'On Mission' ? (
+              <button
+                type="button"
+                disabled
+                title="A vehicle on an active mission cannot be scheduled for maintenance."
+                className="px-3.5 py-1.5 rounded border border-gray-200 bg-gray-100 text-gray-400 text-xs font-semibold uppercase tracking-wider shadow-xs cursor-not-allowed"
+              >
+                On Mission
+              </button>
+            ) : vehicle.status !== 'In Maintenance' ? (
               <button
                 type="button"
                 onClick={() => onOpenPutInMaintenance(vehicle)}
@@ -352,4 +363,3 @@ export const VehicleDetailDrawer: React.FC<VehicleDetailDrawerProps> = ({
     </div>
   )
 }
-

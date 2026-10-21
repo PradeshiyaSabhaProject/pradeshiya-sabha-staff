@@ -57,16 +57,25 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   const [nic, setNic] = useState('')
   const [phone, setPhone] = useState('')
   const [address, setAddress] = useState('')
-  const [ward, setWard] = useState(WARDS[0].name)
+  const [ward, setWard] = useState(WARDS[1].name)
 
   // Location Pin
-  const [pinLat, setPinLat] = useState<number>(WARDS[0].lat)
-  const [pinLng, setPinLng] = useState<number>(WARDS[0].lng)
+  const [pinLat, setPinLat] = useState<number>(WARDS[1].lat)
+  const [pinLng, setPinLng] = useState<number>(WARDS[1].lng)
+  const [hasPin, setHasPin] = useState(false)
   const [locationLabel, setLocationLabel] = useState('')
 
   // Schedule
-  const [scheduledDate, setScheduledDate] = useState('2026-10-20')
-  const [scheduledTime, setScheduledTime] = useState('09:00')
+  const [todayDate] = useState(() => {
+    const today = new Date()
+    return `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+  })
+  const [scheduledDate, setScheduledDate] = useState(todayDate)
+  const [scheduledTime, setScheduledTime] = useState(() => {
+    const nextHour = new Date()
+    nextHour.setHours(nextHour.getHours() + 1)
+    return `${nextHour.getHours().toString().padStart(2, '0')}:${nextHour.getMinutes().toString().padStart(2, '0')}`
+  })
 
   // Gully details
   const [pitVolumeLitres, setPitVolumeLitres] = useState<number>(5000)
@@ -88,6 +97,41 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
   const mapInstanceRef = useRef<L.Map | null>(null)
   const pinMarkerRef = useRef<L.Marker | null>(null)
+
+  /** Commits a site pin and keeps its draggable map marker synchronized. */
+  const placePin = (lat: number, lng: number) => {
+    setPinLat(lat)
+    setPinLng(lng)
+    setHasPin(true)
+    const map = mapInstanceRef.current
+    if (!map) return
+    if (pinMarkerRef.current) {
+      pinMarkerRef.current.setLatLng([lat, lng])
+      return
+    }
+    const icon = L.divIcon({
+      className: 'custom-job-pin',
+      html: '<div style="background: #A31736; color: white; width: 28px; height: 28px; border-radius: 50%; border: 3px solid white; box-shadow: 0 3px 8px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; font-size: 14px;">📍</div>',
+      iconSize: [28, 28],
+      iconAnchor: [14, 28],
+    })
+    const marker = L.marker([lat, lng], { icon, draggable: true }).addTo(map)
+    marker.on('dragend', (event) => {
+      const position = (event.target as L.Marker).getLatLng()
+      placePin(Math.round(position.lat * 10000) / 10000, Math.round(position.lng * 10000) / 10000)
+    })
+    pinMarkerRef.current = marker
+  }
+
+  /** Confirms the currently selected ward or manually entered coordinates as the site pin. */
+  const confirmCoordinates = () => {
+    if (!Number.isFinite(pinLat) || !Number.isFinite(pinLng) || pinLat < -90 || pinLat > 90 || pinLng < -180 || pinLng > 180) {
+      setError('Enter valid latitude and longitude coordinates before confirming.')
+      return
+    }
+    placePin(pinLat, pinLng)
+    setError(null)
+  }
 
   // Distance & fee calculation
   const distanceKm = useMemo(() => {
@@ -152,29 +196,22 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
         iconAnchor: [14, 28],
       })
 
-      const marker = L.marker([pinLat, pinLng], { icon: jobIcon, draggable: true }).addTo(map)
-      pinMarkerRef.current = marker
-
-      marker.on('dragend', (e) => {
-        const target = e.target as L.Marker
-        const pos = target.getLatLng()
-        const roundedLat = Math.round(pos.lat * 10000) / 10000
-        const roundedLng = Math.round(pos.lng * 10000) / 10000
-        setPinLat(roundedLat)
-        setPinLng(roundedLng)
-      })
+      mapInstanceRef.current = map
 
       map.on('click', (e: L.LeafletMouseEvent) => {
         const roundedLat = Math.round(e.latlng.lat * 10000) / 10000
         const roundedLng = Math.round(e.latlng.lng * 10000) / 10000
-        setPinLat(roundedLat)
-        setPinLng(roundedLng)
-        if (pinMarkerRef.current) {
-          pinMarkerRef.current.setLatLng([roundedLat, roundedLng])
-        }
+        placePin(roundedLat, roundedLng)
       })
 
-      mapInstanceRef.current = map
+      if (hasPin) {
+        const marker = L.marker([pinLat, pinLng], { icon: jobIcon, draggable: true }).addTo(map)
+        marker.on('dragend', (event) => {
+          const position = (event.target as L.Marker).getLatLng()
+          placePin(Math.round(position.lat * 10000) / 10000, Math.round(position.lng * 10000) / 10000)
+        })
+        pinMarkerRef.current = marker
+      }
     }, 150)
 
     return () => clearTimeout(timer)
@@ -187,13 +224,21 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
     if (found) {
       setPinLat(found.lat)
       setPinLng(found.lng)
-      if (pinMarkerRef.current) {
-        pinMarkerRef.current.setLatLng([found.lat, found.lng])
-      }
+      setHasPin(false)
+      pinMarkerRef.current?.remove()
+      pinMarkerRef.current = null
       if (mapInstanceRef.current) {
         mapInstanceRef.current.panTo([found.lat, found.lng])
       }
     }
+  }
+
+  /** Clears the site-pin confirmation before closing the booking form. */
+  const handleClose = () => {
+    setHasPin(false)
+    pinMarkerRef.current?.remove()
+    pinMarkerRef.current = null
+    onClose()
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -214,6 +259,40 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
     }
     if (!address.trim()) {
       setError('Please provide destination service address.')
+      return
+    }
+    if (!/^(?:0?7\d{8}|947\d{8})$/.test(phone.replace(/\D/g, ''))) {
+      setError('Enter a valid Sri Lankan mobile number (for example, 077-1234567).')
+      return
+    }
+    if (!/^(?:\d{9}[VvXx]|\d{12})$/.test(nic.trim())) {
+      setError('Enter a valid NIC: 9 digits followed by V/X, or 12 digits.')
+      return
+    }
+    if (!hasPin) {
+      setError('Drop a site pin on the map, or confirm the selected ward coordinates before submitting.')
+      return
+    }
+    if (!Number.isFinite(pinLat) || !Number.isFinite(pinLng) || pinLat < -90 || pinLat > 90 || pinLng < -180 || pinLng > 180) {
+      setError('Enter valid latitude and longitude coordinates.')
+      return
+    }
+
+    const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}`)
+    if (Number.isNaN(scheduledAt.getTime()) || scheduledAt.getTime() <= Date.now()) {
+      setError('Choose a future date and time. A booking scheduled today must be later than the current time.')
+      return
+    }
+
+    const numericValues = serviceType === 'GULLY_BOWSER'
+      ? [pitVolumeLitres, distanceFromGateM, hoseLengthRequiredM, roadWidthM]
+      : [waterVolumeLitres, loadsRequired]
+    if (numericValues.some((value) => !Number.isFinite(value) || value <= 0)) {
+      setError('All service-specific measurements, volumes, and load counts must be greater than zero.')
+      return
+    }
+    if (distanceKm === 0) {
+      setError('The site is 0.0 km from the depot. Move the pin to the actual service location before submitting.')
       return
     }
 
@@ -262,7 +341,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
       source: 'Staff Counter',
     })
 
-    onClose()
+    handleClose()
   }
 
   if (!isOpen) return null
@@ -273,7 +352,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
       <button
         type="button"
         className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs transition-opacity duration-300 cursor-default"
-        onClick={onClose}
+        onClick={handleClose}
         aria-label="Close modal"
       />
 
@@ -291,7 +370,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
             </div>
           </div>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             type="button"
             className="p-1 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all cursor-pointer font-bold text-xl"
             aria-label="Close"
@@ -310,9 +389,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
 
           {/* 1. Service Type Selector */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+            <p className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
               1. Service Selection
-            </label>
+            </p>
             <div className="grid grid-cols-2 gap-4">
               <button
                 type="button"
@@ -358,13 +437,14 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
 
           {/* 2. Applicant Details */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+            <p className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
               2. Applicant & Beneficiary
-            </label>
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Full Name *</label>
+                <label htmlFor="booking-applicant-name" className="block text-xs text-gray-500 mb-1 font-medium">Full Name *</label>
                 <input
+                  id="booking-applicant-name"
                   type="text"
                   required
                   placeholder="e.g. Priyantha Dissanayake"
@@ -375,8 +455,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">NIC Number *</label>
+                <label htmlFor="booking-applicant-nic" className="block text-xs text-gray-500 mb-1 font-medium">NIC Number *</label>
                 <input
+                  id="booking-applicant-nic"
                   type="text"
                   required
                   placeholder="e.g. 198214502391 / 821452391V"
@@ -387,8 +468,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Telephone (SMS Notice) *</label>
+                <label htmlFor="booking-applicant-phone" className="block text-xs text-gray-500 mb-1 font-medium">Telephone (SMS Notice) *</label>
                 <input
+                  id="booking-applicant-phone"
                   type="text"
                   required
                   placeholder="e.g. 077-1234567"
@@ -401,8 +483,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Street Address / Premises *</label>
+                <label htmlFor="booking-applicant-address" className="block text-xs text-gray-500 mb-1 font-medium">Street Address / Premises *</label>
                 <input
+                  id="booking-applicant-address"
                   type="text"
                   required
                   placeholder="e.g. 142/B, High Level Road, Homagama"
@@ -413,8 +496,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">Municipal Ward / Division *</label>
+                <label htmlFor="booking-applicant-ward" className="block text-xs text-gray-500 mb-1 font-medium">Municipal Ward / Division *</label>
                 <select
+                  id="booking-applicant-ward"
                   value={ward}
                   onChange={(e) => handleWardChange(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
@@ -432,9 +516,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
           {/* 3. Interactive Map Pin & Distance */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wider">
+              <p className="block text-xs font-bold text-gray-600 uppercase tracking-wider">
                 3. Service Site GPS Pin Drop
-              </label>
+              </p>
               <span className="text-xs font-mono font-bold text-[#A31736] bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
                 Straight-line Distance: {distanceKm.toFixed(1)} km from Depot
               </span>
@@ -444,34 +528,47 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
             <div className="relative rounded-xl border border-gray-300 overflow-hidden h-52 bg-slate-100">
               <div ref={mapContainerRef} className="w-full h-full" />
               <div className="absolute top-2 left-2 z-10 bg-white/90 backdrop-blur-xs px-2.5 py-1 rounded-md text-[11px] font-medium text-gray-700 shadow-xs border border-gray-200">
-                💡 Click anywhere on map or drag pin to adjust exact site
+                💡 Click the map to drop a pin; choose a ward and confirm its coordinates below.
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-2.5">
               <div>
-                <label className="block text-[11px] text-gray-500 mb-1">Latitude</label>
+                <label htmlFor="booking-pin-latitude" className="block text-[11px] text-gray-500 mb-1">Latitude</label>
                 <input
+                  id="booking-pin-latitude"
                   type="number"
                   step="0.0001"
                   value={pinLat}
-                  onChange={(e) => setPinLat(Number(e.target.value))}
+                  onChange={(e) => {
+                    setPinLat(Number(e.target.value))
+                    setHasPin(false)
+                    pinMarkerRef.current?.remove()
+                    pinMarkerRef.current = null
+                  }}
                   className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono"
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-gray-500 mb-1">Longitude</label>
+                <label htmlFor="booking-pin-longitude" className="block text-[11px] text-gray-500 mb-1">Longitude</label>
                 <input
+                  id="booking-pin-longitude"
                   type="number"
                   step="0.0001"
                   value={pinLng}
-                  onChange={(e) => setPinLng(Number(e.target.value))}
+                  onChange={(e) => {
+                    setPinLng(Number(e.target.value))
+                    setHasPin(false)
+                    pinMarkerRef.current?.remove()
+                    pinMarkerRef.current = null
+                  }}
                   className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono"
                 />
               </div>
               <div>
-                <label className="block text-[11px] text-gray-500 mb-1">Landmark / Access Note</label>
+                <label htmlFor="booking-location-label" className="block text-[11px] text-gray-500 mb-1">Landmark / Access Note</label>
                 <input
+                  id="booking-location-label"
                   type="text"
                   placeholder="e.g. Near Temple junction, narrow lane"
                   value={locationLabel}
@@ -480,19 +577,30 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 />
               </div>
             </div>
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <button type="button" onClick={confirmCoordinates} className="px-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50">
+                Confirm Ward / Coordinates
+              </button>
+              {distanceKm === 0 && (
+                <p className="text-xs font-semibold text-amber-700" role="status">
+                  Warning: distance is 0.0 km. Move the pin to the actual service site.
+                </p>
+              )}
+            </div>
           </div>
 
           {/* 4. Service-Specific Specifications */}
           <div>
-            <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+            <p className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
               4. Technical & Service Specifications
-            </label>
+            </p>
 
             {serviceType === 'GULLY_BOWSER' ? (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Pit Volume (L)</label>
+                  <label htmlFor="booking-pit-volume" className="block text-xs text-gray-600 mb-1 font-medium">Pit Volume (L)</label>
                   <input
+                    id="booking-pit-volume"
                     type="number"
                     min="1000"
                     step="500"
@@ -504,8 +612,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Waste Type</label>
+                  <label htmlFor="booking-waste-type" className="block text-xs text-gray-600 mb-1 font-medium">Waste Type</label>
                   <select
+                    id="booking-waste-type"
                     value={wasteType}
                     onChange={(e) => setWasteType(e.target.value as typeof wasteType)}
                     className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-medium"
@@ -517,8 +626,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Dist. from Gate (m)</label>
+                  <label htmlFor="booking-distance-from-gate" className="block text-xs text-gray-600 mb-1 font-medium">Dist. from Gate (m)</label>
                   <input
+                    id="booking-distance-from-gate"
                     type="number"
                     min="1"
                     value={distanceFromGateM}
@@ -528,8 +638,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Hose Length (m)</label>
+                  <label htmlFor="booking-hose-length" className="block text-xs text-gray-600 mb-1 font-medium">Hose Length (m)</label>
                   <input
+                    id="booking-hose-length"
                     type="number"
                     min="5"
                     value={hoseLengthRequiredM}
@@ -539,8 +650,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Road Width (m)</label>
+                  <label htmlFor="booking-road-width" className="block text-xs text-gray-600 mb-1 font-medium">Road Width (m)</label>
                   <input
+                    id="booking-road-width"
                     type="number"
                     step="0.5"
                     min="2"
@@ -553,8 +665,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Water Volume (L)</label>
+                  <label htmlFor="booking-water-volume" className="block text-xs text-gray-600 mb-1 font-medium">Water Volume (L)</label>
                   <input
+                    id="booking-water-volume"
                     type="number"
                     min="1000"
                     step="1000"
@@ -565,8 +678,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Loads Required</label>
+                  <label htmlFor="booking-loads-required" className="block text-xs text-gray-600 mb-1 font-medium">Loads Required</label>
                   <input
+                    id="booking-loads-required"
                     type="number"
                     min="1"
                     max="10"
@@ -577,8 +691,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Purpose</label>
+                  <label htmlFor="booking-water-purpose" className="block text-xs text-gray-600 mb-1 font-medium">Purpose</label>
                   <select
+                    id="booking-water-purpose"
                     value={waterPurpose}
                     onChange={(e) => setWaterPurpose(e.target.value as typeof waterPurpose)}
                     className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-medium"
@@ -591,8 +706,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs text-gray-600 mb-1 font-medium">Storage Tank Type</label>
+                  <label htmlFor="booking-storage-tank-type" className="block text-xs text-gray-600 mb-1 font-medium">Storage Tank Type</label>
                   <select
+                    id="booking-storage-tank-type"
                     value={storageTankType}
                     onChange={(e) => setStorageTankType(e.target.value as typeof storageTankType)}
                     className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-medium"
@@ -610,23 +726,26 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
           {/* 5. Schedule & Estimated Fee Preview */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+              <p className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                 5. Requested Schedule
-              </label>
+              </p>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Date</label>
+                  <label htmlFor="booking-scheduled-date" className="block text-xs text-gray-500 mb-1">Date</label>
                   <input
+                    id="booking-scheduled-date"
                     type="date"
                     required
                     value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
+                    min={todayDate}
                     className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#A31736]"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-500 mb-1">Preferred Time</label>
+                  <label htmlFor="booking-scheduled-time" className="block text-xs text-gray-500 mb-1">Preferred Time</label>
                   <input
+                    id="booking-scheduled-time"
                     type="time"
                     required
                     value={scheduledTime}
@@ -639,9 +758,9 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
 
             {/* Fee Preview Card */}
             <div>
-              <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
+              <p className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">
                 Fee Estimate Preview
-              </label>
+              </p>
               <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-1.5">
                 <div className="flex justify-between text-xs text-gray-600">
                   <span>Base Fare ({feeBreakdown.loads} load{feeBreakdown.loads > 1 ? 's' : ''} × {formatLKR(feeBreakdown.farePerLoad)}):</span>
@@ -666,7 +785,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-100">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-semibold text-xs hover:bg-gray-50 transition-all cursor-pointer"
             >
               Cancel

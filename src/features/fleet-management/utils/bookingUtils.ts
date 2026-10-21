@@ -100,9 +100,9 @@ export function generateReferenceNumber(
 /**
  * Computes the time remaining until the payment deadline.
  * Returns null if no paymentDueBy is set or the deadline has passed.
- * Used in table countdown cells — call this from a timer callback, not render.
+ * Pass a captured `now` when rendering; otherwise the current time is read.
  */
-export function paymentTimeRemaining(paymentDueBy: string): {
+export function paymentTimeRemaining(paymentDueBy: string, now = Date.now()): {
   totalMs: number
   hours: number
   minutes: number
@@ -110,7 +110,6 @@ export function paymentTimeRemaining(paymentDueBy: string): {
   isUrgent: boolean   // < 3 hours remaining
   isExpired: boolean
 } | null {
-  const now = Date.now()
   const due = new Date(paymentDueBy).getTime()
   const totalMs = due - now
 

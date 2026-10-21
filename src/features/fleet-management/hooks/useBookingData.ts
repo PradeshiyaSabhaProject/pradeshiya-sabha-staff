@@ -6,12 +6,6 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
   buildInitialBookings,
-  EXTRA_VEHICLE_GULLY_ACTIVE,
-  EXTRA_VEHICLE_WATER_ACTIVE,
-  EXTRA_VEHICLE_GULLY_AVAIL,
-  EXTRA_VEHICLE_WATER_AVAIL,
-  EXTRA_VEHICLE_GULLY_CLOSEOUT,
-  EXTRA_DRIVERS,
   SERVICE_CONFIG,
   type BookingRecord,
   type BookingStatus,
@@ -28,6 +22,7 @@ import {
 import {
   INITIAL_VEHICLES,
   INITIAL_DRIVERS,
+  INITIAL_APPROVAL_REQUESTS,
   type VehicleRecord,
   type DriverRecord,
 } from '../data/initialFleetData'
@@ -39,53 +34,103 @@ const BOOKINGS_STORAGE_KEY = 'ps_fleet_bookings_v1'
 // same localStorage slots — bookings and fleet pages stay in sync.
 const VEHICLES_STORAGE_KEY = 'ps_fleet_vehicles_v1'
 const DRIVERS_STORAGE_KEY = 'ps_fleet_drivers_v1'
+const APPROVALS_STORAGE_KEY = 'ps_fleet_approvals_v1'
+const FLEET_METADATA_STORAGE_KEY = 'ps_fleet_metadata_v1'
+const FLEET_SCHEMA_VERSION = 1
+const FLEET_SEED_VERSION = 2
 
-// ── Extra seed data appended to base lists ────────────────────────────────────
-const EXTRA_VEHICLES: VehicleRecord[] = [
-  EXTRA_VEHICLE_GULLY_ACTIVE,
-  EXTRA_VEHICLE_WATER_ACTIVE,
-  EXTRA_VEHICLE_GULLY_AVAIL,
-  EXTRA_VEHICLE_WATER_AVAIL,
-  EXTRA_VEHICLE_GULLY_CLOSEOUT,
-]
-
-/** Reads vehicles from localStorage (or merges seed if missing extra vehicles). */
-function loadVehicles(): VehicleRecord[] {
-  const saved = localStorage.getItem(VEHICLES_STORAGE_KEY)
-  if (saved) {
-    try {
-      const parsed: VehicleRecord[] = JSON.parse(saved)
-      // Ensure extra seed vehicles are present (first-run after feature deploy)
-      const ids = new Set(parsed.map((v) => v.id))
-      const merged = [...parsed]
-      for (const ev of EXTRA_VEHICLES) {
-        if (!ids.has(ev.id)) merged.push(ev)
-      }
-      return merged
-    } catch {
-      // fallback to default
-    }
-  }
-  return [...INITIAL_VEHICLES, ...EXTRA_VEHICLES]
+interface FleetSeedMetadata {
+  schemaVersion: number
+  seedVersion: number
+  seededAt: string
 }
 
-/** Reads drivers from localStorage (or merges extra drivers if missing). */
-function loadDrivers(): DriverRecord[] {
-  const saved = localStorage.getItem(DRIVERS_STORAGE_KEY)
-  if (saved) {
-    try {
-      const parsed: DriverRecord[] = JSON.parse(saved)
-      const ids = new Set(parsed.map((d) => d.id))
-      const merged = [...parsed]
-      for (const ed of EXTRA_DRIVERS) {
-        if (!ids.has(ed.id)) merged.push(ed)
-      }
-      return merged
-    } catch {
-      // fallback
+interface FleetSeedSnapshot {
+  bookings: BookingRecord[]
+  vehicles: VehicleRecord[]
+  drivers: DriverRecord[]
+  approvals: unknown[]
+  metadata: FleetSeedMetadata
+}
+
+/** Returns the age of a seed in whole hours, clamped to non-negative values. */
+function getSeedAgeHours(seededAt: string, now: number): number {
+  return Math.max(0, Math.floor((now - new Date(seededAt).getTime()) / 3600000))
+}
+
+/** Creates and persists a mutually consistent demo snapshot at the supplied time. */
+function createFleetSeedSnapshot(now: number): FleetSeedSnapshot {
+  const seededAt = new Date(now).toISOString()
+  const bookings = buildInitialBookings(now)
+  const activeBookings = bookings.filter((booking) =>
+    booking.status === 'Vehicle Assigned' ||
+    booking.status === 'En Route' ||
+    booking.status === 'Service In Progress' ||
+    booking.status === 'In Transit to Plant'
+  )
+  const bookingByVehicle = new Map(activeBookings.map((booking) => [booking.assignedVehicleId, booking]))
+  const vehicles = INITIAL_VEHICLES.map((vehicle) => {
+    const booking = bookingByVehicle.get(vehicle.id)
+    if (!booking) return vehicle
+    const date = new Date(now)
+    return {
+      ...vehicle,
+      status: 'On Mission' as const,
+      currentLocation: booking.location.label,
+      activeMission: {
+        destination: booking.location.label,
+        purpose: `${SERVICE_CONFIG[booking.serviceType].label} – ${booking.referenceNumber}`,
+        dispatchedAt: date.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        estimatedReturn: `${booking.scheduledDate} (Service Day)`,
+      },
     }
+  })
+  const snapshot: FleetSeedSnapshot = {
+    bookings,
+    vehicles,
+    drivers: INITIAL_DRIVERS,
+    approvals: INITIAL_APPROVAL_REQUESTS,
+    metadata: {
+      schemaVersion: FLEET_SCHEMA_VERSION,
+      seedVersion: FLEET_SEED_VERSION,
+      seededAt,
+    },
   }
-  return [...INITIAL_DRIVERS, ...EXTRA_DRIVERS]
+  return snapshot
+}
+
+/** Persists all fleet seed collections and their shared schema metadata. */
+function persistFleetSeedSnapshot(snapshot: FleetSeedSnapshot): void {
+  localStorage.setItem(BOOKINGS_STORAGE_KEY, JSON.stringify(snapshot.bookings))
+  localStorage.setItem(VEHICLES_STORAGE_KEY, JSON.stringify(snapshot.vehicles))
+  localStorage.setItem(DRIVERS_STORAGE_KEY, JSON.stringify(snapshot.drivers))
+  localStorage.setItem(APPROVALS_STORAGE_KEY, JSON.stringify(snapshot.approvals))
+  localStorage.setItem(FLEET_METADATA_STORAGE_KEY, JSON.stringify(snapshot.metadata))
+}
+
+/** Loads a compatible persisted fleet snapshot or creates a fresh seed. */
+function loadOrCreateFleetSeed(): FleetSeedSnapshot {
+  try {
+    const metadata = JSON.parse(localStorage.getItem(FLEET_METADATA_STORAGE_KEY) ?? 'null') as FleetSeedMetadata | null
+    const bookings = JSON.parse(localStorage.getItem(BOOKINGS_STORAGE_KEY) ?? 'null') as BookingRecord[] | null
+    const vehicles = JSON.parse(localStorage.getItem(VEHICLES_STORAGE_KEY) ?? 'null') as VehicleRecord[] | null
+    const drivers = JSON.parse(localStorage.getItem(DRIVERS_STORAGE_KEY) ?? 'null') as DriverRecord[] | null
+    const approvals = JSON.parse(localStorage.getItem(APPROVALS_STORAGE_KEY) ?? 'null') as unknown[] | null
+    if (
+      metadata?.schemaVersion === FLEET_SCHEMA_VERSION &&
+      metadata.seedVersion === FLEET_SEED_VERSION &&
+      Number.isFinite(new Date(metadata.seededAt).getTime()) &&
+      Array.isArray(bookings) &&
+      Array.isArray(vehicles) &&
+      Array.isArray(drivers) &&
+      Array.isArray(approvals)
+    ) {
+      return { metadata, bookings, vehicles, drivers, approvals }
+    }
+  } catch {
+    // Invalid or incomplete persisted demo data is replaced as one snapshot.
+  }
+  return createFleetSeedSnapshot(Date.now())
 }
 
 /** Validation result returned by vehicle-assignment validator. */
@@ -101,22 +146,29 @@ export interface AssignmentValidationResult {
  * TODO: replace all booking mutations with API calls before production.
  */
 export function useBookingData() {
+  const [initialSeed] = useState<FleetSeedSnapshot>(loadOrCreateFleetSeed)
+
   // ── Bookings state ──────────────────────────────────────────────────────────
-  const [bookings, setBookings] = useState<BookingRecord[]>(() => {
-    const saved = localStorage.getItem(BOOKINGS_STORAGE_KEY)
-    if (saved) {
-      try {
-        return JSON.parse(saved) as BookingRecord[]
-      } catch {
-        // fallback
-      }
-    }
-    return buildInitialBookings(Date.now())
-  })
+  const [bookings, setBookings] = useState<BookingRecord[]>(initialSeed.bookings)
 
   // ── Shared vehicle & driver state (same localStorage slots as useFleetData) ─
-  const [vehicles, setVehicles] = useState<VehicleRecord[]>(loadVehicles)
-  const [drivers, setDrivers] = useState<DriverRecord[]>(loadDrivers)
+  const [vehicles, setVehicles] = useState<VehicleRecord[]>(initialSeed.vehicles)
+  const [drivers, setDrivers] = useState<DriverRecord[]>(initialSeed.drivers)
+  const [seededAt, setSeededAt] = useState(initialSeed.metadata.seededAt)
+  const [seedAgeHours, setSeedAgeHours] = useState(() =>
+    getSeedAgeHours(initialSeed.metadata.seededAt, Date.now())
+  )
+
+  useEffect(() => {
+    persistFleetSeedSnapshot(initialSeed)
+  }, [initialSeed])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeedAgeHours(getSeedAgeHours(seededAt, Date.now()))
+    }, 60000)
+    return () => clearInterval(interval)
+  }, [seededAt])
 
   // ── Persist to localStorage & dispatch cross-page sync ─────────────────────
   useEffect(() => {
@@ -233,8 +285,26 @@ export function useBookingData() {
         b.status === 'Service In Progress' ||
         b.status === 'In Transit to Plant'
     ).length,
+    pendingCloseout: bookings.filter((b) => b.status === 'Pending Closeout').length,
     completed: bookings.filter((b) => b.status === 'Completed').length,
   }), [bookings])
+
+  /** Clears every persisted fleet collection and replaces it with a fresh seed. */
+  const resetDemoData = () => {
+    localStorage.removeItem(BOOKINGS_STORAGE_KEY)
+    localStorage.removeItem(VEHICLES_STORAGE_KEY)
+    localStorage.removeItem(DRIVERS_STORAGE_KEY)
+    localStorage.removeItem(APPROVALS_STORAGE_KEY)
+    localStorage.removeItem(FLEET_METADATA_STORAGE_KEY)
+    const snapshot = createFleetSeedSnapshot(Date.now())
+    persistFleetSeedSnapshot(snapshot)
+    setBookings(snapshot.bookings)
+    setVehicles(snapshot.vehicles)
+    setDrivers(snapshot.drivers)
+    setSeededAt(snapshot.metadata.seededAt)
+    setSeedAgeHours(0)
+    window.dispatchEvent(new Event('fleet_storage_update'))
+  }
 
   // ── Actions ──────────────────────────────────────────────────────────────────
 
@@ -494,6 +564,9 @@ export function useBookingData() {
     const vehicle = vehicles.find((v) => v.id === vehicleId)
     const driver = drivers.find((d) => d.id === driverId)
     if (!driver) return { valid: false, error: 'Driver not found.' }
+    if (driver.status !== 'On Duty') {
+      return { valid: false, error: `Driver ${driver.name} is not currently on duty.` }
+    }
 
     // Check driver not already on an active booking job
     const driverActiveBooking = bookings.find(
@@ -518,6 +591,8 @@ export function useBookingData() {
       hour: '2-digit',
       minute: '2-digit',
     })
+    const previousVehicleIdForDriver = driver.assignedVehicleId
+    const previousDriverIdForVehicle = vehicle?.assignedDriverId
 
     // Update booking
     setBookings((prev) =>
@@ -557,32 +632,42 @@ export function useBookingData() {
     // Set vehicle to On Mission
     setVehicles((prev) =>
       prev.map((v) => {
-        if (v.id !== vehicleId) return v
-        return {
-          ...v,
-          status: 'On Mission',
-          assignedDriverId: driverId,
-          assignedDriverName: driver.name,
-          currentLocation: booking.location.label,
-          activeMission: {
-            destination: booking.location.label,
-            purpose: `${SERVICE_CONFIG[booking.serviceType].label} – ${booking.referenceNumber}`,
-            dispatchedAt: nowDisplay,
-            estimatedReturn: booking.scheduledDate + ' (Service Day)',
-          },
+        if (v.id === vehicleId) {
+          return {
+            ...v,
+            status: 'On Mission',
+            assignedDriverId: driverId,
+            assignedDriverName: driver.name,
+            currentLocation: booking.location.label,
+            activeMission: {
+              destination: booking.location.label,
+              purpose: `${SERVICE_CONFIG[booking.serviceType].label} – ${booking.referenceNumber}`,
+              dispatchedAt: nowDisplay,
+              estimatedReturn: booking.scheduledDate + ' (Service Day)',
+            },
+          }
         }
+        if (v.id === previousVehicleIdForDriver && v.assignedDriverId === driverId) {
+          return { ...v, assignedDriverId: null, assignedDriverName: null }
+        }
+        return v
       })
     )
 
     // Update driver record
     setDrivers((prev) =>
       prev.map((d) => {
-        if (d.id !== driverId) return d
-        return {
-          ...d,
-          assignedVehicleId: vehicleId,
-          assignedVehicleReg: vehicle?.registrationNumber ?? null,
+        if (d.id === driverId) {
+          return {
+            ...d,
+            assignedVehicleId: vehicleId,
+            assignedVehicleReg: vehicle?.registrationNumber ?? null,
+          }
         }
+        if (d.id === previousDriverIdForVehicle && d.assignedVehicleId === vehicleId) {
+          return { ...d, assignedVehicleId: null, assignedVehicleReg: null }
+        }
+        return d
       })
     )
 
@@ -604,17 +689,14 @@ export function useBookingData() {
       deliveryLog?: DeliveryLog
     }
   ) => {
+    const booking = bookings.find((item) => item.id === bookingId)
+    if (!booking) return
     const now = new Date().toISOString()
-    let vehicleToRelease: string | undefined
+    const vehicleToRelease = newStatus === 'Pending Closeout' ? booking.assignedVehicleId : undefined
 
     setBookings((prev) =>
       prev.map((b) => {
         if (b.id !== bookingId) return b
-
-        // Capture vehicle ID for release when entering Pending Closeout
-        if (newStatus === 'Pending Closeout') {
-          vehicleToRelease = b.assignedVehicleId
-        }
 
         const statusEventMap: Record<BookingStatus, string> = {
           'Pending TO Review': 'Pending TO Review',
@@ -671,7 +753,6 @@ export function useBookingData() {
 
     // Release rule: vehicle + driver freed at Pending Closeout
     if (newStatus === 'Pending Closeout' && vehicleToRelease) {
-      const booking = bookings.find((b) => b.id === bookingId)
       setVehicles((prev) =>
         prev.map((v) => {
           if (v.id !== vehicleToRelease) return v
@@ -686,14 +767,6 @@ export function useBookingData() {
           }
         })
       )
-      if (booking?.assignedDriverId) {
-        setDrivers((prev) =>
-          prev.map((d) => {
-            if (d.id !== booking.assignedDriverId) return d
-            return d // Driver keeps vehicle assignment; only booking link is severed
-          })
-        )
-      }
     }
   }
 
@@ -729,6 +802,9 @@ export function useBookingData() {
     vehicles,
     drivers,
     bookingStats,
+    seededAt,
+    seedAgeHours,
+    resetDemoData,
     createBooking,
     approveBooking,
     rejectBooking,

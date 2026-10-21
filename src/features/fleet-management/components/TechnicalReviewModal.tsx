@@ -212,12 +212,13 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
             <form onSubmit={handleApproveSubmit} className="space-y-5">
               {/* Technical Checklist */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2.5 uppercase tracking-wider">
+                <p className="block text-xs font-bold text-gray-700 mb-2.5 uppercase tracking-wider">
                   1. Technical Feasibility Checklist ({isGully ? 'Gully Bowser' : 'Water Bowser'})
-                </label>
+                </p>
                 <div className="space-y-2 p-4 bg-gray-50/70 rounded-xl border border-gray-200 text-xs">
-                  <label className="flex items-start gap-2.5 cursor-pointer">
+                  <label htmlFor="review-road-access" className="flex items-start gap-2.5 cursor-pointer">
                     <input
+                      id="review-road-access"
                       type="checkbox"
                       checked={roadAccess}
                       onChange={(e) => setRoadAccess(e.target.checked)}
@@ -233,8 +234,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
 
                   {isGully ? (
                     <>
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-turning-radius" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-turning-radius"
                           type="checkbox"
                           checked={vehicleTurningRadius}
                           onChange={(e) => setVehicleTurningRadius(e.target.checked)}
@@ -248,8 +250,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                         </div>
                       </label>
 
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-suction-distance" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-suction-distance"
                           type="checkbox"
                           checked={suctionDistance}
                           onChange={(e) => setSuctionDistance(e.target.checked)}
@@ -263,8 +266,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                         </div>
                       </label>
 
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-bowser-capacity" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-bowser-capacity"
                           type="checkbox"
                           checked={bowserCapacity}
                           onChange={(e) => setBowserCapacity(e.target.checked)}
@@ -280,8 +284,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                     </>
                   ) : (
                     <>
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-delivery-bridge" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-delivery-bridge"
                           type="checkbox"
                           checked={deliveryRoadBridgeLimits}
                           onChange={(e) => setDeliveryRoadBridgeLimits(e.target.checked)}
@@ -295,8 +300,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                         </div>
                       </label>
 
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-water-slope" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-water-slope"
                           type="checkbox"
                           checked={slope}
                           onChange={(e) => setSlope(e.target.checked)}
@@ -310,8 +316,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                         </div>
                       </label>
 
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-pumping-hose" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-pumping-hose"
                           type="checkbox"
                           checked={pumpingHoseReach}
                           onChange={(e) => setPumpingHoseReach(e.target.checked)}
@@ -325,8 +332,9 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                         </div>
                       </label>
 
-                      <label className="flex items-start gap-2.5 cursor-pointer">
+                      <label htmlFor="review-water-stock" className="flex items-start gap-2.5 cursor-pointer">
                         <input
+                          id="review-water-stock"
                           type="checkbox"
                           checked={waterReservoirStock}
                           onChange={(e) => setWaterReservoirStock(e.target.checked)}
@@ -346,15 +354,16 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
 
               {/* Operational Adjustments (Loads & Distance) */}
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
+                <p className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
                   2. Operational Adjustments & Final Fee Confirmation
-                </label>
+                </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-gray-50/70 rounded-xl border border-gray-200">
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1 font-medium">
+                    <label htmlFor="review-confirmed-loads" className="block text-xs text-gray-600 mb-1 font-medium">
                       Confirmed Loads ({cfg.label})
                     </label>
                     <input
+                      id="review-confirmed-loads"
                       type="number"
                       min="1"
                       max="10"
@@ -368,10 +377,11 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                   </div>
 
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1 font-medium">
+                    <label htmlFor="review-route-distance" className="block text-xs text-gray-600 mb-1 font-medium">
                       Confirmed Route Distance (km)
                     </label>
                     <input
+                      id="review-route-distance"
                       type="number"
                       step="0.1"
                       min="0.1"
@@ -408,10 +418,11 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
 
               {/* Approver Signature */}
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">
+                <label htmlFor="review-approver-name" className="block text-xs text-gray-500 mb-1 font-medium">
                   Reviewing Technical Officer Name / Designation
                 </label>
                 <input
+                  id="review-approver-name"
                   type="text"
                   value={approverName}
                   onChange={(e) => setApproverName(e.target.value)}
@@ -458,10 +469,11 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
+                <label htmlFor="review-rejection-reason" className="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wider">
                   Rejection Reason *
                 </label>
                 <textarea
+                  id="review-rejection-reason"
                   rows={3}
                   required
                   placeholder="e.g. Access road bridge weight limit is 3.5 tonnes, insufficient for 12-tonne heavy bowser; no alternative turning bay available."
@@ -472,10 +484,11 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs text-gray-500 mb-1 font-medium">
+                <label htmlFor="review-rejection-officer" className="block text-xs text-gray-500 mb-1 font-medium">
                   Reviewing Technical Officer Name
                 </label>
                 <input
+                  id="review-rejection-officer"
                   type="text"
                   value={approverName}
                   onChange={(e) => setApproverName(e.target.value)}

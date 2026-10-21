@@ -37,6 +37,10 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
   const [selectedDriverId, setSelectedDriverId] = useState<string>('')
   const [supervisorName, setSupervisorName] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [today] = useState(() => {
+    const date = new Date()
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+  })
 
   const cfg = booking ? SERVICE_CONFIG[booking.serviceType] : null
 
@@ -79,7 +83,6 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
   const currentVehicle = vehicles.find((v) => v.id === selectedVehicleId)
 
   // Real-time compliance check for selected vehicle
-  const today = '2026-07-12' // reference portal date
   const isPermitExpired = currentVehicle ? currentVehicle.permitExpiryDate < today : false
   const isRevenueExpired = currentVehicle ? currentVehicle.revenueLicenseExpiryDate < today : false
   const isInsuranceExpired = currentVehicle ? currentVehicle.insuranceExpiryDate < today : false
@@ -281,10 +284,11 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
 
           {/* Supervisor Name */}
           <div>
-            <label className="block text-xs text-gray-500 mb-1 font-medium">
+            <label htmlFor="assign-booking-supervisor" className="block text-xs text-gray-500 mb-1 font-medium">
               Authorizing Supervisor Name / Call Sign
             </label>
             <input
+              id="assign-booking-supervisor"
               type="text"
               value={supervisorName}
               onChange={(e) => setSupervisorName(e.target.value)}

@@ -186,9 +186,9 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
 
           {/* Payment Method Selector */}
           <div>
-            <label className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
+            <p className="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wider">
               Payment Method
-            </label>
+            </p>
             <div className="grid grid-cols-3 gap-2.5">
               <button
                 type="button"
@@ -231,8 +231,9 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           {/* Receipt Details */}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-gray-500 mb-1 font-medium">E-Receipt Number *</label>
+              <label htmlFor="payment-receipt-number" className="block text-xs text-gray-500 mb-1 font-medium">E-Receipt Number *</label>
               <input
+                id="payment-receipt-number"
                 type="text"
                 required
                 value={receiptNumber}
@@ -242,8 +243,9 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs text-gray-500 mb-1 font-medium">Recorded By / Cashier</label>
+              <label htmlFor="payment-cashier-name" className="block text-xs text-gray-500 mb-1 font-medium">Recorded By / Cashier</label>
               <input
+                id="payment-cashier-name"
                 type="text"
                 value={cashierName}
                 onChange={(e) => setCashierName(e.target.value)}

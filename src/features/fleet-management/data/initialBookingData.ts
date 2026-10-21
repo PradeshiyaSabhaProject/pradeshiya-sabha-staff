@@ -239,12 +239,12 @@ export const EXTRA_VEHICLE_GULLY_ACTIVE: VehicleRecord = {
   odometerKm: 55200,
   yearOfManufacture: 2021,
   status: 'On Mission',
-  currentLocation: 'Godagama – En Route to Service Site (Booking GB-2026-0007)',
+  currentLocation: 'Godagama – En Route to Service Site (Booking GB-2026-0004)',
   activeMission: {
     destination: '24/A, Godagama Road, Godagama, Homagama',
-    purpose: 'Gutter / Gully Bowser – GB-2026-0007',
-    dispatchedAt: '2026-10-19 08:00 AM',
-    estimatedReturn: '2026-10-19 12:30 PM',
+    purpose: 'Gutter / Gully Bowser – GB-2026-0004',
+    dispatchedAt: '2026-10-21 08:00 AM',
+    estimatedReturn: '2026-10-21 12:30 PM',
   },
   assignedDriverId: 'DRV-09',
   assignedDriverName: 'Chaminda Perera',
@@ -265,12 +265,12 @@ export const EXTRA_VEHICLE_WATER_ACTIVE: VehicleRecord = {
   odometerKm: 43100,
   yearOfManufacture: 2023,
   status: 'On Mission',
-  currentLocation: 'Mattegoda Estate – Service In Progress (Booking WB-2026-0008)',
+  currentLocation: 'Mattegoda Estate – Service In Progress (Booking WB-2026-0004)',
   activeMission: {
     destination: 'Mattegoda Estate, Mattegoda',
-    purpose: 'Water Bowser – WB-2026-0008',
-    dispatchedAt: '2026-10-19 07:30 AM',
-    estimatedReturn: '2026-10-19 11:00 AM',
+    purpose: 'Water Bowser – WB-2026-0004',
+    dispatchedAt: '2026-10-21 07:30 AM',
+    estimatedReturn: '2026-10-21 11:00 AM',
   },
   assignedDriverId: 'DRV-10',
   assignedDriverName: 'Ruwan Sanjeewa',
@@ -340,6 +340,32 @@ export const EXTRA_VEHICLE_GULLY_CLOSEOUT: VehicleRecord = {
   maintenanceHistory: [],
 }
 
+/** Extra Gully Bowser for the seeded In-Transit-to-Plant booking (BK-014). */
+export const EXTRA_VEHICLE_GULLY_TRANSIT: VehicleRecord = {
+  id: 'VEH-012',
+  registrationNumber: 'WP GB-7712',
+  name: 'Isuzu Forward Gully Bowser 8000L',
+  category: 'Gully Bowser',
+  department: 'Public Health & Sanitation',
+  fuelType: 'Diesel',
+  odometerKm: 51800,
+  yearOfManufacture: 2021,
+  status: 'On Mission',
+  currentLocation: 'Homagama Septage Treatment Plant – In Transit',
+  activeMission: {
+    destination: 'Homagama Septage Treatment Plant',
+    purpose: 'Gully Bowser – GB-2026-0009',
+    dispatchedAt: '2026-10-21 09:00 AM',
+    estimatedReturn: '2026-10-21 12:00 PM',
+  },
+  assignedDriverId: 'DRV-14',
+  assignedDriverName: 'Saman Wijesinghe',
+  permitExpiryDate: '2027-11-30',
+  revenueLicenseExpiryDate: '2027-11-30',
+  insuranceExpiryDate: '2027-12-31',
+  maintenanceHistory: [],
+}
+
 /** Array of all extra seed vehicles for bowser service bookings */
 export const EXTRA_VEHICLES: VehicleRecord[] = [
   EXTRA_VEHICLE_GULLY_ACTIVE,
@@ -347,6 +373,7 @@ export const EXTRA_VEHICLES: VehicleRecord[] = [
   EXTRA_VEHICLE_GULLY_AVAIL,
   EXTRA_VEHICLE_WATER_AVAIL,
   EXTRA_VEHICLE_GULLY_CLOSEOUT,
+  EXTRA_VEHICLE_GULLY_TRANSIT,
 ]
 
 export const EXTRA_DRIVERS: DriverRecord[] = [
@@ -405,24 +432,40 @@ export const EXTRA_DRIVERS: DriverRecord[] = [
     assignedVehicleReg: 'WP GB-3302',
     status: 'On Duty',
   },
+  {
+    id: 'DRV-14',
+    name: 'Saman Wijesinghe',
+    employeeId: 'PS-DRV-014',
+    phone: '071-8802345',
+    licenseNumber: 'DL-7743102',
+    licenseGrade: 'Heavy Vehicle (Class E)',
+    assignedVehicleId: 'VEH-012',
+    assignedVehicleReg: 'WP GB-7712',
+    status: 'On Duty',
+  },
 ]
 
 // ─────────────────────────────────────────────────────────────────────────────
-// INITIAL BOOKINGS — 12 seed records covering every status, both services,
+// INITIAL BOOKINGS — 15 seed records covering every status, both services,
 // both sources. Timestamps are relative to "now" and computed by the hook
 // lazy-initializer (never during render).
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Builds 12 seed bookings relative to the provided wall-clock timestamp.
+ * Builds 15 seed bookings relative to the provided wall-clock timestamp.
  * Call this inside a useState lazy initializer, never during render.
  */
 export function buildInitialBookings(now: number): BookingRecord[] {
   const ts = (offsetMs: number): string => new Date(now + offsetMs).toISOString()
   const h = (hours: number) => hours * 3600 * 1000
   const dms = (days: number) => days * 24 * 3600 * 1000
+  /** Formats a timestamp offset as a local calendar date. */
+  const day = (offsetMs = 0): string => {
+    const date = new Date(now + offsetMs)
+    return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+  }
 
-  return [
+  const bookings: BookingRecord[] = [
     // ── BK-001: Pending TO Review — Gully, Citizen Portal ─────────────────
     {
       id: 'BK-001',
@@ -438,7 +481,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 03 – Pitipana North',
       },
       location: { lat: 6.8552, lng: 80.0121, label: 'Pitipana North Road, Pitipana' },
-      scheduledDate: new Date(now + dms(3)).toISOString().split('T')[0],
+      scheduledDate: day(dms(3)),
       scheduledTime: '09:00',
       serviceDetails: {
         serviceType: 'GULLY_BOWSER',
@@ -468,7 +511,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 07 – Kiriwattuduwa',
       },
       location: { lat: 6.8284, lng: 80.0245, label: 'Kiriwattuduwa Junction, Kiriwattuduwa' },
-      scheduledDate: new Date(now + dms(5)).toISOString().split('T')[0],
+      scheduledDate: day(dms(5)),
       scheduledTime: '10:30',
       serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 8000, loadsRequired: 1, purpose: 'Domestic', storageTankType: 'Ground Sump' },
       estimatedFee: { loads: 1, distanceKm: 3.5, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 3350 },
@@ -491,7 +534,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 05 – Meegoda',
       },
       location: { lat: 6.8148, lng: 80.0062, label: 'Meegoda Town, Meegoda' },
-      scheduledDate: new Date(now + dms(4)).toISOString().split('T')[0],
+      scheduledDate: day(dms(4)),
       scheduledTime: '08:00',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 5000, wasteType: 'Commercial Septage', distanceFromGateM: 20, hoseLengthRequiredM: 40, roadWidthM: 5.0 },
       estimatedFee: { loads: 1, distanceKm: 4.2, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 5130 },
@@ -523,7 +566,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 09 – Diyagama',
       },
       location: { lat: 6.8621, lng: 79.9812, label: 'Diyagama Road, Diyagama' },
-      scheduledDate: new Date(now + dms(2)).toISOString().split('T')[0],
+      scheduledDate: day(dms(2)),
       scheduledTime: '13:00',
       serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 12000, loadsRequired: 2, purpose: 'Construction', storageTankType: 'Ground Sump' },
       estimatedFee: { loads: 2, distanceKm: 5.6, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 6560 },
@@ -555,7 +598,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 11 – Kahathuduwa',
       },
       location: { lat: 6.7942, lng: 80.0188, label: 'Kahathuduwa New Road, Kahathuduwa' },
-      scheduledDate: new Date(now - dms(1)).toISOString().split('T')[0],
+      scheduledDate: day(-dms(1)),
       scheduledTime: '09:00',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 4000, wasteType: 'Domestic Septage', distanceFromGateM: 10, hoseLengthRequiredM: 25, roadWidthM: 4.0 },
       estimatedFee: { loads: 1, distanceKm: 6.1, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 5415 },
@@ -589,7 +632,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 14 – Godagama',
       },
       location: { lat: 6.8712, lng: 79.9914, label: 'Godagama Estate, Godagama' },
-      scheduledDate: new Date(now + dms(7)).toISOString().split('T')[0],
+      scheduledDate: day(dms(3)),
       scheduledTime: '07:30',
       serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 20000, loadsRequired: 3, purpose: 'Festival', storageTankType: 'Reservoir' },
       estimatedFee: { loads: 3, distanceKm: 2.8, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 9280 },
@@ -620,7 +663,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 14 – Godagama',
       },
       location: { lat: 6.8688, lng: 79.9944, label: 'Godagama Road, Godagama' },
-      scheduledDate: new Date(now).toISOString().split('T')[0],
+      scheduledDate: day(),
       scheduledTime: '09:00',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 6000, wasteType: 'Drain & Gully Silt', distanceFromGateM: 25, hoseLengthRequiredM: 50, roadWidthM: 6.0 },
       estimatedFee: { loads: 2, distanceKm: 3.9, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 9585 },
@@ -664,7 +707,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 06 – Mattegoda',
       },
       location: { lat: 6.8341, lng: 80.0301, label: 'Mattegoda Estate, Mattegoda' },
-      scheduledDate: new Date(now).toISOString().split('T')[0],
+      scheduledDate: day(),
       scheduledTime: '08:00',
       serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 10000, loadsRequired: 1, purpose: 'Drinking', storageTankType: 'Overhead Tank' },
       estimatedFee: { loads: 1, distanceKm: 4.5, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 3450 },
@@ -710,7 +753,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 12 – Panagoda',
       },
       location: { lat: 6.8789, lng: 80.0081, label: 'Panagoda Housing Scheme, Panagoda' },
-      scheduledDate: new Date(now - dms(1)).toISOString().split('T')[0],
+      scheduledDate: day(),
       scheduledTime: '07:00',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 8000, wasteType: 'Commercial Septage', distanceFromGateM: 30, hoseLengthRequiredM: 60, roadWidthM: 5.5 },
       estimatedFee: { loads: 2, distanceKm: 5.2, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 9780 },
@@ -761,7 +804,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 01 – Homagama Town',
       },
       location: { lat: 6.8433, lng: 80.0014, label: 'Homagama Town, Main Street' },
-      scheduledDate: new Date(now - dms(3)).toISOString().split('T')[0],
+      scheduledDate: day(-dms(3)),
       scheduledTime: '10:00',
       serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 8000, loadsRequired: 1, purpose: 'Domestic', storageTankType: 'Overhead Tank' },
       estimatedFee: { loads: 1, distanceKm: 0.8, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 3080 },
@@ -813,7 +856,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 09 – Diyagama',
       },
       location: { lat: 6.8654, lng: 79.9843, label: 'Diyagama Housing Scheme, Diyagama' },
-      scheduledDate: new Date(now + dms(2)).toISOString().split('T')[0],
+      scheduledDate: day(dms(2)),
       scheduledTime: '08:00',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 3500, wasteType: 'Domestic Septage', distanceFromGateM: 12, hoseLengthRequiredM: 25, roadWidthM: 4.0 },
       estimatedFee: { loads: 1, distanceKm: 4.0, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 5100 },
@@ -848,7 +891,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         ward: 'Ward 02 – Homagama Town South',
       },
       location: { lat: 6.8412, lng: 80.0028, label: 'Homagama Town, Station Road' },
-      scheduledDate: new Date(now - dms(5)).toISOString().split('T')[0],
+      scheduledDate: day(-dms(5)),
       scheduledTime: '07:30',
       serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 5000, wasteType: 'Domestic Septage', distanceFromGateM: 18, hoseLengthRequiredM: 35, roadWidthM: 5.0 },
       estimatedFee: { loads: 1, distanceKm: 0.3, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 4545 },
@@ -887,5 +930,132 @@ export function buildInitialBookings(now: number): BookingRecord[] {
         { at: ts(-dms(5) + h(6)), channel: 'SMS', recipient: '077-4421012', message: 'GB-2026-0012 COMPLETED. Thank you for using Homagama Pradeshiya Sabha services.', label: 'Simulated' },
       ],
     },
+
+    {
+      id: 'BK-013',
+      referenceNumber: 'GB-2026-9991',
+      serviceType: 'GULLY_BOWSER',
+      source: 'Citizen Portal',
+      status: 'Vehicle Assigned',
+      applicant: { name: 'Madhavi Ekanayake', nic: '916781234V', phone: '075-4402198', address: '19, Mattegoda Road, Homagama', ward: 'Ward 06 – Mattegoda' },
+      location: { lat: 6.8317, lng: 80.0119, label: 'Mattegoda Road, Homagama' },
+      scheduledDate: day(),
+      scheduledTime: '14:00',
+      serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 4200, wasteType: 'Domestic Septage', distanceFromGateM: 18, hoseLengthRequiredM: 30, roadWidthM: 4.5 },
+      estimatedFee: { loads: 1, distanceKm: 3.2, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 4980 },
+      toChecklistResult: { roadAccess: true, vehicleTurningRadius: true, suctionDistance: true, bowserCapacity: true },
+      approvedAt: ts(-dms(2)),
+      paymentDueBy: ts(-dms(2) + h(24)),
+      receipt: { receiptNumber: 'RCP-2026-0013', method: 'Online Payment', paidAt: ts(-dms(2) + h(4)), amountLKR: 4980 },
+      assignedVehicleId: 'VEH-009',
+      assignedVehicleReg: 'WP GB-8831',
+      assignedDriverId: 'DRV-11',
+      assignedDriverName: 'Nalin Kumara',
+      dispatchedAt: ts(-h(1)),
+      timeline: [
+        { at: ts(-dms(3)), actor: 'Citizen Portal (System)', event: 'Booking Submitted' },
+        { at: ts(-dms(2)), actor: 'Technical Officer – P.K. Samarasinghe', event: 'Booking Approved', note: 'Fee: LKR 4,980.' },
+        { at: ts(-dms(2) + h(4)), actor: 'System (Online Payment)', event: 'Payment Received', note: 'Receipt: RCP-2026-0013.' },
+        { at: ts(-h(1)), actor: 'Fleet Supervisor – S. Mendis', event: 'Vehicle Assigned', note: 'WP GB-8831 assigned with driver Nalin Kumara.' },
+      ],
+      notifications: [
+        { at: ts(-dms(3)), channel: 'SMS', recipient: '075-4402198', message: 'Booking GB-2026-9991 received.', label: 'Simulated' },
+        { at: ts(-dms(2) + h(4)), channel: 'SMS', recipient: '075-4402198', message: 'Payment confirmed for GB-2026-9991.', label: 'Simulated' },
+        { at: ts(-h(1)), channel: 'SMS', recipient: '075-4402198', message: 'GB-2026-9991: Vehicle WP GB-8831 assigned. Driver: Nalin Kumara.', label: 'Simulated' },
+      ],
+    },
+    {
+      id: 'BK-014',
+      referenceNumber: 'GB-2026-9992',
+      serviceType: 'GULLY_BOWSER',
+      source: 'Staff Counter',
+      status: 'In Transit to Plant',
+      applicant: { name: 'Samanthi Perera', nic: '856712340V', phone: '072-7712088', address: '42, Godagama North, Godagama', ward: 'Ward 03 – Godagama' },
+      location: { lat: 6.8528, lng: 80.0173, label: 'Godagama North, Godagama' },
+      scheduledDate: day(),
+      scheduledTime: '09:00',
+      serviceDetails: { serviceType: 'GULLY_BOWSER', pitVolumeLitres: 6000, wasteType: 'Commercial Septage', distanceFromGateM: 20, hoseLengthRequiredM: 40, roadWidthM: 5 },
+      estimatedFee: { loads: 1, distanceKm: 4.7, farePerLoad: 4500, transportFeePerKm: 150, totalLKR: 5205 },
+      toChecklistResult: { roadAccess: true, vehicleTurningRadius: true, suctionDistance: true, bowserCapacity: true },
+      approvedAt: ts(-dms(3)),
+      paymentDueBy: ts(-dms(3) + h(24)),
+      receipt: { receiptNumber: 'RCP-2026-0014', method: 'Counter Card', paidAt: ts(-dms(3) + h(5)), amountLKR: 5205 },
+      assignedVehicleId: 'VEH-012',
+      assignedVehicleReg: 'WP GB-7712',
+      assignedDriverId: 'DRV-14',
+      assignedDriverName: 'Saman Wijesinghe',
+      dispatchedAt: ts(-h(3)),
+      enRouteAt: ts(-h(3)),
+      serviceStartedAt: ts(-h(2)),
+      inTransitToPlantAt: ts(-h(1)),
+      timeline: [
+        { at: ts(-dms(4)), actor: 'Staff Counter (Current User)', event: 'Booking Created at Counter' },
+        { at: ts(-dms(3)), actor: 'Technical Officer – P.K. Samarasinghe', event: 'Booking Approved', note: 'Fee: LKR 5,205.' },
+        { at: ts(-dms(3) + h(5)), actor: 'Staff Counter (Current User)', event: 'Payment Received', note: 'Receipt: RCP-2026-0014.' },
+        { at: ts(-h(4)), actor: 'Fleet Supervisor – S. Mendis', event: 'Vehicle Assigned', note: 'WP GB-7712 assigned with driver Saman Wijesinghe.' },
+        { at: ts(-h(3)), actor: 'Driver – Saman Wijesinghe', event: 'En Route' },
+        { at: ts(-h(2)), actor: 'Driver – Saman Wijesinghe', event: 'Service In Progress', note: 'Pit emptied; sealed load is travelling to the treatment plant.' },
+        { at: ts(-h(1)), actor: 'Driver – Saman Wijesinghe', event: 'In Transit to Plant' },
+      ],
+      notifications: [
+        { at: ts(-dms(4)), channel: 'SMS', recipient: '072-7712088', message: 'Booking GB-2026-9992 registered at the counter.', label: 'Simulated' },
+        { at: ts(-dms(3) + h(5)), channel: 'SMS', recipient: '072-7712088', message: 'Payment confirmed for GB-2026-9992.', label: 'Simulated' },
+        { at: ts(-h(4)), channel: 'SMS', recipient: '072-7712088', message: 'GB-2026-9992: Vehicle WP GB-7712 assigned. Driver: Saman Wijesinghe.', label: 'Simulated' },
+      ],
+    },
+    {
+      id: 'BK-015',
+      referenceNumber: 'WB-2026-9993',
+      serviceType: 'WATER_BOWSER',
+      source: 'Citizen Portal',
+      status: 'Confirmed',
+      applicant: { name: 'Nadeesha Fernando', nic: '927650123V', phone: '077-3012456', address: '6, Kiriwattuduwa Lane, Kiriwattuduwa', ward: 'Ward 07 – Kiriwattuduwa' },
+      location: { lat: 6.8261, lng: 80.0263, label: 'Kiriwattuduwa Lane, Kiriwattuduwa' },
+      scheduledDate: day(dms(4)),
+      scheduledTime: '11:00',
+      serviceDetails: { serviceType: 'WATER_BOWSER', waterVolumeLitres: 8000, loadsRequired: 1, purpose: 'Domestic', storageTankType: 'Ground Sump' },
+      estimatedFee: { loads: 1, distanceKm: 3.8, farePerLoad: 3000, transportFeePerKm: 100, totalLKR: 3380 },
+      toChecklistResult: { roadAccess: true, deliveryRoadBridgeLimits: true, slope: true, pumpingHoseReach: true, waterReservoirStock: true },
+      approvedAt: ts(-h(20)),
+      paymentDueBy: ts(h(4)),
+      receipt: { receiptNumber: 'RCP-2026-0015', method: 'Online Payment', paidAt: ts(-h(17)), amountLKR: 3380 },
+      timeline: [
+        { at: ts(-dms(2)), actor: 'Citizen Portal (System)', event: 'Booking Submitted' },
+        { at: ts(-h(20)), actor: 'Technical Officer – P.K. Samarasinghe', event: 'Booking Approved', note: 'Fee: LKR 3,380.' },
+        { at: ts(-h(17)), actor: 'System (Online Payment)', event: 'Payment Received', note: 'Receipt: RCP-2026-0015.' },
+      ],
+      notifications: [
+        { at: ts(-dms(2)), channel: 'SMS', recipient: '077-3012456', message: 'Water Bowser booking WB-2026-9993 received.', label: 'Simulated' },
+        { at: ts(-h(17)), channel: 'SMS', recipient: '077-3012456', message: 'Payment confirmed for WB-2026-9993. Your booking is confirmed.', label: 'Simulated' },
+      ],
+    },
   ]
+
+  const year = new Date(now).getFullYear()
+  const nextSequences: Record<ServiceType, number> = { GULLY_BOWSER: 0, WATER_BOWSER: 0 }
+  const referenceMap = new Map<string, string>()
+  for (const booking of bookings) {
+    const prefix = SERVICE_CONFIG[booking.serviceType].referencePrefix
+    const nextSequence = ++nextSequences[booking.serviceType]
+    const reference = `${prefix}-${year}-${nextSequence.toString().padStart(4, '0')}`
+    referenceMap.set(booking.referenceNumber, reference)
+    booking.referenceNumber = reference
+  }
+
+  /** Replaces seed references in audit text with their generated sequences. */
+  const replaceReferences = (text: string): string =>
+    text.replace(/(?:GB|WB)-\d{4}-\d{4}/g, (reference) => referenceMap.get(reference) ?? reference)
+
+  for (const booking of bookings) {
+    booking.timeline = booking.timeline.map((entry) => ({
+      ...entry,
+      note: entry.note ? replaceReferences(entry.note) : undefined,
+    }))
+    booking.notifications = booking.notifications.map((notification) => ({
+      ...notification,
+      message: replaceReferences(notification.message),
+    }))
+  }
+
+  return bookings
 }
