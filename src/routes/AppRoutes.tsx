@@ -13,8 +13,9 @@ import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
 import bookingRoutes from '../features/booking-management/bookingRoutes'
 import inventoryRoutes from '../features/inventory-management/inventoryRoutes'
-import financeRoutes from '../features/finances/financeRoutes'
+import financeRoutes from '../features/financeRoutes'
 import profileRoutes from '../features/profile/profileRoutes'
+import varipanamRoutes from '../features/varipanam/varipanamRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -75,6 +76,7 @@ export const AppRoutes: React.FC = () => {
         {/* Other Feature Routes */}
         {assetRoutes}
         {fleetRoutes}
+        {varipanamRoutes}
         {complainRoutes}
         {letterRoutes}
         {applicationRoutes}
@@ -95,4 +97,3 @@ export const AppRoutes: React.FC = () => {
   )
 }
 export default AppRoutes
-

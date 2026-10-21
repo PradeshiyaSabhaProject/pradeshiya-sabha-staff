@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useVaripanam, VaripanamProvider } from '../context/VaripanamContext'
 import KpiCards from '../components/shared/KpiCards'
 import ArrearsAgeChart from '../components/shared/ArrearsAgeChart'
@@ -13,6 +13,7 @@ import { formatLKR } from '../utils/formatters'
 
 const DashboardContent: React.FC = () => {
   const navigate = useNavigate()
+  const location = useLocation()
   const {
     properties,
     filteredProperties,
@@ -40,10 +41,19 @@ const DashboardContent: React.FC = () => {
   } = useVaripanam()
 
   // View Mode: 'split' (Map + List side-by-side) or 'table' (Full Registry Table)
-  const [viewMode, setViewMode] = useState<'split' | 'table'>('split')
+  const isPropertiesPath = location.pathname.includes('/properties')
+  const [viewMode, setViewMode] = useState<'split' | 'table'>(isPropertiesPath ? 'table' : 'split')
+
+  useEffect(() => {
+    if (location.pathname.includes('/properties')) {
+      setViewMode('table')
+    } else if (location.pathname.includes('/dashboard')) {
+      setViewMode('split')
+    }
+  }, [location.pathname])
 
   const handleOpenProperty = (propertyId: string) => {
-    navigate(`/finances/varipanam/properties/${propertyId}`)
+    navigate(`/varipanam/properties/${propertyId}`)
   }
 
   const handleStartPickMode = () => {
@@ -90,7 +100,10 @@ const DashboardContent: React.FC = () => {
           <div className="flex items-center bg-gray-100 p-1 rounded-xl text-xs font-semibold text-gray-600">
             <button
               type="button"
-              onClick={() => setViewMode('split')}
+              onClick={() => {
+                setViewMode('split')
+                navigate('/varipanam/dashboard')
+              }}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 viewMode === 'split' ? 'bg-white text-gray-900 shadow-xs font-bold' : 'hover:text-gray-900'
               }`}
@@ -99,7 +112,10 @@ const DashboardContent: React.FC = () => {
             </button>
             <button
               type="button"
-              onClick={() => setViewMode('table')}
+              onClick={() => {
+                setViewMode('table')
+                navigate('/varipanam/properties')
+              }}
               className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                 viewMode === 'table' ? 'bg-white text-gray-900 shadow-xs font-bold' : 'hover:text-gray-900'
               }`}

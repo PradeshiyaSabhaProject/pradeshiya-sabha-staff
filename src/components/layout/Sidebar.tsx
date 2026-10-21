@@ -562,13 +562,14 @@ const Sidebar: React.FC = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({
-    '/attendance': true,
+    '/attendance': false,
     '/appointments': false,
     '/letters': false,
     '/applications': false,
     '/assets': false,
     '/inventory-management': false,
     '/fleet': false,
+    '/varipanam': false,
     '/users': false,
   })
 
