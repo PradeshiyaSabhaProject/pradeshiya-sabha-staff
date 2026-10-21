@@ -37,6 +37,8 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
   const [selectedDriverId, setSelectedDriverId] = useState<string>('')
   const [supervisorName, setSupervisorName] = useState('')
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
   const [today] = useState(() => {
     const date = new Date()
     return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
@@ -64,6 +66,8 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
     setPrevBookingId(booking?.id || null)
     if (isOpen && booking) {
       setValidationError(null)
+      setFieldErrors({})
+      setSubmitting(false)
       setSupervisorName(`${cfg?.supervisorTitle || 'Fleet Supervisor'} (Duty Officer)`)
 
       const firstAvailable = matchingVehicles.find((v) => v.status === 'Available')
@@ -101,19 +105,25 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
     e.preventDefault()
     setValidationError(null)
 
-    if (!selectedVehicleId) {
-      setValidationError('Please select a service vehicle.')
+    const nextErrors: Record<string, string> = {}
+    if (!selectedVehicleId) nextErrors.vehicleId = 'Please select a service vehicle.'
+    if (!selectedDriverId) nextErrors.driverId = 'Please assign a licensed driver / operator.'
+    setFieldErrors(nextErrors)
+    const firstField = Object.keys(nextErrors)[0]
+    if (firstField) {
+      const target = document.getElementById(firstField === 'vehicleId' ? 'assign-veh-select' : 'assign-driver-select')
+      target?.focus()
+      target?.scrollIntoView({ block: 'center' })
+      setValidationError(nextErrors[firstField])
       return
     }
 
-    if (!selectedDriverId) {
-      setValidationError('Please assign a licensed driver / operator.')
-      return
-    }
-
+    setSubmitting(true)
     const result = onAssign(booking.id, selectedVehicleId, selectedDriverId, supervisorName)
-    if (!result.valid) {
-      setValidationError(result.error || 'Vehicle or driver assignment validation failed.')
+    if (!result.ok) {
+      setFieldErrors(result.errors)
+      setValidationError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
       return
     }
 
@@ -159,7 +169,7 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-sm">
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-sm" noValidate>
           {validationError && (
             <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium flex items-start gap-2.5">
               <span className="text-base shrink-0">🚫</span>
@@ -201,7 +211,12 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
               id="assign-veh-select"
               value={selectedVehicleId}
               onChange={(e) => handleVehicleChange(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#A31736]"
+              aria-invalid={Boolean(fieldErrors.vehicleId)}
+              aria-describedby={fieldErrors.vehicleId ? 'assign-vehicle-error' : undefined}
+              onBlur={() => {
+                setFieldErrors((prev) => ({ ...prev, vehicleId: selectedVehicleId ? '' : 'Please select a service vehicle.' }))
+              }}
+              className={`w-full bg-white border rounded-xl px-4 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#A31736] ${fieldErrors.vehicleId ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
             >
               <option value="">-- Choose Bowser Vehicle --</option>
               {matchingVehicles.map((v) => {
@@ -214,6 +229,7 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
                 )
               })}
             </select>
+            {fieldErrors.vehicleId && <p id="assign-vehicle-error" className="mt-1 text-xs text-red-700">{fieldErrors.vehicleId}</p>}
           </div>
 
           {/* Selected Vehicle Status Card */}
@@ -270,7 +286,12 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
               id="assign-driver-select"
               value={selectedDriverId}
               onChange={(e) => setSelectedDriverId(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-4 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#A31736]"
+              aria-invalid={Boolean(fieldErrors.driverId)}
+              aria-describedby={fieldErrors.driverId ? 'assign-driver-error' : undefined}
+              onBlur={() => {
+                setFieldErrors((prev) => ({ ...prev, driverId: selectedDriverId ? '' : 'Please assign a licensed driver / operator.' }))
+              }}
+              className={`w-full bg-white border rounded-xl px-4 py-2.5 text-xs font-medium text-gray-800 focus:outline-none focus:border-[#A31736] ${fieldErrors.driverId ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
             >
               <option value="">-- Choose Driver --</option>
               {eligibleDrivers.map((d) => (
@@ -280,6 +301,7 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
                 </option>
               ))}
             </select>
+            {fieldErrors.driverId && <p id="assign-driver-error" className="mt-1 text-xs text-red-700">{fieldErrors.driverId}</p>}
           </div>
 
           {/* Supervisor Name */}
@@ -307,7 +329,7 @@ export const AssignBookingVehicleModal: React.FC<AssignBookingVehicleModalProps>
             </button>
             <button
               type="submit"
-              disabled={hasComplianceIssue}
+              disabled={hasComplianceIssue || submitting}
               className={`px-6 py-2.5 rounded-xl font-bold text-xs shadow-md transition-all flex items-center gap-2 ${
                 hasComplianceIssue
                   ? 'bg-gray-300 text-gray-500 cursor-not-allowed'

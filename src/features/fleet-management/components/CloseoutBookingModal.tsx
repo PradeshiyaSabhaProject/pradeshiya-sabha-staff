@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   SERVICE_CONFIG,
   type BookingRecord,
 } from '../data/initialBookingData'
+import type { BookingActionResult } from '../utils/validators'
+import { validateFreeText } from '../utils/validators'
 
 interface CloseoutBookingModalProps {
   isOpen: boolean
@@ -11,9 +13,10 @@ interface CloseoutBookingModalProps {
   onCloseout: (
     bookingId: string,
     citizenSignOff: string,
+    signOffConfirmed: boolean,
     supervisorNote?: string,
     supervisorName?: string
-  ) => void
+  ) => BookingActionResult<void>
 }
 
 /**
@@ -27,9 +30,13 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
   onCloseout,
 }) => {
   const [citizenSignOff, setCitizenSignOff] = useState('')
+  const [signOffConfirmed, setSignOffConfirmed] = useState(false)
   const [supervisorNote, setSupervisorNote] = useState('')
   const [supervisorName, setSupervisorName] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
   const isGully = booking?.serviceType === 'GULLY_BOWSER'
   const cfg = booking ? SERVICE_CONFIG[booking.serviceType] : null
@@ -43,7 +50,10 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
     setPrevBookingId(booking?.id || null)
     if (booking && isOpen) {
       setError(null)
+      setFieldErrors({})
+      setSubmitting(false)
       setCitizenSignOff(`${booking.applicant.name} (Beneficiary)`)
+      setSignOffConfirmed(false)
       setSupervisorNote('Service inspected and verified against municipal standards. Job closed.')
       setSupervisorName(`${cfg?.supervisorTitle || 'Supervisor'} (Audit Desk)`)
     }
@@ -55,17 +65,42 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
     e.preventDefault()
     setError(null)
 
-    if (!citizenSignOff.trim()) {
-      setError('Please record the citizen sign-off name or verification confirmation.')
+    const signOff = validateFreeText(citizenSignOff, { required: true, min: 3, max: 120 })
+    const remarks = validateFreeText(supervisorNote, { max: 300 })
+    const nextErrors: Record<string, string> = {}
+    if (!signOffConfirmed) nextErrors.signOffConfirmed = 'Confirm that the citizen sign-off was received.'
+    if (!signOff.valid) nextErrors.signOff = signOff.error
+    if (!remarks.valid) nextErrors.remarks = remarks.error
+    setFieldErrors(nextErrors)
+    const firstField = Object.keys(nextErrors)[0]
+    if (firstField) {
+      const targetId = firstField === 'signOffConfirmed'
+        ? 'closeout-signoff-confirmed'
+        : firstField === 'signOff' ? 'closeout-citizen-signoff' : 'closeout-supervisor-note'
+      const target = formRef.current?.querySelector<HTMLElement>(`#${targetId}`)
+      target?.focus()
+      target?.scrollIntoView({ block: 'center' })
+      setError(nextErrors[firstField])
+      return
+    }
+    setSubmitting(true)
+    if (!signOffConfirmed) {
+      setError('Confirm that the citizen sign-off was received before closing this booking.')
       return
     }
 
-    onCloseout(
+    const result = onCloseout(
       booking.id,
-      citizenSignOff.trim(),
-      supervisorNote.trim() || undefined,
+      signOff.value,
+      signOffConfirmed,
+      remarks.value || undefined,
       supervisorName.trim() || undefined
     )
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
+      return
+    }
 
     onClose()
   }
@@ -109,7 +144,7 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-sm">
+        <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-5 text-sm" noValidate>
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
               {error}
@@ -193,12 +228,33 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
               placeholder="e.g. S.K. Jayasinghe (Signed on paper service card)"
               value={citizenSignOff}
               onChange={(e) => setCitizenSignOff(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:border-emerald-600"
+              maxLength={120}
+              aria-invalid={Boolean(fieldErrors.signOff)}
+              aria-describedby={fieldErrors.signOff ? 'closeout-signoff-error' : undefined}
+              onBlur={() => {
+                const result = validateFreeText(citizenSignOff, { required: true, min: 3, max: 120 })
+                setFieldErrors((prev) => ({ ...prev, signOff: result.valid ? '' : result.error }))
+              }}
+              className={`w-full bg-white border rounded-xl px-3.5 py-2 text-xs font-medium focus:outline-none focus:border-emerald-600 ${fieldErrors.signOff ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
             />
+            {fieldErrors.signOff && <p id="closeout-signoff-error" className="mt-1 text-xs text-red-700">{fieldErrors.signOff}</p>}
             <span className="text-[10px] text-gray-400 mt-1 block">
               Confirms applicant acknowledgment of satisfactory service delivery.
             </span>
           </div>
+          <label htmlFor="closeout-signoff-confirmed" className="flex items-start gap-2 text-xs text-gray-700">
+            <input
+              id="closeout-signoff-confirmed"
+              type="checkbox"
+              checked={signOffConfirmed}
+              onChange={(e) => setSignOffConfirmed(e.target.checked)}
+              aria-invalid={Boolean(fieldErrors.signOffConfirmed)}
+              aria-describedby={fieldErrors.signOffConfirmed ? 'closeout-confirmation-error' : undefined}
+              className="mt-0.5 rounded"
+            />
+            I confirm the citizen/householder sign-off was received.
+          </label>
+          {fieldErrors.signOffConfirmed && <p id="closeout-confirmation-error" className="text-xs text-red-700">{fieldErrors.signOffConfirmed}</p>}
 
           {/* Supervisor Closeout Audit Note */}
           <div>
@@ -208,10 +264,18 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
             <textarea
               id="closeout-supervisor-note"
               rows={2}
+              maxLength={300}
               value={supervisorNote}
               onChange={(e) => setSupervisorNote(e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-600"
+              aria-invalid={Boolean(fieldErrors.remarks)}
+              aria-describedby={fieldErrors.remarks ? 'closeout-remarks-error' : undefined}
+              onBlur={() => {
+                const result = validateFreeText(supervisorNote, { max: 300 })
+                setFieldErrors((prev) => ({ ...prev, remarks: result.valid ? '' : result.error }))
+              }}
+              className={`w-full bg-white border rounded-xl p-3 text-xs focus:outline-none focus:border-emerald-600 ${fieldErrors.remarks ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
             />
+            {fieldErrors.remarks && <p id="closeout-remarks-error" className="mt-1 text-xs text-red-700">{fieldErrors.remarks}</p>}
           </div>
 
           {/* Supervisor Name */}
@@ -239,6 +303,7 @@ export const CloseoutBookingModal: React.FC<CloseoutBookingModalProps> = ({
             </button>
             <button
               type="submit"
+              disabled={submitting}
               className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
             >
               <span>✓ Verify & Complete Booking Dossier</span>

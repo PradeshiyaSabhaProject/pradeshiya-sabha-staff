@@ -12,6 +12,7 @@ import {
   paymentTimeRemaining,
   nextActionLabel,
 } from '../utils/bookingUtils'
+import { formatMobileNumber } from '../utils/validators'
 
 interface BookingDetailDrawerProps {
   booking: BookingRecord | null
@@ -340,7 +341,7 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
                   </div>
                   <div>
                     <span className="text-gray-400 block font-medium">Telephone</span>
-                    <span className="font-mono font-bold text-gray-900">{booking.applicant.phone}</span>
+                    <span className="font-mono font-bold text-gray-900">{formatMobileNumber(booking.applicant.phone)}</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block font-medium">Ward</span>

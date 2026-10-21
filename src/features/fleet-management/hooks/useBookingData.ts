@@ -7,6 +7,7 @@ import { useState, useEffect, useMemo } from 'react'
 import {
   buildInitialBookings,
   SERVICE_CONFIG,
+  DEPOT_COORDS,
   type BookingRecord,
   type BookingStatus,
   type ServiceType,
@@ -26,7 +27,22 @@ import {
   type VehicleRecord,
   type DriverRecord,
 } from '../data/initialFleetData'
-import { generateReferenceNumber } from '../utils/bookingUtils'
+import { calculateFee, generateReferenceNumber, haversineDistanceKm } from '../utils/bookingUtils'
+import {
+  FLEET_WARD_NAMES,
+  APPROVED_DISPOSAL_PLANTS,
+  type BookingActionResult,
+  validateFreeText,
+  validateFlowmeterReadings,
+  validateFullName,
+  validateMobile,
+  validateNic,
+  validateNumber,
+  validatePositiveNumber,
+  validateReferenceText,
+  validateStreetAddress,
+  validateWard,
+} from '../utils/validators'
 
 // ── localStorage keys ─────────────────────────────────────────────────────────
 const BOOKINGS_STORAGE_KEY = 'ps_fleet_bookings_v1'
@@ -134,10 +150,7 @@ function loadOrCreateFleetSeed(): FleetSeedSnapshot {
 }
 
 /** Validation result returned by vehicle-assignment validator. */
-export interface AssignmentValidationResult {
-  valid: boolean
-  error?: string
-}
+export type AssignmentValidationResult = BookingActionResult<void>
 
 /**
  * Shared booking data hook.
@@ -321,7 +334,66 @@ export function useBookingData() {
     serviceDetails: ServiceDetails
     estimatedFee: FeeBreakdown
     source: 'Staff Counter'
-  }): BookingRecord => {
+  }): BookingActionResult<BookingRecord> => {
+    const errors: Record<string, string> = {}
+    const applicantChecks = {
+      name: validateFullName(data.applicant.name),
+      nic: validateNic(data.applicant.nic),
+      phone: validateMobile(data.applicant.phone),
+      address: validateStreetAddress(data.applicant.address),
+      ward: validateWard(data.applicant.ward, FLEET_WARD_NAMES),
+    }
+    for (const [field, check] of Object.entries(applicantChecks)) {
+      if (!check.valid) errors[field] = check.error
+    }
+    const ranges = SERVICE_CONFIG[data.serviceType].bookingRanges
+    if (data.serviceDetails.serviceType === 'GULLY_BOWSER') {
+      const checks = {
+        pitVolumeLitres: validateNumber(data.serviceDetails.pitVolumeLitres, ranges.pitVolumeLitres.min, ranges.pitVolumeLitres.max, true),
+        distanceFromGateM: validateNumber(data.serviceDetails.distanceFromGateM, ranges.distanceFromGateM.min, ranges.distanceFromGateM.max, true),
+        hoseLengthRequiredM: validateNumber(data.serviceDetails.hoseLengthRequiredM, ranges.hoseLengthRequiredM.min, ranges.hoseLengthRequiredM.max, true),
+        roadWidthM: validateNumber(data.serviceDetails.roadWidthM, ranges.roadWidthM.min, ranges.roadWidthM.max),
+      }
+      for (const [field, check] of Object.entries(checks)) {
+        if (!check.valid) errors[field] = check.error
+      }
+      if (Math.round(data.serviceDetails.roadWidthM * 10) !== data.serviceDetails.roadWidthM * 10) {
+        errors.roadWidthM = 'Road width must use no more than one decimal place.'
+      }
+    } else {
+      const volume = validateNumber(data.serviceDetails.waterVolumeLitres, ranges.waterVolumeLitres.min, ranges.waterVolumeLitres.max, true)
+      const loads = validateNumber(data.serviceDetails.loadsRequired, ranges.loadsRequired.min, ranges.loadsRequired.max, true)
+      if (!volume.valid) errors.waterVolumeLitres = volume.error
+      if (!loads.valid) errors.loadsRequired = loads.error
+    }
+    if (data.serviceType !== data.serviceDetails.serviceType) {
+      errors.serviceType = 'The selected service does not match its service details.'
+    }
+    const distanceKm = haversineDistanceKm(DEPOT_COORDS.lat, DEPOT_COORDS.lng, data.location.lat, data.location.lng)
+    if (!Number.isFinite(data.location.lat) || data.location.lat < -90 || data.location.lat > 90 ||
+      !Number.isFinite(data.location.lng) || data.location.lng < -180 || data.location.lng > 180 || distanceKm.toFixed(1) === '0.0') {
+      errors.location = 'A valid site pin away from the depot is required.'
+    }
+    const locationLabel = validateFreeText(data.location.label, { required: true, min: 3, max: 300 })
+    if (!locationLabel.valid) errors.location = locationLabel.error
+    const scheduledAt = new Date(`${data.scheduledDate}T${data.scheduledTime}`)
+    if (Number.isNaN(scheduledAt.getTime()) || scheduledAt.getTime() <= Date.now()) {
+      errors.schedule = 'Choose a future date and time.'
+    }
+    if (Object.keys(errors).length) return { ok: false, errors }
+
+    const applicant: ApplicantDetails = {
+      ...data.applicant,
+      name: applicantChecks.name.value,
+      nic: applicantChecks.nic.value,
+      phone: applicantChecks.phone.value,
+      address: applicantChecks.address.value,
+      ward: applicantChecks.ward.value,
+    }
+    const loads = data.serviceDetails.serviceType === 'GULLY_BOWSER'
+      ? Math.max(1, Math.ceil(data.serviceDetails.pitVolumeLitres / 6000))
+      : data.serviceDetails.loadsRequired
+    const estimatedFee = calculateFee(data.serviceType, loads, distanceKm)
     const now = new Date().toISOString()
     const refNum = generateReferenceNumber(data.serviceType, bookings)
     const newBooking: BookingRecord = {
@@ -330,12 +402,12 @@ export function useBookingData() {
       serviceType: data.serviceType,
       source: data.source,
       status: 'Pending TO Review',
-      applicant: data.applicant,
-      location: data.location,
+      applicant,
+      location: { ...data.location, label: locationLabel.value },
       scheduledDate: data.scheduledDate,
       scheduledTime: data.scheduledTime,
       serviceDetails: data.serviceDetails,
-      estimatedFee: data.estimatedFee,
+      estimatedFee,
       timeline: [
         {
           at: now,
@@ -348,14 +420,14 @@ export function useBookingData() {
         {
           at: now,
           channel: 'SMS',
-          recipient: data.applicant.phone,
+          recipient: applicant.phone,
           message: `Your ${SERVICE_CONFIG[data.serviceType].label} booking (${refNum}) has been registered at the Pradeshiya Sabha counter.`,
           label: 'Simulated',
         },
       ],
     }
     setBookings((prev) => [newBooking, ...prev])
-    return newBooking
+    return { ok: true, value: newBooking }
   }
 
   /**
@@ -372,7 +444,36 @@ export function useBookingData() {
       finalFee: FeeBreakdown
       approverName?: string
     }
-  ) => {
+  ): BookingActionResult<void> => {
+    const booking = bookings.find((item) => item.id === bookingId)
+    if (!booking) return { ok: false, errors: { booking: 'Booking not found.' } }
+    if (booking.status !== 'Pending TO Review') return { ok: false, errors: { booking: 'Only bookings awaiting technical review can be approved.' } }
+    const ranges = SERVICE_CONFIG[booking.serviceType].bookingRanges
+    const loads = validateNumber(params.finalFee.loads, ranges.technicalLoads.min, ranges.technicalLoads.max, true)
+    const distance = validateNumber(params.finalFee.distanceKm, ranges.technicalDistanceKm.min, ranges.technicalDistanceKm.max)
+    const requiredChecks = booking.serviceType === 'GULLY_BOWSER'
+      ? [params.checklist.roadAccess, params.checklist.vehicleTurningRadius, params.checklist.suctionDistance, params.checklist.bowserCapacity]
+      : [params.checklist.roadAccess, params.checklist.deliveryRoadBridgeLimits, params.checklist.slope, params.checklist.pumpingHoseReach, params.checklist.waterReservoirStock]
+    if (!loads.valid || !distance.valid || requiredChecks.some((value) => value !== true)) {
+      return { ok: false, errors: { review: !loads.valid ? loads.error : !distance.valid ? distance.error : 'Every technical checklist item must be confirmed.' } }
+    }
+    if (Math.round(params.finalFee.distanceKm * 10) !== params.finalFee.distanceKm * 10) {
+      return { ok: false, errors: { distance: 'Route distance must use no more than one decimal place.' } }
+    }
+    const verifiedFee = calculateFee(booking.serviceType, loads.value, distance.value)
+    if (
+      (params.adjustedLoads !== undefined && params.adjustedLoads !== verifiedFee.loads) ||
+      (params.adjustedDistanceKm !== undefined && params.adjustedDistanceKm !== verifiedFee.distanceKm)
+    ) {
+      return { ok: false, errors: { finalFee: 'Adjustment values must match the validated fee calculation.' } }
+    }
+    if (
+      params.finalFee.totalLKR !== verifiedFee.totalLKR ||
+      params.finalFee.farePerLoad !== verifiedFee.farePerLoad ||
+      params.finalFee.transportFeePerKm !== verifiedFee.transportFeePerKm
+    ) {
+      return { ok: false, errors: { finalFee: 'The final fee must match the validated loads and route distance.' } }
+    }
     const now = new Date().toISOString()
     const paymentDueBy = new Date(Date.now() + 24 * 3600 * 1000).toISOString()
     setBookings((prev) =>
@@ -384,7 +485,7 @@ export function useBookingData() {
           toChecklistResult: params.checklist,
           toAdjustedLoads: params.adjustedLoads,
           toAdjustedDistanceKm: params.adjustedDistanceKm,
-          estimatedFee: params.finalFee,
+          estimatedFee: verifiedFee,
           approvedAt: now,
           paymentDueBy,
           timeline: [
@@ -393,7 +494,7 @@ export function useBookingData() {
               at: now,
               actor: params.approverName || 'Technical Officer',
               event: 'Booking Approved',
-              note: `Final fee: LKR ${params.finalFee.totalLKR.toLocaleString()}. Payment due within 24 hours.`,
+              note: `Final fee: LKR ${verifiedFee.totalLKR.toLocaleString()}. Payment due within 24 hours.`,
             },
           ],
           notifications: [
@@ -402,13 +503,14 @@ export function useBookingData() {
               at: now,
               channel: 'SMS' as const,
               recipient: b.applicant.phone,
-              message: `${b.referenceNumber} APPROVED. Fee: LKR ${params.finalFee.totalLKR.toLocaleString()}. Please complete payment within 24 hours to confirm your booking.`,
+              message: `${b.referenceNumber} APPROVED. Fee: LKR ${verifiedFee.totalLKR.toLocaleString()}. Please complete payment within 24 hours to confirm your booking.`,
               label: 'Simulated' as const,
             },
           ],
         }
       })
     )
+    return { ok: true, value: undefined }
   }
 
   /**
@@ -419,7 +521,12 @@ export function useBookingData() {
     bookingId: string,
     reason: string,
     approverName?: string
-  ) => {
+  ): BookingActionResult<void> => {
+    const booking = bookings.find((item) => item.id === bookingId)
+    if (!booking) return { ok: false, errors: { booking: 'Booking not found.' } }
+    if (booking.status !== 'Pending TO Review') return { ok: false, errors: { booking: 'Only bookings awaiting technical review can be rejected.' } }
+    const validatedReason = validateFreeText(reason, { required: true, min: 10, max: 300 })
+    if (!validatedReason.valid) return { ok: false, errors: { reason: validatedReason.error } }
     const now = new Date().toISOString()
     setBookings((prev) =>
       prev.map((b) => {
@@ -427,14 +534,14 @@ export function useBookingData() {
         return {
           ...b,
           status: 'Rejected' as BookingStatus,
-          rejectionReason: reason,
+          rejectionReason: validatedReason.value,
           timeline: [
             ...b.timeline,
             {
               at: now,
               actor: approverName || 'Technical Officer',
               event: 'Booking Rejected',
-              note: reason,
+              note: validatedReason.value,
             },
           ],
           notifications: [
@@ -443,13 +550,14 @@ export function useBookingData() {
               at: now,
               channel: 'SMS' as const,
               recipient: b.applicant.phone,
-              message: `${b.referenceNumber} REJECTED. Reason: ${reason} Please contact the Pradeshiya Sabha for alternatives.`,
+              message: `${b.referenceNumber} REJECTED. Reason: ${validatedReason.value} Please contact the Pradeshiya Sabha for alternatives.`,
               label: 'Simulated' as const,
             },
           ],
         }
       })
     )
+    return { ok: true, value: undefined }
   }
 
   /**
@@ -460,7 +568,18 @@ export function useBookingData() {
     bookingId: string,
     receipt: EReceipt,
     recordedBy?: string
-  ) => {
+  ): BookingActionResult<void> => {
+    const booking = bookings.find((item) => item.id === bookingId)
+    if (!booking) return { ok: false, errors: { booking: 'Booking not found.' } }
+    if (booking.status !== 'Awaiting Payment') return { ok: false, errors: { booking: 'Only bookings awaiting payment can be paid.' } }
+    const reference = validateReferenceText(receipt.receiptNumber)
+    if (!reference.valid) return { ok: false, errors: { receiptNumber: reference.error } }
+    if (!['Counter Cash', 'Counter Card', 'Online Payment'].includes(receipt.method)) {
+      return { ok: false, errors: { method: 'Choose a payment method.' } }
+    }
+    if (receipt.amountLKR !== booking.estimatedFee.totalLKR) {
+      return { ok: false, errors: { amountLKR: 'Payment amount must equal the approved booking fee.' } }
+    }
     const now = new Date().toISOString()
     setBookings((prev) =>
       prev.map((b) => {
@@ -468,7 +587,7 @@ export function useBookingData() {
         return {
           ...b,
           status: 'Confirmed' as BookingStatus,
-          receipt,
+          receipt: { ...receipt, receiptNumber: reference.value },
           timeline: [
             ...b.timeline,
             {
@@ -491,32 +610,33 @@ export function useBookingData() {
         }
       })
     )
+    return { ok: true, value: undefined }
   }
 
   /**
    * Validates whether a vehicle can be assigned to a booking.
    * Checks: category match, Available status, permit/licence/insurance validity.
-   * Returns { valid: true } or { valid: false, error: '...' }.
+   * Returns a structured success or field validation errors.
    */
   const validateVehicleAssignment = (
     booking: BookingRecord,
     vehicleId: string
   ): AssignmentValidationResult => {
     const vehicle = vehicles.find((v) => v.id === vehicleId)
-    if (!vehicle) return { valid: false, error: 'Vehicle not found.' }
+    if (!vehicle) return { ok: false, errors: { vehicleId: 'Vehicle not found.' } }
 
     const requiredCategory = SERVICE_CONFIG[booking.serviceType].vehicleCategory
     if (vehicle.category !== requiredCategory) {
       return {
-        valid: false,
-        error: `Vehicle category mismatch. This booking requires a "${requiredCategory}" but "${vehicle.name}" is a "${vehicle.category}".`,
+        ok: false,
+        errors: { vehicleId: `Vehicle category mismatch. This booking requires a "${requiredCategory}" but "${vehicle.name}" is a "${vehicle.category}".` },
       }
     }
 
     if (vehicle.status !== 'Available') {
       return {
-        valid: false,
-        error: `Vehicle ${vehicle.registrationNumber} is not available (current status: ${vehicle.status}).`,
+        ok: false,
+        errors: { vehicleId: `Vehicle ${vehicle.registrationNumber} is not available (current status: ${vehicle.status}).` },
       }
     }
 
@@ -524,24 +644,24 @@ export function useBookingData() {
     const today = new Date().toISOString().split('T')[0]
     if (vehicle.permitExpiryDate < today) {
       return {
-        valid: false,
-        error: `Vehicle ${vehicle.registrationNumber} has an expired Route Permit (expired ${vehicle.permitExpiryDate}). Renew before assigning.`,
+        ok: false,
+        errors: { vehicleId: `Vehicle ${vehicle.registrationNumber} has an expired Route Permit (expired ${vehicle.permitExpiryDate}). Renew before assigning.` },
       }
     }
     if (vehicle.revenueLicenseExpiryDate < today) {
       return {
-        valid: false,
-        error: `Vehicle ${vehicle.registrationNumber} has an expired Revenue License (expired ${vehicle.revenueLicenseExpiryDate}).`,
+        ok: false,
+        errors: { vehicleId: `Vehicle ${vehicle.registrationNumber} has an expired Revenue License (expired ${vehicle.revenueLicenseExpiryDate}).` },
       }
     }
     if (vehicle.insuranceExpiryDate < today) {
       return {
-        valid: false,
-        error: `Vehicle ${vehicle.registrationNumber} has expired Insurance (expired ${vehicle.insuranceExpiryDate}).`,
+        ok: false,
+        errors: { vehicleId: `Vehicle ${vehicle.registrationNumber} has expired Insurance (expired ${vehicle.insuranceExpiryDate}).` },
       }
     }
 
-    return { valid: true }
+    return { ok: true, value: undefined }
   }
 
   /**
@@ -556,16 +676,20 @@ export function useBookingData() {
     assignedBy?: string
   ): AssignmentValidationResult => {
     const booking = bookings.find((b) => b.id === bookingId)
-    if (!booking) return { valid: false, error: 'Booking not found.' }
+    if (!booking) return { ok: false, errors: { booking: 'Booking not found.' } }
+    if (booking.status !== 'Confirmed') return { ok: false, errors: { booking: 'Only confirmed bookings can be assigned.' } }
 
     const validation = validateVehicleAssignment(booking, vehicleId)
-    if (!validation.valid) return validation
+    if (!validation.ok) return validation
+
+    const validatedAssignee = validateFreeText(assignedBy ?? '', { max: 300 })
+    if (!validatedAssignee.valid) return { ok: false, errors: { assignedBy: validatedAssignee.error } }
 
     const vehicle = vehicles.find((v) => v.id === vehicleId)
     const driver = drivers.find((d) => d.id === driverId)
-    if (!driver) return { valid: false, error: 'Driver not found.' }
+    if (!driver) return { ok: false, errors: { driverId: 'Driver not found.' } }
     if (driver.status !== 'On Duty') {
-      return { valid: false, error: `Driver ${driver.name} is not currently on duty.` }
+      return { ok: false, errors: { driverId: `Driver ${driver.name} is not currently on duty.` } }
     }
 
     // Check driver not already on an active booking job
@@ -579,8 +703,8 @@ export function useBookingData() {
     )
     if (driverActiveBooking) {
       return {
-        valid: false,
-        error: `Driver ${driver.name} is already on an active job (${driverActiveBooking.referenceNumber}).`,
+        ok: false,
+        errors: { driverId: `Driver ${driver.name} is already on an active job (${driverActiveBooking.referenceNumber}).` },
       }
     }
 
@@ -610,7 +734,7 @@ export function useBookingData() {
             ...b.timeline,
             {
               at: now,
-              actor: assignedBy || 'Fleet Supervisor (Current User)',
+              actor: validatedAssignee.value || 'Fleet Supervisor (Current User)',
               event: 'Vehicle Assigned',
               note: `${vehicle?.registrationNumber} assigned with driver ${driver.name}.`,
             },
@@ -671,7 +795,7 @@ export function useBookingData() {
       })
     )
 
-    return { valid: true }
+    return { ok: true, value: undefined }
   }
 
   /**
@@ -687,10 +811,46 @@ export function useBookingData() {
     extraData?: {
       disposalLog?: DisposalLog
       deliveryLog?: DeliveryLog
+      citizenSignOff?: string
+      signOffConfirmed?: boolean
     }
-  ) => {
+  ): BookingActionResult<void> => {
     const booking = bookings.find((item) => item.id === bookingId)
-    if (!booking) return
+    if (!booking) return { ok: false, errors: { booking: 'Booking not found.' } }
+    const transitions: Partial<Record<BookingStatus, BookingStatus[]>> = {
+      'Vehicle Assigned': ['En Route'],
+      'En Route': ['Service In Progress'],
+      'Service In Progress': booking.serviceType === 'GULLY_BOWSER' ? ['In Transit to Plant'] : ['Pending Closeout'],
+      'In Transit to Plant': ['Pending Closeout'],
+      'Pending Closeout': ['Completed'],
+    }
+    if (!transitions[booking.status]?.includes(newStatus)) {
+      return { ok: false, errors: { status: 'This booking cannot advance to the requested status.' } }
+    }
+    if (newStatus === 'Completed') {
+      const signOff = validateFreeText(extraData?.citizenSignOff ?? '', { required: true, min: 3, max: 120 })
+      if (extraData?.signOffConfirmed !== true || !signOff.valid) {
+        return { ok: false, errors: { signOff: 'A confirmed citizen sign-off is required before completion.' } }
+      }
+    }
+    const validatedNote = validateFreeText(note ?? '', { max: 300 })
+    if (!validatedNote.valid) return { ok: false, errors: { note: validatedNote.error } }
+    if (newStatus === 'Pending Closeout' && booking.serviceType === 'GULLY_BOWSER') {
+      const log = extraData?.disposalLog
+      const ticket = validateReferenceText(log?.weighbridgeTicketNo ?? '')
+      const volume = validatePositiveNumber(log?.volumeLitres ?? '')
+      const knownPlant = log && APPROVED_DISPOSAL_PLANTS.some((plant) => plant === log.plantName)
+      if (!log || !knownPlant || !ticket.valid || !volume.valid) {
+        return { ok: false, errors: { disposalLog: !log ? 'Disposal details are required.' : !knownPlant ? 'Choose a listed treatment plant.' : !ticket.valid ? ticket.error : volume.error } }
+      }
+    }
+    if (newStatus === 'Pending Closeout' && booking.serviceType === 'WATER_BOWSER') {
+      const log = extraData?.deliveryLog
+      const readings = log && validateFlowmeterReadings(log.flowmeterStart, log.flowmeterEnd)
+      if (!log || !readings?.valid || log.litresDelivered !== readings.value.litresDelivered) {
+        return { ok: false, errors: { deliveryLog: readings?.error || 'Flowmeter readings are required and delivered volume must be calculated.' } }
+      }
+    }
     const now = new Date().toISOString()
     const vehicleToRelease = newStatus === 'Pending Closeout' ? booking.assignedVehicleId : undefined
 
@@ -725,13 +885,14 @@ export function useBookingData() {
           completedAt: newStatus === 'Completed' ? now : b.completedAt,
           disposalLog: extraData?.disposalLog ?? b.disposalLog,
           deliveryLog: extraData?.deliveryLog ?? b.deliveryLog,
+          citizenSignOff: extraData?.citizenSignOff ?? b.citizenSignOff,
           timeline: [
             ...b.timeline,
             {
               at: now,
               actor: actor || 'Driver / Supervisor (Current User)',
               event: statusEventMap[newStatus] || newStatus,
-              note,
+              note: validatedNote.value || undefined,
             },
           ],
           notifications:
@@ -763,11 +924,21 @@ export function useBookingData() {
             status: 'Available',
             currentLocation: 'Sanitation Unit Depot – Returned from Service',
             activeMission: undefined,
+            assignedDriverId: null,
+            assignedDriverName: null,
             odometerKm: v.odometerKm + Math.round(tripKm),
           }
         })
       )
+      if (booking.assignedDriverId) {
+        setDrivers((prev) =>
+          prev.map((driver) => driver.id === booking.assignedDriverId
+            ? { ...driver, assignedVehicleId: null, assignedVehicleReg: null }
+            : driver)
+        )
+      }
     }
+    return { ok: true, value: undefined }
   }
 
   /**
@@ -777,24 +948,28 @@ export function useBookingData() {
   const closeoutBooking = (
     bookingId: string,
     citizenSignOff: string,
+    signOffConfirmed: boolean,
     supervisorNote?: string,
     supervisorName?: string
-  ) => {
-    advanceJobStep(
+  ): BookingActionResult<void> => {
+    const booking = bookings.find((item) => item.id === bookingId)
+    if (!booking || booking.status !== 'Pending Closeout') {
+      return { ok: false, errors: { booking: 'Only pending-closeout bookings can be completed.' } }
+    }
+    const signOff = validateFreeText(citizenSignOff, { required: true, min: 3, max: 120 })
+    const note = validateFreeText(supervisorNote ?? '', { max: 300 })
+    if (!signOffConfirmed) return { ok: false, errors: { signOff: 'Confirm that the citizen sign-off was received.' } }
+    if (!signOff.valid) return { ok: false, errors: { signOff: 'Record the citizen sign-off confirmation.' } }
+    if (!note.valid) return { ok: false, errors: { remarks: note.error } }
+    const result = advanceJobStep(
       bookingId,
       'Completed',
-      supervisorNote
-        ? `${supervisorNote} Citizen sign-off: ${citizenSignOff}.`
-        : `Citizen sign-off: ${citizenSignOff}.`,
-      supervisorName || 'Supervisor (Current User)'
+      note.value || undefined,
+      supervisorName || 'Supervisor (Current User)',
+      { citizenSignOff: signOff.value, signOffConfirmed }
     )
-    // Update booking with sign-off
-    const now = new Date().toISOString()
-    setBookings((prev) =>
-      prev.map((b) =>
-        b.id === bookingId ? { ...b, citizenSignOff, completedAt: now } : b
-      )
-    )
+    if (!result.ok) return result
+    return { ok: true, value: undefined }
   }
 
   return {

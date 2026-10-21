@@ -12,6 +12,21 @@ import {
   type BookingRecord,
 } from '../data/initialBookingData'
 import { haversineDistanceKm, calculateFee, formatLKR } from '../utils/bookingUtils'
+import {
+  filterMobileInput,
+  filterCoordinateInput,
+  filterNameInput,
+  filterNicInput,
+  filterNumericInput,
+  validateFullName,
+  validateFreeText,
+  validateMobile,
+  validateNic,
+  validateNumber,
+  validateStreetAddress,
+  validateWard,
+} from '../utils/validators'
+import type { BookingActionResult } from '../utils/validators'
 
 interface NewBookingModalProps {
   isOpen: boolean
@@ -25,7 +40,7 @@ interface NewBookingModalProps {
     serviceDetails: GullyServiceDetails | WaterServiceDetails
     estimatedFee: FeeBreakdown
     source: 'Staff Counter'
-  }) => BookingRecord
+  }) => BookingActionResult<BookingRecord>
 }
 
 const WARDS = [
@@ -78,20 +93,23 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   })
 
   // Gully details
-  const [pitVolumeLitres, setPitVolumeLitres] = useState<number>(5000)
+  const [pitVolumeLitres, setPitVolumeLitres] = useState('5000')
   const [wasteType, setWasteType] = useState<'Domestic Septage' | 'Commercial Septage' | 'Drain & Gully Silt'>('Domestic Septage')
-  const [distanceFromGateM, setDistanceFromGateM] = useState<number>(15)
-  const [hoseLengthRequiredM, setHoseLengthRequiredM] = useState<number>(20)
-  const [roadWidthM, setRoadWidthM] = useState<number>(4.0)
+  const [distanceFromGateM, setDistanceFromGateM] = useState('15')
+  const [hoseLengthRequiredM, setHoseLengthRequiredM] = useState('20')
+  const [roadWidthM, setRoadWidthM] = useState('4.0')
 
   // Water details
-  const [waterVolumeLitres, setWaterVolumeLitres] = useState<number>(8000)
-  const [loadsRequired, setLoadsRequired] = useState<number>(1)
+  const [waterVolumeLitres, setWaterVolumeLitres] = useState('8000')
+  const [loadsRequired, setLoadsRequired] = useState('1')
   const [waterPurpose, setWaterPurpose] = useState<'Drinking' | 'Domestic' | 'Festival' | 'Construction'>('Domestic')
   const [storageTankType, setStorageTankType] = useState<'Overhead Tank' | 'Ground Sump' | 'Barrel or Small Tank' | 'Reservoir'>('Overhead Tank')
 
   // Error state
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
   // Map refs
   const mapContainerRef = useRef<HTMLDivElement | null>(null)
@@ -103,6 +121,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
     setPinLat(lat)
     setPinLng(lng)
     setHasPin(true)
+    setFieldErrors((prev) => ({ ...prev, pin: '' }))
     const map = mapInstanceRef.current
     if (!map) return
     if (pinMarkerRef.current) {
@@ -126,11 +145,12 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   /** Confirms the currently selected ward or manually entered coordinates as the site pin. */
   const confirmCoordinates = () => {
     if (!Number.isFinite(pinLat) || !Number.isFinite(pinLng) || pinLat < -90 || pinLat > 90 || pinLng < -180 || pinLng > 180) {
-      setError('Enter valid latitude and longitude coordinates before confirming.')
+      setFieldErrors((prev) => ({ ...prev, pin: 'Enter valid latitude and longitude coordinates before confirming.' }))
       return
     }
     placePin(pinLat, pinLng)
     setError(null)
+    setFieldErrors((prev) => ({ ...prev, pin: '' }))
   }
 
   // Distance & fee calculation
@@ -138,7 +158,13 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
     return haversineDistanceKm(DEPOT_COORDS.lat, DEPOT_COORDS.lng, pinLat, pinLng)
   }, [pinLat, pinLng])
 
-  const effectiveLoads = serviceType === 'GULLY_BOWSER' ? Math.max(1, Math.ceil(pitVolumeLitres / 6000)) : loadsRequired
+  const numericPitVolume = Number(pitVolumeLitres)
+  const numericDistanceFromGate = Number(distanceFromGateM)
+  const numericHoseLength = Number(hoseLengthRequiredM)
+  const numericRoadWidth = Number(roadWidthM)
+  const numericWaterVolume = Number(waterVolumeLitres)
+  const numericLoads = Number(loadsRequired)
+  const effectiveLoads = serviceType === 'GULLY_BOWSER' ? Math.max(1, Math.ceil(numericPitVolume / 6000)) : numericLoads
 
   const feeBreakdown: FeeBreakdown = useMemo(() => {
     return calculateFee(serviceType, effectiveLoads, distanceKm)
@@ -236,67 +262,95 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   /** Clears the site-pin confirmation before closing the booking form. */
   const handleClose = () => {
     setHasPin(false)
+    setFieldErrors({})
+    setError(null)
+    setSubmitting(false)
     pinMarkerRef.current?.remove()
     pinMarkerRef.current = null
     onClose()
   }
 
+  /** Validates required applicant and service fields, returning field-addressable messages. */
+  const validateFields = (): Record<string, string> => {
+    const nextErrors: Record<string, string> = {}
+    const nameResult = validateFullName(name)
+    const nicResult = validateNic(nic)
+    const phoneResult = validateMobile(phone)
+    const addressResult = validateStreetAddress(address)
+    const wardResult = validateWard(ward, WARDS.map((item) => item.name))
+    if (!nameResult.valid) nextErrors.name = nameResult.error
+    if (!nicResult.valid) nextErrors.nic = nicResult.error
+    if (!phoneResult.valid) nextErrors.phone = phoneResult.error
+    if (!addressResult.valid) nextErrors.address = addressResult.error
+    if (!wardResult.valid) nextErrors.ward = wardResult.error
+    const landmark = validateFreeText(locationLabel, { max: 300 })
+    if (!landmark.valid) nextErrors.landmark = landmark.error
+
+    const ranges = SERVICE_CONFIG[serviceType].bookingRanges
+    if (serviceType === 'GULLY_BOWSER') {
+      const pit = validateNumber(pitVolumeLitres, ranges.pitVolumeLitres.min, ranges.pitVolumeLitres.max, true)
+      const gate = validateNumber(distanceFromGateM, ranges.distanceFromGateM.min, ranges.distanceFromGateM.max, true)
+      const hose = validateNumber(hoseLengthRequiredM, ranges.hoseLengthRequiredM.min, ranges.hoseLengthRequiredM.max, true)
+      const width = validateNumber(roadWidthM, ranges.roadWidthM.min, ranges.roadWidthM.max)
+      if (!pit.valid) nextErrors.pitVolume = pit.error
+      if (!gate.valid) nextErrors.gateDistance = gate.error
+      if (!hose.valid) nextErrors.hoseLength = hose.error
+      if (!width.valid || Math.round(width.value * 10) !== width.value * 10) {
+        nextErrors.roadWidth = width.error || `Enter a value between ${ranges.roadWidthM.min} and ${ranges.roadWidthM.max} with at most one decimal place.`
+      }
+    } else {
+      const volume = validateNumber(waterVolumeLitres, ranges.waterVolumeLitres.min, ranges.waterVolumeLitres.max, true)
+      const loads = validateNumber(loadsRequired, ranges.loadsRequired.min, ranges.loadsRequired.max, true)
+      if (!volume.valid) nextErrors.waterVolume = volume.error
+      if (!loads.valid) nextErrors.loadsRequired = loads.error
+    }
+    const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}`)
+    if (Number.isNaN(scheduledAt.getTime()) || scheduledAt.getTime() <= Date.now()) {
+      nextErrors.schedule = 'Choose a future date and time. A booking scheduled today must be later than now.'
+    }
+    if (!hasPin || !Number.isFinite(pinLat) || !Number.isFinite(pinLng) ||
+      pinLat < -90 || pinLat > 90 || pinLng < -180 || pinLng > 180 ||
+      distanceKm.toFixed(1) === '0.0') {
+      nextErrors.pin = distanceKm.toFixed(1) === '0.0'
+        ? 'Move the site pin so its distance is greater than 0.0 km.'
+        : 'Drop a site pin or confirm valid ward coordinates.'
+    }
+    return nextErrors
+  }
+
+  /** Validates the form and focuses the first invalid field before returning. */
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    setSubmitting(true)
 
-    if (!name.trim()) {
-      setError('Please provide applicant full name.')
+    const nextErrors = validateFields()
+    setFieldErrors(nextErrors)
+    const firstInvalidId = Object.keys(nextErrors)[0]
+    if (firstInvalidId) {
+      const inputId: Record<string, string> = {
+        name: 'booking-applicant-name',
+        nic: 'booking-applicant-nic',
+        phone: 'booking-applicant-phone',
+        address: 'booking-applicant-address',
+        ward: 'booking-applicant-ward',
+        pitVolume: 'booking-pit-volume',
+        gateDistance: 'booking-distance-from-gate',
+        hoseLength: 'booking-hose-length',
+        roadWidth: 'booking-road-width',
+        waterVolume: 'booking-water-volume',
+        loadsRequired: 'booking-loads-required',
+        schedule: 'booking-scheduled-date',
+        pin: 'booking-pin-latitude',
+        landmark: 'booking-location-label',
+      }
+      const firstInvalid = formRef.current?.querySelector<HTMLElement>(`#${inputId[firstInvalidId]}`)
+      firstInvalid?.focus()
+      firstInvalid?.scrollIntoView({ block: 'center' })
+      setSubmitting(false)
       return
     }
-    if (!nic.trim()) {
-      setError('Please provide applicant National Identity Card (NIC) number.')
-      return
-    }
-    if (!phone.trim()) {
-      setError('Please provide contact telephone number.')
-      return
-    }
-    if (!address.trim()) {
-      setError('Please provide destination service address.')
-      return
-    }
-    if (!/^(?:0?7\d{8}|947\d{8})$/.test(phone.replace(/\D/g, ''))) {
-      setError('Enter a valid Sri Lankan mobile number (for example, 077-1234567).')
-      return
-    }
-    if (!/^(?:\d{9}[VvXx]|\d{12})$/.test(nic.trim())) {
-      setError('Enter a valid NIC: 9 digits followed by V/X, or 12 digits.')
-      return
-    }
-    if (!hasPin) {
-      setError('Drop a site pin on the map, or confirm the selected ward coordinates before submitting.')
-      return
-    }
-    if (!Number.isFinite(pinLat) || !Number.isFinite(pinLng) || pinLat < -90 || pinLat > 90 || pinLng < -180 || pinLng > 180) {
-      setError('Enter valid latitude and longitude coordinates.')
-      return
-    }
-
-    const scheduledAt = new Date(`${scheduledDate}T${scheduledTime}`)
-    if (Number.isNaN(scheduledAt.getTime()) || scheduledAt.getTime() <= Date.now()) {
-      setError('Choose a future date and time. A booking scheduled today must be later than the current time.')
-      return
-    }
-
-    const numericValues = serviceType === 'GULLY_BOWSER'
-      ? [pitVolumeLitres, distanceFromGateM, hoseLengthRequiredM, roadWidthM]
-      : [waterVolumeLitres, loadsRequired]
-    if (numericValues.some((value) => !Number.isFinite(value) || value <= 0)) {
-      setError('All service-specific measurements, volumes, and load counts must be greater than zero.')
-      return
-    }
-    if (distanceKm === 0) {
-      setError('The site is 0.0 km from the depot. Move the pin to the actual service location before submitting.')
-      return
-    }
-
-    const locLabel = locationLabel.trim() || `${address.trim()}, ${ward}`
+    const locLabel = validateFreeText(locationLabel, { max: 300 }).value || `${address.trim()}, ${ward}`
 
     const location: LocationPin = {
       lat: pinLat,
@@ -305,10 +359,10 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
     }
 
     const applicant: ApplicantDetails = {
-      name: name.trim(),
-      nic: nic.trim(),
-      phone: phone.trim(),
-      address: address.trim(),
+      name: validateFullName(name).value,
+      nic: validateNic(nic).value,
+      phone: validateMobile(phone).value,
+      address: validateStreetAddress(address).value,
       ward,
     }
 
@@ -316,21 +370,21 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
       serviceType === 'GULLY_BOWSER'
         ? {
             serviceType: 'GULLY_BOWSER',
-            pitVolumeLitres,
+            pitVolumeLitres: numericPitVolume,
             wasteType,
-            distanceFromGateM,
-            hoseLengthRequiredM,
-            roadWidthM,
+            distanceFromGateM: numericDistanceFromGate,
+            hoseLengthRequiredM: numericHoseLength,
+            roadWidthM: numericRoadWidth,
           }
         : {
             serviceType: 'WATER_BOWSER',
-            waterVolumeLitres,
-            loadsRequired,
+            waterVolumeLitres: numericWaterVolume,
+            loadsRequired: numericLoads,
             purpose: waterPurpose,
             storageTankType,
           }
 
-    onCreateBooking({
+    const result = onCreateBooking({
       serviceType,
       applicant,
       location,
@@ -341,7 +395,33 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
       source: 'Staff Counter',
     })
 
+    if (!result.ok) {
+      setFieldErrors(result.errors)
+      setError(Object.values(result.errors).join(' '))
+      const firstErrorKey = Object.keys(result.errors)[0]
+      const fieldIds: Record<string, string> = {
+        name: 'booking-applicant-name',
+        nic: 'booking-applicant-nic',
+        phone: 'booking-applicant-phone',
+        address: 'booking-applicant-address',
+        ward: 'booking-applicant-ward',
+        pitVolumeLitres: 'booking-pit-volume',
+        distanceFromGateM: 'booking-distance-from-gate',
+        hoseLengthRequiredM: 'booking-hose-length',
+        roadWidthM: 'booking-road-width',
+        waterVolumeLitres: 'booking-water-volume',
+        loadsRequired: 'booking-loads-required',
+      }
+      const invalid = fieldIds[firstErrorKey]
+        ? formRef.current?.querySelector<HTMLElement>(`#${fieldIds[firstErrorKey]}`)
+        : undefined
+      invalid?.focus()
+      invalid?.scrollIntoView({ block: 'center' })
+      setSubmitting(false)
+      return
+    }
     handleClose()
+    setSubmitting(false)
   }
 
   if (!isOpen) return null
@@ -380,7 +460,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6 flex-1 text-sm">
+        <form ref={formRef} onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-6 flex-1 text-sm" noValidate>
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium flex items-center gap-2">
               <span>⚠️</span> {error}
@@ -446,12 +526,19 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <input
                   id="booking-applicant-name"
                   type="text"
-                  required
+                  maxLength={60}
+                  aria-invalid={Boolean(fieldErrors.name)}
+                  aria-describedby={fieldErrors.name ? 'booking-applicant-name-error' : undefined}
                   placeholder="e.g. Priyantha Dissanayake"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                  onChange={(e) => setName(filterNameInput(e.target.value))}
+                  onBlur={() => {
+                    const result = validateFullName(name)
+                    setFieldErrors((prev) => ({ ...prev, name: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736] ${fieldErrors.name ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.name && <p id="booking-applicant-name-error" className="mt-1 text-xs text-red-700">{fieldErrors.name}</p>}
               </div>
 
               <div>
@@ -459,12 +546,19 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <input
                   id="booking-applicant-nic"
                   type="text"
-                  required
+                  maxLength={12}
                   placeholder="e.g. 198214502391 / 821452391V"
                   value={nic}
-                  onChange={(e) => setNic(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                  aria-invalid={Boolean(fieldErrors.nic)}
+                  aria-describedby={fieldErrors.nic ? 'booking-applicant-nic-error' : undefined}
+                  onChange={(e) => setNic(filterNicInput(e.target.value))}
+                  onBlur={() => {
+                    const result = validateNic(nic)
+                    setFieldErrors((prev) => ({ ...prev, nic: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736] ${fieldErrors.nic ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.nic && <p id="booking-applicant-nic-error" className="mt-1 text-xs text-red-700">{fieldErrors.nic}</p>}
               </div>
 
               <div>
@@ -472,12 +566,19 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <input
                   id="booking-applicant-phone"
                   type="text"
-                  required
+                  maxLength={15}
                   placeholder="e.g. 077-1234567"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                  aria-invalid={Boolean(fieldErrors.phone)}
+                  aria-describedby={fieldErrors.phone ? 'booking-applicant-phone-error' : undefined}
+                  onChange={(e) => setPhone(filterMobileInput(e.target.value))}
+                  onBlur={() => {
+                    const result = validateMobile(phone)
+                    setFieldErrors((prev) => ({ ...prev, phone: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736] ${fieldErrors.phone ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.phone && <p id="booking-applicant-phone-error" className="mt-1 text-xs text-red-700">{fieldErrors.phone}</p>}
               </div>
             </div>
 
@@ -487,12 +588,19 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <input
                   id="booking-applicant-address"
                   type="text"
-                  required
+                  maxLength={120}
                   placeholder="e.g. 142/B, High Level Road, Homagama"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                  aria-invalid={Boolean(fieldErrors.address)}
+                  aria-describedby={fieldErrors.address ? 'booking-applicant-address-error' : undefined}
+                  onBlur={() => {
+                    const result = validateStreetAddress(address)
+                    setFieldErrors((prev) => ({ ...prev, address: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736] ${fieldErrors.address ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.address && <p id="booking-applicant-address-error" className="mt-1 text-xs text-red-700">{fieldErrors.address}</p>}
               </div>
 
               <div>
@@ -501,7 +609,13 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   id="booking-applicant-ward"
                   value={ward}
                   onChange={(e) => handleWardChange(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736]"
+                  aria-invalid={Boolean(fieldErrors.ward)}
+                  aria-describedby={fieldErrors.ward ? 'booking-applicant-ward-error' : undefined}
+                  onBlur={() => {
+                    const result = validateWard(ward, WARDS.map((item) => item.name))
+                    setFieldErrors((prev) => ({ ...prev, ward: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-[#A31736] ${fieldErrors.ward ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 >
                   {WARDS.map((w) => (
                     <option key={w.name} value={w.name}>
@@ -509,6 +623,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                     </option>
                   ))}
                 </select>
+                {fieldErrors.ward && <p id="booking-applicant-ward-error" className="mt-1 text-xs text-red-700">{fieldErrors.ward}</p>}
               </div>
             </div>
           </div>
@@ -537,11 +652,14 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <label htmlFor="booking-pin-latitude" className="block text-[11px] text-gray-500 mb-1">Latitude</label>
                 <input
                   id="booking-pin-latitude"
-                  type="number"
-                  step="0.0001"
-                  value={pinLat}
+                  type="text"
+                  inputMode="decimal"
+                  value={Number.isFinite(pinLat) ? pinLat : ''}
+                  aria-invalid={Boolean(fieldErrors.pin)}
+                  aria-describedby={fieldErrors.pin ? 'booking-pin-error' : undefined}
                   onChange={(e) => {
-                    setPinLat(Number(e.target.value))
+                    const filtered = filterCoordinateInput(e.target.value)
+                    setPinLat(filtered ? Number(filtered) : Number.NaN)
                     setHasPin(false)
                     pinMarkerRef.current?.remove()
                     pinMarkerRef.current = null
@@ -553,11 +671,14 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                 <label htmlFor="booking-pin-longitude" className="block text-[11px] text-gray-500 mb-1">Longitude</label>
                 <input
                   id="booking-pin-longitude"
-                  type="number"
-                  step="0.0001"
-                  value={pinLng}
+                  type="text"
+                  inputMode="decimal"
+                  value={Number.isFinite(pinLng) ? pinLng : ''}
+                  aria-invalid={Boolean(fieldErrors.pin)}
+                  aria-describedby={fieldErrors.pin ? 'booking-pin-error' : undefined}
                   onChange={(e) => {
-                    setPinLng(Number(e.target.value))
+                    const filtered = filterCoordinateInput(e.target.value)
+                    setPinLng(filtered ? Number(filtered) : Number.NaN)
                     setHasPin(false)
                     pinMarkerRef.current?.remove()
                     pinMarkerRef.current = null
@@ -573,15 +694,24 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   placeholder="e.g. Near Temple junction, narrow lane"
                   value={locationLabel}
                   onChange={(e) => setLocationLabel(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs"
+                  maxLength={300}
+                  aria-invalid={Boolean(fieldErrors.landmark)}
+                  aria-describedby={fieldErrors.landmark ? 'booking-location-label-error' : undefined}
+                  onBlur={() => {
+                    const result = validateFreeText(locationLabel, { max: 300 })
+                    setFieldErrors((prev) => ({ ...prev, landmark: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs ${fieldErrors.landmark ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.landmark && <p id="booking-location-label-error" className="mt-1 text-xs text-red-700">{fieldErrors.landmark}</p>}
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between gap-3">
               <button type="button" onClick={confirmCoordinates} className="px-3 py-1.5 rounded border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50">
                 Confirm Ward / Coordinates
               </button>
-              {distanceKm === 0 && (
+              {fieldErrors.pin && <p id="booking-pin-error" className="text-xs text-red-700" role="alert">{fieldErrors.pin}</p>}
+              {distanceKm.toFixed(1) === '0.0' && (
                 <p className="text-xs font-semibold text-amber-700" role="status">
                   Warning: distance is 0.0 km. Move the pin to the actual service site.
                 </p>
@@ -601,13 +731,20 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   <label htmlFor="booking-pit-volume" className="block text-xs text-gray-600 mb-1 font-medium">Pit Volume (L)</label>
                   <input
                     id="booking-pit-volume"
-                    type="number"
-                    min="1000"
-                    step="500"
+                    type="text"
+                    inputMode="numeric"
+                    aria-invalid={Boolean(fieldErrors.pitVolume)}
+                    aria-describedby={fieldErrors.pitVolume ? 'booking-pit-volume-error' : undefined}
                     value={pitVolumeLitres}
-                    onChange={(e) => setPitVolumeLitres(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-semibold"
+                    onChange={(e) => setPitVolumeLitres(filterNumericInput(e.target.value, false))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.GULLY_BOWSER.bookingRanges.pitVolumeLitres
+                      const result = validateNumber(pitVolumeLitres, range.min, range.max, true)
+                      setFieldErrors((prev) => ({ ...prev, pitVolume: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs font-semibold ${fieldErrors.pitVolume ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.pitVolume && <p id="booking-pit-volume-error" className="mt-1 text-xs text-red-700">{fieldErrors.pitVolume}</p>}
                   <span className="text-[10px] text-gray-400">~{effectiveLoads} load(s)</span>
                 </div>
 
@@ -629,37 +766,64 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   <label htmlFor="booking-distance-from-gate" className="block text-xs text-gray-600 mb-1 font-medium">Dist. from Gate (m)</label>
                   <input
                     id="booking-distance-from-gate"
-                    type="number"
-                    min="1"
+                    type="text"
+                    inputMode="numeric"
+                    aria-invalid={Boolean(fieldErrors.gateDistance)}
+                    aria-describedby={fieldErrors.gateDistance ? 'booking-distance-from-gate-error' : undefined}
                     value={distanceFromGateM}
-                    onChange={(e) => setDistanceFromGateM(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs"
+                    onChange={(e) => setDistanceFromGateM(filterNumericInput(e.target.value, false))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.GULLY_BOWSER.bookingRanges.distanceFromGateM
+                      const result = validateNumber(distanceFromGateM, range.min, range.max, true)
+                      setFieldErrors((prev) => ({ ...prev, gateDistance: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs ${fieldErrors.gateDistance ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.gateDistance && <p id="booking-distance-from-gate-error" className="mt-1 text-xs text-red-700">{fieldErrors.gateDistance}</p>}
                 </div>
 
                 <div>
                   <label htmlFor="booking-hose-length" className="block text-xs text-gray-600 mb-1 font-medium">Hose Length (m)</label>
                   <input
                     id="booking-hose-length"
-                    type="number"
-                    min="5"
+                    type="text"
+                    inputMode="numeric"
+                    aria-invalid={Boolean(fieldErrors.hoseLength)}
+                    aria-describedby={fieldErrors.hoseLength ? 'booking-hose-length-error' : undefined}
                     value={hoseLengthRequiredM}
-                    onChange={(e) => setHoseLengthRequiredM(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs"
+                    onChange={(e) => setHoseLengthRequiredM(filterNumericInput(e.target.value, false))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.GULLY_BOWSER.bookingRanges.hoseLengthRequiredM
+                      const result = validateNumber(hoseLengthRequiredM, range.min, range.max, true)
+                      setFieldErrors((prev) => ({ ...prev, hoseLength: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs ${fieldErrors.hoseLength ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.hoseLength && <p id="booking-hose-length-error" className="mt-1 text-xs text-red-700">{fieldErrors.hoseLength}</p>}
                 </div>
 
                 <div>
                   <label htmlFor="booking-road-width" className="block text-xs text-gray-600 mb-1 font-medium">Road Width (m)</label>
                   <input
                     id="booking-road-width"
-                    type="number"
-                    step="0.5"
-                    min="2"
+                    type="text"
+                    inputMode="decimal"
+                    aria-invalid={Boolean(fieldErrors.roadWidth)}
+                    aria-describedby={fieldErrors.roadWidth ? 'booking-road-width-error' : undefined}
                     value={roadWidthM}
-                    onChange={(e) => setRoadWidthM(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs"
+                    onChange={(e) => setRoadWidthM(filterNumericInput(e.target.value, true))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.GULLY_BOWSER.bookingRanges.roadWidthM
+                      const result = validateNumber(roadWidthM, range.min, range.max)
+                      const validPrecision = Number(roadWidthM) * 10 === Math.round(Number(roadWidthM) * 10)
+                      setFieldErrors((prev) => ({
+                        ...prev,
+                        roadWidth: result.valid && validPrecision ? '' : result.error || `Enter a value between ${range.min} and ${range.max} with at most one decimal place.`,
+                      }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs ${fieldErrors.roadWidth ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.roadWidth && <p id="booking-road-width-error" className="mt-1 text-xs text-red-700">{fieldErrors.roadWidth}</p>}
                 </div>
               </div>
             ) : (
@@ -668,26 +832,40 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   <label htmlFor="booking-water-volume" className="block text-xs text-gray-600 mb-1 font-medium">Water Volume (L)</label>
                   <input
                     id="booking-water-volume"
-                    type="number"
-                    min="1000"
-                    step="1000"
+                    type="text"
+                    inputMode="numeric"
+                    aria-invalid={Boolean(fieldErrors.waterVolume)}
+                    aria-describedby={fieldErrors.waterVolume ? 'booking-water-volume-error' : undefined}
                     value={waterVolumeLitres}
-                    onChange={(e) => setWaterVolumeLitres(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-semibold"
+                    onChange={(e) => setWaterVolumeLitres(filterNumericInput(e.target.value, false))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.WATER_BOWSER.bookingRanges.waterVolumeLitres
+                      const result = validateNumber(waterVolumeLitres, range.min, range.max, true)
+                      setFieldErrors((prev) => ({ ...prev, waterVolume: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs font-semibold ${fieldErrors.waterVolume ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.waterVolume && <p id="booking-water-volume-error" className="mt-1 text-xs text-red-700">{fieldErrors.waterVolume}</p>}
                 </div>
 
                 <div>
                   <label htmlFor="booking-loads-required" className="block text-xs text-gray-600 mb-1 font-medium">Loads Required</label>
                   <input
                     id="booking-loads-required"
-                    type="number"
-                    min="1"
-                    max="10"
+                    type="text"
+                    inputMode="numeric"
+                    aria-invalid={Boolean(fieldErrors.loadsRequired)}
+                    aria-describedby={fieldErrors.loadsRequired ? 'booking-loads-required-error' : undefined}
                     value={loadsRequired}
-                    onChange={(e) => setLoadsRequired(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-semibold"
+                    onChange={(e) => setLoadsRequired(filterNumericInput(e.target.value, false))}
+                    onBlur={() => {
+                      const range = SERVICE_CONFIG.WATER_BOWSER.bookingRanges.loadsRequired
+                      const result = validateNumber(loadsRequired, range.min, range.max, true)
+                      setFieldErrors((prev) => ({ ...prev, loadsRequired: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs font-semibold ${fieldErrors.loadsRequired ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.loadsRequired && <p id="booking-loads-required-error" className="mt-1 text-xs text-red-700">{fieldErrors.loadsRequired}</p>}
                 </div>
 
                 <div>
@@ -735,22 +913,35 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
                   <input
                     id="booking-scheduled-date"
                     type="date"
-                    required
                     value={scheduledDate}
                     onChange={(e) => setScheduledDate(e.target.value)}
+                    aria-invalid={Boolean(fieldErrors.schedule)}
+                    aria-describedby={fieldErrors.schedule ? 'booking-schedule-error' : undefined}
+                    onBlur={() => {
+                      const date = new Date(`${scheduledDate}T${scheduledTime}`)
+                      const valid = !Number.isNaN(date.getTime()) && date.getTime() > Date.now()
+                      setFieldErrors((prev) => ({ ...prev, schedule: valid ? '' : 'Choose a future date and time.' }))
+                    }}
                     min={todayDate}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#A31736]"
+                    className={`w-full bg-white border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#A31736] ${fieldErrors.schedule ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.schedule && <p id="booking-schedule-error" className="mt-1 text-xs text-red-700">{fieldErrors.schedule}</p>}
                 </div>
                 <div>
                   <label htmlFor="booking-scheduled-time" className="block text-xs text-gray-500 mb-1">Preferred Time</label>
                   <input
                     id="booking-scheduled-time"
                     type="time"
-                    required
                     value={scheduledTime}
                     onChange={(e) => setScheduledTime(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#A31736]"
+                    aria-invalid={Boolean(fieldErrors.schedule)}
+                    aria-describedby={fieldErrors.schedule ? 'booking-schedule-error' : undefined}
+                    onBlur={() => {
+                      const date = new Date(`${scheduledDate}T${scheduledTime}`)
+                      const valid = !Number.isNaN(date.getTime()) && date.getTime() > Date.now()
+                      setFieldErrors((prev) => ({ ...prev, schedule: valid ? '' : 'Choose a future date and time.' }))
+                    }}
+                    className={`w-full bg-white border rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#A31736] ${fieldErrors.schedule ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
                 </div>
               </div>
@@ -792,6 +983,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
             </button>
             <button
               type="submit"
+              disabled={submitting}
               className="px-6 py-2.5 rounded-xl bg-[#A31736] hover:bg-[#85122b] text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2"
             >
               <span>Submit & Route to Technical Officer</span>

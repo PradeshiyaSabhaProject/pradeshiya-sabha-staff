@@ -187,6 +187,16 @@ export interface ServiceConfig {
   farePerLoad: number
   transportFeePerKm: number
   supervisorTitle: string
+  bookingRanges: {
+    pitVolumeLitres: { min: number; max: number }
+    distanceFromGateM: { min: number; max: number }
+    hoseLengthRequiredM: { min: number; max: number }
+    roadWidthM: { min: number; max: number }
+    waterVolumeLitres: { min: number; max: number }
+    loadsRequired: { min: number; max: number }
+    technicalLoads: { min: number; max: number }
+    technicalDistanceKm: { min: number; max: number }
+  }
   closeoutStepNames: { field: string; plant?: string; closeout: string }
 }
 
@@ -203,6 +213,16 @@ export const SERVICE_CONFIG: Record<ServiceType, ServiceConfig> = {
     farePerLoad: 4500,           // LKR per load — placeholder
     transportFeePerKm: 150,      // LKR per km — placeholder
     supervisorTitle: 'Fleet Supervisor',
+    bookingRanges: {
+      pitVolumeLitres: { min: 500, max: 30000 },
+      distanceFromGateM: { min: 0, max: 500 },
+      hoseLengthRequiredM: { min: 0, max: 200 },
+      roadWidthM: { min: 1, max: 15 },
+      waterVolumeLitres: { min: 1000, max: 100000 },
+      loadsRequired: { min: 1, max: 20 },
+      technicalLoads: { min: 1, max: 20 },
+      technicalDistanceKm: { min: 0.1, max: 100 },
+    },
     closeoutStepNames: {
       field: 'Pit Emptied',
       plant: 'Disposed at Treatment Plant',
@@ -216,6 +236,16 @@ export const SERVICE_CONFIG: Record<ServiceType, ServiceConfig> = {
     farePerLoad: 3000,           // LKR per load — placeholder
     transportFeePerKm: 100,      // LKR per km — placeholder
     supervisorTitle: 'Water Supply Supervisor',
+    bookingRanges: {
+      pitVolumeLitres: { min: 500, max: 30000 },
+      distanceFromGateM: { min: 0, max: 500 },
+      hoseLengthRequiredM: { min: 0, max: 200 },
+      roadWidthM: { min: 1, max: 15 },
+      waterVolumeLitres: { min: 1000, max: 100000 },
+      loadsRequired: { min: 1, max: 20 },
+      technicalLoads: { min: 1, max: 20 },
+      technicalDistanceKm: { min: 0.1, max: 100 },
+    },
     closeoutStepNames: {
       field: 'Water Delivered',
       closeout: 'Delivery Verified & Closed',
@@ -798,7 +828,7 @@ export function buildInitialBookings(now: number): BookingRecord[] {
       status: 'Completed',
       applicant: {
         name: 'Rukmani Jayawardena',
-        nic: '734512890V',
+        nic: '735123890V',
         phone: '078-9912345',
         address: '5, Homagama Town, Main Street',
         ward: 'Ward 01 – Homagama Town',

@@ -8,6 +8,7 @@ import {
   formatLKR,
   nextActionLabel,
 } from './utils/bookingUtils'
+import { formatMobileNumber } from './utils/validators'
 
 // Workflow Modals & Full Drawer
 import { NewBookingModal } from './components/NewBookingModal'
@@ -95,7 +96,6 @@ export const FleetBookingsPage: React.FC = () => {
     vehicles,
     drivers,
     bookingStats,
-    resetDemoData,
     seedAgeHours,
     createBooking,
     approveBooking,
@@ -159,12 +159,6 @@ export const FleetBookingsPage: React.FC = () => {
     sourceFilter !== 'All',
   ].filter(Boolean).length
 
-  /** Resets all persisted fleet demo collections and restores the current seed. */
-  const handleResetDemoData = () => {
-    resetDemoData()
-    setIsSeedNoticeDismissed(false)
-  }
-
   /** Dispatches action button click to the appropriate workflow modal. */
   const handleOpenAction = (booking: BookingRecord) => {
     switch (booking.status) {
@@ -221,13 +215,6 @@ export const FleetBookingsPage: React.FC = () => {
             <PlusIcon />
             <span>New Booking</span>
           </button>
-          <button
-            type="button"
-            onClick={handleResetDemoData}
-            className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-xs font-semibold px-4 py-2.5 rounded transition-all flex items-center gap-2 cursor-pointer shadow-sm uppercase tracking-wider"
-          >
-            Reset demo data
-          </button>
         </div>
       </div>
 
@@ -235,9 +222,6 @@ export const FleetBookingsPage: React.FC = () => {
         <div className="flex items-center justify-between gap-3 rounded border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-900" role="status">
           <p>Demo data was created {seedAgeHours} hours ago, so payment countdowns may have expired.</p>
           <div className="flex shrink-0 items-center gap-2">
-            <button type="button" onClick={handleResetDemoData} className="font-bold underline">
-              Reset
-            </button>
             <button type="button" onClick={() => setIsSeedNoticeDismissed(true)} aria-label="Dismiss demo data notice" className="font-bold">
               ×
             </button>
@@ -445,7 +429,7 @@ export const FleetBookingsPage: React.FC = () => {
                       {/* Applicant */}
                       <td className="py-3.5 px-4">
                         <p className="font-semibold text-gray-900">{b.applicant.name}</p>
-                        <p className="text-[11px] text-gray-500 font-mono">{b.applicant.phone}</p>
+                        <p className="text-[11px] text-gray-500 font-mono">{formatMobileNumber(b.applicant.phone)}</p>
                       </td>
 
                       {/* Source */}

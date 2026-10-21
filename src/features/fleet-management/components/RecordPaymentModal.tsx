@@ -5,12 +5,14 @@ import {
   type EReceipt,
 } from '../data/initialBookingData'
 import { formatLKR, paymentTimeRemaining } from '../utils/bookingUtils'
+import { formatMobileNumber, validateReferenceText } from '../utils/validators'
+import type { BookingActionResult } from '../utils/validators'
 
 interface RecordPaymentModalProps {
   isOpen: boolean
   onClose: () => void
   booking: BookingRecord | null
-  onRecordPayment: (bookingId: string, receipt: EReceipt, recordedBy?: string) => void
+  onRecordPayment: (bookingId: string, receipt: EReceipt, recordedBy?: string) => BookingActionResult<void>
 }
 
 /**
@@ -28,6 +30,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
   const [receiptNumber, setReceiptNumber] = useState('')
   const [cashierName, setCashierName] = useState('Staff Cashier (Desk 02)')
   const [error, setError] = useState<string | null>(null)
+  const [receiptError, setReceiptError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const [timeRemainingDisplay, setTimeRemainingDisplay] = useState('')
   const [isUrgent, setIsUrgent] = useState(false)
 
@@ -44,6 +48,8 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
       const randomSuffix = 1000 + (array[0] % 9000)
       setReceiptNumber(`RCP-2026-${randomSuffix}`)
       setError(null)
+      setReceiptError('')
+      setSubmitting(false)
 
       if (booking.paymentDueBy) {
         const r = paymentTimeRemaining(booking.paymentDueBy)
@@ -69,32 +75,52 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
     e.preventDefault()
     setError(null)
 
-    if (!receiptNumber.trim()) {
-      setError('Please provide or confirm a receipt number.')
+    const reference = validateReferenceText(receiptNumber)
+    if (!reference.valid) {
+      setReceiptError(reference.error)
+      setError(reference.error)
       return
     }
+    setReceiptError('')
+    setSubmitting(true)
 
     const receipt: EReceipt = {
-      receiptNumber: receiptNumber.trim(),
+      receiptNumber: reference.value,
       method,
       paidAt: new Date().toISOString(),
       amountLKR,
     }
 
-    onRecordPayment(booking.id, receipt, cashierName)
+    const result = onRecordPayment(booking.id, receipt, cashierName)
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
+      return
+    }
     onClose()
   }
 
   const handleSimulateOnline = () => {
     setMethod('Online Payment')
+    const onlineReceipt = receiptNumber.trim() || `RCP-2026-ONLINE-${Date.now().toString().slice(-4)}`
+    const reference = validateReferenceText(onlineReceipt)
+    if (!reference.valid) {
+      setReceiptError(reference.error)
+      setError(reference.error)
+      return
+    }
     const receipt: EReceipt = {
-      receiptNumber: receiptNumber.trim() || `RCP-2026-ONLINE-${Date.now().toString().slice(-4)}`,
+      receiptNumber: reference.value,
       method: 'Online Payment',
       paidAt: new Date().toISOString(),
       amountLKR,
     }
 
-    onRecordPayment(booking.id, receipt, 'Citizen Online Portal (LankaPay Gateway)')
+    const result = onRecordPayment(booking.id, receipt, 'Citizen Online Portal (LankaPay Gateway)')
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      return
+    }
     onClose()
   }
 
@@ -175,7 +201,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
             <div>
               <span className="text-gray-400 block font-medium">Applicant</span>
               <span className="font-bold text-gray-800">{booking.applicant.name}</span>
-              <span className="text-gray-500 block font-mono text-[11px]">{booking.applicant.phone}</span>
+              <span className="text-gray-500 block font-mono text-[11px]">{formatMobileNumber(booking.applicant.phone)}</span>
             </div>
             <div>
               <span className="text-gray-400 block font-medium">Site Address</span>
@@ -229,16 +255,35 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
           </div>
 
           {/* Receipt Details */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <div>
               <label htmlFor="payment-receipt-number" className="block text-xs text-gray-500 mb-1 font-medium">E-Receipt Number *</label>
               <input
                 id="payment-receipt-number"
                 type="text"
-                required
+                maxLength={20}
                 value={receiptNumber}
-                onChange={(e) => setReceiptNumber(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-xs font-mono font-bold"
+                onChange={(e) => setReceiptNumber(e.target.value.replace(/[^a-z\d/-]/gi, '').toUpperCase().slice(0, 20))}
+                onBlur={() => {
+                  const result = validateReferenceText(receiptNumber)
+                  setReceiptError(result.valid ? '' : result.error)
+                }}
+                aria-invalid={Boolean(receiptError)}
+                aria-describedby={receiptError ? 'payment-receipt-error' : undefined}
+                className={`w-full bg-white border rounded-xl px-3 py-2 text-xs font-mono font-bold ${receiptError ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
+              />
+              {receiptError && <p id="payment-receipt-error" className="mt-1 text-xs text-red-700">{receiptError}</p>}
+            </div>
+
+            <div>
+              <label htmlFor="payment-amount" className="block text-xs text-gray-500 mb-1 font-medium">Amount (LKR)</label>
+              <input
+                id="payment-amount"
+                type="text"
+                value={amountLKR.toFixed(2)}
+                readOnly
+                aria-readonly="true"
+                className="w-full bg-gray-100 border border-gray-300 rounded-xl px-3 py-2 text-xs font-mono font-bold text-gray-700"
               />
             </div>
 
@@ -274,6 +319,7 @@ export const RecordPaymentModal: React.FC<RecordPaymentModalProps> = ({
               </button>
               <button
                 type="submit"
+                disabled={submitting}
                 className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
               >
                 Confirm Payment & Issue Receipt

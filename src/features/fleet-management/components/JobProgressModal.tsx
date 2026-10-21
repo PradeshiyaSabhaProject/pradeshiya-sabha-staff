@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import {
   type BookingRecord,
   type BookingStatus,
   type DisposalLog,
   type DeliveryLog,
 } from '../data/initialBookingData'
+import { APPROVED_DISPOSAL_PLANTS, filterNumericInput, validateFlowmeterReadings, validateFreeText, validateNonNegativeInteger, validatePositiveNumber, validateReferenceText } from '../utils/validators'
+import type { BookingActionResult } from '../utils/validators'
 
 interface JobProgressModalProps {
   isOpen: boolean
@@ -19,7 +21,7 @@ interface JobProgressModalProps {
       disposalLog?: DisposalLog
       deliveryLog?: DeliveryLog
     }
-  ) => void
+  ) => BookingActionResult<void>
 }
 
 /**
@@ -47,14 +49,17 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
   // Gully Disposal Log fields
   const [plantName, setPlantName] = useState('Kerawalapitiya Septage Treatment Plant')
   const [weighbridgeTicketNo, setWeighbridgeTicketNo] = useState('')
-  const [disposalVolumeLitres, setDisposalVolumeLitres] = useState<number>(5000)
-  const [disposalWeightKg, setDisposalWeightKg] = useState<number>(5150)
+  const [disposalVolumeLitres, setDisposalVolumeLitres] = useState('5000')
+  const [disposalWeightKg, setDisposalWeightKg] = useState('5150')
 
   // Water Delivery Log fields
-  const [flowmeterStart, setFlowmeterStart] = useState<number>(10000)
-  const [flowmeterEnd, setFlowmeterEnd] = useState<number>(18000)
+  const [flowmeterStart, setFlowmeterStart] = useState('10000')
+  const [flowmeterEnd, setFlowmeterEnd] = useState('18000')
 
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
   const [prevBookingId, setPrevBookingId] = useState<string | null>(null)
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
@@ -65,6 +70,8 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
     setPrevBookingId(booking?.id || null)
     if (booking && isOpen) {
       setError(null)
+      setFieldErrors({})
+      setSubmitting(false)
       setOperatorName(booking.assignedDriverName || 'Field Crew Operator')
       setOperationalNotes('')
 
@@ -75,12 +82,12 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
 
       if (isGully) {
         const pitVol = 'pitVolumeLitres' in booking.serviceDetails ? booking.serviceDetails.pitVolumeLitres : 5000
-        setDisposalVolumeLitres(pitVol)
-        setDisposalWeightKg(Math.round(pitVol * 1.03))
+        setDisposalVolumeLitres(String(pitVol))
+        setDisposalWeightKg(String(Math.round(pitVol * 1.03)))
       } else {
         const waterVol = 'waterVolumeLitres' in booking.serviceDetails ? booking.serviceDetails.waterVolumeLitres : 8000
-        setFlowmeterStart(15200)
-        setFlowmeterEnd(15200 + waterVol)
+        setFlowmeterStart('15200')
+        setFlowmeterEnd(String(15200 + waterVol))
       }
     }
   }
@@ -120,51 +127,88 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
 
   const isReleasingVehicle = targetNextStatus === 'Pending Closeout'
 
+  /** Presents a field-specific error and moves focus to its input. */
+  const failField = (field: string, inputId: string, message: string) => {
+    setFieldErrors((prev) => ({ ...prev, [field]: message }))
+    setError(message)
+    const target = formRef.current?.querySelector<HTMLElement>(`#${inputId}`)
+    target?.focus()
+    target?.scrollIntoView({ block: 'center' })
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
 
     if (!targetNextStatus) return
+    const notes = validateFreeText(operationalNotes, { max: 300 })
+    if (!notes.valid) {
+      failField('notes', 'job-operational-notes', notes.error)
+      return
+    }
 
+    setFieldErrors({})
     let extraData: { disposalLog?: DisposalLog; deliveryLog?: DeliveryLog } | undefined
 
     if (targetNextStatus === 'Pending Closeout') {
       if (isGully) {
-        if (!weighbridgeTicketNo.trim()) {
-          setError('Please provide a weighbridge ticket number for plant disposal.')
+        const ticket = validateReferenceText(weighbridgeTicketNo)
+        const volume = validatePositiveNumber(disposalVolumeLitres)
+        const weight = validatePositiveNumber(disposalWeightKg)
+        if (!APPROVED_DISPOSAL_PLANTS.some((plant) => plant === plantName)) {
+          failField('plant', 'job-disposal-facility', 'Choose a listed treatment plant.')
+          return
+        }
+        if (!ticket.valid) {
+          failField('ticket', 'job-weighbridge-ticket', ticket.error)
+          return
+        }
+        if (!volume.valid) {
+          failField('volume', 'job-disposal-volume', volume.error)
+          return
+        }
+        if (!weight.valid) {
+          failField('weight', 'job-disposal-weight', weight.error)
           return
         }
         extraData = {
           disposalLog: {
             plantName,
-            weighbridgeTicketNo: weighbridgeTicketNo.trim(),
-            volumeLitres: disposalVolumeLitres,
-            weightKg: disposalWeightKg,
+            weighbridgeTicketNo: ticket.value,
+            volumeLitres: volume.value,
+            weightKg: weight.value,
           },
         }
       } else {
-        const delivered = flowmeterEnd - flowmeterStart
-        if (delivered <= 0) {
-          setError('Flowmeter end reading must exceed start reading.')
+        const readings = validateFlowmeterReadings(flowmeterStart, flowmeterEnd)
+        if (!readings.valid) {
+          const start = validateNonNegativeInteger(flowmeterStart)
+          failField(!start.valid ? 'flowmeterStart' : 'flowmeterEnd', !start.valid ? 'job-flowmeter-start' : 'job-flowmeter-end', readings.error)
           return
         }
         extraData = {
           deliveryLog: {
-            flowmeterStart,
-            flowmeterEnd,
-            litresDelivered: delivered,
+            flowmeterStart: readings.value.start,
+            flowmeterEnd: readings.value.end,
+            litresDelivered: readings.value.litresDelivered,
           },
         }
       }
     }
 
-    onAdvanceJobStep(
+    setSubmitting(true)
+    const result = onAdvanceJobStep(
       booking.id,
       targetNextStatus,
-      operationalNotes.trim() || undefined,
+      notes.value || undefined,
       operatorName.trim() || undefined,
       extraData
     )
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
+      return
+    }
 
     onClose()
   }
@@ -206,7 +250,7 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5 text-sm">
+        <form ref={formRef} onSubmit={handleSubmit} className="p-6 space-y-5 text-sm" noValidate>
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-xs text-red-700 font-medium">
               {error}
@@ -249,15 +293,9 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   onChange={(e) => setPlantName(e.target.value)}
                   className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-medium"
                 >
-                  <option value="Kerawalapitiya Septage Treatment Plant">
-                    Kerawalapitiya Septage Treatment Plant
-                  </option>
-                  <option value="Homagama Regional Sludge Lagoon">
-                    Homagama Regional Sludge Lagoon
-                  </option>
-                  <option value="Kolonnawa Septage Processing Centre">
-                    Kolonnawa Septage Processing Centre
-                  </option>
+                  {APPROVED_DISPOSAL_PLANTS.map((plant) => (
+                    <option key={plant} value={plant}>{plant}</option>
+                  ))}
                 </select>
               </div>
 
@@ -269,11 +307,18 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   <input
                     id="job-weighbridge-ticket"
                     type="text"
-                    required
+                    maxLength={20}
                     value={weighbridgeTicketNo}
-                    onChange={(e) => setWeighbridgeTicketNo(e.target.value)}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                    onChange={(e) => setWeighbridgeTicketNo(e.target.value.replace(/[^a-z\d/-]/gi, '').toUpperCase().slice(0, 20))}
+                    aria-invalid={Boolean(fieldErrors.ticket)}
+                    aria-describedby={fieldErrors.ticket ? 'job-ticket-error' : undefined}
+                    onBlur={() => {
+                      const result = validateReferenceText(weighbridgeTicketNo)
+                      setFieldErrors((prev) => ({ ...prev, ticket: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold ${fieldErrors.ticket ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.ticket && <p id="job-ticket-error" className="mt-1 text-xs text-red-700">{fieldErrors.ticket}</p>}
                 </div>
 
                 <div>
@@ -282,12 +327,19 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   </label>
                   <input
                     id="job-disposal-volume"
-                    type="number"
-                    min="100"
+                    type="text"
+                    inputMode="numeric"
                     value={disposalVolumeLitres}
-                    onChange={(e) => setDisposalVolumeLitres(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold"
+                    onChange={(e) => setDisposalVolumeLitres(filterNumericInput(e.target.value, false))}
+                    aria-invalid={Boolean(fieldErrors.volume)}
+                    aria-describedby={fieldErrors.volume ? 'job-disposal-volume-error' : undefined}
+                    onBlur={() => {
+                      const result = validatePositiveNumber(disposalVolumeLitres)
+                      setFieldErrors((prev) => ({ ...prev, volume: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs font-semibold ${fieldErrors.volume ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.volume && <p id="job-disposal-volume-error" className="mt-1 text-xs text-red-700">{fieldErrors.volume}</p>}
                 </div>
 
                 <div>
@@ -296,12 +348,19 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   </label>
                   <input
                     id="job-disposal-weight"
-                    type="number"
-                    min="100"
+                    type="text"
+                    inputMode="numeric"
                     value={disposalWeightKg}
-                    onChange={(e) => setDisposalWeightKg(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold"
+                    onChange={(e) => setDisposalWeightKg(filterNumericInput(e.target.value, false))}
+                    aria-invalid={Boolean(fieldErrors.weight)}
+                    aria-describedby={fieldErrors.weight ? 'job-disposal-weight-error' : undefined}
+                    onBlur={() => {
+                      const result = validatePositiveNumber(disposalWeightKg)
+                      setFieldErrors((prev) => ({ ...prev, weight: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs font-semibold ${fieldErrors.weight ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.weight && <p id="job-disposal-weight-error" className="mt-1 text-xs text-red-700">{fieldErrors.weight}</p>}
                 </div>
               </div>
             </div>
@@ -320,11 +379,19 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   </label>
                   <input
                     id="job-flowmeter-start"
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={flowmeterStart}
-                    onChange={(e) => setFlowmeterStart(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                    onChange={(e) => setFlowmeterStart(filterNumericInput(e.target.value, false))}
+                    aria-invalid={Boolean(fieldErrors.flowmeterStart)}
+                    aria-describedby={fieldErrors.flowmeterStart ? 'job-flowmeter-start-error' : undefined}
+                    onBlur={() => {
+                      const result = validateNonNegativeInteger(flowmeterStart)
+                      setFieldErrors((prev) => ({ ...prev, flowmeterStart: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold ${fieldErrors.flowmeterStart ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.flowmeterStart && <p id="job-flowmeter-start-error" className="mt-1 text-xs text-red-700">{fieldErrors.flowmeterStart}</p>}
                 </div>
 
                 <div>
@@ -333,22 +400,38 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                   </label>
                   <input
                     id="job-flowmeter-end"
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={flowmeterEnd}
-                    onChange={(e) => setFlowmeterEnd(Number(e.target.value))}
-                    className="w-full bg-white border border-gray-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold"
+                    onChange={(e) => setFlowmeterEnd(filterNumericInput(e.target.value, false))}
+                    aria-invalid={Boolean(fieldErrors.flowmeterEnd)}
+                    aria-describedby={fieldErrors.flowmeterEnd ? 'job-flowmeter-end-error' : undefined}
+                    onBlur={() => {
+                      const result = validateFlowmeterReadings(flowmeterStart, flowmeterEnd)
+                      setFieldErrors((prev) => ({ ...prev, flowmeterEnd: result.valid ? '' : result.error }))
+                    }}
+                    className={`w-full bg-white border rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold ${fieldErrors.flowmeterEnd ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                   />
+                  {fieldErrors.flowmeterEnd && <p id="job-flowmeter-end-error" className="mt-1 text-xs text-red-700">{fieldErrors.flowmeterEnd}</p>}
                 </div>
 
                 <div>
-                  <p className="block text-[11px] text-gray-600 mb-1 font-medium">
+                  <label htmlFor="job-flowmeter-delivered" className="block text-[11px] text-gray-600 mb-1 font-medium">
                     Delivered (L)
-                  </p>
-                  <div className="w-full bg-blue-100/60 border border-blue-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-black text-blue-900">
-                    {(flowmeterEnd - flowmeterStart).toLocaleString()} L
-                  </div>
+                  </label>
+                  <input id="job-flowmeter-delivered" type="text" readOnly aria-readonly="true"
+                    value={Number(flowmeterEnd) - Number(flowmeterStart)}
+                    className="w-full bg-blue-100/60 border border-blue-300 rounded-lg px-2.5 py-1.5 text-xs font-mono font-black text-blue-900" />
                 </div>
               </div>
+              {booking.serviceType === 'WATER_BOWSER' && 'waterVolumeLitres' in booking.serviceDetails &&
+                Number.isFinite(Number(flowmeterEnd) - Number(flowmeterStart)) &&
+                Math.abs(Number(flowmeterEnd) - Number(flowmeterStart) - booking.serviceDetails.waterVolumeLitres) >
+                  booking.serviceDetails.waterVolumeLitres * 0.2 && (
+                  <p className="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-2" role="status">
+                    Warning: delivered volume differs from the ordered volume by more than 20%.
+                  </p>
+                )}
             </div>
           )}
 
@@ -392,8 +475,16 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
                 placeholder="e.g. Suction complete; no hose leaks"
                 value={operationalNotes}
                 onChange={(e) => setOperationalNotes(e.target.value)}
-                className="w-full bg-white border border-gray-300 rounded-xl px-3.5 py-2 text-xs"
+                maxLength={300}
+                aria-invalid={Boolean(fieldErrors.notes)}
+                aria-describedby={fieldErrors.notes ? 'job-notes-error' : undefined}
+                onBlur={() => {
+                  const result = validateFreeText(operationalNotes, { max: 300 })
+                  setFieldErrors((prev) => ({ ...prev, notes: result.valid ? '' : result.error }))
+                }}
+                className={`w-full bg-white border rounded-xl px-3.5 py-2 text-xs ${fieldErrors.notes ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
               />
+              {fieldErrors.notes && <p id="job-notes-error" className="mt-1 text-xs text-red-700">{fieldErrors.notes}</p>}
             </div>
           </div>
 
@@ -408,6 +499,7 @@ export const JobProgressModal: React.FC<JobProgressModalProps> = ({
             </button>
             <button
               type="submit"
+              disabled={submitting}
               className="px-6 py-2.5 rounded-xl bg-[#A31736] hover:bg-[#85122b] text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2"
             >
               <span>Confirm & Advance to {targetNextStatus}</span>

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import {
   SERVICE_CONFIG,
   type BookingRecord,
@@ -6,6 +6,8 @@ import {
   type FeeBreakdown,
 } from '../data/initialBookingData'
 import { calculateFee, formatLKR } from '../utils/bookingUtils'
+import { filterNumericInput, validateFreeText, validateNumber } from '../utils/validators'
+import type { BookingActionResult } from '../utils/validators'
 
 interface TechnicalReviewModalProps {
   isOpen: boolean
@@ -20,8 +22,8 @@ interface TechnicalReviewModalProps {
       finalFee: FeeBreakdown
       approverName?: string
     }
-  ) => void
-  onReject: (bookingId: string, reason: string, approverName?: string) => void
+  ) => BookingActionResult<void>
+  onReject: (bookingId: string, reason: string, approverName?: string) => BookingActionResult<void>
 }
 
 /**
@@ -50,14 +52,17 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
   const [waterReservoirStock, setWaterReservoirStock] = useState(true)
 
   // Adjustments state
-  const [loads, setLoads] = useState<number>(1)
-  const [distanceKm, setDistanceKm] = useState<number>(0)
+  const [loads, setLoads] = useState('1')
+  const [distanceKm, setDistanceKm] = useState('0')
   const [approverName, setApproverName] = useState('Eng. K.L. Samaraweera (Technical Officer)')
 
   // Reject state
   const [isRejectMode, setIsRejectMode] = useState(false)
   const [rejectionReason, setRejectionReason] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
+  const [submitting, setSubmitting] = useState(false)
+  const formRef = useRef<HTMLFormElement | null>(null)
 
   const [prevBookingId, setPrevBookingId] = useState<string | null>(null)
   const [prevIsOpen, setPrevIsOpen] = useState(isOpen)
@@ -67,11 +72,13 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
     setPrevIsOpen(isOpen)
     setPrevBookingId(booking?.id || null)
     if (booking && isOpen) {
-      setLoads(booking.estimatedFee.loads)
-      setDistanceKm(booking.estimatedFee.distanceKm)
+      setLoads(String(booking.estimatedFee.loads))
+      setDistanceKm(String(booking.estimatedFee.distanceKm))
       setIsRejectMode(false)
       setRejectionReason('')
       setError(null)
+      setFieldErrors({})
+      setSubmitting(false)
       setRoadAccess(true)
       setVehicleTurningRadius(true)
       setSuctionDistance(true)
@@ -88,16 +95,45 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
     if (!booking) {
       return { loads: 1, distanceKm: 0, farePerLoad: 0, transportFeePerKm: 0, totalLKR: 0 }
     }
-    return calculateFee(booking.serviceType, Math.max(1, loads), Math.max(0.1, distanceKm))
+    const ranges = SERVICE_CONFIG[booking.serviceType].bookingRanges
+    return calculateFee(
+      booking.serviceType,
+      Math.max(ranges.technicalLoads.min, Number(loads)),
+      Math.max(ranges.technicalDistanceKm.min, Number(distanceKm))
+    )
   }, [booking, loads, distanceKm])
 
   if (!isOpen || !booking) return null
 
   const cfg = SERVICE_CONFIG[booking.serviceType]
+  const checklistComplete = roadAccess && (isGully
+    ? vehicleTurningRadius && suctionDistance && bowserCapacity
+    : deliveryRoadBridgeLimits && slope && pumpingHoseReach && waterReservoirStock)
 
   const handleApproveSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(null)
+    const ranges = SERVICE_CONFIG[booking.serviceType].bookingRanges
+    const loadsResult = validateNumber(loads, ranges.technicalLoads.min, ranges.technicalLoads.max, true)
+    const distanceResult = validateNumber(distanceKm, ranges.technicalDistanceKm.min, ranges.technicalDistanceKm.max)
+    const distancePrecisionValid = Number(distanceKm) * 10 === Math.round(Number(distanceKm) * 10)
+    const nextErrors: Record<string, string> = {}
+    if (!loadsResult.valid) nextErrors.loads = loadsResult.error
+    if (!distanceResult.valid || !distancePrecisionValid) {
+      nextErrors.distanceKm = distanceResult.error || 'Route distance must use no more than one decimal place.'
+    }
+    if (!checklistComplete) nextErrors.checklist = 'Complete every technical checklist item before approving.'
+    setFieldErrors(nextErrors)
+    const firstField = Object.keys(nextErrors)[0]
+    if (firstField) {
+      const id = firstField === 'loads' ? 'review-confirmed-loads' : firstField === 'distanceKm' ? 'review-route-distance' : 'review-road-access'
+      const target = formRef.current?.querySelector<HTMLElement>(`#${id}`)
+      target?.focus()
+      target?.scrollIntoView({ block: 'center' })
+      setError(nextErrors[firstField])
+      return
+    }
+    setSubmitting(true)
 
     // Build checklist object
     const checklist: TOChecklistResult = {
@@ -116,25 +152,42 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
           }),
     }
 
-    onApprove(booking.id, {
+    const result = onApprove(booking.id, {
       checklist,
-      adjustedLoads: loads !== booking.estimatedFee.loads ? loads : undefined,
-      adjustedDistanceKm: distanceKm !== booking.estimatedFee.distanceKm ? distanceKm : undefined,
+      adjustedLoads: Number(loads) !== booking.estimatedFee.loads ? Number(loads) : undefined,
+      adjustedDistanceKm: Number(distanceKm) !== booking.estimatedFee.distanceKm ? Number(distanceKm) : undefined,
       finalFee,
       approverName,
     })
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
+      return
+    }
 
     onClose()
   }
 
   const handleRejectSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!rejectionReason.trim()) {
-      setError('Please specify a detailed reason for rejecting this booking.')
+    const reason = validateFreeText(rejectionReason, { required: true, min: 10, max: 300 })
+    if (!reason.valid) {
+      setError(reason.error)
+      setFieldErrors({ rejectionReason: reason.error })
+      const target = document.getElementById('review-rejection-reason')
+      target?.focus()
+      target?.scrollIntoView({ block: 'center' })
       return
     }
+    setFieldErrors({})
 
-    onReject(booking.id, rejectionReason.trim(), approverName)
+    setSubmitting(true)
+    const result = onReject(booking.id, reason.value, approverName)
+    if (!result.ok) {
+      setError(Object.values(result.errors).join(' '))
+      setSubmitting(false)
+      return
+    }
     onClose()
   }
 
@@ -209,7 +262,7 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
           </div>
 
           {!isRejectMode ? (
-            <form onSubmit={handleApproveSubmit} className="space-y-5">
+            <form ref={formRef} onSubmit={handleApproveSubmit} className="space-y-5" noValidate>
               {/* Technical Checklist */}
               <div>
                 <p className="block text-xs font-bold text-gray-700 mb-2.5 uppercase tracking-wider">
@@ -364,13 +417,20 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                     </label>
                     <input
                       id="review-confirmed-loads"
-                      type="number"
-                      min="1"
-                      max="10"
+                      type="text"
+                      inputMode="numeric"
                       value={loads}
-                      onChange={(e) => setLoads(Number(e.target.value))}
-                      className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-bold"
+                      onChange={(e) => setLoads(filterNumericInput(e.target.value, false))}
+                      aria-invalid={Boolean(fieldErrors.loads)}
+                      aria-describedby={fieldErrors.loads ? 'review-loads-error' : undefined}
+                      onBlur={() => {
+                        const range = cfg.bookingRanges.technicalLoads
+                        const result = validateNumber(loads, range.min, range.max, true)
+                        setFieldErrors((prev) => ({ ...prev, loads: result.valid ? '' : result.error }))
+                      }}
+                      className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs font-bold ${fieldErrors.loads ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                     />
+                    {fieldErrors.loads && <p id="review-loads-error" className="mt-1 text-xs text-red-700">{fieldErrors.loads}</p>}
                     <span className="text-[10px] text-gray-400">
                       Applicant requested {booking.estimatedFee.loads} load(s)
                     </span>
@@ -382,13 +442,22 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                     </label>
                     <input
                       id="review-route-distance"
-                      type="number"
-                      step="0.1"
-                      min="0.1"
+                      type="text"
+                      inputMode="decimal"
                       value={distanceKm}
-                      onChange={(e) => setDistanceKm(Number(e.target.value))}
-                      className="w-full bg-white border border-gray-300 rounded-lg px-3 py-1.5 text-xs font-bold"
+                      onChange={(e) => setDistanceKm(filterNumericInput(e.target.value, true))}
+                      aria-invalid={Boolean(fieldErrors.distanceKm)}
+                      aria-describedby={fieldErrors.distanceKm ? 'review-distance-error' : undefined}
+                      onBlur={() => {
+                        const range = cfg.bookingRanges.technicalDistanceKm
+                        const result = validateNumber(distanceKm, range.min, range.max)
+                        const precisionValid = Number(distanceKm) * 10 === Math.round(Number(distanceKm) * 10)
+                        const message = result.valid && precisionValid ? '' : result.error || 'Route distance must use no more than one decimal place.'
+                        setFieldErrors((prev) => ({ ...prev, distanceKm: message }))
+                      }}
+                      className={`w-full bg-white border rounded-lg px-3 py-1.5 text-xs font-bold ${fieldErrors.distanceKm ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                     />
+                    {fieldErrors.distanceKm && <p id="review-distance-error" className="mt-1 text-xs text-red-700">{fieldErrors.distanceKm}</p>}
                     <span className="text-[10px] text-gray-400">
                       Estimated straight-line was {booking.estimatedFee.distanceKm.toFixed(1)} km
                     </span>
@@ -450,6 +519,7 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                   </button>
                   <button
                     type="submit"
+                    disabled={!checklistComplete || submitting}
                     className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-2"
                   >
                     <span>✓ Approve & Issue 24h Payment Notice</span>
@@ -475,12 +545,19 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                 <textarea
                   id="review-rejection-reason"
                   rows={3}
-                  required
                   placeholder="e.g. Access road bridge weight limit is 3.5 tonnes, insufficient for 12-tonne heavy bowser; no alternative turning bay available."
                   value={rejectionReason}
-                  onChange={(e) => setRejectionReason(e.target.value)}
-                  className="w-full bg-white border border-gray-300 rounded-xl p-3 text-xs focus:outline-none focus:border-red-600"
+                  maxLength={300}
+                  onChange={(e) => setRejectionReason(e.target.value.slice(0, 300))}
+                  aria-invalid={Boolean(fieldErrors.rejectionReason)}
+                  aria-describedby={fieldErrors.rejectionReason ? 'review-rejection-error' : undefined}
+                  onBlur={() => {
+                    const result = validateFreeText(rejectionReason, { required: true, min: 10, max: 300 })
+                    setFieldErrors((prev) => ({ ...prev, rejectionReason: result.valid ? '' : result.error }))
+                  }}
+                  className={`w-full bg-white border rounded-xl p-3 text-xs focus:outline-none focus:border-red-600 ${fieldErrors.rejectionReason ? 'border-red-600 bg-red-50' : 'border-gray-300'}`}
                 />
+                {fieldErrors.rejectionReason && <p id="review-rejection-error" className="mt-1 text-xs text-red-700">{fieldErrors.rejectionReason}</p>}
               </div>
 
               <div>
@@ -506,6 +583,7 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
                 </button>
                 <button
                   type="submit"
+                  disabled={submitting}
                   className="px-6 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer"
                 >
                   Confirm Rejection
