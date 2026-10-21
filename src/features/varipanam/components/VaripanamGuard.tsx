@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth, DUMMY_USERS } from '../../../../context/AuthContext'
+import { useAuth, DUMMY_USERS } from '../../../context/AuthContext'
 
 interface VaripanamGuardProps {
   children: React.ReactNode
