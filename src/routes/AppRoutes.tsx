@@ -12,6 +12,7 @@ import kpiRoutes from '../features/kpi/kpiRoutes'
 import fleetRoutes from '../features/fleet-management/fleetRoutes'
 import userRoutes from '../features/user-management/userRoutes'
 import bookingRoutes from '../features/booking-management/bookingRoutes'
+import publicPlaceBookingRoutes from '../features/public-place-booking/publicPlaceBookingRoutes'
 import inventoryRoutes from '../features/inventory-management/inventoryRoutes'
 import profileRoutes from '../features/profile/profileRoutes'
 import varipanamRoutes from '../features/varipanam/varipanamRoutes'
@@ -80,6 +81,7 @@ export const AppRoutes: React.FC = () => {
         {letterRoutes}
         {applicationRoutes}
         {bookingRoutes}
+        {publicPlaceBookingRoutes}
         {inventoryRoutes}
         {userRoutes}
         {profileRoutes}
@@ -95,4 +97,3 @@ export const AppRoutes: React.FC = () => {
   )
 }
 export default AppRoutes
-
