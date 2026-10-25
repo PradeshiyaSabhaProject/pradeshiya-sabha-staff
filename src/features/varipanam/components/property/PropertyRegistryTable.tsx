@@ -6,8 +6,8 @@ import StatusBadge from '../shared/StatusBadge'
 interface PropertyRegistryTableProps {
   properties: Property[]
   roads: Road[]
-  selectedProperty: Property | null
-  onSelectProperty: (property: Property) => void
+  selectedProperty?: Property | null
+  onSelectProperty?: (property: Property) => void
   onOpenProperty: (propertyId: string) => void
 }
 
@@ -17,8 +17,8 @@ type SortOrder = 'asc' | 'desc'
 export const PropertyRegistryTable: React.FC<PropertyRegistryTableProps> = ({
   properties,
   roads,
-  selectedProperty,
-  onSelectProperty,
+  selectedProperty = null,
+  onSelectProperty = () => {},
   onOpenProperty,
 }) => {
   const [currentPage, setCurrentPage] = useState<number>(1)

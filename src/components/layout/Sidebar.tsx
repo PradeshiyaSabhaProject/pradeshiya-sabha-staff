@@ -64,6 +64,14 @@ const BookingIcon = () => (
     <path d="M9 16l2 2 4-4" />
   </svg>
 )
+const PublicPlaceIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M3 21h18" />
+    <path d="M5 21V8l7-5 7 5v13" />
+    <path d="M9 21v-6h6v6" />
+    <path d="M9 10h.01M15 10h.01" />
+  </svg>
+)
 const AttendanceIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <circle cx="12" cy="12" r="10" />
@@ -108,10 +116,7 @@ const InventoryIcon = () => (
 )
 const VaripanamIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-    <path d="M3 21h18" />
-    <path d="M4 21V10l8-6 8 6v11" />
-    <path d="M9 21v-6a3 3 0 0 1 6 0v6" />
-    <circle cx="12" cy="9" r="1.5" />
+    <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
   </svg>
 )
 const LogoutIcon = () => (
@@ -138,6 +143,8 @@ interface NavChild {
   label: string
   path: string
   roles?: string[]
+  badge?: number | string
+  children?: NavChild[]
 }
 
 interface NavItem {
@@ -221,12 +228,25 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    label: 'Varipanam',
+    label: 'Varipanam Management',
     path: '/varipanam',
     icon: <VaripanamIcon />,
+    roles: ['superadmin', 'admin'],
     children: [
-      { label: 'Rates & GIS Cadastre', path: '/varipanam/dashboard' },
-      { label: 'Property Registry', path: '/varipanam/properties' },
+      { label: 'Overview', path: '/varipanam/overview' },
+      { label: 'Properties', path: '/varipanam/properties' },
+      { label: 'Add New Property', path: '/varipanam/add-property' },
+      { label: 'Approvals', path: '/varipanam/approvals', badge: 3 },
+      { label: 'Subdivision', path: '/varipanam/subdivision' },
+      { label: 'Ownership Change', path: '/varipanam/ownership-change' },
+      { label: 'Valuation & Relief', path: '/varipanam/valuation-relief' },
+      { label: 'Assessment Notices', path: '/varipanam/notices' },
+      { label: 'Billing & Payments', path: '/varipanam/billing-payments' },
+      { label: 'Arrears & Warrants', path: '/varipanam/arrears-warrants' },
+      { label: 'Field Collection', path: '/varipanam/field-collection' },
+      { label: 'Historical Search', path: '/varipanam/historical-search' },
+      { label: 'Reports', path: '/varipanam/reports' },
+      { label: 'Settings', path: '/varipanam/settings' },
     ],
   },
   {
@@ -272,6 +292,19 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    label: 'Public Place Booking',
+    path: '/public-place-booking',
+    icon: <PublicPlaceIcon />,
+    roles: ['admin', 'staff', 'manager', 'superadmin'],
+    children: [
+      { label: 'Staff Booking Dashboard', path: '/public-place-booking/dashboard' },
+      { label: 'Payment & Billing', path: '/public-place-booking/payments' },
+      { label: 'Venue Preparation', path: '/public-place-booking/readiness' },
+      { label: 'Permit & Venue Handover', path: '/public-place-booking/handover' },
+      { label: 'Final Reconciliation', path: '/public-place-booking/settlement' },
+    ],
+  },
+  {
     label: 'User Management',
     path: '/users',
     icon: <UsersIcon />,
@@ -308,6 +341,13 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
   const location = useLocation()
   const active = location.pathname === item.path || location.pathname.startsWith(item.path + '/')
   const hasChildren = visibleChildren.length > 0
+  const [openSubMenus, setOpenSubMenus] = useState<Record<string, boolean>>({
+    '/varipanam': true,
+  })
+
+  const toggleSubMenu = (path: string) => {
+    setOpenSubMenus((prev) => ({ ...prev, [path]: !prev[path] }))
+  }
 
   return (
     <div className="relative group">
@@ -359,20 +399,95 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
       {hasChildren && isOpen && (
         <div className={`bg-gray-50 border-t border-b border-gray-100 py-1 ${isDesktopCollapsed ? 'lg:hidden' : ''}`}>
           {visibleChildren.map((child) => {
-            const childActive = location.pathname === child.path
+            const hasSubChildren = child.children && child.children.length > 0
+            const childActive =
+              location.pathname === child.path ||
+              (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+              (hasSubChildren && location.pathname.startsWith(child.path))
+            const isSubOpen = openSubMenus[child.path] ?? location.pathname.startsWith(child.path)
+
+            if (hasSubChildren) {
+              return (
+                <div key={child.path} className="border-t border-gray-200/40 first:border-0">
+                  <div
+                    className={`flex items-center justify-between pl-8 pr-3 py-2 text-xs font-bold transition-all ${
+                      childActive ? 'text-[#A31736] bg-[#A31736]/10' : 'text-gray-700 hover:bg-gray-100'
+                    }`}
+                  >
+                    <Link
+                      to={child.children![0].path}
+                      onClick={() => setIsMobileOpen(false)}
+                      className="flex-1 flex items-center gap-2 truncate"
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${childActive ? 'bg-[#A31736]' : 'bg-gray-400'}`} />
+                      <span className="truncate">{child.label}</span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => toggleSubMenu(child.path)}
+                      className="p-1 hover:bg-black/5 rounded cursor-pointer"
+                      title={isSubOpen ? 'Collapse sub-menu' : 'Expand sub-menu'}
+                    >
+                      <ChevronDownIcon open={isSubOpen} />
+                    </button>
+                  </div>
+
+                  {isSubOpen && (
+                    <div className="bg-gray-100/60 py-1 border-l-2 border-[#A31736]/40 ml-8 mb-1">
+                      {child.children!.map((subChild) => {
+                        const subActive =
+                          location.pathname === subChild.path ||
+                          (subChild.path === '/varipanam/properties' &&
+                            location.pathname.startsWith('/varipanam/properties/')) ||
+                          (subChild.path === '/finances/varipanam/properties' &&
+                            location.pathname.startsWith('/finances/varipanam/properties/'))
+
+                        return (
+                          <Link
+                            key={subChild.path}
+                            to={subChild.path}
+                            onClick={() => setIsMobileOpen(false)}
+                            className={`flex items-center justify-between pl-5 pr-3 py-1.5 text-xs font-medium transition-all ${
+                              subActive
+                                ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
+                                : 'text-gray-600 hover:bg-gray-200/70 hover:text-[#A31736]'
+                            }`}
+                          >
+                            <span className="truncate">{subChild.label}</span>
+                            {subChild.badge !== undefined && (
+                              <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-black rounded-full bg-[#A31736] text-white shrink-0">
+                                {subChild.badge}
+                              </span>
+                            )}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )
+            }
+
             return (
               <Link
                 key={child.path}
                 to={child.path}
                 onClick={() => setIsMobileOpen(false)}
-                className={`flex items-center pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
+                className={`flex items-center justify-between pl-12 pr-5 py-2.5 text-sm font-medium transition-all ${
                   childActive
                     ? 'bg-[#A31736]/15 text-[#A31736] font-bold border-r-4 border-[#A31736]'
                     : 'text-gray-600 hover:bg-gray-100 hover:text-[#A31736]'
                 }`}
               >
-                <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`}></span>
-                {child.label}
+                <div className="flex items-center min-w-0">
+                  <span className={`w-1.5 h-1.5 rounded-full mr-2.5 shrink-0 transition-colors ${childActive ? 'bg-[#A31736]' : 'bg-gray-300'}`} />
+                  <span className="truncate">{child.label}</span>
+                </div>
+                {child.badge !== undefined && (
+                  <span className="ml-2 px-1.5 py-0.5 text-[10px] font-black rounded-full bg-[#A31736] text-white shrink-0">
+                    {child.badge}
+                  </span>
+                )}
               </Link>
             )
           })}
@@ -381,26 +496,71 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
 
       {/* Flyout menu / tooltip when collapsed on desktop */}
       {isDesktopCollapsed && (
-        <div className="hidden lg:group-hover:block absolute left-full top-0 ml-1 z-[60] bg-gray-900 text-white rounded-lg shadow-xl py-2 px-3 min-w-[200px] pointer-events-auto transition-opacity duration-150">
+        <div className="hidden lg:group-hover:block absolute left-full top-0 ml-1 z-[60] bg-gray-900 text-white rounded-lg shadow-xl py-2 px-3 min-w-[220px] pointer-events-auto transition-opacity duration-150 max-h-[85vh] overflow-y-auto">
           <div className="font-semibold text-xs pb-1.5 border-b border-gray-700 text-gray-100">
             {item.label}
           </div>
           {hasChildren ? (
             <div className="mt-1 flex flex-col gap-1 pt-1">
               {visibleChildren.map((child) => {
-                const childActive = location.pathname === child.path
+                const hasSubChildren = child.children && child.children.length > 0
+                const childActive =
+                  location.pathname === child.path ||
+                  (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+                  (hasSubChildren && location.pathname.startsWith(child.path))
+
+                if (hasSubChildren) {
+                  return (
+                    <div key={child.path} className="pt-1.5 mt-1 border-t border-gray-700/60">
+                      <div className="text-[10px] font-bold text-gray-400 uppercase tracking-wider px-2 py-0.5">
+                        {child.label}
+                      </div>
+                      {child.children!.map((sub) => {
+                        const subActive =
+                          location.pathname === sub.path ||
+                          (sub.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+                          (sub.path === '/finances/varipanam/properties' && location.pathname.startsWith('/finances/varipanam/properties/'))
+                        return (
+                          <Link
+                            key={sub.path}
+                            to={sub.path}
+                            onClick={() => setIsMobileOpen(false)}
+                            className={`flex items-center justify-between text-xs py-1 px-2.5 rounded transition-colors ${
+                              subActive
+                                ? 'bg-[#A31736] text-white font-semibold'
+                                : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                            }`}
+                          >
+                            <span className="truncate">{sub.label}</span>
+                            {sub.badge !== undefined && (
+                              <span className="ml-1.5 px-1.5 py-0.2 text-[9px] font-black rounded-full bg-rose-600 text-white">
+                                {sub.badge}
+                              </span>
+                            )}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )
+                }
+
                 return (
                   <Link
                     key={child.path}
                     to={child.path}
                     onClick={() => setIsMobileOpen(false)}
-                    className={`text-xs py-1.5 px-2.5 rounded transition-colors block ${
+                    className={`flex items-center justify-between text-xs py-1.5 px-2.5 rounded transition-colors ${
                       childActive
                         ? 'bg-[#A31736] text-white font-semibold'
                         : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                     }`}
                   >
-                    {child.label}
+                    <span className="truncate">{child.label}</span>
+                    {child.badge !== undefined && (
+                      <span className="ml-1.5 px-1.5 py-0.5 text-[9px] font-black rounded-full bg-rose-600 text-white shrink-0">
+                        {child.badge}
+                      </span>
+                    )}
                   </Link>
                 )
               })}

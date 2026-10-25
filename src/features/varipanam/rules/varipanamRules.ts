@@ -15,7 +15,7 @@ export function calculateTax(
   propertyType: PropertyType,
   settings: VaripanamSettings
 ): { annualTax: number; quarterlyTax: number; effectiveRate: number } {
-  let ratePercentage = settings.taxRates.residential
+  let ratePercentage: number
   switch (propertyType) {
     case 'Commercial':
       ratePercentage = settings.taxRates.commercial
@@ -336,4 +336,84 @@ export function recordLocationChange(
   }
 
   return { updatedProperty, historyEntry }
+}
+
+/**
+ * Calculates net payable tax after applying approved statutory relief.
+ * - Poverty: 100% remission (net tax = 0)
+ * - Closed Business: 50% remission
+ */
+export function calculateReliefTax(
+  baseTax: number,
+  reliefType?: 'Poverty' | 'ClosedBusiness' | 'Other'
+): { netTax: number; reliefAmount: number } {
+  if (!reliefType) return { netTax: baseTax, reliefAmount: 0 }
+  if (reliefType === 'Poverty') {
+    return { netTax: 0, reliefAmount: baseTax }
+  }
+  if (reliefType === 'ClosedBusiness') {
+    const reliefAmount = Math.round(baseTax * 0.5)
+    return { netTax: baseTax - reliefAmount, reliefAmount }
+  }
+  return { netTax: baseTax, reliefAmount: 0 }
+}
+
+/**
+ * Distributes parent property arrears to child subdivision plots.
+ */
+export function distributeSubdivisionArrears(
+  parentArrears: number,
+  childPlots: { id: string; assessedValue: number }[],
+  rule: 'EQUAL_SPLIT' | 'VALUE_PROPORTIONAL' | 'ASSIGN_TO_PRIMARY'
+): Record<string, number> {
+  const result: Record<string, number> = {}
+  if (childPlots.length === 0) return result
+
+  if (parentArrears <= 0) {
+    childPlots.forEach((c) => {
+      result[c.id] = 0
+    })
+    return result
+  }
+
+  if (rule === 'ASSIGN_TO_PRIMARY') {
+    childPlots.forEach((c, idx) => {
+      result[c.id] = idx === 0 ? parentArrears : 0
+    })
+    return result
+  }
+
+  if (rule === 'EQUAL_SPLIT') {
+    const split = Math.round(parentArrears / childPlots.length)
+    let totalAssigned = 0
+    childPlots.forEach((c, idx) => {
+      if (idx === childPlots.length - 1) {
+        result[c.id] = parentArrears - totalAssigned
+      } else {
+        result[c.id] = split
+        totalAssigned += split
+      }
+    })
+    return result
+  }
+
+  if (rule === 'VALUE_PROPORTIONAL') {
+    const totalVal = childPlots.reduce((s, c) => s + c.assessedValue, 0)
+    if (totalVal <= 0) {
+      return distributeSubdivisionArrears(parentArrears, childPlots, 'EQUAL_SPLIT')
+    }
+    let totalAssigned = 0
+    childPlots.forEach((c, idx) => {
+      if (idx === childPlots.length - 1) {
+        result[c.id] = parentArrears - totalAssigned
+      } else {
+        const share = Math.round((c.assessedValue / totalVal) * parentArrears)
+        result[c.id] = share
+        totalAssigned += share
+      }
+    })
+    return result
+  }
+
+  return result
 }
