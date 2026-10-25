@@ -64,6 +64,14 @@ const BookingIcon = () => (
     <path d="M9 16l2 2 4-4" />
   </svg>
 )
+const PublicPlaceIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M3 21h18" />
+    <path d="M5 21V8l7-5 7 5v13" />
+    <path d="M9 21v-6h6v6" />
+    <path d="M9 10h.01M15 10h.01" />
+  </svg>
+)
 const AttendanceIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <circle cx="12" cy="12" r="10" />
@@ -280,6 +288,19 @@ const navItems: NavItem[] = [
       { label: 'All Facility Bookings', path: '/bookings/all' },
       { label: 'Approvals Queue', path: '/bookings/approvals' },
       { label: 'Facility Schedule', path: '/bookings/schedule' },
+    ],
+  },
+  {
+    label: 'Public Place Booking',
+    path: '/public-place-booking',
+    icon: <PublicPlaceIcon />,
+    roles: ['admin', 'staff', 'manager', 'superadmin'],
+    children: [
+      { label: 'Staff Booking Dashboard', path: '/public-place-booking/dashboard' },
+      { label: 'Payment & Billing', path: '/public-place-booking/payments' },
+      { label: 'Venue Preparation', path: '/public-place-booking/readiness' },
+      { label: 'Permit & Venue Handover', path: '/public-place-booking/handover' },
+      { label: 'Final Reconciliation', path: '/public-place-booking/settlement' },
     ],
   },
   {
