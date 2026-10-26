@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
   AlertCircle,
@@ -8,8 +8,6 @@ import {
   Check,
   CheckCircle2,
   ClipboardCheck,
-  FileCheck2,
-  Landmark,
   RotateCcw,
   ShieldCheck,
   Wrench,
@@ -18,13 +16,17 @@ import { useAuth } from '../../../context/AuthContext'
 import { useStaffBookingWorkflow } from '../hooks/useStaffBookingWorkflow'
 import type { StaffBookingWorkflow } from '../types'
 import type { FacilityBooking } from '../../booking-management/types'
+import PublicPlaceBookingFilters from '../components/PublicPlaceBookingFilters'
+import type { PublicPlaceBookingFilterState } from '../components/PublicPlaceBookingFilters'
+import MyBookingSection from '../components/MyBookingSection'
 
 const sections = [
-  { id: 'dashboard', label: 'Staff Booking Dashboard', description: 'Booking officer overview and live payment flags', icon: <Landmark className="h-4 w-4" /> },
-  { id: 'payments', label: 'Payment & Billing', description: 'Verify advance or full payment and outstanding balances', icon: <Banknote className="h-4 w-4" /> },
-  { id: 'readiness', label: 'Venue Preparation', description: 'Superintendent readiness checklist for grounds, setup and utilities', icon: <Wrench className="h-4 w-4" /> },
-  { id: 'handover', label: 'Permit & Venue Handover', description: 'Verify permit, hand over the venue and record its return', icon: <FileCheck2 className="h-4 w-4" /> },
-  { id: 'settlement', label: 'Final Reconciliation', description: 'Collect remaining balance and refund or retain the security deposit', icon: <RotateCcw className="h-4 w-4" /> },
+  { id: 'dashboard', label: 'Staff Booking Dashboard', description: 'Booking officer overview and live payment flags' },
+  { id: 'my-booking', label: 'My Booking', description: 'Create and track manually entered bookings' },
+  { id: 'payments', label: 'Payment & Billing', description: 'Verify advance or full payment and outstanding balances' },
+  { id: 'readiness', label: 'Venue Preparation', description: 'Superintendent readiness checklist for grounds, setup and utilities' },
+  { id: 'handover', label: 'Permit & Venue Handover', description: 'Verify permit, hand over the venue and record its return' },
+  { id: 'settlement', label: 'Final Reconciliation', description: 'Collect remaining balance and refund or retain the security deposit' },
 ] as const
 
 type SectionId = (typeof sections)[number]['id']
@@ -33,6 +35,10 @@ type ReadinessField = 'groundsReady' | 'setupReady' | 'utilitiesReady'
 const formatCurrency = (value: number) => `Rs. ${value.toLocaleString()}`
 const isOperational = (booking: FacilityBooking) => booking.status !== 'REJECTED' && booking.status !== 'CANCELLED'
 const isApproved = (workflow: StaffBookingWorkflow) => workflow.status === 'APPROVED' || workflow.status === 'COMPLETED'
+const getPaymentFilter = (workflow: StaffBookingWorkflow | undefined) => {
+  if (!workflow?.upfrontReceived) return 'pending'
+  return workflow.paymentPlan === 'FULL' || workflow.balanceReceived ? 'complete' : 'balance-due'
+}
 
 const PublicPlaceBookingPage: React.FC = () => {
   const { section: sectionParam = 'dashboard' } = useParams()
@@ -41,8 +47,49 @@ const PublicPlaceBookingPage: React.FC = () => {
     : 'dashboard'
   const currentSection = sections.find((item) => item.id === section)!
   const { user } = useAuth()
-  const { bookings, workflows, loading, error, updateWorkflow } = useStaffBookingWorkflow()
+  const { bookings, workflows, loading, error, updateWorkflow, createManualBooking } = useStaffBookingWorkflow()
   const [amountDrafts, setAmountDrafts] = useState<Record<string, string>>({})
+  const [filters, setFilters] = useState<PublicPlaceBookingFilterState>({
+    search: '',
+    status: 'All',
+    facility: '',
+    date: '',
+    payment: 'All',
+  })
+
+  const allActiveBookings = useMemo(
+    () => bookings.filter(isOperational).sort((a, b) => a.bookingDate.localeCompare(b.bookingDate)),
+    [bookings],
+  )
+  const facilities = useMemo(
+    () => Array.from(new Set(allActiveBookings.map((booking) => booking.facilityName))).sort((a, b) => a.localeCompare(b)),
+    [allActiveBookings],
+  )
+  const dates = useMemo(
+    () => Array.from(new Set(allActiveBookings.map((booking) => booking.bookingDate))).sort((a, b) => a.localeCompare(b)),
+    [allActiveBookings],
+  )
+  const activeBookings = useMemo(() => {
+    const query = filters.search.trim().toLocaleLowerCase()
+    return allActiveBookings.filter((booking) => {
+      const workflow = workflows[booking.id]
+      const searchableFields = [
+        booking.refId,
+        booking.citizenName,
+        booking.citizenNic,
+        booking.citizenPhone,
+        booking.facilityName,
+        booking.eventTitle,
+        booking.eventType,
+      ]
+      if (query && !searchableFields.some((field) => field.toLocaleLowerCase().includes(query))) return false
+      if (filters.status !== 'All' && workflow?.status !== filters.status) return false
+      if (filters.facility && booking.facilityName !== filters.facility) return false
+      if (filters.date && booking.bookingDate !== filters.date) return false
+      if (filters.payment !== 'All' && getPaymentFilter(workflow) !== filters.payment) return false
+      return true
+    })
+  }, [allActiveBookings, filters, workflows])
 
   if (!['admin', 'staff', 'manager', 'superadmin'].includes(user?.role ?? '')) {
     return (
@@ -57,13 +104,22 @@ const PublicPlaceBookingPage: React.FC = () => {
     )
   }
 
-  const activeBookings = bookings
-    .filter(isOperational)
-    .sort((a, b) => a.bookingDate.localeCompare(b.bookingDate))
+  const hasActiveFilters = filters.search !== '' || filters.status !== 'All' ||
+    filters.facility !== '' || filters.date !== '' || filters.payment !== 'All'
+  const resetFilters = () => setFilters({
+    search: '',
+    status: 'All',
+    facility: '',
+    date: '',
+    payment: 'All',
+  })
   const approvedBookings = activeBookings.filter((booking) => {
     const workflow = workflows[booking.id]
     return workflow && isApproved(workflow)
   })
+  const manualBookings = bookings
+    .filter((booking) => booking.source === 'STAFF_MANUAL')
+    .sort((a, b) => b.submittedDate.localeCompare(a.submittedDate))
 
   const update = (bookingId: string, changes: Partial<StaffBookingWorkflow>) =>
     updateWorkflow(bookingId, changes)
@@ -425,6 +481,13 @@ const PublicPlaceBookingPage: React.FC = () => {
 
   const sectionContent: Record<SectionId, React.ReactNode> = {
     dashboard: renderDashboard(),
+    'my-booking': (
+      <MyBookingSection
+        bookings={manualBookings}
+        workflows={workflows}
+        onCreateBooking={createManualBooking}
+      />
+    ),
     payments: renderPayments(),
     readiness: renderReadiness(),
     handover: renderHandover(),
@@ -438,7 +501,7 @@ const PublicPlaceBookingPage: React.FC = () => {
         <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">{currentSection.label}</h1>
-            <p className="mt-1 text-xs text-gray-500">{currentSection.description} · Staff side only</p>
+            <p className="mt-1 text-xs text-gray-500">{currentSection.description}</p>
           </div>
           <Link to="/bookings/approvals" className="inline-flex items-center gap-1 self-start text-xs font-bold text-[#A31736] hover:underline sm:self-auto">
             Existing approval queue <ArrowRight className="h-3.5 w-3.5" />
@@ -446,43 +509,36 @@ const PublicPlaceBookingPage: React.FC = () => {
         </div>
       </header>
 
-      <nav aria-label="Public Place Booking staff workflow" className="grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
-        {sections.map((item, index) => (
-          <Link
-            key={item.id}
-            to={`/public-place-booking/${item.id}`}
-            aria-current={section === item.id ? 'step' : undefined}
-            className={`flex items-center gap-2.5 rounded-lg border p-3 transition-colors ${
-              section === item.id ? 'border-[#A31736] bg-rose-50 text-[#801028]' : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
-            }`}
-          >
-            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${section === item.id ? 'bg-[#A31736] text-white' : 'bg-gray-100 text-gray-500'}`}>
-              {item.icon}
-            </span>
-            <span className="min-w-0">
-              <span className="block text-[11px] font-bold">{index + 1}. {item.label}</span>
-              <span className="mt-0.5 block truncate text-[10px] text-gray-500">{item.description}</span>
-            </span>
-          </Link>
-        ))}
-      </nav>
-
       <div className="flex items-start gap-2 rounded-md border border-sky-200 bg-sky-50 p-3 text-[11px] leading-relaxed text-sky-900">
         <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
         <p>Staff workflow actions are saved in this browser for this prototype. Citizen application, availability search and payment-gateway screens are intentionally not part of this feature.</p>
       </div>
+      {section !== 'my-booking' && (
+        <PublicPlaceBookingFilters
+          facilities={facilities}
+          dates={dates}
+          filters={filters}
+          onFilterChange={(nextFilters) => setFilters((current) => ({ ...current, ...nextFilters }))}
+          onResetFilters={resetFilters}
+          totalFilteredCount={activeBookings.length}
+        />
+      )}
       {error && (
         <div role="alert" className="rounded-md border border-rose-300 bg-rose-50 p-3 text-xs font-medium text-rose-800">
           {error}
         </div>
       )}
 
-      {loading ? (
+      {section === 'my-booking' ? sectionContent[section] : loading ? (
         <div className="space-y-3">
           {[1, 2, 3].map((item) => <div key={item} className="h-32 animate-pulse rounded-lg border border-gray-200 bg-white" />)}
         </div>
       ) : activeBookings.length === 0 ? (
-        <EmptyMessage>No active bookings are available in the staff work queue.</EmptyMessage>
+        <EmptyMessage>
+          {hasActiveFilters
+            ? 'No public place bookings match the selected filters.'
+            : 'No active bookings are available in the staff work queue.'}
+        </EmptyMessage>
       ) : sectionContent[section]}
     </div>
   )

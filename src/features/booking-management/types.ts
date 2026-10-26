@@ -35,6 +35,7 @@ export interface BookingRemark {
 export interface FacilityBooking {
   id: string
   refId: string
+  source?: 'STAFF_MANUAL'
   facilityName: FacilityType
   citizenName: string
   citizenNic: string

@@ -64,7 +64,12 @@ function readSavedWorkflows(): WorkflowByBooking {
 }
 
 export function useStaffBookingWorkflow() {
-  const { loading: bookingsLoading, bookings } = useBookingData()
+  const {
+    loading: bookingsLoading,
+    bookings,
+    manualBookingError,
+    addManualBooking,
+  } = useBookingData()
   const [savedState, setSavedState] = useState(() => {
     try {
       return { workflows: readSavedWorkflows(), error: '' }
@@ -81,7 +86,11 @@ export function useStaffBookingWorkflow() {
     () => Object.fromEntries(
       bookings.map((booking) => [
         booking.id,
-        savedState.workflows[booking.id] ?? createInitialWorkflow(booking),
+        savedState.workflows[booking.id]
+          ? savedState.workflows[booking.id].status === 'PENDING' && booking.status !== 'PENDING'
+            ? { ...savedState.workflows[booking.id], status: booking.status }
+            : savedState.workflows[booking.id]
+          : createInitialWorkflow(booking),
       ]),
     ),
     [bookings, savedState.workflows],
@@ -116,11 +125,34 @@ export function useStaffBookingWorkflow() {
     [workflows],
   )
 
+  const createManualBooking = useCallback(
+    (booking: FacilityBooking, workflow: StaffBookingWorkflow) => {
+      const nextWorkflows = { ...workflows, [booking.id]: workflow }
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextWorkflows))
+      } catch (storageError) {
+        setSavedState((state) => ({
+          ...state,
+          error: storageError instanceof Error
+            ? `Could not save the initial booking workflow: ${storageError.message}`
+            : 'Could not save the initial booking workflow.',
+        }))
+        return false
+      }
+
+      if (!addManualBooking(booking)) return false
+      setSavedState({ workflows: nextWorkflows, error: '' })
+      return true
+    },
+    [addManualBooking, workflows],
+  )
+
   return {
     bookings,
     workflows,
     loading: bookingsLoading,
-    error: savedState.error,
+    error: savedState.error || manualBookingError,
     updateWorkflow,
+    createManualBooking,
   }
 }

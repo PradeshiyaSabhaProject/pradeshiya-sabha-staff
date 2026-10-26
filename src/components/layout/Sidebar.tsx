@@ -298,6 +298,7 @@ const navItems: NavItem[] = [
     roles: ['admin', 'staff', 'manager', 'superadmin'],
     children: [
       { label: 'Staff Booking Dashboard', path: '/public-place-booking/dashboard' },
+      { label: 'My Booking', path: '/public-place-booking/my-booking' },
       { label: 'Payment & Billing', path: '/public-place-booking/payments' },
       { label: 'Venue Preparation', path: '/public-place-booking/readiness' },
       { label: 'Permit & Venue Handover', path: '/public-place-booking/handover' },

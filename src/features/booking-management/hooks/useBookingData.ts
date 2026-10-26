@@ -1,6 +1,46 @@
 import { useState, useEffect } from 'react'
 import type { FacilityBooking } from '../types'
 
+const MANUAL_BOOKINGS_STORAGE_KEY = 'pradeshiya_manual_public_place_bookings_v1'
+
+function isSavedManualBooking(value: unknown): value is FacilityBooking {
+  if (typeof value !== 'object' || value === null) return false
+  const booking = value as Partial<FacilityBooking>
+  return (
+    booking.source === 'STAFF_MANUAL' &&
+    typeof booking.id === 'string' &&
+    typeof booking.refId === 'string' &&
+    typeof booking.facilityName === 'string' &&
+    typeof booking.citizenName === 'string' &&
+    typeof booking.citizenNic === 'string' &&
+    typeof booking.citizenPhone === 'string' &&
+    typeof booking.citizenEmail === 'string' &&
+    typeof booking.citizenAddress === 'string' &&
+    typeof booking.eventTitle === 'string' &&
+    typeof booking.eventType === 'string' &&
+    typeof booking.bookingDate === 'string' &&
+    typeof booking.timeSlot === 'string' &&
+    typeof booking.submittedDate === 'string' &&
+    typeof booking.submittedTime === 'string' &&
+    typeof booking.expectedAttendees === 'number' &&
+    typeof booking.rentalFee === 'number' &&
+    typeof booking.securityDeposit === 'number' &&
+    ['PAID', 'PENDING', 'REFUNDED', 'EXEMPT'].includes(booking.paymentStatus ?? '') &&
+    ['PENDING', 'APPROVED', 'REJECTED', 'CANCELLED', 'COMPLETED'].includes(booking.status ?? '') &&
+    Array.isArray(booking.attachments)
+  )
+}
+
+function readManualBookings(): FacilityBooking[] {
+  const saved = window.localStorage.getItem(MANUAL_BOOKINGS_STORAGE_KEY)
+  if (!saved) return []
+  const parsed: unknown = JSON.parse(saved)
+  if (!Array.isArray(parsed) || !parsed.every(isSavedManualBooking)) {
+    throw new Error('Saved manual public place bookings have an invalid format.')
+  }
+  return parsed
+}
+
 const formatRelativeDate = (daysOffset: number): string => {
   const d = new Date()
   d.setDate(d.getDate() + daysOffset)
@@ -266,14 +306,41 @@ const getRealisticBookings = (): FacilityBooking[] => [
 export const useBookingData = () => {
   const [loading, setLoading] = useState(true)
   const [bookings, setBookings] = useState<FacilityBooking[]>([])
+  const [manualBookingError, setManualBookingError] = useState('')
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setBookings(getRealisticBookings())
+      try {
+        setBookings([...readManualBookings(), ...getRealisticBookings()])
+      } catch (error) {
+        setManualBookingError(error instanceof Error
+          ? `Could not load saved manual bookings: ${error.message}`
+          : 'Could not load saved manual bookings.')
+        setBookings(getRealisticBookings())
+      }
       setLoading(false)
     }, 450)
     return () => clearTimeout(timer)
   }, [])
+
+  const addManualBooking = (booking: FacilityBooking) => {
+    try {
+      const savedBookings = readManualBookings()
+      if (savedBookings.some((savedBooking) => savedBooking.id === booking.id)) {
+        throw new Error('This booking reference already exists. Please submit the form again.')
+      }
+      const nextBookings = [booking, ...savedBookings]
+      window.localStorage.setItem(MANUAL_BOOKINGS_STORAGE_KEY, JSON.stringify(nextBookings))
+      setBookings((current) => [booking, ...current])
+      setManualBookingError('')
+      return true
+    } catch (error) {
+      setManualBookingError(error instanceof Error
+        ? `Could not save the manual booking: ${error.message}`
+        : 'Could not save the manual booking.')
+      return false
+    }
+  }
 
   const stats = {
     pending: bookings.filter(b => b.status === 'PENDING').length,
@@ -287,16 +354,26 @@ export const useBookingData = () => {
   }
 
   const updateBooking = (id: string, updatedData: Partial<FacilityBooking>) => {
-    let updatedObj: FacilityBooking | null = null
-    setBookings(prev =>
-      prev.map(item => {
-        if (item.id === id) {
-          updatedObj = { ...item, ...updatedData }
-          return updatedObj
-        }
-        return item
-      })
-    )
+    const target = bookings.find((booking) => booking.id === id)
+    if (!target) return null
+    const updatedObj = { ...target, ...updatedData }
+
+    if (target.source === 'STAFF_MANUAL') {
+      try {
+        const savedBookings = readManualBookings()
+        const nextBookings = savedBookings.map((booking) => booking.id === id ? updatedObj : booking)
+        if (!nextBookings.some((booking) => booking.id === id)) nextBookings.unshift(updatedObj)
+        window.localStorage.setItem(MANUAL_BOOKINGS_STORAGE_KEY, JSON.stringify(nextBookings))
+        setManualBookingError('')
+      } catch (error) {
+        setManualBookingError(error instanceof Error
+          ? `Could not save the manual booking update: ${error.message}`
+          : 'Could not save the manual booking update.')
+        return null
+      }
+    }
+
+    setBookings((current) => current.map((booking) => booking.id === id ? updatedObj : booking))
     return updatedObj
   }
 
@@ -379,6 +456,8 @@ export const useBookingData = () => {
   return {
     loading,
     bookings,
+    manualBookingError,
+    addManualBooking,
     stats,
     updateBooking,
     approveBooking,
