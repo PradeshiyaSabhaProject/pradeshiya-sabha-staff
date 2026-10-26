@@ -17,6 +17,7 @@ import inventoryRoutes from '../features/inventory-management/inventoryRoutes'
 import financeRoutes from '../features/financeRoutes'
 import profileRoutes from '../features/profile/profileRoutes'
 import varipanamRoutes from '../features/varipanam/varipanamRoutes'
+import tradeLicenseRoutes from '../features/trade-license/tradeLicenseRoutes'
 import LoginPage from '../features/auth/LoginPage'
 import { useAuth } from '../context/AuthContext'
 
@@ -78,6 +79,7 @@ export const AppRoutes: React.FC = () => {
         {assetRoutes}
         {fleetRoutes}
         {varipanamRoutes}
+        {tradeLicenseRoutes}
         {complainRoutes}
         {letterRoutes}
         {applicationRoutes}

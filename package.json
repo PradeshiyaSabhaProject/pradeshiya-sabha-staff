@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test:varipanam": "tsx src/features/varipanam/rules/varipanamRules.test.ts",
+    "test:trade-license": "tsx src/features/trade-license/rules/tradeLicenseRules.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -119,6 +119,14 @@ const VaripanamIcon = () => (
     <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
   </svg>
 )
+const TradeLicenseIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <path d="M3 9l1.5-5h15L21 9" />
+    <path d="M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0z" />
+    <path d="M5 13v7h14v-7" />
+    <path d="M10 20v-4h4v4" />
+  </svg>
+)
 const LogoutIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -247,6 +255,19 @@ const navItems: NavItem[] = [
       { label: 'Historical Search', path: '/varipanam/historical-search' },
       { label: 'Reports', path: '/varipanam/reports' },
       { label: 'Settings', path: '/varipanam/settings' },
+    ],
+  },
+  {
+    label: 'Trade License',
+    path: '/trade-license',
+    icon: <TradeLicenseIcon />,
+    roles: ['superadmin', 'admin', 'staff'],
+    children: [
+      { label: 'Dashboard', path: '/trade-license/dashboard' },
+      { label: 'Trade Applications', path: '/trade-license/applications' },
+      { label: 'Assignments & Inspections', path: '/trade-license/inspections' },
+      { label: 'Approvals', path: '/trade-license/approvals' },
+      { label: 'Licenses & Payments', path: '/trade-license/licenses' },
     ],
   },
   {
@@ -404,6 +425,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
             const childActive =
               location.pathname === child.path ||
               (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+              (child.path === '/trade-license/applications' && location.pathname.startsWith('/trade-license/applications/')) ||
               (hasSubChildren && location.pathname.startsWith(child.path))
             const isSubOpen = openSubMenus[child.path] ?? location.pathname.startsWith(child.path)
 
