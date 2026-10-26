@@ -99,6 +99,8 @@ export interface VehicleRecord {
   maintenanceHistory: MaintenanceLog[]
 }
 
+import { EXTRA_VEHICLES, EXTRA_DRIVERS } from './initialBookingData'
+
 export const INITIAL_DRIVERS: DriverRecord[] = [
   {
     id: 'DRV-01',
@@ -188,6 +190,7 @@ export const INITIAL_DRIVERS: DriverRecord[] = [
     assignedVehicleReg: null,
     status: 'On Duty',
   },
+  ...EXTRA_DRIVERS,
 ]
 
 export const INITIAL_VEHICLES: VehicleRecord[] = [
@@ -241,8 +244,8 @@ export const INITIAL_VEHICLES: VehicleRecord[] = [
     currentLocation: 'Municipal Depot - Heavy Vehicle Bay 02',
     assignedDriverId: 'DRV-02',
     assignedDriverName: 'Chamal Priyantha',
-    permitExpiryDate: '2026-10-20',
-    revenueLicenseExpiryDate: '2026-10-20',
+    permitExpiryDate: '2027-10-20',
+    revenueLicenseExpiryDate: '2027-10-20',
     insuranceExpiryDate: '2026-11-15',
     maintenanceHistory: [
       {
@@ -384,6 +387,7 @@ export const INITIAL_VEHICLES: VehicleRecord[] = [
       },
     ],
   },
+  ...EXTRA_VEHICLES,
 ]
 
 export type FleetActionType =
@@ -486,5 +490,4 @@ export const INITIAL_APPROVAL_REQUESTS: FleetApprovalRequest[] = [
     },
   },
 ]
-
 

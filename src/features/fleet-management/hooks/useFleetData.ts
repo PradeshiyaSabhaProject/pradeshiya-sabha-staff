@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
-  INITIAL_VEHICLES,
   INITIAL_DRIVERS,
   INITIAL_APPROVAL_REQUESTS,
   type VehicleRecord,
@@ -10,10 +9,23 @@ import {
   type FleetApprovalRequest,
   type FleetActionType,
 } from '../data/initialFleetData'
+import { useBookingData } from './useBookingData'
 
 const VEHICLES_STORAGE_KEY = 'ps_fleet_vehicles_v1'
 const DRIVERS_STORAGE_KEY = 'ps_fleet_drivers_v1'
 const APPROVALS_STORAGE_KEY = 'ps_fleet_approvals_v1'
+
+/** Formats a local calendar date from a timestamp without rendering-time clock reads. */
+function localDateString(timestamp: number): string {
+  const date = new Date(timestamp)
+  return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
+}
+
+/** Converts an ISO calendar date into an integer day count for date comparisons. */
+function calendarDayNumber(dateString: string): number {
+  const [year, month, day] = dateString.split('-').map(Number)
+  return Math.floor(Date.UTC(year, month - 1, day) / 86400000)
+}
 
 export interface FleetComplianceInfo {
   isPermitOverdue: boolean
@@ -24,18 +36,13 @@ export interface FleetComplianceInfo {
   alertMessage: string | null
 }
 
-export function getVehicleComplianceInfo(vehicle: VehicleRecord): FleetComplianceInfo {
-  const today = '2026-07-12' // reference portal date
+export function getVehicleComplianceInfo(vehicle: VehicleRecord, today: string): FleetComplianceInfo {
   const permitOverdue = vehicle.permitExpiryDate < today
   const revenueOverdue = vehicle.revenueLicenseExpiryDate < today
   const insuranceOverdue = vehicle.insuranceExpiryDate < today
 
   // Check expiring within 14 days
-  const parseDaysDiff = (dateStr: string) => {
-    const d1 = new Date(today).getTime()
-    const d2 = new Date(dateStr).getTime()
-    return Math.floor((d2 - d1) / (1000 * 3600 * 24))
-  }
+  const parseDaysDiff = (dateStr: string) => calendarDayNumber(dateStr) - calendarDayNumber(today)
 
   const permitDays = parseDaysDiff(vehicle.permitExpiryDate)
   const revenueDays = parseDaysDiff(vehicle.revenueLicenseExpiryDate)
@@ -76,6 +83,8 @@ export function getVehicleComplianceInfo(vehicle: VehicleRecord): FleetComplianc
 }
 
 export function useFleetData() {
+  const bookingData = useBookingData()
+  const [today] = useState(() => localDateString(Date.now()))
   const [vehicles, setVehicles] = useState<VehicleRecord[]>(() => {
     const saved = localStorage.getItem(VEHICLES_STORAGE_KEY)
     if (saved) {
@@ -85,7 +94,7 @@ export function useFleetData() {
         // fallback
       }
     }
-    return INITIAL_VEHICLES
+    return bookingData.vehicles
   })
 
   const [drivers, setDrivers] = useState<DriverRecord[]>(() => {
@@ -129,6 +138,30 @@ export function useFleetData() {
   useEffect(() => {
     localStorage.setItem(APPROVALS_STORAGE_KEY, JSON.stringify(approvalRequests))
   }, [approvalRequests])
+
+  // Cross-component sync listener (keeps fleet pages in sync when bookings update vehicles/drivers)
+  useEffect(() => {
+    const handleSync = () => {
+      const v = localStorage.getItem(VEHICLES_STORAGE_KEY)
+      if (v) {
+        try { setVehicles(JSON.parse(v)) } catch { /* ignore */ }
+      }
+      const d = localStorage.getItem(DRIVERS_STORAGE_KEY)
+      if (d) {
+        try { setDrivers(JSON.parse(d)) } catch { /* ignore */ }
+      }
+      const a = localStorage.getItem(APPROVALS_STORAGE_KEY)
+      if (a) {
+        try { setApprovalRequests(JSON.parse(a)) } catch { /* ignore */ }
+      }
+    }
+    window.addEventListener('storage', handleSync)
+    window.addEventListener('fleet_storage_update', handleSync)
+    return () => {
+      window.removeEventListener('storage', handleSync)
+      window.removeEventListener('fleet_storage_update', handleSync)
+    }
+  }, [])
 
   // Live GPS Telemetry simulation loop for garbage tractors and fleet vehicles
   useEffect(() => {
@@ -185,12 +218,12 @@ export function useFleetData() {
       const matchCategory = categoryFilter === 'All' || v.category === categoryFilter
       const matchStatus = statusFilter === 'All' || v.status === statusFilter
 
-      const compliance = getVehicleComplianceInfo(v)
+      const compliance = getVehicleComplianceInfo(v, today)
       const matchPermitAlert = !showOnlyPermitAlerts || compliance.hasAnyAlert
 
       return matchSearch && matchCategory && matchStatus && matchPermitAlert
     })
-  }, [vehicles, searchQuery, categoryFilter, statusFilter, showOnlyPermitAlerts])
+  }, [vehicles, searchQuery, categoryFilter, statusFilter, showOnlyPermitAlerts, today])
 
   // KPI calculations
   const stats = useMemo(() => {
@@ -198,7 +231,7 @@ export function useFleetData() {
     const available = vehicles.filter((v) => v.status === 'Available').length
     const onMission = vehicles.filter((v) => v.status === 'On Mission').length
     const inMaintenance = vehicles.filter((v) => v.status === 'In Maintenance').length
-    const permitAlerts = vehicles.filter((v) => getVehicleComplianceInfo(v).hasAnyAlert).length
+    const permitAlerts = vehicles.filter((v) => getVehicleComplianceInfo(v, today).hasAnyAlert).length
 
     return {
       total,
@@ -207,7 +240,7 @@ export function useFleetData() {
       inMaintenance,
       permitAlerts,
     }
-  }, [vehicles])
+  }, [vehicles, today])
 
   // Actions
   const addVehicle = (
@@ -302,7 +335,7 @@ export function useFleetData() {
           return log
         })
 
-        const compliance = getVehicleComplianceInfo(v)
+        const compliance = getVehicleComplianceInfo(v, today)
 
         return {
           ...v,
@@ -365,7 +398,7 @@ export function useFleetData() {
     setVehicles((prev) =>
       prev.map((v) => {
         if (v.id !== vehicleId) return v
-        const compliance = getVehicleComplianceInfo(v)
+        const compliance = getVehicleComplianceInfo(v, today)
 
         return {
           ...v,
@@ -429,7 +462,7 @@ export function useFleetData() {
           insuranceExpiryDate: newDates.insuranceExpiryDate,
         }
 
-        const compliance = getVehicleComplianceInfo(newV)
+        const compliance = getVehicleComplianceInfo(newV, today)
         let updatedStatus: VehicleStatus = newV.status
         if (newV.status === 'Permit Due' && !compliance.hasAnyAlert) {
           updatedStatus = 'Available'
@@ -563,6 +596,7 @@ export function useFleetData() {
     statusFilter,
     setStatusFilter,
     showOnlyPermitAlerts,
+    today,
     setShowOnlyPermitAlerts,
     addVehicle,
     putInMaintenance,
@@ -574,6 +608,19 @@ export function useFleetData() {
     submitApprovalRequest,
     approveRequest,
     rejectRequest,
+    // Booking state & mutations from useBookingData (single source of truth for cross-page sync)
+    bookings: bookingData.bookings,
+    bookingStats: bookingData.bookingStats,
+    resetDemoData: bookingData.resetDemoData,
+    seededAt: bookingData.seededAt,
+    seedAgeHours: bookingData.seedAgeHours,
+    createBooking: bookingData.createBooking,
+    approveBooking: bookingData.approveBooking,
+    rejectBooking: bookingData.rejectBooking,
+    recordPayment: bookingData.recordPayment,
+    validateVehicleAssignment: bookingData.validateVehicleAssignment,
+    assignBookingVehicle: bookingData.assignVehicle,
+    advanceBookingJobStep: bookingData.advanceJobStep,
+    closeoutBooking: bookingData.closeoutBooking,
   }
 }
-

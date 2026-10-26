@@ -221,6 +221,7 @@ const navItems: NavItem[] = [
       { label: 'Fleet Dashboard', path: '/fleet/overview' },
       { label: 'Vehicle Registry', path: '/fleet/vehicles' },
       { label: 'Live Dispatch & Location', path: '/fleet/dispatch' },
+      { label: 'Fleet Booking', path: '/fleet/bookings' },
       { label: 'Maintenance Workshop', path: '/fleet/maintenance' },
       { label: 'Drivers & Operators', path: '/fleet/drivers' },
       { label: 'Authorizations Desk', path: '/fleet/approvals' },

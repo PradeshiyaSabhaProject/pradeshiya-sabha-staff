@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { useFleetData } from './hooks/useFleetData'
 import type { VehicleRecord } from './data/initialFleetData'
 import { AssignDriverModal } from './components/AssignDriverModal'
+import { isActiveJob } from './utils/bookingUtils'
 
 export const FleetDriversPage: React.FC = () => {
-  const { vehicles, drivers, assignDriver } = useFleetData()
+  const { vehicles, drivers, bookings, assignDriver } = useFleetData()
 
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedVehicleForDriver, setSelectedVehicleForDriver] =
@@ -59,6 +60,9 @@ export const FleetDriversPage: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {filteredDrivers.map((drv) => {
           const assignedVehicle = vehicles.find((v) => v.id === drv.assignedVehicleId)
+          const activeJob = bookings.find(
+            (booking) => booking.assignedDriverId === drv.id && isActiveJob(booking.status)
+          )
 
           return (
             <div
@@ -125,6 +129,13 @@ export const FleetDriversPage: React.FC = () => {
                     <p className="text-xs text-gray-500">No Vehicle Assigned</p>
                   </div>
                 )}
+                {activeJob && (
+                  <div className="mt-2 inline-flex items-center gap-1.5 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-800">
+                    <span>ACTIVE JOB</span>
+                    <span className="font-mono">{activeJob.referenceNumber}</span>
+                    <span className="font-medium">{activeJob.status}</span>
+                  </div>
+                )}
               </div>
             </div>
           )
@@ -176,4 +187,3 @@ export const FleetDriversPage: React.FC = () => {
     </div>
   )
 }
-

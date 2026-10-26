@@ -23,6 +23,7 @@ export const FleetDirectoryPage: React.FC = () => {
     vehicles,
     filteredVehicles,
     drivers,
+    today,
     searchQuery,
     setSearchQuery,
     categoryFilter,
@@ -168,7 +169,7 @@ export const FleetDirectoryPage: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100 text-sm">
               {filteredVehicles.map((v) => {
-                const compliance = getVehicleComplianceInfo(v)
+                const compliance = getVehicleComplianceInfo(v, today)
 
                 return (
                   <tr key={v.id} className="hover:bg-gray-50/60 transition-colors">
@@ -224,13 +225,22 @@ export const FleetDirectoryPage: React.FC = () => {
                         >
                           Inspect
                         </button>
-                        {v.status !== 'In Maintenance' ? (
+                        {v.status !== 'In Maintenance' && v.status !== 'On Mission' ? (
                           <button
                             type="button"
                             onClick={() => setSelectedVehicleForMaintenance(v)}
                             className="px-2.5 py-1 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-semibold uppercase tracking-wider cursor-pointer"
                           >
                             Maintenance
+                          </button>
+                        ) : v.status === 'On Mission' ? (
+                          <button
+                            type="button"
+                            disabled
+                            title="A vehicle on an active mission cannot be scheduled for maintenance."
+                            className="px-2.5 py-1 rounded border border-gray-200 bg-gray-100 text-gray-400 text-xs font-semibold uppercase tracking-wider cursor-not-allowed"
+                          >
+                            On Mission
                           </button>
                         ) : (
                           <button
@@ -385,6 +395,7 @@ export const FleetDirectoryPage: React.FC = () => {
 
       <VehicleDetailDrawer
         vehicle={activeInspectorVehicle}
+        today={today}
         onClose={() => setActiveInspectorVehicle(null)}
         onOpenPutInMaintenance={(v) => {
           setActiveInspectorVehicle(null)
@@ -444,4 +455,3 @@ export const FleetDirectoryPage: React.FC = () => {
     </div>
   )
 }
-
