@@ -3,7 +3,10 @@
  * Run: npm run test:trade-license
  */
 import { DEFAULT_SETTINGS } from '../config/defaultConfig'
+import { buildSampleDb } from '../mock/tradeLicenseMockData'
 import {
+  can,
+  canActOnStage,
   calculateLicenseFee,
   calculateStampDuty,
   findFeeBand,
@@ -298,6 +301,27 @@ async function main() {
   await rejects(svc.updateSettings({ processingFee: { amount: null, confirmed: true } }, as('System Administrator')), 'before confirming', 'Cannot confirm empty processing fee')
   await rejects(svc.updateSettings({ approvalChain: ['RI_VERIFICATION', 'SECRETARY'] }, admin), 'Chairman', 'Chairman cannot be removed from chain')
   await rejects(svc.updateSettings({ stampDutyRate: 0.2 }, as('Counter Officer')), 'not authorised', 'Counter officer cannot change rules')
+
+  console.log('\n== Role-based offices (no acting-as switch) ==')
+  const staffLike: Actor = { name: 'Staff', designation: 'Counter Officer', designations: ['Counter Officer', 'Revenue Inspector', 'Public Health Inspector'] }
+  assert(can(staffLike, 'RI_REVIEW') && can(staffLike, 'SETTINGS_MANAGE') === false, 'Multi-office actor gets the union of permissions only')
+  assert(!canActOnStage(staffLike, 'CHAIRMAN'), 'Operational staff cannot act as Chairman')
+  const mem2 = new Map<string, string>()
+  const svc2 = new TradeLicenseService({ getItem: (k) => mem2.get(k) ?? null, setItem: (k, v) => void mem2.set(k, v) }, () => new Date('2026-03-01T09:00:00Z'))
+  const surveyed2 = await svc2.registerBusiness({ ...food, name: 'Role Test Shop', premises: { address: '1 Role Rd' } }, staffLike)
+  const db2 = await svc2.getSnapshot()
+  eq(db2.audit.find((e) => e.entityId === surveyed2.key)?.designation, 'Revenue Inspector', 'Audit records the specific office that acted')
+
+  console.log('\n== Sample data ==')
+  const sample = await buildSampleDb(new Date('2026-10-26T09:00:00Z'))
+  eq(sample.applications.length, 11, 'Sample data builds 11 applications through the real workflow')
+  eq(sample.licenses.length, 3, 'Sample data has 3 issued licences')
+  assert(sample.licenses.some((l) => l.outstandingAtIssue > 0), 'Sample includes a licence issued with unpaid fees')
+  const seededSvc = new TradeLicenseService({ getItem: () => null, setItem: () => undefined })
+  assert(await seededSvc.seedIfEmpty(sample), 'Sample is loaded into an empty store')
+  const savedStore = new Map<string, string>([['trade_license_db_v1', JSON.stringify({ ...sample, applications: [] })]])
+  const keepSvc = new TradeLicenseService({ getItem: (k) => savedStore.get(k) ?? null, setItem: (k, v) => void savedStore.set(k, v) })
+  assert(!(await keepSvc.seedIfEmpty(sample)), 'Saved records are never overwritten by sample data')
 
   console.log(`\n${passed} passed, ${failed} failed\n`)
   if (failed > 0) process.exit(1)

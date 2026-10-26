@@ -1,39 +1,10 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router-dom'
-import { CheckCircle2, Lock, ShieldCheck, X, AlertCircle } from 'lucide-react'
+import { CheckCircle2, Lock, X, AlertCircle } from 'lucide-react'
 import { useAuth } from '../../../context/AuthContext'
 import { TradeLicenseProvider, useTradeLicense } from '../context/TradeLicenseContext'
 import { designationsForRole } from '../config/defaultConfig'
-import type { Designation } from '../types/tradeLicense'
 import { ErrorBanner, Spinner } from './ui'
-
-const ActingDesignationBar: React.FC = () => {
-  const { actor, designations, setDesignation } = useTradeLicense()
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 py-2.5 bg-white border border-gray-200 rounded-2xl shadow-2xs">
-      <div className="flex items-center gap-2 text-xs text-gray-600 min-w-0">
-        <ShieldCheck className="w-4 h-4 text-[#A31736] shrink-0" />
-        <span className="truncate">
-          Signed in as <strong className="text-gray-900">{actor.name}</strong> — actions are recorded in the audit log under the acting office.
-        </span>
-      </div>
-      <label className="flex items-center gap-2 shrink-0">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500">Acting as</span>
-        <select
-          value={actor.designation}
-          onChange={(e) => setDesignation(e.target.value as Designation)}
-          className="px-2.5 py-1.5 text-xs font-bold text-[#A31736] bg-[#A31736]/5 border border-[#A31736]/30 rounded-xl cursor-pointer"
-        >
-          {designations.map((d) => (
-            <option key={d} value={d}>
-              {d}
-            </option>
-          ))}
-        </select>
-      </label>
-    </div>
-  )
-}
 
 const Toasts: React.FC = () => {
   const { toasts, dismissToast } = useTradeLicense()
@@ -61,7 +32,6 @@ const Body: React.FC = () => {
   const { isLoading, loadError, db } = useTradeLicense()
   return (
     <div className="space-y-4 animate-fade-in pb-12">
-      <ActingDesignationBar />
       {isLoading && !db ? <Spinner label="Loading trade licence records…" /> : loadError ? <ErrorBanner message={loadError} /> : <Outlet />}
       <Toasts />
     </div>

@@ -43,7 +43,7 @@ const FeeRules: React.FC = () => {
   const [s, setS] = useState<TradeLicenseSettings>(() => structuredClone(db!.settings))
   const [error, setError] = useState<string | null>(null)
   if (!db) return null
-  const editable = can(actor.designation, 'SETTINGS_MANAGE')
+  const editable = can(actor, 'SETTINGS_MANAGE')
   const num = (v: string) => (v.trim() === '' ? null : Number(v))
   const setBand = (i: number, patch: Partial<FeeBand>) => setS({ ...s, feeBands: s.feeBands.map((b, j) => (j === i ? { ...b, ...patch } : b)) })
   const save = async () => {
@@ -186,7 +186,7 @@ const NoticeModal: React.FC<{ notice: LegalNotice; onClose: () => void }> = ({ n
   const n = db.notices.find((x) => x.id === notice.id) ?? notice
   const business = db.businesses.find((b) => b.key === n.businessKey)
   const closed = n.status === 'CLOSED' || n.status === 'COMPLIED'
-  const editable = can(actor.designation, 'NOTICE_MANAGE') && !closed
+  const editable = can(actor, 'NOTICE_MANAGE') && !closed
   const submit = async () => {
     const payload =
       action === 'RESPONSE'
@@ -309,8 +309,8 @@ export const LicensesPaymentsPage: React.FC = () => {
   const appOf = (id: string) => db.applications.find((a) => a.id === id)
   const bizOf = (key?: string) => db.businesses.find((b) => b.key === key)
   const ledger = db.payments.filter((p) => !ledgerType || p.type === ledgerType).sort((a, b) => b.recordedAt.localeCompare(a.recordedAt))
-  const canNotice = can(actor.designation, 'NOTICE_MANAGE')
-  const canPay = can(actor.designation, 'PAYMENT_RECORD')
+  const canNotice = can(actor, 'NOTICE_MANAGE')
+  const canPay = can(actor, 'PAYMENT_RECORD')
 
   const reportHeader = (title: string, count: number, onExport: () => void) => (
     <div className="flex items-center justify-between gap-2 px-5 py-3.5 border-b border-gray-100">
@@ -450,7 +450,7 @@ export const LicensesPaymentsPage: React.FC = () => {
                       <Link to={`/trade-license/applications/${renewalApp.id}`} className={btnGhost}>
                         {renewalApp.ref}
                       </Link>
-                    ) : can(actor.designation, 'APPLICATION_CREATE') && nextYear <= year + 1 ? (
+                    ) : can(actor, 'APPLICATION_CREATE') && nextYear <= year + 1 ? (
                       <Link to={`/trade-license/applications?new=1&business=${l.businessKey}&type=RENEWAL&forYear=${nextYear}`} className={btnGhost}>
                         <RefreshCw className="w-3 h-3" /> Renew for {nextYear}
                       </Link>
@@ -715,7 +715,7 @@ export const LicensesPaymentsPage: React.FC = () => {
                   <td className="px-4 py-2.5">{b.premises.address}</td>
                   <td className="px-4 py-2.5">{b.survey ? `${formatDate(b.survey.surveyDate)} · ${b.survey.surveyedBy}` : '—'}</td>
                   <td className="px-4 py-2.5 text-right whitespace-nowrap">
-                    {can(actor.designation, 'APPLICATION_CREATE') && (
+                    {can(actor, 'APPLICATION_CREATE') && (
                       <Link to={`/trade-license/applications?new=1&business=${b.key}&forYear=${reportYear}${b.businessId ? '&type=RENEWAL' : ''}`} className={btnGhost}>
                         <PlusCircle className="w-3 h-3" /> Apply
                       </Link>

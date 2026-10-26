@@ -118,7 +118,7 @@ const WorkflowConfig: React.FC = () => {
   const [days, setDays] = useState(String(db?.settings.correctionDeadlineDays ?? 14))
   const [error, setError] = useState<string | null>(null)
   if (!db) return null
-  const editable = can(actor.designation, 'SETTINGS_MANAGE')
+  const editable = can(actor, 'SETTINGS_MANAGE')
   const save = async () => {
     const ordered = ALL_APPROVAL_STAGES.filter((s) => chain.includes(s))
     const res = await run(
@@ -186,7 +186,8 @@ export const TradeApprovalsPage: React.FC = () => {
 
   const pipeline = useMemo(() => (db?.applications ?? []).filter((a) => a.status === 'IN_APPROVAL'), [db])
   if (!db) return null
-  const mine = pipeline.filter((a) => canActOnStage(actor.designation, a.currentApprovalStage))
+  const mine = pipeline.filter((a) => canActOnStage(actor, a.currentApprovalStage))
+  const canActOnAnyStage = ALL_APPROVAL_STAGES.some((s) => canActOnStage(actor, s))
   const today = todayIso()
   const waitingSince = (a: Application) => {
     const last = db.approvals.filter((d) => d.applicationId === a.id).sort((x, y) => y.at.localeCompare(x.at))[0]
@@ -226,7 +227,7 @@ export const TradeApprovalsPage: React.FC = () => {
             </td>
             <td className="px-4 py-2.5 text-right">
               <button type="button" className={btnGhost} onClick={() => setReviewId(a.id)}>
-                {canActOnStage(actor.designation, a.currentApprovalStage) ? 'Review & decide' : 'View'} →
+                {canActOnStage(actor, a.currentApprovalStage) ? 'Review & decide' : 'View'} →
               </button>
             </td>
           </tr>
@@ -254,13 +255,13 @@ export const TradeApprovalsPage: React.FC = () => {
       />
 
       {tab === 'mine' && (
-        <Panel title={`Awaiting my action – ${actor.designation}`} bodyClassName="p-0">
+        <Panel title="Awaiting my action" bodyClassName="p-0">
           {pipelineTable(
             mine,
             'No applications awaiting your approval',
-            ['Revenue Inspector', 'Chief Inspector', 'Secretary', 'Chairman'].includes(actor.designation)
+            canActOnAnyStage
               ? undefined
-              : 'Approval decisions are made by the RI, Chief Inspector, Secretary and Chairman. Switch the acting designation if you hold one of these offices.'
+              : 'Approval decisions are made by the RI, Chief Inspector, Secretary and Chairman. Your role does not have approval permission.'
           )}
         </Panel>
       )}

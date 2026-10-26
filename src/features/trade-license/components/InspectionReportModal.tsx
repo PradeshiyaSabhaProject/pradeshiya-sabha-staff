@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Camera, Trash2 } from 'lucide-react'
 import { useTradeLicense } from '../context/TradeLicenseContext'
 import { INSPECTION_TYPE_DESIGNATION, INSPECTION_TYPE_LABELS } from '../config/defaultConfig'
-import { canSubmitInspection } from '../rules/tradeLicenseRules'
+import { canSubmitInspection, pickOffice } from '../rules/tradeLicenseRules'
 import type { ChecklistResult, Inspection, InspectionRecommendation } from '../types/tradeLicense'
 import { ErrorBanner, Field, InfoBanner, Modal, NeedsConfirmation, Pill, btnPrimary, btnSecondary, formatDateTime, inputCls } from './ui'
 
@@ -42,7 +42,8 @@ export const InspectionReportModal: React.FC<{ inspection: Inspection; onClose: 
   const { db, run, actor } = useTradeLicense()
   const app = db?.applications.find((a) => a.id === inspection.applicationId)
   const template = db?.checklists.find((c) => c.id === inspection.checklistTemplateId)
-  const editable = inspection.status === 'ASSIGNED' && canSubmitInspection(actor.designation, inspection.type)
+  const canSignAsMoh = !!pickOffice(actor, ['Medical Officer of Health'])
+  const editable = inspection.status === 'ASSIGNED' && canSubmitInspection(actor, inspection.type)
   const [checklist, setChecklist] = useState(inspection.checklist)
   const [photos, setPhotos] = useState<{ name: string; dataUrl: string }[]>(inspection.photos)
   const [remarks, setRemarks] = useState(inspection.remarks ?? '')
@@ -55,7 +56,7 @@ export const InspectionReportModal: React.FC<{ inspection: Inspection; onClose: 
   if (!db || !app) return null
   const business = db.businesses.find((b) => b.key === app.businessKey)
   const canMoh =
-    inspection.type === 'PHI' && inspection.status === 'REPORT_SUBMITTED' && !inspection.mohSignOff && actor.designation === 'Medical Officer of Health'
+    inspection.type === 'PHI' && inspection.status === 'REPORT_SUBMITTED' && !inspection.mohSignOff && canSignAsMoh
 
   const addPhotos = async (files: FileList | null) => {
     if (!files) return
@@ -114,7 +115,7 @@ export const InspectionReportModal: React.FC<{ inspection: Inspection; onClose: 
     >
       <div className="space-y-5">
         {!editable && inspection.status === 'ASSIGNED' && (
-          <InfoBanner>This report must be submitted by the {INSPECTION_TYPE_DESIGNATION[inspection.type]}. Switch the acting designation if you hold that office.</InfoBanner>
+          <InfoBanner>This report must be submitted by the {INSPECTION_TYPE_DESIGNATION[inspection.type]}. Your role does not have permission to submit it.</InfoBanner>
         )}
 
         <section className="space-y-2">

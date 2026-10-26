@@ -194,7 +194,7 @@ export const RectifyForm: React.FC<{ app: Application; onIssueNotice?: () => voi
   const [error, setError] = useState<string | null>(null)
   if (!cr) return null
   const overdue = cr.deadline < todayIso()
-  const allowed = can(actor.designation, 'CORRECTION_MANAGE')
+  const allowed = can(actor, 'CORRECTION_MANAGE')
   const rectify = async () => {
     const res = await run((svc, a) => svc.rectifyCorrection(app.id, cr.id, { note, reinspectionTypes: extra }, a), 'Corrections recorded.')
     setError(res.ok ? null : res.error)
@@ -263,10 +263,10 @@ export const ApprovalDecisionForm: React.FC<{ app: Application; onDone?: () => v
   const [busy, setBusy] = useState(false)
   const stage = app.currentApprovalStage
   if (!stage) return null
-  if (!canActOnStage(actor.designation, stage)) {
+  if (!canActOnStage(actor, stage)) {
     return (
       <InfoBanner>
-        Awaiting <strong>{APPROVAL_STAGE_LABELS[stage]}</strong> by the {APPROVAL_STAGE_DESIGNATION[stage]}. Switch the acting designation if you hold that office.
+        Awaiting <strong>{APPROVAL_STAGE_LABELS[stage]}</strong> by the {APPROVAL_STAGE_DESIGNATION[stage]}. Your role does not have permission to decide at this stage.
       </InfoBanner>
     )
   }
@@ -315,8 +315,8 @@ export const FeeAndIssueForm: React.FC<{ app: Application; onIssued?: (license: 
   const business = db.businesses.find((b) => b.key === app.businessKey)
   if (!business) return null
   const calc = calculateLicenseFee(business, db.settings)
-  const canAssess = can(actor.designation, 'FEE_ASSESS')
-  const canIssue = can(actor.designation, 'LICENSE_ISSUE')
+  const canAssess = can(actor, 'FEE_ASSESS')
+  const canIssue = can(actor, 'LICENSE_ISSUE')
 
   const assess = async () => {
     const res = await run(

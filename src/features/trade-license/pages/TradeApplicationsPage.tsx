@@ -115,7 +115,7 @@ export const TradeApplicationsPage: React.FC = () => {
             <button type="button" onClick={exportCsv} className={btnSecondary} disabled={rows.length === 0}>
               <Download className="w-3.5 h-3.5 text-gray-500" /> EXPORT CSV
             </button>
-            {can(actor.designation, 'APPLICATION_CREATE') && (
+            {can(actor, 'APPLICATION_CREATE') && (
               <button type="button" onClick={() => setParam('new', '1')} className={btnPrimary}>
                 <PlusCircle className="w-3.5 h-3.5" /> NEW APPLICATION
               </button>
@@ -179,7 +179,7 @@ export const TradeApplicationsPage: React.FC = () => {
               title={hasFilters ? 'No applications match these filters' : 'No trade licence applications yet'}
               message={hasFilters ? 'Clear the filters to see all applications.' : 'Register a counter application or an online submission to start the workflow.'}
               action={
-                !hasFilters && can(actor.designation, 'APPLICATION_CREATE') ? (
+                !hasFilters && can(actor, 'APPLICATION_CREATE') ? (
                   <button type="button" className={btnPrimary} onClick={() => setParam('new', '1')}>
                     <PlusCircle className="w-3.5 h-3.5" /> New application
                   </button>
@@ -248,7 +248,7 @@ export const TradeApplicationsPage: React.FC = () => {
         )}
       </Panel>
 
-      {showNew && can(actor.designation, 'APPLICATION_CREATE') && (
+      {showNew && can(actor, 'APPLICATION_CREATE') && (
         <ApplicationFormModal
           open
           onClose={() => setParam('new', '')}

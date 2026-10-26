@@ -3,7 +3,7 @@
  *
  * This repository is a frontend-only application (no backend / database), so – like the
  * Varipanam module – the data is persisted in the browser through this service. Every
- * mutation goes through here and enforces: role permissions (acting designation), workflow
+ * mutation goes through here and enforces: role permissions (office per action), workflow
  * state, validation, duplicate prevention and audit logging. The method signatures are
  * async and API-shaped so they can be replaced by HTTP calls when a backend is added.
  */
@@ -36,6 +36,7 @@ import {
   DEFAULT_SETTINGS,
   INSPECTION_TYPE_DESIGNATION,
   INSPECTION_TYPE_LABELS,
+  APPROVAL_STAGE_DESIGNATION,
   APPROVAL_STAGE_LABELS,
 } from '../config/defaultConfig'
 import {
@@ -56,6 +57,7 @@ import {
   nextApprovalStage,
   normalise,
   paymentStatusFor,
+  pickOffice,
   resolveApprovalStages,
   round2,
   validateInspectionReport,
@@ -197,6 +199,32 @@ export class TradeLicenseService {
     }
   }
 
+  /** True when nothing has been saved in this browser yet (first visit). */
+  hasSavedData(): boolean {
+    try {
+      return !!this.store?.getItem(TRADE_LICENSE_STORAGE_KEY)
+    } catch {
+      return false
+    }
+  }
+
+  /** Loads the sample data on a first visit only. Never overwrites saved records. */
+  async seedIfEmpty(sample: TradeLicenseDb): Promise<boolean> {
+    if (this.hasSavedData()) return false
+    this.db = structuredClone(sample)
+    this.commit()
+    return true
+  }
+
+  /** Replaces ALL trade licence records in this browser with the given data (admin only). */
+  async replaceAllData(data: TradeLicenseDb, actor: Actor, reason: string): Promise<void> {
+    return this.mutate(() => {
+      actor = this.require(actor, 'SETTINGS_MANAGE')
+      this.db = structuredClone(data)
+      this.audit(actor, 'Trade licence data replaced', 'SETTINGS', 'data', reason)
+    })
+  }
+
   async getSnapshot(): Promise<TradeLicenseDb> {
     this.db = this.load()
     return structuredClone(this.db)
@@ -221,12 +249,15 @@ export class TradeLicenseService {
     this.db.sequences[name] = n
     return n
   }
-  private require(actor: Actor, action: TradeAction): void {
-    if (!can(actor.designation, action)) {
+  /** Checks permission and returns the actor narrowed to the office that is allowed to act. */
+  private require(actor: Actor, action: TradeAction): Actor {
+    const office = pickOffice(actor, allowedDesignations(action))
+    if (!office) {
       throw new TradeLicenseError(
-        `${actor.designation} is not authorised for this action. Allowed: ${allowedDesignations(action).join(', ')}.`
+        `You are not authorised for this action. Allowed offices: ${allowedDesignations(action).join(', ')}.`
       )
     }
+    return { ...actor, designation: office }
   }
   private audit(
     actor: Actor | 'PORTAL',
@@ -330,7 +361,7 @@ export class TradeLicenseService {
   // ── Business master (Revenue survey) ──────────────────────────────────────
   async registerBusiness(input: BusinessInput, actor: Actor): Promise<Business> {
     return this.mutate(() => {
-      this.require(actor, 'BUSINESS_SURVEY')
+      actor = this.require(actor, 'BUSINESS_SURVEY')
       const b = this.createBusinessRecord(
         { ...input, survey: input.survey ?? { surveyedBy: actor.name, surveyDate: this.today() } },
         'FIELD_SURVEY',
@@ -343,9 +374,7 @@ export class TradeLicenseService {
 
   async updateBusiness(key: string, input: BusinessInput, actor: Actor): Promise<Business> {
     return this.mutate(() => {
-      if (!can(actor.designation, 'BUSINESS_SURVEY') && !can(actor.designation, 'APPLICATION_EDIT')) {
-        this.require(actor, 'BUSINESS_SURVEY')
-      }
+      actor = can(actor, 'BUSINESS_SURVEY') ? this.require(actor, 'BUSINESS_SURVEY') : this.require(actor, 'APPLICATION_EDIT')
       const b = this.business(key)
       if (b.businessId && normalise(b.premises.address) !== normalise(input.premises.address)) {
         throw new TradeLicenseError('The premises address has changed. Use "Change Location" so the Business ID is handled correctly.')
@@ -363,7 +392,7 @@ export class TradeLicenseService {
   /** PDF: "Business ID can change when business in the location is changed". */
   async changeBusinessLocation(key: string, premises: Business['premises'], reason: string, actor: Actor): Promise<Business> {
     return this.mutate(() => {
-      this.require(actor, 'BUSINESS_SURVEY')
+      actor = this.require(actor, 'BUSINESS_SURVEY')
       const b = this.business(key)
       if (!premises.address.trim()) throw new TradeLicenseError('New premises address is required.')
       if (!reason.trim()) throw new TradeLicenseError('A reason for the location change is required.')
@@ -501,7 +530,7 @@ export class TradeLicenseService {
   /** Officer-assisted application at the Pradeshiya Sabha counter. */
   async createCounterApplication(input: ApplicationInput, actor: Actor): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'APPLICATION_CREATE')
+      actor = this.require(actor, 'APPLICATION_CREATE')
       this.validateYear(input.licenseYear)
       this.validateApplicant(input.applicant)
       const amount = this.resolveProcessingFeeAmount(input.processingFee.amount, input.processingFee.acknowledgeUnconfirmed)
@@ -527,8 +556,7 @@ export class TradeLicenseService {
   async submitOnlineApplication(input: OnlineApplicationInput, registeredBy?: Actor): Promise<Application> {
     return this.mutate(() => {
       // When an officer imports a portal submission, they must be allowed to register applications.
-      if (registeredBy) this.require(registeredBy, 'APPLICATION_CREATE')
-      const who: Actor | 'PORTAL' = registeredBy ?? 'PORTAL'
+      const who: Actor | 'PORTAL' = registeredBy ? this.require(registeredBy, 'APPLICATION_CREATE') : 'PORTAL'
       if (!input.portalRef.trim()) throw new TradeLicenseError('Portal reference is required.')
       const dupRef = this.db.applications.find((a) => a.portalRef && normalise(a.portalRef) === normalise(input.portalRef))
       if (dupRef) throw new TradeLicenseError(`Portal submission ${input.portalRef} is already registered as ${dupRef.ref}.`)
@@ -555,7 +583,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'APPLICATION_EDIT')
+      actor = this.require(actor, 'APPLICATION_EDIT')
       const app = this.app(id)
       if (!['SUBMITTED', 'DOCUMENT_REVIEW', 'RI_REVIEW'].includes(app.status)) {
         throw new TradeLicenseError('The application can only be edited before inspections begin.')
@@ -598,7 +626,7 @@ export class TradeLicenseService {
 
   async withdrawApplication(id: string, reason: string, actor: Actor): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'APPLICATION_EDIT')
+      actor = this.require(actor, 'APPLICATION_EDIT')
       const app = this.app(id)
       if (!isApplicationOpen(app) || app.status === 'APPROVED') {
         throw new TradeLicenseError('Only applications that are still in progress can be withdrawn.')
@@ -613,7 +641,7 @@ export class TradeLicenseService {
 
   async updateDocuments(id: string, documents: ApplicationDocument[], actor: Actor): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'DOCUMENT_VERIFY')
+      actor = this.require(actor, 'DOCUMENT_VERIFY')
       const app = this.app(id)
       if (!['SUBMITTED', 'DOCUMENT_REVIEW', 'RI_REVIEW'].includes(app.status)) {
         throw new TradeLicenseError('Documents can only be changed before inspections begin.')
@@ -639,7 +667,7 @@ export class TradeLicenseService {
 
   async completeDocumentVerification(id: string, actor: Actor): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'DOCUMENT_VERIFY')
+      actor = this.require(actor, 'DOCUMENT_VERIFY')
       const app = this.app(id)
       if (app.status !== 'DOCUMENT_REVIEW') {
         throw new TradeLicenseError(
@@ -668,7 +696,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'RI_REVIEW')
+      actor = this.require(actor, 'RI_REVIEW')
       const app = this.app(id)
       if (app.status !== 'RI_REVIEW') throw new TradeLicenseError('This application is not awaiting RI review.')
       const cat = this.category(app.categoryId)
@@ -714,7 +742,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Inspection> {
     return this.mutate(() => {
-      this.require(actor, 'INSPECTION_ASSIGN')
+      actor = this.require(actor, 'INSPECTION_ASSIGN')
       const app = this.app(applicationId)
       if (app.status !== 'UNDER_INSPECTION') throw new TradeLicenseError('Inspections can only be assigned while the application is under inspection.')
       if (!app.requiredInspections.includes(type)) throw new TradeLicenseError(`${INSPECTION_TYPE_LABELS[type]} is not required for this application.`)
@@ -747,7 +775,7 @@ export class TradeLicenseService {
 
   async reassignInspection(inspectionId: string, assignedTo: string, actor: Actor): Promise<Inspection> {
     return this.mutate(() => {
-      this.require(actor, 'INSPECTION_ASSIGN')
+      actor = this.require(actor, 'INSPECTION_ASSIGN')
       const insp = this.db.inspections.find((i) => i.id === inspectionId)
       if (!insp) throw new TradeLicenseError('Inspection not found.')
       if (insp.status !== 'ASSIGNED') throw new TradeLicenseError('Only open inspections can be reassigned.')
@@ -763,9 +791,10 @@ export class TradeLicenseService {
     return this.mutate(() => {
       const insp = this.db.inspections.find((i) => i.id === inspectionId)
       if (!insp) throw new TradeLicenseError('Inspection not found.')
-      if (!canSubmitInspection(actor.designation, insp.type)) {
+      if (!canSubmitInspection(actor, insp.type)) {
         throw new TradeLicenseError(`Only a ${INSPECTION_TYPE_DESIGNATION[insp.type]} can submit this report.`)
       }
+      actor = { ...actor, designation: INSPECTION_TYPE_DESIGNATION[insp.type] }
       if (insp.status !== 'ASSIGNED') throw new TradeLicenseError('A report has already been submitted for this inspection.')
       const app = this.app(insp.applicationId)
       // Keep the checklist structure fixed; only results/notes come from the officer.
@@ -809,9 +838,10 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Inspection> {
     return this.mutate(() => {
-      if (actor.designation !== 'Medical Officer of Health') {
+      if (!pickOffice(actor, ['Medical Officer of Health'])) {
         throw new TradeLicenseError('Only the Medical Officer of Health can sign off PHI reports.')
       }
+      actor = { ...actor, designation: 'Medical Officer of Health' }
       const insp = this.db.inspections.find((i) => i.id === inspectionId)
       if (!insp) throw new TradeLicenseError('Inspection not found.')
       const app = this.app(insp.applicationId)
@@ -882,7 +912,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'CORRECTION_MANAGE')
+      actor = this.require(actor, 'CORRECTION_MANAGE')
       const app = this.app(applicationId)
       const cr = app.correctionRequests.find((c) => c.id === correctionId)
       if (!cr) throw new TradeLicenseError('Correction request not found.')
@@ -931,7 +961,7 @@ export class TradeLicenseService {
 
   async markCorrectionDeadlineMissed(applicationId: string, correctionId: string, actor: Actor): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'CORRECTION_MANAGE')
+      actor = this.require(actor, 'CORRECTION_MANAGE')
       const app = this.app(applicationId)
       const cr = app.correctionRequests.find((c) => c.id === correctionId)
       if (!cr || cr.status !== 'OPEN') throw new TradeLicenseError('Open correction request not found.')
@@ -955,9 +985,10 @@ export class TradeLicenseService {
         throw new TradeLicenseError('This application is not awaiting approval.')
       }
       const stage = app.currentApprovalStage
-      if (!canActOnStage(actor.designation, stage)) {
+      if (!canActOnStage(actor, stage)) {
         throw new TradeLicenseError(`Only the officer responsible for "${APPROVAL_STAGE_LABELS[stage]}" can decide at this stage.`)
       }
+      actor = { ...actor, designation: APPROVAL_STAGE_DESIGNATION[stage] }
       if (input.decision !== 'APPROVED' && !input.remarks.trim()) {
         throw new TradeLicenseError('Remarks are required to reject or return an application.')
       }
@@ -1016,7 +1047,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Application> {
     return this.mutate(() => {
-      this.require(actor, 'FEE_ASSESS')
+      actor = this.require(actor, 'FEE_ASSESS')
       const app = this.app(applicationId)
       if (app.status !== 'APPROVED') throw new TradeLicenseError('The licence fee is assessed after final (Chairman) approval.')
       const existing = this.db.charges.filter(
@@ -1077,7 +1108,7 @@ export class TradeLicenseService {
   /** Issues the licence. Unpaid fees do NOT block issuance (PDF: "License should be issued even if the fee isn't paid"). */
   async issueLicense(applicationId: string, actor: Actor): Promise<License> {
     return this.mutate(() => {
-      this.require(actor, 'LICENSE_ISSUE')
+      actor = this.require(actor, 'LICENSE_ISSUE')
       const app = this.app(applicationId)
       if (app.status === 'LICENSED') throw new TradeLicenseError('A licence has already been issued for this application.')
       if (app.status !== 'APPROVED' || app.approvalStatus !== 'APPROVED') {
@@ -1174,7 +1205,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<Payment> {
     return this.mutate(() => {
-      this.require(actor, 'PAYMENT_RECORD')
+      actor = this.require(actor, 'PAYMENT_RECORD')
       const charge = this.db.charges.find((c) => c.id === chargeId)
       if (!charge) throw new TradeLicenseError('Charge not found.')
       return structuredClone(this.applyPayment(charge, input, actor))
@@ -1184,7 +1215,7 @@ export class TradeLicenseService {
   // ── Non-compliance & legal notices ────────────────────────────────────────
   async issueNotice(input: NoticeInput, actor: Actor): Promise<LegalNotice> {
     return this.mutate(() => {
-      this.require(actor, 'NOTICE_MANAGE')
+      actor = this.require(actor, 'NOTICE_MANAGE')
       const b = this.business(input.businessKey)
       if (!input.reasonDetails.trim()) throw new TradeLicenseError('Describe the reason for non-compliance.')
       if (!/^\d{4}-\d{2}-\d{2}$/.test(input.issueDate)) throw new TradeLicenseError('Notice issue date is required.')
@@ -1231,7 +1262,7 @@ export class TradeLicenseService {
     actor: Actor
   ): Promise<LegalNotice> {
     return this.mutate(() => {
-      this.require(actor, 'NOTICE_MANAGE')
+      actor = this.require(actor, 'NOTICE_MANAGE')
       const n = this.db.notices.find((x) => x.id === id)
       if (!n) throw new TradeLicenseError('Notice not found.')
       if (n.status === 'CLOSED' || n.status === 'COMPLIED') throw new TradeLicenseError('This notice is already closed.')
@@ -1273,7 +1304,7 @@ export class TradeLicenseService {
   // ── Configuration ─────────────────────────────────────────────────────────
   async updateSettings(patch: Partial<TradeLicenseSettings>, actor: Actor): Promise<TradeLicenseSettings> {
     return this.mutate(() => {
-      this.require(actor, 'SETTINGS_MANAGE')
+      actor = this.require(actor, 'SETTINGS_MANAGE')
       const next: TradeLicenseSettings = { ...this.db.settings, ...structuredClone(patch) }
       const errors: string[] = []
       next.feeBands.forEach((b) => {
@@ -1313,7 +1344,7 @@ export class TradeLicenseService {
 
   async updateCategory(category: BusinessCategory, actor: Actor): Promise<BusinessCategory> {
     return this.mutate(() => {
-      this.require(actor, 'SETTINGS_MANAGE')
+      actor = this.require(actor, 'SETTINGS_MANAGE')
       if (!category.name.trim()) throw new TradeLicenseError('Category name is required.')
       const dupName = this.db.categories.find((c) => c.id !== category.id && normalise(c.name) === normalise(category.name))
       if (dupName) throw new TradeLicenseError(`A category named "${category.name}" already exists.`)
@@ -1342,7 +1373,7 @@ export class TradeLicenseService {
 
   async updateChecklist(template: ChecklistTemplate, actor: Actor): Promise<ChecklistTemplate> {
     return this.mutate(() => {
-      this.require(actor, 'SETTINGS_MANAGE')
+      actor = this.require(actor, 'SETTINGS_MANAGE')
       const idx = this.db.checklists.findIndex((c) => c.id === template.id)
       if (idx < 0) throw new TradeLicenseError('Checklist template not found.')
       const items = template.items.map((i) => ({ ...i, label: i.label.trim() })).filter((i) => i.label)

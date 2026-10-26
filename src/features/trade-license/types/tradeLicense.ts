@@ -23,7 +23,10 @@ export type Designation =
 
 export interface Actor {
   name: string
+  /** Office recorded in the audit log / decisions. */
   designation: Designation
+  /** All offices this user may act for (derived from the portal role). Defaults to [designation]. */
+  designations?: Designation[]
 }
 
 // ── Configuration ───────────────────────────────────────────────────────────

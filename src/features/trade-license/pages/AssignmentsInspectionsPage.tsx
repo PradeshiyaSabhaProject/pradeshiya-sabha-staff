@@ -155,7 +155,7 @@ const BusinessRegister: React.FC = () => {
       .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
   }, [db, q])
   if (!db) return null
-  const canSurvey = can(actor.designation, 'BUSINESS_SURVEY')
+  const canSurvey = can(actor, 'BUSINESS_SURVEY')
   return (
     <Panel
       title={`Business Register (${rows.length})`}
@@ -208,7 +208,7 @@ const BusinessRegister: React.FC = () => {
                 {lic ? <Pill tone="emerald">{lic.licenseNo}</Pill> : app ? <AppStatusPill status={app.status} /> : b.liabilities.includes('TRADE_LICENSE') ? <Pill tone="rose">Not applied</Pill> : <Pill tone="gray">N/A</Pill>}
               </td>
               <td className="px-4 py-2.5 text-right whitespace-nowrap">
-                {(canSurvey || can(actor.designation, 'APPLICATION_EDIT')) && (
+                {(canSurvey || can(actor, 'APPLICATION_EDIT')) && (
                   <button type="button" className={btnGhost} onClick={() => setEditing(b)} title="Update details">
                     <Pencil className="w-3 h-3" /> Edit
                   </button>
@@ -218,7 +218,7 @@ const BusinessRegister: React.FC = () => {
                     <MapPin className="w-3 h-3" /> Move
                   </button>
                 )}
-                {!app && !lic && b.liabilities.includes('TRADE_LICENSE') && can(actor.designation, 'APPLICATION_CREATE') && (
+                {!app && !lic && b.liabilities.includes('TRADE_LICENSE') && can(actor, 'APPLICATION_CREATE') && (
                   <Link to={`/trade-license/applications?new=1&business=${b.key}${b.businessId ? '&type=RENEWAL' : ''}`} className={btnGhost}>
                     Apply <ArrowRight className="w-3 h-3" />
                   </Link>
@@ -394,7 +394,7 @@ const CategoriesChecklists: React.FC = () => {
   const [editCat, setEditCat] = useState<BusinessCategory | null>(null)
   const [editTpl, setEditTpl] = useState<ChecklistTemplate | null>(null)
   if (!db) return null
-  const canEdit = can(actor.designation, 'SETTINGS_MANAGE')
+  const canEdit = can(actor, 'SETTINGS_MANAGE')
   const blank: BusinessCategory = { id: '', name: '', description: '', requiredInspections: ['RI_BYLAW'], mohSignOffRequired: false, approvalStages: [], requiredDocuments: [], active: true, confirmed: false }
   return (
     <div className="space-y-4">
@@ -508,7 +508,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
   if (!db || !data) return null
   const appOf = (id: string) => db.applications.find((a) => a.id === id)
   const bizOf = (key?: string) => db.businesses.find((b) => b.key === key)
-  const mine = data.assigned.filter((i) => canSubmitInspection(actor.designation, i.type))
+  const mine = data.assigned.filter((i) => canSubmitInspection(actor, i.type))
   const allInspections = db.inspections
     .filter((i) => i.status !== 'CANCELLED')
     .filter((i) => !typeFilter || i.type === typeFilter)
@@ -553,7 +553,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
         {showAction && (
           <td className="px-4 py-2.5 text-right">
             <button type="button" className={btnGhost} onClick={() => setView(i)}>
-              {i.status === 'ASSIGNED' && canSubmitInspection(actor.designation, i.type) ? 'Inspect' : 'Open'} →
+              {i.status === 'ASSIGNED' && canSubmitInspection(actor, i.type) ? 'Inspect' : 'Open'} →
             </button>
           </td>
         )}
@@ -606,7 +606,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
                   {data.riReview.map((a) =>
                     appListRow(
                       a,
-                      can(actor.designation, 'RI_REVIEW') ? (
+                      can(actor, 'RI_REVIEW') ? (
                         <button type="button" className={btnSecondary} onClick={() => setRiApp(a)}>
                           Review
                         </button>
@@ -626,7 +626,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
                   {data.needsAssignment.map((a) =>
                     appListRow(
                       a,
-                      can(actor.designation, 'INSPECTION_ASSIGN') ? (
+                      can(actor, 'INSPECTION_ASSIGN') ? (
                         <button type="button" className={btnSecondary} onClick={() => setAssignApp(a)}>
                           Assign
                         </button>
@@ -643,7 +643,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
             </Panel>
           </div>
 
-          <Panel title={`Assigned to my office – ${actor.designation} (${mine.length})`} bodyClassName="p-0">
+          <Panel title={`Inspections I can report (${mine.length})`} bodyClassName="p-0">
             <TableShell
               headers={['Application', 'Business / premises', 'Inspection', 'Officer', 'Status', '']}
               isEmpty={mine.length === 0}
@@ -658,7 +658,7 @@ export const AssignmentsInspectionsPage: React.FC = () => {
             </TableShell>
           </Panel>
 
-          {(actor.designation === 'Medical Officer of Health' || data.awaitingMoh.length > 0) && (
+          {(data.awaitingMoh.length > 0) && (
             <Panel title={`PHI Reports Awaiting MOH Sign-off (${data.awaitingMoh.length})`} bodyClassName="p-0">
               <TableShell headers={['Application', 'Business / premises', 'Inspection', 'Officer', 'Status', '']} isEmpty={data.awaitingMoh.length === 0} empty={<EmptyState title="Nothing awaiting MOH sign-off" />}>
                 {data.awaitingMoh.map((i) => inspectionRow(i))}
