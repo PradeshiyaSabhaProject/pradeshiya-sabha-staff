@@ -31,6 +31,7 @@ import type { BookingActionResult } from '../utils/validators'
 interface NewBookingModalProps {
   isOpen: boolean
   onClose: () => void
+  onBookingCreated?: (booking: BookingRecord) => void
   onCreateBooking: (data: {
     serviceType: ServiceType
     applicant: ApplicantDetails
@@ -63,6 +64,7 @@ const WARDS = [
 export const NewBookingModal: React.FC<NewBookingModalProps> = ({
   isOpen,
   onClose,
+  onBookingCreated,
   onCreateBooking,
 }) => {
   const [serviceType, setServiceType] = useState<ServiceType>('GULLY_BOWSER')
@@ -420,6 +422,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({
       setSubmitting(false)
       return
     }
+    onBookingCreated?.(result.value)
     handleClose()
     setSubmitting(false)
   }

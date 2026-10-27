@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useBookingData } from './hooks/useBookingData'
 import { BookingStatusBadge, BookingSourceBadge } from './components/BookingStatusBadge'
 import type { BookingRecord, BookingStatus, ServiceType, BookingSource } from './data/initialBookingData'
@@ -9,10 +10,10 @@ import {
   nextActionLabel,
 } from './utils/bookingUtils'
 import { formatMobileNumber } from './utils/validators'
+import { FLEET_TECHNICAL_REVIEW_PATH } from './fleetNavigation'
 
 // Workflow Modals & Full Drawer
 import { NewBookingModal } from './components/NewBookingModal'
-import { TechnicalReviewModal } from './components/TechnicalReviewModal'
 import { RecordPaymentModal } from './components/RecordPaymentModal'
 import { AssignBookingVehicleModal } from './components/AssignBookingVehicleModal'
 import { JobProgressModal } from './components/JobProgressModal'
@@ -98,8 +99,6 @@ export const FleetBookingsPage: React.FC = () => {
     bookingStats,
     seedAgeHours,
     createBooking,
-    approveBooking,
-    rejectBooking,
     recordPayment,
     assignVehicle,
     advanceJobStep,
@@ -115,12 +114,13 @@ export const FleetBookingsPage: React.FC = () => {
   // ── Modal & Drawer States ────────────────────────────────────────────────────
   const [selectedBooking, setSelectedBooking] = useState<BookingRecord | null>(null)
   const [isNewBookingOpen, setIsNewBookingOpen] = useState(false)
-  const [reviewBooking, setReviewBooking] = useState<BookingRecord | null>(null)
   const [paymentBooking, setPaymentBooking] = useState<BookingRecord | null>(null)
   const [assignBooking, setAssignBooking] = useState<BookingRecord | null>(null)
   const [progressBooking, setProgressBooking] = useState<BookingRecord | null>(null)
   const [closeoutBookingRecord, setCloseoutBookingRecord] = useState<BookingRecord | null>(null)
   const [isSeedNoticeDismissed, setIsSeedNoticeDismissed] = useState(false)
+  const [createdBookingRef, setCreatedBookingRef] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   // ── Filter logic ─────────────────────────────────────────────────────────────
   const filtered = [...bookings]
@@ -162,9 +162,6 @@ export const FleetBookingsPage: React.FC = () => {
   /** Dispatches action button click to the appropriate workflow modal. */
   const handleOpenAction = (booking: BookingRecord) => {
     switch (booking.status) {
-      case 'Pending TO Review':
-        setReviewBooking(booking)
-        break
       case 'Awaiting Payment':
         setPaymentBooking(booking)
         break
@@ -201,8 +198,8 @@ export const FleetBookingsPage: React.FC = () => {
             Fleet Booking Management
           </h1>
           <p className="text-xs sm:text-sm text-gray-500 mt-0.5 max-w-2xl">
-            Manage Gutter / Gully Bowser and Water Bowser service bookings — citizen and counter-created, from
-            technical review through to completed job closeout.
+            Manage Gutter / Gully Bowser and Water Bowser bookings from payment and vehicle assignment through
+            job progress and closeout.
           </p>
         </div>
 
@@ -217,6 +214,29 @@ export const FleetBookingsPage: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {createdBookingRef && (
+        <div className="flex items-center justify-between gap-3 rounded border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs text-emerald-900" role="status">
+          <p>
+            Booking <strong className="font-mono">{createdBookingRef}</strong> was sent for Technical Officer review.
+          </p>
+          <div className="flex shrink-0 items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setCreatedBookingRef(null)}
+              className="font-semibold text-emerald-800 underline"
+            >
+              Dismiss
+            </button>
+            <Link
+              to={`${FLEET_TECHNICAL_REVIEW_PATH}?ref=${encodeURIComponent(createdBookingRef)}`}
+              className="font-bold text-[#A31736] underline"
+            >
+              View in Technical Review
+            </Link>
+          </div>
+        </div>
+      )}
 
       {seedAgeHours >= 12 && !isSeedNoticeDismissed && (
         <div className="flex items-center justify-between gap-3 rounded border border-blue-200 bg-blue-50 px-3 py-2 text-xs text-blue-900" role="status">
@@ -460,7 +480,18 @@ export const FleetBookingsPage: React.FC = () => {
 
                       {/* Payment countdown / Action Button */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        {isAwaiting && b.paymentDueBy ? (
+                        {b.status === 'Pending TO Review' ? (
+                          <div className="flex flex-col items-start gap-1.5">
+                            <span className="text-[11px] font-medium text-gray-400">With Technical Officer</span>
+                            <button
+                              type="button"
+                              onClick={() => navigate(`${FLEET_TECHNICAL_REVIEW_PATH}?ref=${encodeURIComponent(b.referenceNumber)}`)}
+                              className="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-[#A31736] border border-rose-200 font-bold text-[11px] transition-all cursor-pointer"
+                            >
+                              View in Technical Review
+                            </button>
+                          </div>
+                        ) : isAwaiting && b.paymentDueBy ? (
                           <div className="flex items-center gap-2">
                             <CountdownCell paymentDueBy={b.paymentDueBy} />
                             <button
@@ -520,18 +551,10 @@ export const FleetBookingsPage: React.FC = () => {
         isOpen={isNewBookingOpen}
         onClose={() => setIsNewBookingOpen(false)}
         onCreateBooking={createBooking}
+        onBookingCreated={(booking) => setCreatedBookingRef(booking.referenceNumber)}
       />
 
-      {/* ── 2. Technical Review Modal ── */}
-      <TechnicalReviewModal
-        isOpen={Boolean(reviewBooking)}
-        onClose={() => setReviewBooking(null)}
-        booking={reviewBooking}
-        onApprove={approveBooking}
-        onReject={rejectBooking}
-      />
-
-      {/* ── 3. Record Payment Modal ── */}
+      {/* ── 2. Record Payment Modal ── */}
       <RecordPaymentModal
         isOpen={Boolean(paymentBooking)}
         onClose={() => setPaymentBooking(null)}
@@ -539,7 +562,7 @@ export const FleetBookingsPage: React.FC = () => {
         onRecordPayment={recordPayment}
       />
 
-      {/* ── 4. Assign Vehicle & Driver Modal ── */}
+      {/* ── 3. Assign Vehicle & Driver Modal ── */}
       <AssignBookingVehicleModal
         isOpen={Boolean(assignBooking)}
         onClose={() => setAssignBooking(null)}
@@ -549,7 +572,7 @@ export const FleetBookingsPage: React.FC = () => {
         onAssign={assignVehicle}
       />
 
-      {/* ── 5. Job Progress Modal ── */}
+      {/* ── 4. Job Progress Modal ── */}
       <JobProgressModal
         isOpen={Boolean(progressBooking)}
         onClose={() => setProgressBooking(null)}
@@ -557,7 +580,7 @@ export const FleetBookingsPage: React.FC = () => {
         onAdvanceJobStep={advanceJobStep}
       />
 
-      {/* ── 6. Closeout Booking Modal ── */}
+      {/* ── 5. Closeout Booking Modal ── */}
       <CloseoutBookingModal
         isOpen={Boolean(closeoutBookingRecord)}
         onClose={() => setCloseoutBookingRecord(null)}

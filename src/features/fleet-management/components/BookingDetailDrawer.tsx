@@ -194,6 +194,9 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
     ? paymentTimeRemaining(booking.paymentDueBy, clockNow)
     : null
   const actionText = nextActionLabel(booking)
+  const technicalDecision = booking.timeline.find(
+    (entry) => entry.event === 'Booking Approved' || entry.event === 'Booking Rejected'
+  )
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -353,6 +356,61 @@ export const BookingDetailDrawer: React.FC<BookingDetailDrawerProps> = ({
                   </div>
                 </div>
               </div>
+
+              {(booking.toChecklistResult || booking.rejectionReason) && technicalDecision && (
+                <div className={`p-4 border rounded-xl space-y-3 ${booking.status === 'Rejected' ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                      Technical Officer Decision
+                    </h4>
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${booking.status === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                      {booking.status === 'Rejected' ? 'Rejected' : 'Approved'}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div>
+                      <span className="text-gray-500 block">Decided by</span>
+                      <span className="font-semibold text-gray-900">{technicalDecision.actor}</span>
+                    </div>
+                    <div>
+                      <span className="text-gray-500 block">Decided at</span>
+                      <span className="font-semibold text-gray-900">{formatTimestamp(technicalDecision.at)}</span>
+                    </div>
+                  </div>
+                  {booking.toChecklistResult && (
+                    <div>
+                      <span className="text-gray-500 block text-xs mb-1">Checklist results</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {Object.entries(booking.toChecklistResult).map(([item, passed]) => (
+                          <span key={item} className={`px-2 py-1 rounded border text-[10px] font-semibold ${passed ? 'bg-white border-emerald-200 text-emerald-800' : 'bg-red-100 border-red-200 text-red-800'}`}>
+                            {item.replace(/([A-Z])/g, ' $1')}: {passed ? 'Passed' : 'Not confirmed'}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {booking.toChecklistResult && (
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div>
+                        <span className="text-gray-500 block">Final loads</span>
+                        <span className="font-semibold text-gray-900">{booking.toAdjustedLoads ?? booking.estimatedFee.loads}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-500 block">Final distance</span>
+                        <span className="font-semibold text-gray-900">{(booking.toAdjustedDistanceKm ?? booking.estimatedFee.distanceKm).toFixed(1)} km</span>
+                      </div>
+                    </div>
+                  )}
+                  {(booking.rejectionReason || technicalDecision.note) && (
+                    <div className="rounded border border-white/80 bg-white/70 p-2 text-xs text-gray-700">
+                      <span className="font-bold text-gray-500 block mb-0.5">
+                        {booking.rejectionReason ? 'Rejection reason' : 'Remarks'}
+                      </span>
+                      {booking.rejectionReason ?? technicalDecision.note}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Service Specifications Card */}
               <div className="p-4 bg-white border border-gray-200 rounded-xl space-y-2">

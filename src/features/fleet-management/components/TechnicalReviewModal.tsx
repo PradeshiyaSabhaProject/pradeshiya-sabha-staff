@@ -5,7 +5,7 @@ import {
   type TOChecklistResult,
   type FeeBreakdown,
 } from '../data/initialBookingData'
-import { calculateFee, formatLKR } from '../utils/bookingUtils'
+import { calculateFee, formatLKR, formatTimestamp } from '../utils/bookingUtils'
 import { filterNumericInput, validateFreeText, validateNumber } from '../utils/validators'
 import type { BookingActionResult } from '../utils/validators'
 
@@ -258,6 +258,84 @@ export const TechnicalReviewModal: React.FC<TechnicalReviewModalProps> = ({
               <span className="font-bold text-gray-900">
                 {booking.scheduledDate} ({booking.scheduledTime})
               </span>
+            </div>
+          </div>
+
+          <div className="p-4 bg-white border border-gray-200 rounded-xl space-y-4 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div>
+                <span className="text-gray-400 block font-medium">Source</span>
+                <span className="font-bold text-gray-900">{booking.source}</span>
+              </div>
+              <div>
+                <span className="text-gray-400 block font-medium">NIC</span>
+                <span className="font-bold text-gray-900">{booking.applicant.nic}</span>
+              </div>
+              <div>
+                <span className="text-gray-400 block font-medium">Telephone</span>
+                <span className="font-bold text-gray-900">{booking.applicant.phone}</span>
+              </div>
+              <div>
+                <span className="text-gray-400 block font-medium">Ward</span>
+                <span className="font-bold text-gray-900">{booking.applicant.ward}</span>
+              </div>
+              <div className="col-span-2 sm:col-span-3">
+                <span className="text-gray-400 block font-medium">Applicant address</span>
+                <span className="font-semibold text-gray-900">{booking.applicant.address}</span>
+              </div>
+              <div className="col-span-2 sm:col-span-3">
+                <span className="text-gray-400 block font-medium">Service location</span>
+                <span className="font-semibold text-gray-900">{booking.location.label}</span>
+                <span className="block mt-0.5 font-mono text-[11px] text-gray-500">
+                  {booking.location.lat.toFixed(5)}, {booking.location.lng.toFixed(5)}
+                </span>
+              </div>
+              <div className="col-span-2 sm:col-span-3">
+                <span className="text-gray-400 block font-medium">Submitted</span>
+                <span className="font-semibold text-gray-900">
+                  {booking.timeline[0]?.at ? formatTimestamp(booking.timeline[0].at) : 'Submission time unavailable'}
+                </span>
+              </div>
+            </div>
+
+            <div className="border-t border-gray-100 pt-3">
+              <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+                Service-specific booking details
+              </h4>
+              {'pitVolumeLitres' in booking.serviceDetails ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div><span className="text-gray-400 block">Pit volume</span><strong>{booking.serviceDetails.pitVolumeLitres.toLocaleString()} L</strong></div>
+                  <div><span className="text-gray-400 block">Waste type</span><strong>{booking.serviceDetails.wasteType}</strong></div>
+                  <div><span className="text-gray-400 block">Distance from gate</span><strong>{booking.serviceDetails.distanceFromGateM} m</strong></div>
+                  <div><span className="text-gray-400 block">Hose required</span><strong>{booking.serviceDetails.hoseLengthRequiredM} m</strong></div>
+                  <div><span className="text-gray-400 block">Road width</span><strong>{booking.serviceDetails.roadWidthM} m</strong></div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div><span className="text-gray-400 block">Water volume</span><strong>{booking.serviceDetails.waterVolumeLitres.toLocaleString()} L</strong></div>
+                  <div><span className="text-gray-400 block">Requested loads</span><strong>{booking.serviceDetails.loadsRequired}</strong></div>
+                  <div><span className="text-gray-400 block">Purpose</span><strong>{booking.serviceDetails.purpose}</strong></div>
+                  <div><span className="text-gray-400 block">Storage type</span><strong>{booking.serviceDetails.storageTankType}</strong></div>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-gray-100 pt-3 space-y-1.5">
+              <h4 className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">
+                Estimated fee breakdown
+              </h4>
+              <div className="flex justify-between gap-3">
+                <span>Base ({booking.estimatedFee.loads} load(s) × {formatLKR(booking.estimatedFee.farePerLoad)})</span>
+                <strong>{formatLKR(booking.estimatedFee.loads * booking.estimatedFee.farePerLoad)}</strong>
+              </div>
+              <div className="flex justify-between gap-3">
+                <span>Transport ({booking.estimatedFee.distanceKm.toFixed(1)} km × {formatLKR(booking.estimatedFee.transportFeePerKm)}/km)</span>
+                <strong>{formatLKR(booking.estimatedFee.distanceKm * booking.estimatedFee.transportFeePerKm)}</strong>
+              </div>
+              <div className="flex justify-between gap-3 border-t border-gray-100 pt-1.5 font-extrabold text-gray-900">
+                <span>Estimated total</span>
+                <span>{formatLKR(booking.estimatedFee.totalLKR)}</span>
+              </div>
             </div>
           </div>
 

@@ -8,6 +8,10 @@ import { DispatchVehicleModal } from './components/DispatchVehicleModal'
 import { AssignDriverModal } from './components/AssignDriverModal'
 import { RenewPermitModal } from './components/RenewPermitModal'
 import { VehicleDetailDrawer } from './components/VehicleDetailDrawer'
+import {
+  FLEET_TECHNICAL_REVIEW_LABEL,
+  FLEET_TECHNICAL_REVIEW_PATH,
+} from './fleetNavigation'
 
 // Icons matching other pages
 const AddIcon = () => (
@@ -589,7 +593,7 @@ export const FleetOverviewPage: React.FC = () => {
             to="/fleet/bookings"
             className="px-4 py-2 rounded bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold text-xs uppercase tracking-wider transition-all"
           >
-            Fleet Booking ({bookingStats.pendingToReview + bookingStats.confirmed})
+            Fleet Booking ({bookingStats.confirmed + bookingStats.activeJobs + bookingStats.pendingCloseout})
           </Link>
           <Link
             to="/fleet/maintenance"
@@ -608,6 +612,12 @@ export const FleetOverviewPage: React.FC = () => {
             className="px-4 py-2 rounded bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold text-xs uppercase tracking-wider transition-all"
           >
             Authorizations Desk ({approvalRequests.filter((request) => request.status === 'Pending Approval').length})
+          </Link>
+          <Link
+            to={FLEET_TECHNICAL_REVIEW_PATH}
+            className="px-4 py-2 rounded bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 font-semibold text-xs uppercase tracking-wider transition-all"
+          >
+            {FLEET_TECHNICAL_REVIEW_LABEL} ({bookingStats.pendingToReview})
           </Link>
         </div>
 

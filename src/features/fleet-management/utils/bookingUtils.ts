@@ -160,7 +160,7 @@ export function isActiveJob(status: BookingStatus): boolean {
 export function nextActionLabel(booking: BookingRecord): string | null {
   switch (booking.status) {
     case 'Pending TO Review':
-      return 'Technical Review'
+      return null
     case 'Awaiting Payment':
       return 'Record Payment'
     case 'Confirmed':

@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useSidebar } from '../../context/SidebarContext'
+import {
+  FLEET_TECHNICAL_REVIEW_LABEL,
+  FLEET_TECHNICAL_REVIEW_PATH,
+} from '../../features/fleet-management/fleetNavigation'
 
 // ── Icons ──────────────────────────────────────────────────────────────────
 const GridIcon = () => (
@@ -233,6 +237,7 @@ const navItems: NavItem[] = [
       { label: 'Maintenance Workshop', path: '/fleet/maintenance' },
       { label: 'Drivers & Operators', path: '/fleet/drivers' },
       { label: 'Authorizations Desk', path: '/fleet/approvals' },
+      { label: FLEET_TECHNICAL_REVIEW_LABEL, path: FLEET_TECHNICAL_REVIEW_PATH },
     ]
   },
   {
