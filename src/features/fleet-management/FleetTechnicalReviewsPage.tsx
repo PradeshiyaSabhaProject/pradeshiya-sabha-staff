@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { BookingSourceBadge } from './components/BookingStatusBadge'
 import { TechnicalReviewModal } from './components/TechnicalReviewModal'
-import { SERVICE_CONFIG } from './data/initialBookingData'
+import { SERVICE_CONFIG, type BookingRecord } from './data/initialBookingData'
 import { useBookingData } from './hooks/useBookingData'
 import { formatLKR, formatTimestamp } from './utils/bookingUtils'
 
 /** Booking-based queue and audit history for Technical Officer decisions. */
 export const FleetTechnicalReviewsPage: React.FC = () => {
   const { bookings, approveBooking, rejectBooking, bookingStats } = useBookingData()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const reference = searchParams.get('ref')
+  const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null)
 
   const pendingBookings = bookings
     .filter((booking) => booking.status === 'Pending TO Review')
@@ -34,44 +33,11 @@ export const FleetTechnicalReviewsPage: React.FC = () => {
   const rejectedCount = bookingDecisions.filter(
     ({ decision }) => decision?.event === 'Booking Rejected'
   ).length
-  const selectedBooking = reference
-    ? pendingBookings.find((booking) => booking.referenceNumber === reference) ?? null
+  const selectedBooking: BookingRecord | null = selectedBookingId
+    ? pendingBookings.find((booking) => booking.id === selectedBookingId) ?? null
     : null
 
   // TODO: enforce role-based access once fleet-specific roles are added to AuthContext.
-
-  useEffect(() => {
-    if (!reference || selectedBooking) return
-    const nextParams = new URLSearchParams(searchParams)
-    nextParams.delete('ref')
-    setSearchParams(nextParams, { replace: true })
-  }, [reference, searchParams, selectedBooking, setSearchParams])
-
-  useEffect(() => {
-    if (!selectedBooking) return
-    const frame = window.requestAnimationFrame(() => {
-      document.getElementById(`technical-review-${selectedBooking.id}`)?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-      })
-    })
-    return () => window.cancelAnimationFrame(frame)
-  }, [selectedBooking])
-
-  /** Adds the selected pending booking reference to the current URL without a history entry. */
-  const handleOpenReview = (bookingReference: string) => {
-    const nextParams = new URLSearchParams(searchParams)
-    nextParams.set('ref', bookingReference)
-    setSearchParams(nextParams, { replace: true })
-  }
-
-  /** Removes the review reference so a closed or completed review cannot reopen. */
-  const handleCloseReview = () => {
-    if (!searchParams.has('ref')) return
-    const nextParams = new URLSearchParams(searchParams)
-    nextParams.delete('ref')
-    setSearchParams(nextParams, { replace: true })
-  }
 
   return (
     <div className="space-y-6 animate-fade-in pb-8">
@@ -160,7 +126,6 @@ export const FleetTechnicalReviewsPage: React.FC = () => {
                 {pendingBookings.map((booking) => (
                   <tr
                     key={booking.id}
-                    id={`technical-review-${booking.id}`}
                     className="hover:bg-rose-50/30 transition-colors"
                   >
                     <td className="py-3 px-4 font-mono font-bold text-[#A31736]">{booking.referenceNumber}</td>
@@ -189,7 +154,7 @@ export const FleetTechnicalReviewsPage: React.FC = () => {
                     <td className="py-3 px-4 text-right">
                       <button
                         type="button"
-                        onClick={() => handleOpenReview(booking.referenceNumber)}
+                        onClick={() => setSelectedBookingId(booking.id)}
                         className="px-3 py-1.5 rounded bg-[#A31736] hover:bg-[#801028] text-white text-[11px] font-bold uppercase tracking-wider cursor-pointer"
                       >
                         Review
@@ -264,7 +229,7 @@ export const FleetTechnicalReviewsPage: React.FC = () => {
 
       <TechnicalReviewModal
         isOpen={Boolean(selectedBooking)}
-        onClose={handleCloseReview}
+        onClose={() => setSelectedBookingId(null)}
         booking={selectedBooking}
         onApprove={approveBooking}
         onReject={rejectBooking}

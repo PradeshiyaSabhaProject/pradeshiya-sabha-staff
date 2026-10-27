@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import { useBookingData } from './hooks/useBookingData'
 import { BookingStatusBadge, BookingSourceBadge } from './components/BookingStatusBadge'
 import type { BookingRecord, BookingStatus, ServiceType, BookingSource } from './data/initialBookingData'
@@ -10,7 +9,6 @@ import {
   nextActionLabel,
 } from './utils/bookingUtils'
 import { formatMobileNumber } from './utils/validators'
-import { FLEET_TECHNICAL_REVIEW_PATH } from './fleetNavigation'
 
 // Workflow Modals & Full Drawer
 import { NewBookingModal } from './components/NewBookingModal'
@@ -120,7 +118,6 @@ export const FleetBookingsPage: React.FC = () => {
   const [closeoutBookingRecord, setCloseoutBookingRecord] = useState<BookingRecord | null>(null)
   const [isSeedNoticeDismissed, setIsSeedNoticeDismissed] = useState(false)
   const [createdBookingRef, setCreatedBookingRef] = useState<string | null>(null)
-  const navigate = useNavigate()
 
   // ── Filter logic ─────────────────────────────────────────────────────────────
   const filtered = [...bookings]
@@ -220,21 +217,6 @@ export const FleetBookingsPage: React.FC = () => {
           <p>
             Booking <strong className="font-mono">{createdBookingRef}</strong> was sent for Technical Officer review.
           </p>
-          <div className="flex shrink-0 items-center gap-3">
-            <button
-              type="button"
-              onClick={() => setCreatedBookingRef(null)}
-              className="font-semibold text-emerald-800 underline"
-            >
-              Dismiss
-            </button>
-            <Link
-              to={`${FLEET_TECHNICAL_REVIEW_PATH}?ref=${encodeURIComponent(createdBookingRef)}`}
-              className="font-bold text-[#A31736] underline"
-            >
-              View in Technical Review
-            </Link>
-          </div>
         </div>
       )}
 
@@ -481,16 +463,7 @@ export const FleetBookingsPage: React.FC = () => {
                       {/* Payment countdown / Action Button */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
                         {b.status === 'Pending TO Review' ? (
-                          <div className="flex flex-col items-start gap-1.5">
-                            <span className="text-[11px] font-medium text-gray-400">With Technical Officer</span>
-                            <button
-                              type="button"
-                              onClick={() => navigate(`${FLEET_TECHNICAL_REVIEW_PATH}?ref=${encodeURIComponent(b.referenceNumber)}`)}
-                              className="px-2.5 py-1 rounded bg-rose-50 hover:bg-rose-100 text-[#A31736] border border-rose-200 font-bold text-[11px] transition-all cursor-pointer"
-                            >
-                              View in Technical Review
-                            </button>
-                          </div>
+                          <span className="text-[11px] font-medium text-gray-400">Under Technical Review</span>
                         ) : isAwaiting && b.paymentDueBy ? (
                           <div className="flex items-center gap-2">
                             <CountdownCell paymentDueBy={b.paymentDueBy} />
