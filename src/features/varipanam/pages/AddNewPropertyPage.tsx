@@ -628,158 +628,70 @@ export const AddNewPropertyPage: React.FC = () => {
   return (
     <div className="space-y-6 animate-fade-in pb-20">
       {/* ── Top Header with Back Button & Mock Fill Helper ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => navigate('/varipanam')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 transition-colors cursor-pointer shrink-0 shadow-2xs active:scale-98"
-            title="Return to properties ledger"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
-          </button>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl font-black text-gray-900 tracking-tight">
-                Cadastral Property Registration & Amendments
-              </h1>
-              <NeedsConfirmationBadge tooltip="Property additions & ownership transfers require designated statutory officer approval." />
+      <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-3.5 py-2 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer shrink-0"
+              title="Return to previous page"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back</span>
+            </button>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold uppercase tracking-wide text-gray-900">
+                  Cadastral Property Registration & Amendments
+                </h1>
+                <NeedsConfirmationBadge tooltip="Property additions & ownership transfers require designated statutory officer approval." />
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Cadastral registration dossier with mandatory statutory documentation and municipal council endorsement.
+              </p>
             </div>
-            <p className="text-xs text-gray-500 mt-0.5">
-              Multi-base sequential pipeline: Base 1 (Dossier) → Base 2 (Statutory Documents) → Base 3 (Final Review).
-            </p>
           </div>
-        </div>
 
-        {/* Demo / Mock Data Fill Button */}
-        <div className="flex items-center gap-2 self-start sm:self-auto">
-          <button
-            type="button"
-            onClick={handleFillMockData}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#A31736] bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-xs active:scale-98"
-            title="Pre-populate full form and certified attachments with mock data for instant testing"
-          >
-            <Sparkles className="w-4 h-4 text-[#A31736]" />
-            <span>✨ Auto-Fill Demo Flow</span>
-          </button>
+          {/* Demo / Mock Data Fill Button */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={handleFillMockData}
+              className="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-[#A31736] text-xs font-bold px-3.5 py-2 rounded border border-rose-200 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
+              title="Pre-populate full form and certified attachments with mock data for instant testing"
+            >
+              <Sparkles className="w-4 h-4 text-[#A31736]" />
+              <span>Auto-Fill Demo Flow</span>
+            </button>
+          </div>
         </div>
       </div>
 
       {demoNotice && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-bold text-emerald-800 flex items-center gap-2 animate-fade-in shadow-xs">
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded text-xs font-bold text-emerald-800 flex items-center gap-2 animate-fade-in shadow-xs">
           <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{demoNotice}</span>
         </div>
       )}
 
-      {/* ── Step-by-Step Base Stepper Indicator ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          {/* Base 1 */}
-          <div
-            onClick={() => setCurrentBase(1)}
-            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
-              currentBase === 1
-                ? 'bg-rose-50/80 border-[#A31736] ring-2 ring-rose-100'
-                : 'bg-gray-50/60 border-gray-200 hover:bg-gray-100/60'
-            }`}
-          >
-            <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
-                currentBase === 1
-                  ? 'bg-[#A31736] text-white shadow-xs'
-                  : currentBase > 1
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {currentBase > 1 ? <Check className="w-4 h-4" /> : '1'}
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Base 1 (Phase 1)</span>
-              <p className="text-xs font-bold text-gray-900 truncate">Hierarchy & Property Dossier</p>
-              <p className="text-[10px] text-gray-500">5 Numbered Sections</p>
-            </div>
-          </div>
-
-          {/* Base 2 */}
-          <div
-            onClick={() => {
-              if (validateBase1()) setCurrentBase(2)
-            }}
-            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
-              currentBase === 2
-                ? 'bg-rose-50/80 border-[#A31736] ring-2 ring-rose-100'
-                : 'bg-gray-50/60 border-gray-200 hover:bg-gray-100/60'
-            }`}
-          >
-            <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
-                currentBase === 2
-                  ? 'bg-[#A31736] text-white shadow-xs'
-                  : currentBase > 2
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              {currentBase > 2 ? <Check className="w-4 h-4" /> : '2'}
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Base 2 (Phase 2)</span>
-              <p className="text-xs font-bold text-gray-900 truncate">Mandatory Document Uploads</p>
-              <p className="text-[10px] text-gray-500">
-                {submissionType === 'DESCRIPTION_CHANGE' ? '5 Statutory Plans' : '3 Mandatory Plans'}
-              </p>
-            </div>
-          </div>
-
-          {/* Base 3 */}
-          <div
-            onClick={() => {
-              if (validateBase1() && allPhase2Uploaded) setCurrentBase(3)
-            }}
-            className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
-              currentBase === 3
-                ? 'bg-rose-50/80 border-[#A31736] ring-2 ring-rose-100'
-                : 'bg-gray-50/60 border-gray-200 hover:bg-gray-100/60'
-            }`}
-          >
-            <div
-              className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-black shrink-0 ${
-                currentBase === 3
-                  ? 'bg-[#A31736] text-white shadow-xs'
-                  : 'bg-gray-200 text-gray-700'
-              }`}
-            >
-              3
-            </div>
-            <div className="min-w-0">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Base 3 (Final Phase)</span>
-              <p className="text-xs font-bold text-gray-900 truncate">Final Review & Endorsement</p>
-              <p className="text-[10px] text-gray-500">Save Draft or Submit</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Validation Warning & Error Messages */}
       {validationError && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl text-xs font-semibold text-rose-800 flex items-center gap-2">
+        <div className="p-3 bg-rose-50 border border-rose-200 rounded text-xs font-semibold text-rose-800 flex items-center gap-2">
           <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
           <span>{validationError}</span>
         </div>
       )}
 
       {proximityWarning && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-xs font-semibold text-amber-900 flex items-center gap-2">
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded text-xs font-semibold text-amber-900 flex items-center gap-2">
           <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
           <span>{proximityWarning}</span>
         </div>
       )}
 
       {successMessage && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs font-bold text-emerald-800 flex items-center gap-2">
+        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded text-xs font-bold text-emerald-800 flex items-center gap-2">
           <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{successMessage}</span>
         </div>
@@ -791,12 +703,12 @@ export const AddNewPropertyPage: React.FC = () => {
       {currentBase === 1 && (
         <div className="space-y-6">
           {/* ── Purpose Selection Cards ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full inline-block">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-100 px-2 py-0.5 rounded border border-rose-200 inline-block">
                 Step 1: Choose Application Purpose
               </span>
-              <h2 className="text-sm font-black text-gray-900 mt-1">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900 mt-1.5">
                 Select the Category for Property Registration or Amendment
               </h2>
               <p className="text-xs text-gray-500">
@@ -808,25 +720,25 @@ export const AddNewPropertyPage: React.FC = () => {
               {/* Option 1: New Property (New Number) */}
               <div
                 onClick={() => handlePurposeChange('NEW_PROPERTY')}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                className={`p-4 rounded border cursor-pointer transition-all ${
                   submissionType === 'NEW_PROPERTY'
-                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-2 ring-rose-100'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-1 ring-[#A31736]'
+                    : 'border-gray-300 hover:border-gray-400 bg-white'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold">
                     <Plus className="w-4 h-4" />
                   </div>
                   {submissionType === 'NEW_PROPERTY' && (
                     <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
                   )}
                 </div>
-                <h3 className="text-xs font-black text-gray-900">Add New Property (New Number)</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900">Add New Property (New Number)</h3>
                 <p className="text-[11px] text-gray-500 mt-1">
                   Enrol a brand new cadastral assessment unit with a new council assessment number.
                 </p>
-                <span className="inline-block mt-2 text-[10px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                <span className="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                   3 Upload Documents
                 </span>
               </div>
@@ -834,25 +746,25 @@ export const AddNewPropertyPage: React.FC = () => {
               {/* Option 2: Ownership Change */}
               <div
                 onClick={() => handlePurposeChange('OWNERSHIP_CHANGE')}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                className={`p-4 rounded border cursor-pointer transition-all ${
                   submissionType === 'OWNERSHIP_CHANGE'
-                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-2 ring-rose-100'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-1 ring-[#A31736]'
+                    : 'border-gray-300 hover:border-gray-400 bg-white'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded bg-blue-100 text-blue-800 flex items-center justify-center font-bold">
                     <Users className="w-4 h-4" />
                   </div>
                   {submissionType === 'OWNERSHIP_CHANGE' && (
                     <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
                   )}
                 </div>
-                <h3 className="text-xs font-black text-gray-900">Ownership Change</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900">Ownership Change</h3>
                 <p className="text-[11px] text-gray-500 mt-1">
                   Transfer an existing registered property unit to a new legal owner or heir.
                 </p>
-                <span className="inline-block mt-2 text-[10px] font-bold text-blue-800 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                <span className="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                   3 Upload Documents
                 </span>
               </div>
@@ -860,25 +772,25 @@ export const AddNewPropertyPage: React.FC = () => {
               {/* Option 3: Description Change */}
               <div
                 onClick={() => handlePurposeChange('DESCRIPTION_CHANGE')}
-                className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                className={`p-4 rounded border cursor-pointer transition-all ${
                   submissionType === 'DESCRIPTION_CHANGE'
-                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-2 ring-rose-100'
-                    : 'border-gray-200 hover:border-gray-300 bg-white'
+                    ? 'border-[#A31736] bg-rose-50/40 shadow-xs ring-1 ring-[#A31736]'
+                    : 'border-gray-300 hover:border-gray-400 bg-white'
                 }`}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center font-bold">
+                  <div className="w-8 h-8 rounded bg-purple-100 text-purple-800 flex items-center justify-center font-bold">
                     <FileText className="w-4 h-4" />
                   </div>
                   {submissionType === 'DESCRIPTION_CHANGE' && (
                     <span className="w-2.5 h-2.5 rounded-full bg-[#A31736]" />
                   )}
                 </div>
-                <h3 className="text-xs font-black text-gray-900">Description Change</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wide text-gray-900">Description Change</h3>
                 <p className="text-[11px] text-gray-500 mt-1">
                   Alter assessment values, building additions, subdivisions, or usage classification.
                 </p>
-                <span className="inline-block mt-2 text-[10px] font-bold text-purple-800 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-200">
+                <span className="inline-block mt-2 text-[10px] font-bold uppercase tracking-wider text-purple-800 bg-purple-50 px-2 py-0.5 rounded border border-purple-200">
                   5 Upload Plans
                 </span>
               </div>
@@ -900,9 +812,9 @@ export const AddNewPropertyPage: React.FC = () => {
               })
 
               return (
-                <div className="pt-3 border-t border-gray-100 bg-gray-50/70 p-4 rounded-xl border border-gray-200 space-y-2.5 relative">
+                <div className="pt-3 border-t border-gray-200 bg-gray-50/70 p-4 rounded border border-gray-300 space-y-2.5 relative">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                    <label className="text-xs font-bold uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
                       <Building className="w-3.5 h-3.5 text-[#A31736]" />
                       <span>Select Existing Property to Amend (Search & Quick-Fill):</span>
                     </label>
@@ -913,7 +825,7 @@ export const AddNewPropertyPage: React.FC = () => {
                           setSelectedExistingPropertyId('')
                           setPropertySearchQuery('')
                         }}
-                        className="text-[11px] font-bold text-rose-600 hover:underline flex items-center gap-1 cursor-pointer"
+                        className="text-[11px] font-bold uppercase tracking-wider text-[#A31736] hover:underline flex items-center gap-1 cursor-pointer"
                       >
                         <X className="w-3 h-3" />
                         <span>Clear Selection</span>
@@ -933,7 +845,7 @@ export const AddNewPropertyPage: React.FC = () => {
                       }}
                       onFocus={() => setIsPropertyDropdownOpen(true)}
                       placeholder="Type to search by assessment no, property no, owner name or NIC..."
-                      className="w-full pl-9 pr-9 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 transition-all shadow-2xs"
+                      className="w-full pl-9 pr-9 py-2 bg-white border border-gray-300 rounded text-xs font-medium text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 transition-all shadow-2xs"
                     />
                     {propertySearchQuery && (
                       <button
@@ -951,7 +863,7 @@ export const AddNewPropertyPage: React.FC = () => {
 
                     {/* Floating Dropdown List of Properties */}
                     {isPropertyDropdownOpen && (
-                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 max-h-64 overflow-y-auto divide-y divide-gray-100 animate-fade-in">
+                      <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-300 rounded shadow-lg z-50 max-h-64 overflow-y-auto divide-y divide-gray-100 animate-fade-in">
                         {filteredExistingProperties.length === 0 ? (
                           <div className="p-4 text-center text-xs text-gray-400 font-medium">
                             No matching properties found for "{propertySearchQuery}".
@@ -975,7 +887,7 @@ export const AddNewPropertyPage: React.FC = () => {
                               >
                                 <div className="min-w-0 pr-2">
                                   <div className="flex items-center gap-2">
-                                    <span className="font-mono font-black text-xs text-gray-900 bg-gray-100 px-2 py-0.5 rounded border border-gray-200">
+                                    <span className="font-mono font-bold text-xs text-gray-900 bg-gray-100 px-2 py-0.5 rounded border border-gray-300">
                                       {p.assessmentNumber}
                                     </span>
                                     <span className="font-bold text-gray-900 truncate">{p.propertyNumber}</span>
@@ -991,7 +903,7 @@ export const AddNewPropertyPage: React.FC = () => {
                                 </div>
                                 <div className="text-right shrink-0">
                                   <span className="text-xs font-bold text-gray-900 block">{formatLKR(p.annualAssessedValue)}</span>
-                                  <span className="text-[10px] text-gray-400">Annual Value</span>
+                                  <span className="text-[10px] text-gray-400 uppercase tracking-wider">Annual Value</span>
                                 </div>
                               </div>
                             )
@@ -1010,10 +922,10 @@ export const AddNewPropertyPage: React.FC = () => {
                   )}
 
                   {selectedExistingPropertyId && (
-                    <div className="flex items-center gap-2 text-[11px] text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 font-medium">
+                    <div className="flex items-center gap-2 text-[11px] text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded border border-emerald-200 font-medium">
                       <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                       <span>
-                        Property pre-filled into Phase 1 dossier. You can edit any fields below before proceeding.
+                        Property pre-filled into registration dossier. You can edit any fields below before proceeding.
                       </span>
                     </div>
                   )}
@@ -1027,23 +939,23 @@ export const AddNewPropertyPage: React.FC = () => {
           </div>
 
           {/* ── Section 1: Administrative Hierarchy & Location ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-[#A31736] text-white flex items-center justify-center text-xs font-black">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <span className="w-6 h-6 rounded bg-[#A31736] text-white flex items-center justify-center text-xs font-bold">
                 1
               </span>
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">
                 ADMINISTRATIVE HIERARCHY & LOCATION
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Zone *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Zone *</label>
                 <select
                   value={zoneId}
                   onChange={(e) => handleZoneChange(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:bg-white transition-all cursor-pointer"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 transition-all cursor-pointer"
                 >
                   {zones.map((z) => (
                     <option key={z.id} value={z.id}>
@@ -1054,11 +966,11 @@ export const AddNewPropertyPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Ward *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Ward *</label>
                 <select
                   value={wardId}
                   onChange={(e) => handleWardChange(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:bg-white transition-all cursor-pointer"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 transition-all cursor-pointer"
                 >
                   {availableWards.map((w) => (
                     <option key={w.id} value={w.id}>
@@ -1069,11 +981,11 @@ export const AddNewPropertyPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Road / Street *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Road / Street *</label>
                 <select
                   value={roadId}
                   onChange={(e) => setRoadId(e.target.value)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:bg-white transition-all cursor-pointer"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 transition-all cursor-pointer"
                 >
                   {availableRoads.map((r) => (
                     <option key={r.id} value={r.id}>
@@ -1085,9 +997,9 @@ export const AddNewPropertyPage: React.FC = () => {
             </div>
 
             {/* Coordinates Inputs (No Leaflet Map) */}
-            <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-3">
+            <div className="bg-gray-50/70 p-4 rounded border border-gray-300 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-gray-800 flex items-center gap-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-800 flex items-center gap-1.5">
                   <Compass className="w-4 h-4 text-[#A31736]" />
                   <span>Cadastral Coordinate Location (Homagama Sabha Standard)</span>
                 </span>
@@ -1097,7 +1009,7 @@ export const AddNewPropertyPage: React.FC = () => {
                     setLatitude(settings.mapCentre[0])
                     setLongitude(settings.mapCentre[1])
                   }}
-                  className="text-[11px] font-bold text-[#A31736] hover:underline"
+                  className="text-[11px] font-bold uppercase tracking-wider text-[#A31736] hover:underline cursor-pointer"
                 >
                   Reset to Sabha Centre
                 </button>
@@ -1105,7 +1017,7 @@ export const AddNewPropertyPage: React.FC = () => {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-gray-600 block mb-1">
                     Latitude (Dec. Degrees) *
                   </label>
                   <input
@@ -1113,11 +1025,11 @@ export const AddNewPropertyPage: React.FC = () => {
                     step="0.000001"
                     value={latitude}
                     onChange={(e) => setLatitude(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736]"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                   />
                 </div>
                 <div>
-                  <label className="text-[11px] font-semibold text-gray-600 block mb-1">
+                  <label className="text-[11px] font-bold uppercase tracking-wider text-gray-600 block mb-1">
                     Longitude (Dec. Degrees) *
                   </label>
                   <input
@@ -1125,7 +1037,7 @@ export const AddNewPropertyPage: React.FC = () => {
                     step="0.000001"
                     value={longitude}
                     onChange={(e) => setLongitude(parseFloat(e.target.value) || 0)}
-                    className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736]"
+                    className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                   />
                 </div>
               </div>
@@ -1133,32 +1045,32 @@ export const AddNewPropertyPage: React.FC = () => {
           </div>
 
           {/* ── Section 2: Property & Assessment Identity ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-[#A31736] text-white flex items-center justify-center text-xs font-black">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <span className="w-6 h-6 rounded bg-[#A31736] text-white flex items-center justify-center text-xs font-bold">
                 2
               </span>
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">
                 PROPERTY & ASSESSMENT IDENTITY
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="font-bold text-gray-700 block mb-1">
-                  Assessment Number * <span className="text-rose-600 font-normal">(Council Ledger ID)</span>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">
+                  Assessment Number * <span className="text-rose-600 font-normal lowercase">(council ledger id)</span>
                 </label>
                 <input
                   type="text"
                   value={assessmentNumber}
                   onChange={(e) => setAssessmentNumber(e.target.value)}
                   placeholder="e.g. 78/12a or 109/4"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">
                   Property / Street Number *
                 </label>
                 <input
@@ -1166,16 +1078,16 @@ export const AddNewPropertyPage: React.FC = () => {
                   value={propertyNumber}
                   onChange={(e) => setPropertyNumber(e.target.value)}
                   placeholder="e.g. No. 45/B, Station Road"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Property Type *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Property Type *</label>
                 <select
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value as PropertyType)}
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:bg-white cursor-pointer"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-semibold text-gray-800 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100 cursor-pointer"
                 >
                   <option value="Residential">Residential (10% standard rate)</option>
                   <option value="Commercial">Commercial (15% business rate)</option>
@@ -1187,7 +1099,7 @@ export const AddNewPropertyPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">
                   Annual Assessed Value (LKR) *
                 </label>
                 <input
@@ -1195,12 +1107,12 @@ export const AddNewPropertyPage: React.FC = () => {
                   value={annualAssessedValue}
                   onChange={(e) => setAnnualAssessedValue(e.target.value)}
                   placeholder="240000"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <label className="font-bold text-gray-700 block mb-1">
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">
                   Description / Structural Scope *
                 </label>
                 <textarea
@@ -1208,37 +1120,37 @@ export const AddNewPropertyPage: React.FC = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="e.g. Two-storey residential building with perimeter wall, single phase utility connection."
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs font-medium text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-medium text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
             </div>
           </div>
 
           {/* ── Section 3: Primary Owner Particulars ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-[#A31736] text-white flex items-center justify-center text-xs font-black">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <span className="w-6 h-6 rounded bg-[#A31736] text-white flex items-center justify-center text-xs font-bold">
                 3
               </span>
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">
                 PRIMARY OWNER PARTICULARS
               </h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Full Legal Name *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Full Legal Name *</label>
                 <input
                   type="text"
                   value={ownerName}
                   onChange={(e) => setOwnerName(e.target.value)}
                   placeholder="e.g. K. M. Sunil Priyantha Perera"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">
                   NIC / Business Registration No *
                 </label>
                 <input
@@ -1246,47 +1158,47 @@ export const AddNewPropertyPage: React.FC = () => {
                   value={ownerNic}
                   onChange={(e) => setOwnerNic(e.target.value)}
                   placeholder="e.g. 198523400567 or PV-10293847"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Mobile Phone Number</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Mobile Phone Number</label>
                 <input
                   type="text"
                   value={ownerMobile}
                   onChange={(e) => setOwnerMobile(e.target.value)}
                   placeholder="e.g. +94 77 123 4567"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs font-mono text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-bold text-gray-700 block mb-1">Postal Address *</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Postal Address *</label>
                 <input
                   type="text"
                   value={postalAddress}
                   onChange={(e) => setPostalAddress(e.target.value)}
                   placeholder="e.g. No. 45/B, Station Road, Homagama"
-                  className="w-full px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
             </div>
           </div>
 
           {/* ── Section 4: Optional Supporting Attachments ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-[#A31736] text-white flex items-center justify-center text-xs font-black">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <span className="w-6 h-6 rounded bg-[#A31736] text-white flex items-center justify-center text-xs font-bold">
                 4
               </span>
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">
                 OPTIONAL SUPPORTING ATTACHMENTS
               </h3>
             </div>
 
             <div className="text-xs space-y-2">
-              <label className="font-semibold text-gray-700 block">
+              <label className="font-bold uppercase tracking-wider text-gray-700 block text-[11px]">
                 Additional Field Notes or Site Photographs (Optional)
               </label>
               <textarea
@@ -1294,23 +1206,23 @@ export const AddNewPropertyPage: React.FC = () => {
                 value={optionalAttachmentNotes}
                 onChange={(e) => setOptionalAttachmentNotes(e.target.value)}
                 placeholder="e.g. Physical site inspection completed by Grama Niladhari on 2026-01-20. Boundary clear of dispute."
-                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-900 outline-none focus:border-[#A31736] focus:bg-white"
+                className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
               />
             </div>
           </div>
 
           {/* ── Section 5: Add New Road / Street ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-gray-100 pb-3">
-              <span className="w-6 h-6 rounded-lg bg-[#A31736] text-white flex items-center justify-center text-xs font-black">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-gray-200 pb-3">
+              <span className="w-6 h-6 rounded bg-[#A31736] text-white flex items-center justify-center text-xs font-bold">
                 5
               </span>
-              <h3 className="text-xs font-black uppercase tracking-wider text-gray-900">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-gray-900">
                 ADD NEW ROAD / STREET (Cadastre Extension)
               </h3>
             </div>
 
-            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs text-gray-600">
+            <div className="p-3 bg-gray-50/70 rounded border border-gray-300 text-xs text-gray-600">
               <p>
                 If the property is located on a newly opened lane or unnamed bypass not present in Section 1,
                 simply enter the road name below. It will automatically be registered into the Homagama road register.
@@ -1319,36 +1231,36 @@ export const AddNewPropertyPage: React.FC = () => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div>
-                <label className="font-semibold text-gray-700 block mb-1">New Road / Street Name</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">New Road / Street Name</label>
                 <input
                   type="text"
                   value={newRoadName}
                   onChange={(e) => setNewRoadName(e.target.value)}
                   placeholder="e.g. Samagi Mawatha 2nd Lane"
-                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-900 outline-none focus:border-[#A31736]"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-bold text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
 
               <div>
-                <label className="font-semibold text-gray-700 block mb-1">Road Code (Optional)</label>
+                <label className="font-bold uppercase tracking-wider text-gray-700 block mb-1 text-[11px]">Road Code (Optional)</label>
                 <input
                   type="text"
                   value={newRoadCode}
                   onChange={(e) => setNewRoadCode(e.target.value)}
                   placeholder="e.g. RD-HMG-99"
-                  className="w-full px-3 py-2 bg-white border border-gray-200 rounded-xl text-xs font-mono text-gray-900 outline-none focus:border-[#A31736]"
+                  className="w-full px-3 py-2 bg-white border border-gray-300 rounded text-xs font-mono uppercase text-gray-900 outline-none focus:border-[#A31736] focus:ring-1 focus:ring-rose-100"
                 />
               </div>
             </div>
           </div>
 
           {/* ── Base 1 Action Bar: BACK & CANCEL & NEXT BUTTONS ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="bg-white rounded border border-gray-300 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => navigate('/varipanam')}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-4 py-2 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
                 <span>Back</span>
@@ -1356,8 +1268,8 @@ export const AddNewPropertyPage: React.FC = () => {
 
               <button
                 type="button"
-                onClick={() => navigate('/varipanam')}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold px-4 py-2 rounded border border-rose-200 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <X className="w-4 h-4" />
                 <span>Cancel</span>
@@ -1367,9 +1279,9 @@ export const AddNewPropertyPage: React.FC = () => {
             <button
               type="button"
               onClick={handleNextToBase2}
-              className="flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-bold text-white bg-[#A31736] hover:bg-[#801028] rounded-xl transition-all cursor-pointer shadow-xs active:scale-98"
+              className="inline-flex items-center justify-center gap-2 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-5 py-2 rounded transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
             >
-              <span>Next: Mandatory Documents (Base 2)</span>
+              <span>Next: Mandatory Documents</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -1381,13 +1293,13 @@ export const AddNewPropertyPage: React.FC = () => {
           ═══════════════════════════════════════════════════════════════════════ */}
       {currentBase === 2 && (
         <div className="space-y-6">
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-100 pb-3">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-200 pb-3">
               <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full inline-block">
-                  Base 2: Mandatory Statutory Documents
+                <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-100 px-2 py-0.5 rounded border border-rose-200 inline-block">
+                  Mandatory Statutory Documents
                 </span>
-                <h2 className="text-sm font-black text-gray-900 mt-1">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-gray-900 mt-1.5">
                   Required Attested Plans & Reports for{' '}
                   <span className="text-[#A31736]">
                     {submissionType === 'NEW_PROPERTY'
@@ -1405,7 +1317,7 @@ export const AddNewPropertyPage: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-2 self-start sm:self-auto">
-                <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200">
+                <span className="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-300">
                   {requiredPhase2Docs.filter((d) => !!uploadedDocs[d.key]).length} of{' '}
                   {requiredPhase2Docs.length} Uploaded
                 </span>
@@ -1413,43 +1325,43 @@ export const AddNewPropertyPage: React.FC = () => {
             </div>
 
             {/* List of Document Upload Slots */}
-            <div className="space-y-4 pt-2">
+            <div className="space-y-3 pt-2">
               {requiredPhase2Docs.map((docConfig) => {
                 const uploaded = uploadedDocs[docConfig.key]
 
                 return (
                   <div
                     key={docConfig.key}
-                    className={`p-4 rounded-2xl border transition-all ${
+                    className={`p-4 rounded border transition-all ${
                       uploaded
                         ? 'bg-emerald-50/40 border-emerald-300 ring-1 ring-emerald-200'
-                        : 'bg-white border-gray-200 hover:border-gray-300 shadow-2xs'
+                        : 'bg-white border-gray-300 hover:border-gray-400 shadow-2xs'
                     }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div className="flex items-start gap-3">
                         <div
-                          className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 font-bold ${
+                          className={`w-8 h-8 rounded flex items-center justify-center shrink-0 font-bold text-xs ${
                             uploaded
                               ? 'bg-emerald-600 text-white shadow-xs'
-                              : 'bg-gray-100 text-gray-700 border border-gray-200'
+                              : 'bg-gray-100 text-gray-700 border border-gray-300'
                           }`}
                         >
-                          {uploaded ? <Check className="w-5 h-5" /> : docConfig.number}
+                          {uploaded ? <Check className="w-4 h-4" /> : docConfig.number}
                         </div>
                         <div>
                           <div className="flex flex-wrap items-center gap-2">
-                            <h4 className="text-xs font-black text-gray-900">{docConfig.title}</h4>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200">
+                            <h4 className="text-xs font-bold uppercase tracking-wide text-gray-900">{docConfig.title}</h4>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-300">
                               {docConfig.documentType}
                             </span>
                             {uploaded ? (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center gap-1">
                                 <CheckCircle className="w-3 h-3 text-emerald-600" />
                                 <span>Uploaded & Verified</span>
                               </span>
                             ) : (
-                              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-300">
                                 Required Upload
                               </span>
                             )}
@@ -1468,7 +1380,7 @@ export const AddNewPropertyPage: React.FC = () => {
                       {/* File Upload Controls */}
                       <div className="flex items-center gap-2 self-end sm:self-center">
                         {uploaded ? (
-                          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-emerald-200 shadow-2xs">
+                          <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded border border-emerald-300 shadow-2xs">
                             <FileText className="w-4 h-4 text-emerald-700" />
                             <div className="text-left">
                               <span className="text-xs font-bold text-gray-900 block truncate max-w-[150px]">
@@ -1479,7 +1391,7 @@ export const AddNewPropertyPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleRemoveDoc(docConfig.key)}
-                              className="p-1 rounded-lg text-rose-500 hover:bg-rose-50 transition-colors ml-1 cursor-pointer"
+                              className="p-1 rounded text-rose-500 hover:bg-rose-50 transition-colors ml-1 cursor-pointer"
                               title="Remove file"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -1490,13 +1402,13 @@ export const AddNewPropertyPage: React.FC = () => {
                             <button
                               type="button"
                               onClick={() => handleQuickUploadSample(docConfig.key, docConfig.sampleFileName)}
-                              className="px-2.5 py-1.5 text-[11px] font-bold text-[#A31736] bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer"
+                              className="px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-[#A31736] bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded transition-all cursor-pointer shadow-2xs"
                               title="Attach pre-verified sample file for testing"
                             >
                               Quick Attach Sample
                             </button>
 
-                            <label className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded-xl transition-all cursor-pointer shadow-2xs">
+                            <label className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded transition-all cursor-pointer shadow-2xs">
                               <Upload className="w-3.5 h-3.5 text-gray-600" />
                               <span>Upload File</span>
                               <input
@@ -1521,7 +1433,7 @@ export const AddNewPropertyPage: React.FC = () => {
           </div>
 
           {/* ── Base 2 Action Bar: BACK & CANCEL & NEXT BUTTONS ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="bg-white rounded border border-gray-300 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -1529,16 +1441,16 @@ export const AddNewPropertyPage: React.FC = () => {
                   setCurrentBase(1)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-4 py-2 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Base 1</span>
+                <span>Back to Property Details</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => navigate('/varipanam')}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold px-4 py-2 rounded border border-rose-200 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <X className="w-4 h-4" />
                 <span>Cancel</span>
@@ -1549,13 +1461,13 @@ export const AddNewPropertyPage: React.FC = () => {
               type="button"
               disabled={!allPhase2Uploaded}
               onClick={handleNextToBase3}
-              className={`flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-bold rounded-xl transition-all cursor-pointer shadow-xs ${
+              className={`inline-flex items-center justify-center gap-2 px-5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer shadow-2xs ${
                 allPhase2Uploaded
-                  ? 'text-white bg-[#A31736] hover:bg-[#801028] active:scale-98'
-                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  ? 'text-white bg-[#A31736] hover:bg-[#801028]'
+                  : 'bg-gray-200 text-gray-400 border border-gray-300 cursor-not-allowed'
               }`}
             >
-              <span>Next: Final Stage (Base 3)</span>
+              <span>Next: Final Review</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>
@@ -1568,12 +1480,12 @@ export const AddNewPropertyPage: React.FC = () => {
       {currentBase === 3 && (
         <div className="space-y-6">
           {/* Dossier Summary Review Card */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-            <div className="border-b border-gray-100 pb-3">
-              <span className="text-[10px] font-black uppercase tracking-wider text-rose-700 bg-rose-100 px-2.5 py-0.5 rounded-full inline-block">
+          <div className="bg-white rounded border border-gray-300 p-5 shadow-xs space-y-4">
+            <div className="border-b border-gray-200 pb-3">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-rose-700 bg-rose-100 px-2 py-0.5 rounded border border-rose-200 inline-block">
                 Final Review Summary
               </span>
-              <h3 className="text-sm font-black text-gray-900 mt-1">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-gray-900 mt-1.5">
                 Cadastral Submission Dossier Verification
               </h3>
               <p className="text-xs text-gray-500">
@@ -1583,13 +1495,13 @@ export const AddNewPropertyPage: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
               {/* Specification Summary */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
-                <span className="text-[11px] font-black uppercase tracking-wide text-gray-700 block border-b border-gray-200 pb-1">
+              <div className="bg-gray-50/70 p-4 rounded border border-gray-300 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-700 block border-b border-gray-200 pb-1">
                   Property Specification
                 </span>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Category Purpose:</span>
-                  <span className="font-bold text-[#A31736]">
+                  <span className="font-bold text-[#A31736] uppercase tracking-wide">
                     {submissionType === 'NEW_PROPERTY'
                       ? 'New Property (New Number)'
                       : submissionType === 'OWNERSHIP_CHANGE'
@@ -1599,7 +1511,7 @@ export const AddNewPropertyPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Assessment No:</span>
-                  <span className="font-mono font-black text-gray-900">{assessmentNumber}</span>
+                  <span className="font-mono font-bold text-gray-900">{assessmentNumber}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Property No:</span>
@@ -1622,8 +1534,8 @@ export const AddNewPropertyPage: React.FC = () => {
               </div>
 
               {/* Owner Particulars */}
-              <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 space-y-2">
-                <span className="text-[11px] font-black uppercase tracking-wide text-gray-700 block border-b border-gray-200 pb-1">
+              <div className="bg-gray-50/70 p-4 rounded border border-gray-300 space-y-2">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-gray-700 block border-b border-gray-200 pb-1">
                   Primary Owner Particulars
                 </span>
                 <div className="flex justify-between">
@@ -1652,8 +1564,8 @@ export const AddNewPropertyPage: React.FC = () => {
             </div>
           </div>
 
-          {/* ── Base 3 (LAST PART) Action Bar: BACK, CANCEL, SAVE DRAFT, SUBMIT ── */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          {/* ── Final Review Action Bar: BACK, CANCEL, SAVE DRAFT, SUBMIT ── */}
+          <div className="bg-white rounded border border-gray-300 p-4 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <button
                 type="button"
@@ -1661,16 +1573,16 @@ export const AddNewPropertyPage: React.FC = () => {
                   setCurrentBase(2)
                   window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-4 py-2 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Base 2</span>
+                <span>Back to Documents</span>
               </button>
 
               <button
                 type="button"
-                onClick={() => navigate('/varipanam')}
-                className="flex items-center gap-1.5 px-5 py-2.5 text-xs font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-all cursor-pointer shadow-2xs active:scale-98"
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold px-4 py-2 rounded border border-rose-200 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
               >
                 <X className="w-4 h-4" />
                 <span>Cancel</span>
@@ -1683,7 +1595,7 @@ export const AddNewPropertyPage: React.FC = () => {
                 type="button"
                 disabled={isSubmitting}
                 onClick={handleSaveAsDraft}
-                className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 text-xs font-bold text-gray-800 bg-gray-100 hover:bg-gray-200 border border-gray-300 rounded-xl transition-all cursor-pointer shadow-2xs"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 rounded transition-all cursor-pointer shadow-2xs"
                 title="Save draft and track in approvals"
               >
                 <Save className="w-4 h-4 text-gray-600" />
@@ -1695,10 +1607,10 @@ export const AddNewPropertyPage: React.FC = () => {
                 type="button"
                 disabled={isSubmitting || !allDocsUploaded}
                 onClick={handleSubmitForApproval}
-                className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-2.5 text-xs font-black rounded-xl transition-all cursor-pointer shadow-xs ${
+                className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-5 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer shadow-2xs ${
                   allDocsUploaded && !isSubmitting
-                    ? 'text-white bg-[#A31736] hover:bg-[#801028] active:scale-98'
-                    : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                    ? 'text-white bg-[#A31736] hover:bg-[#801028]'
+                    : 'bg-gray-200 text-gray-400 border border-gray-300 cursor-not-allowed'
                 }`}
               >
                 <Send className="w-4 h-4" />

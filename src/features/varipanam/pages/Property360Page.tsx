@@ -25,8 +25,19 @@ type TabType =
   | 'documents'
   | 'history'
 
-export const Property360Page: React.FC = () => {
-  const { id } = useParams<{ id: string }>()
+export interface Property360PageProps {
+  propertyId?: string
+  isModal?: boolean
+  onClose?: () => void
+}
+
+export const Property360Page: React.FC<Property360PageProps> = ({
+  propertyId: propId,
+  isModal = false,
+  onClose,
+}) => {
+  const { id: routeId } = useParams<{ id: string }>()
+  const id = propId || routeId
   const navigate = useNavigate()
 
   const [property, setProperty] = useState<Property | null>(null)
@@ -133,7 +144,12 @@ export const Property360Page: React.FC = () => {
     L.marker([property.latitude, property.longitude], { icon: pinIcon }).addTo(map)
     miniMapInstanceRef.current = map
 
+    const timer = setTimeout(() => {
+      map.invalidateSize()
+    }, 200)
+
     return () => {
+      clearTimeout(timer)
       if (miniMapInstanceRef.current) {
         miniMapInstanceRef.current.remove()
         miniMapInstanceRef.current = null
@@ -173,17 +189,17 @@ export const Property360Page: React.FC = () => {
 
   if (!property) {
     return (
-      <div className="bg-white p-8 rounded-2xl border border-gray-200 text-center max-w-lg mx-auto my-12">
-        <h2 className="text-lg font-bold text-gray-900 mb-2">Property Not Found</h2>
+      <div className="bg-white p-6 sm:p-8 rounded border border-gray-300 text-center max-w-lg mx-auto my-12 shadow-xs">
+        <h2 className="text-lg font-bold text-gray-900 mb-2 uppercase tracking-wide">Property Not Found</h2>
         <p className="text-xs text-gray-500 mb-4">
           The requested assessment unit ref or ID "{id}" could not be located in the council registry.
         </p>
         <button
           type="button"
-          onClick={() => navigate('/varipanam')}
-          className="px-4 py-2 bg-[#A31736] text-white text-xs font-bold rounded-xl"
+          onClick={() => (onClose ? onClose() : navigate(-1))}
+          className="px-4 py-2 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold rounded uppercase tracking-wider cursor-pointer transition-colors shadow-2xs"
         >
-          Return to Varipanam Dashboard
+          Return to Previous Page
         </button>
       </div>
     )
@@ -287,22 +303,26 @@ export const Property360Page: React.FC = () => {
   return (
     <div className="space-y-5 animate-fade-in pb-12">
       {/* ── Breadcrumb & Top Bar ── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-gray-200 shadow-xs">
+      <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-            <Link to="/varipanam" className="hover:text-[#A31736] font-semibold">
-              ← Varipanam Dashboard
-            </Link>
-            <span>/</span>
-            <span className="font-mono text-gray-700">Property 360</span>
+            <button
+              type="button"
+              onClick={() => (onClose ? onClose() : navigate(-1))}
+              className="inline-flex items-center gap-1 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-2.5 py-1 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
+            >
+              <span>← Back</span>
+            </button>
+            <span className="text-gray-300">/</span>
+            <span className="font-mono text-gray-700 text-xs font-bold uppercase tracking-wider">Property 360</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight font-mono">
+          <div className="flex flex-wrap items-center gap-2.5 mt-1">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight font-mono">
               {property.assessmentNumber}
             </h1>
             <StatusBadge status={property.status} size="md" />
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-700 border border-gray-200">
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-gray-100 text-gray-700 border border-gray-200">
               {property.propertyType}
             </span>
             <NeedsConfirmationBadge tooltip="Legal ownership disclaimer: This record is a municipal council tax assessment unit, not conclusive legal title." />
@@ -313,11 +333,11 @@ export const Property360Page: React.FC = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setShowEditLocationModal(true)}
-            className="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-xl transition-all flex items-center gap-1.5"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-gray-50 border border-gray-300 rounded text-xs font-bold uppercase tracking-wider text-gray-700 transition-colors cursor-pointer shadow-2xs"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5 text-gray-500">
               <path d="M12 2a8 8 0 0 0-8 8c0 5.25 8 12 8 12s8-6.75 8-12a8 8 0 0 0-8-8z" />
@@ -325,21 +345,31 @@ export const Property360Page: React.FC = () => {
             </svg>
             <span>Edit Location</span>
           </button>
+          {isModal && onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="w-8 h-8 rounded bg-white hover:bg-gray-50 border border-gray-300 text-gray-500 hover:text-gray-900 flex items-center justify-center font-bold text-sm cursor-pointer shadow-2xs"
+              title="Close popup"
+            >
+              ✕
+            </button>
+          )}
         </div>
       </div>
 
       {/* ── Tabs Navigation ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-1 shadow-xs flex overflow-x-auto scrollbar-none">
+      <div className="bg-white border border-gray-300 rounded p-1.5 shadow-xs flex items-center gap-1.5 overflow-x-auto scrollbar-none">
         {(
           [
-            { id: 'overview', label: 'Overview & GIS' },
-            { id: 'dues', label: 'Dues & Rates' },
-            { id: 'payments', label: 'Receipts & Payments' },
-            { id: 'owners', label: 'Ownership History' },
-            { id: 'valuations', label: 'Valuations & Old Refs' },
-            { id: 'subdivisions', label: 'Subdivisions' },
-            { id: 'documents', label: 'Documents' },
-            { id: 'history', label: 'Audit Timeline' },
+            { id: 'overview', label: 'OVERVIEW & GIS' },
+            { id: 'dues', label: 'DUES & RATES' },
+            { id: 'payments', label: 'RECEIPTS & PAYMENTS' },
+            { id: 'owners', label: 'OWNERSHIP HISTORY' },
+            { id: 'valuations', label: 'VALUATIONS & OLD REFS' },
+            { id: 'subdivisions', label: 'SUBDIVISIONS' },
+            { id: 'documents', label: 'DOCUMENTS' },
+            { id: 'history', label: 'AUDIT TIMELINE' },
           ] as const
         ).map((tab) => {
           const isActive = activeTab === tab.id
@@ -348,10 +378,10 @@ export const Property360Page: React.FC = () => {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3.5 py-1.5 rounded text-xs font-bold uppercase tracking-wider whitespace-nowrap transition-colors shadow-2xs cursor-pointer ${
                 isActive
-                  ? 'bg-[#A31736] text-white shadow-xs'
-                  : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  ? 'bg-[#A31736] text-white'
+                  : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
               }`}
             >
               {tab.label}
@@ -368,65 +398,65 @@ export const Property360Page: React.FC = () => {
           {/* Left Details Card */}
           <div className="lg:col-span-7 space-y-5">
             {/* Property Unit Details */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+            <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-200 pb-2">
                 Assessment Unit Identifiers
               </h3>
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <span className="text-gray-400 font-medium">Assessment Number</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Assessment Number</span>
                   <p className="font-mono font-bold text-gray-900 text-sm">{property.assessmentNumber}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Property Number</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Property Number</span>
                   <p className="font-bold text-gray-900">{property.propertyNumber}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Property Category</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Property Category</span>
                   <p className="font-semibold text-gray-800">{property.propertyType}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Annual Assessed Value</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Annual Assessed Value</span>
                   <p className="font-mono font-bold text-gray-900 text-sm">
                     {formatLKR(property.annualAssessedValue)}
                   </p>
                 </div>
                 <div className="col-span-2">
-                  <span className="text-gray-400 font-medium">Description</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Description</span>
                   <p className="text-gray-700 mt-0.5">{property.description}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Registered Since</span>
-                  <p className="text-gray-800">{formatDate(property.createdAt)}</p>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Registered Since</span>
+                  <p className="text-gray-800 font-medium">{formatDate(property.createdAt)}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Last Assessed Date</span>
-                  <p className="text-gray-800">{formatDate(property.updatedAt)}</p>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Last Assessed Date</span>
+                  <p className="text-gray-800 font-medium">{formatDate(property.updatedAt)}</p>
                 </div>
               </div>
             </div>
 
             {/* Current Ownership Card */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-4">
-              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+            <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+              <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider border-b border-gray-200 pb-2">
                 Current Registered Owner
               </h3>
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div className="col-span-2 sm:col-span-1">
-                  <span className="text-gray-400 font-medium">Full Legal Name</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Full Legal Name</span>
                   <p className="font-bold text-gray-900 text-sm">{property.currentOwner.name}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">National Identity Card (NIC)</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">National Identity Card (NIC)</span>
                   <p className="font-mono font-bold text-gray-800">{property.currentOwner.nic}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Mobile Contact</span>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Mobile Contact</span>
                   <p className="font-mono text-gray-800">{property.currentOwner.mobile}</p>
                 </div>
                 <div>
-                  <span className="text-gray-400 font-medium">Postal Address</span>
-                  <p className="text-gray-800">{property.currentOwner.postalAddress}</p>
+                  <span className="text-gray-500 font-medium text-[11px] uppercase tracking-wider block">Postal Address</span>
+                  <p className="text-gray-800 font-medium">{property.currentOwner.postalAddress}</p>
                 </div>
               </div>
             </div>
@@ -434,12 +464,12 @@ export const Property360Page: React.FC = () => {
 
           {/* Right Mini Map Card */}
           <div className="lg:col-span-5 space-y-5">
-            <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-xs space-y-3">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+            <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-3">
+              <div className="flex items-center justify-between border-b border-gray-200 pb-2">
                 <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wider">
                   GIS Geo-Spatial Cadastre
                 </h3>
-                <span className="text-[10px] font-mono text-gray-500">
+                <span className="text-[10px] font-mono font-bold text-gray-500">
                   {property.latitude.toFixed(5)}, {property.longitude.toFixed(5)}
                 </span>
               </div>
@@ -447,15 +477,15 @@ export const Property360Page: React.FC = () => {
               {/* Leaflet Mini Map */}
               <div
                 ref={miniMapContainerRef}
-                className="w-full h-[260px] rounded-xl border border-gray-200 shadow-inner overflow-hidden"
+                className="w-full h-[260px] rounded border border-gray-300 shadow-inner overflow-hidden"
               />
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-gray-500">Coordinates confirmed</span>
+                <span className="text-gray-500 font-medium">Coordinates confirmed</span>
                 <button
                   type="button"
                   onClick={() => setShowEditLocationModal(true)}
-                  className="font-bold text-[#A31736] hover:underline"
+                  className="font-bold text-[#A31736] hover:underline uppercase tracking-wider text-[11px]"
                 >
                   Adjust GPS Coordinates →
                 </button>
@@ -463,7 +493,7 @@ export const Property360Page: React.FC = () => {
             </div>
 
             {/* Quick Dues Summary Card */}
-            <div className="bg-rose-50/60 rounded-2xl border border-rose-200 p-5 shadow-xs space-y-3">
+            <div className="bg-rose-50/60 rounded border border-rose-200 p-4 sm:p-5 shadow-xs space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-rose-900 uppercase tracking-wider">
                   Outstanding Balance
@@ -474,16 +504,16 @@ export const Property360Page: React.FC = () => {
               <div className="text-[11px] text-gray-600 space-y-1 pt-2 border-t border-rose-200/60">
                 <div className="flex justify-between">
                   <span>Prior Years Arrears:</span>
-                  <span className="font-bold text-gray-900">{formatLKR(totalArrears)}</span>
+                  <span className="font-bold font-mono text-gray-900">{formatLKR(totalArrears)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Current Year (2026) Dues:</span>
-                  <span className="font-bold text-gray-900">{formatLKR(currentYearDue)}</span>
+                  <span className="font-bold font-mono text-gray-900">{formatLKR(currentYearDue)}</span>
                 </div>
                 {warrantCharge > 0 && (
                   <div className="flex justify-between text-purple-800 font-semibold">
                     <span>Warrant Enforcement Penalty:</span>
-                    <span className="font-bold">{formatLKR(warrantCharge)}</span>
+                    <span className="font-bold font-mono">{formatLKR(warrantCharge)}</span>
                   </div>
                 )}
               </div>
@@ -494,10 +524,10 @@ export const Property360Page: React.FC = () => {
 
       {/* 2. DUES & RATES TAB */}
       {activeTab === 'dues' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-5">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-4">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
                 Quarterly Dues & Statutory Rate Computations
               </h3>
               <p className="text-xs text-gray-500">
@@ -505,15 +535,15 @@ export const Property360Page: React.FC = () => {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-gray-700">Total Payable:</span>
-              <span className="text-base font-black text-rose-600 font-mono">{formatLKR(totalPayable)}</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-600">Total Payable:</span>
+              <span className="text-base font-bold text-rose-600 font-mono">{formatLKR(totalPayable)}</span>
             </div>
           </div>
 
           {/* Dues Breakdown Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-gray-50 text-gray-500 font-bold uppercase tracking-wider text-[10px] border-b border-gray-200">
+              <thead className="bg-gray-50 text-gray-600 font-bold uppercase tracking-wider text-[10px] border-b border-gray-200">
                 <tr>
                   <th className="px-4 py-2.5">Period / Quarter</th>
                   <th className="px-4 py-2.5">Due Date</th>
@@ -543,14 +573,14 @@ export const Property360Page: React.FC = () => {
                       </td>
                       <td className="px-4 py-3 text-center">
                         <span
-                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
                             due.status === 'Paid'
-                              ? 'bg-emerald-100 text-emerald-800'
+                              ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                               : due.status === 'Overdue'
-                              ? 'bg-rose-100 text-rose-800'
+                              ? 'bg-rose-50 text-rose-700 border-rose-200'
                               : due.status === 'Warrant'
-                              ? 'bg-purple-100 text-purple-900'
-                              : 'bg-amber-100 text-amber-800'
+                              ? 'bg-purple-50 text-purple-700 border-purple-200'
+                              : 'bg-amber-50 text-amber-800 border-amber-200'
                           }`}
                         >
                           {due.status}
@@ -567,10 +597,10 @@ export const Property360Page: React.FC = () => {
 
       {/* 3. PAYMENTS & RECEIPTS TAB */}
       {activeTab === 'payments' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-gray-200 pb-3">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
                 Receipts & Payments Ledger
               </h3>
               <p className="text-xs text-gray-500">Official Council & Temporary Field Receipts</p>
@@ -584,7 +614,7 @@ export const Property360Page: React.FC = () => {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-gray-50 text-gray-500 font-bold uppercase tracking-wider text-[10px] border-b border-gray-200">
+                <thead className="bg-gray-50 text-gray-600 font-bold uppercase tracking-wider text-[10px] border-b border-gray-200">
                   <tr>
                     <th className="px-4 py-2.5">Receipt #</th>
                     <th className="px-4 py-2.5">Payment Date</th>
@@ -605,7 +635,7 @@ export const Property360Page: React.FC = () => {
                         {formatLKR(pmt.amount)}
                       </td>
                       <td className="px-4 py-3 text-center">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                        <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
                           {pmt.status}
                         </span>
                       </td>
@@ -620,9 +650,9 @@ export const Property360Page: React.FC = () => {
 
       {/* 4. OWNERSHIP HISTORY TAB */}
       {activeTab === 'owners' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-          <div className="border-b border-gray-100 pb-3">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="border-b border-gray-200 pb-3">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
               Continuous Ownership Chain (Never Overwritten)
             </h3>
             <p className="text-xs text-gray-500">
@@ -634,7 +664,7 @@ export const Property360Page: React.FC = () => {
             {ownershipHistory.map((rec) => (
               <div
                 key={rec.id}
-                className={`p-4 rounded-xl border ${
+                className={`p-3.5 rounded border ${
                   rec.isCurrent
                     ? 'bg-emerald-50/50 border-emerald-300'
                     : 'bg-gray-50 border-gray-200 text-gray-600'
@@ -644,22 +674,22 @@ export const Property360Page: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-gray-900 text-sm">{rec.ownerName}</span>
                     {rec.isCurrent ? (
-                      <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-600 text-white rounded-full">
+                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-emerald-700 text-white rounded">
                         Current Owner
                       </span>
                     ) : (
-                      <span className="px-2 py-0.5 text-[10px] font-semibold bg-gray-200 text-gray-700 rounded-full">
+                      <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-gray-200 text-gray-700 rounded border border-gray-300">
                         Historical
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-500 font-medium">
                     Effective: {rec.effectiveDate} {rec.endDate ? `to ${rec.endDate}` : ''}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-gray-600">
-                  <div>NIC: {rec.nic}</div>
-                  <div>Contact: {rec.mobile}</div>
+                  <div>NIC: <span className="font-mono">{rec.nic}</span></div>
+                  <div>Contact: <span className="font-mono">{rec.mobile}</span></div>
                   <div>Legal Authority: {rec.deedNumber}</div>
                 </div>
                 <p className="text-[11px] text-gray-400 mt-2">Authorised: {rec.approvedBy}</p>
@@ -673,8 +703,8 @@ export const Property360Page: React.FC = () => {
       {activeTab === 'valuations' && (
         <div className="space-y-5">
           {/* Identifier History */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+          <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2">
               Identifier History (Searchable Old Assessment Numbers)
             </h3>
             {identifierHistories.length === 0 ? (
@@ -682,7 +712,7 @@ export const Property360Page: React.FC = () => {
             ) : (
               <div className="space-y-2">
                 {identifierHistories.map((idEntry) => (
-                  <div key={idEntry.id} className="p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs">
+                  <div key={idEntry.id} className="p-3 bg-gray-50 rounded border border-gray-200 text-xs">
                     <span className="font-mono font-bold text-gray-900">{idEntry.oldAssessmentNumber}</span>
                     <span className="text-gray-500 ml-2">(Obsolete as of {idEntry.obsoleteDate})</span>
                     <p className="text-gray-600 mt-1">Reason: {idEntry.reason}</p>
@@ -693,19 +723,19 @@ export const Property360Page: React.FC = () => {
           </div>
 
           {/* Valuation History */}
-          <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider border-b border-gray-100 pb-2">
+          <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide border-b border-gray-200 pb-2">
               Valuation Assessment Changes
             </h3>
             <div className="space-y-3">
               {valuationHistory.map((val) => (
-                <div key={val.id} className="p-4 bg-gray-50 rounded-xl border border-gray-200 text-xs flex justify-between items-center">
+                <div key={val.id} className="p-3.5 bg-gray-50 rounded border border-gray-200 text-xs flex justify-between items-center">
                   <div>
-                    <span className="font-bold text-gray-900 text-sm">{formatLKR(val.annualAssessedValue)}</span>
+                    <span className="font-bold font-mono text-gray-900 text-sm">{formatLKR(val.annualAssessedValue)}</span>
                     <span className="text-gray-500 ml-2">Effective Year {val.effectiveYear}</span>
                     <p className="text-gray-600 mt-1">{val.approvedBy} • Report {val.reportNumber}</p>
                   </div>
-                  <span className="text-gray-400">{formatDate(val.valuationDate)}</span>
+                  <span className="text-gray-400 text-xs">{formatDate(val.valuationDate)}</span>
                 </div>
               ))}
             </div>
@@ -715,20 +745,20 @@ export const Property360Page: React.FC = () => {
 
       {/* 6. SUBDIVISIONS TAB */}
       {activeTab === 'subdivisions' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-          <div className="border-b border-gray-100 pb-3">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="border-b border-gray-200 pb-3">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
               Subdivision Lineage & Child Plots
             </h3>
             <p className="text-xs text-gray-500">Parent/Child parcel splits with arrears inheritance linkages</p>
           </div>
           {property.subdivisionParentId ? (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900">
+            <div className="p-3.5 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900">
               <span className="font-bold">Subdivided Child Plot:</span> This unit was carved out of parent assessment unit{' '}
               <strong className="font-mono">{property.subdivisionParentId}</strong>.
             </div>
           ) : (
-            <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl text-xs text-gray-600">
+            <div className="p-3.5 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600">
               No parent subdivision link. This unit is an original municipal parcel.
             </div>
           )}
@@ -737,9 +767,9 @@ export const Property360Page: React.FC = () => {
 
       {/* 7. DOCUMENTS TAB */}
       {activeTab === 'documents' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-          <div className="border-b border-gray-100 pb-3">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="border-b border-gray-200 pb-3">
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
               Archived Statutory Documents
             </h3>
             <p className="text-xs text-gray-500">Deed copies, Survey Plans, Notary Attestations & Building Approvals</p>
@@ -751,7 +781,7 @@ export const Property360Page: React.FC = () => {
               { name: 'Approved_Survey_Plan_908_Homagama.pdf', size: '3.1 MB', type: 'Survey Plan', date: '2023-01-15' },
               { name: 'Notary_Attestation_Report.pdf', size: '1.1 MB', type: 'Notary Report', date: '2023-01-15' },
             ].map((doc) => (
-              <div key={doc.name} className="p-4 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between text-xs">
+              <div key={doc.name} className="p-3.5 rounded border border-gray-200 bg-gray-50 flex items-center justify-between text-xs">
                 <div>
                   <p className="font-bold text-gray-900 truncate max-w-[200px]">{doc.name}</p>
                   <p className="text-gray-500 text-[11px]">{doc.type} • {doc.size}</p>
@@ -759,7 +789,7 @@ export const Property360Page: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => alert(`Opening ${doc.name}`)}
-                  className="px-2.5 py-1 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-100"
+                  className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-bold uppercase tracking-wider text-xs rounded hover:bg-gray-50 shadow-2xs cursor-pointer"
                 >
                   View PDF
                 </button>
@@ -771,26 +801,26 @@ export const Property360Page: React.FC = () => {
 
       {/* 8. AUDIT TIMELINE TAB */}
       {activeTab === 'history' && (
-        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
+        <div className="bg-white border border-gray-300 rounded p-4 sm:p-5 shadow-xs space-y-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-gray-200 pb-3">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide">
                 Audit Trail & History Timeline
               </h3>
               <p className="text-xs text-gray-500">Newest first event stream with filterable actions</p>
             </div>
 
             {/* Filter buttons */}
-            <div className="flex items-center gap-1 text-xs">
+            <div className="flex items-center gap-1.5 text-xs">
               {(['All', 'Audit', 'Location', 'Payment'] as const).map((t) => (
                 <button
                   key={t}
                   type="button"
                   onClick={() => setHistoryTypeFilter(t)}
-                  className={`px-2.5 py-1 rounded-lg font-semibold transition-colors ${
+                  className={`px-3 py-1 rounded text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer shadow-2xs ${
                     historyTypeFilter === t
-                      ? 'bg-gray-900 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-[#A31736] text-white'
+                      : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
                   }`}
                 >
                   {t}
@@ -817,9 +847,9 @@ export const Property360Page: React.FC = () => {
 
       {/* ── Edit Location Modal ── */}
       {showEditLocationModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-            <h3 className="text-base font-bold text-gray-900">Adjust Property GPS Coordinates</h3>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
+          <div className="bg-white rounded border border-gray-300 max-w-md w-full p-5 sm:p-6 shadow-xl space-y-4">
+            <h3 className="text-base font-bold text-gray-900 uppercase tracking-wide">Adjust Property GPS Coordinates</h3>
             <p className="text-xs text-gray-500">
               Editing coordinates writes an immutable LocationHistory record. Historical coordinates are permanently preserved.
             </p>
@@ -827,31 +857,31 @@ export const Property360Page: React.FC = () => {
             <form onSubmit={handleSaveLocation} className="space-y-3">
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
-                  <label className="block font-semibold text-gray-700 mb-1">New Latitude</label>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 text-[10px] mb-1">New Latitude</label>
                   <input
                     type="number"
                     step="0.000001"
                     required
                     value={newLat}
                     onChange={(e) => setNewLat(parseFloat(e.target.value))}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg font-mono text-xs"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded font-mono text-xs focus:outline-none focus:border-[#A31736]"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-gray-700 mb-1">New Longitude</label>
+                  <label className="block font-bold uppercase tracking-wider text-gray-700 text-[10px] mb-1">New Longitude</label>
                   <input
                     type="number"
                     step="0.000001"
                     required
                     value={newLng}
                     onChange={(e) => setNewLng(parseFloat(e.target.value))}
-                    className="w-full px-3 py-1.5 border border-gray-300 rounded-lg font-mono text-xs"
+                    className="w-full px-3 py-1.5 border border-gray-300 rounded font-mono text-xs focus:outline-none focus:border-[#A31736]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-gray-700 mb-1">
                   Reason for Location Amendment *
                 </label>
                 <textarea
@@ -860,22 +890,22 @@ export const Property360Page: React.FC = () => {
                   placeholder="e.g. Boundary realignment verified via Cadastral Survey Plan 908/2026..."
                   value={editReason}
                   onChange={(e) => setEditReason(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#A31736]"
+                  className="w-full px-3 py-2 text-xs border border-gray-300 rounded focus:outline-none focus:border-[#A31736]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-gray-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-gray-200">
                 <button
                   type="button"
                   onClick={() => setShowEditLocationModal(false)}
-                  className="px-3 py-1.5 text-xs text-gray-600 bg-gray-100 rounded-xl"
+                  className="inline-flex items-center gap-1.5 bg-white hover:bg-gray-50 text-gray-700 text-xs font-bold px-3.5 py-2 rounded border border-gray-300 transition-colors uppercase tracking-wider shadow-2xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSavingLocation}
-                  className="px-4 py-1.5 text-xs font-bold text-white bg-[#A31736] rounded-xl hover:bg-[#801028] disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 bg-[#A31736] hover:bg-[#801028] text-white text-xs font-bold px-4 py-2 rounded transition-colors shadow-2xs uppercase tracking-wider cursor-pointer disabled:opacity-50"
                 >
                   {isSavingLocation ? 'Saving...' : 'Confirm Amendment'}
                 </button>
