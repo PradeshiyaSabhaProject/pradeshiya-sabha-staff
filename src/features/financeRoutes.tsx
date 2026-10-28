@@ -8,7 +8,8 @@ export const financeRoutes = (
     <Route path="finances" element={<Navigate to="/finances/overview" replace />} />
     <Route path="finances/overview" element={<FinanceOverviewPage />} />
     <Route path="finances/invoices" element={<InvoicesRevenuesPage />} />
-    <Route path="finances/reconciliation" element={<BankReconciliationPage />} />
+    <Route path="finances/reconciliation"
+      element={<BankReconciliationPage />} />
   </>
 )
 

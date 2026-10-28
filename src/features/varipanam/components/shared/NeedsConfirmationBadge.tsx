@@ -23,10 +23,10 @@ export const NeedsConfirmationBadge: React.FC<NeedsConfirmationBadgeProps> = ({
   return (
     <span
       title={titleText}
-      className={`inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full shadow-xs cursor-help ${className}`}
+      className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded cursor-help ${className}`}
     >
       <AlertCircle className="w-3 h-3 text-amber-600 shrink-0" />
-      <span>{label}</span>
+      <span>{label || 'Gazette Ratification'}</span>
     </span>
   )
 }

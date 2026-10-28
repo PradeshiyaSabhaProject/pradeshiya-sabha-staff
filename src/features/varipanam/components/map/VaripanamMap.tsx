@@ -274,7 +274,7 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
               <span style="font-weight: 900; font-size: 15px; color: #111827; letter-spacing: -0.02em;">${prop.assessmentNumber}</span>
               <div style="font-size: 11px; font-weight: 600; color: #4B5563;">${prop.propertyNumber}</div>
             </div>
-            <span style="font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 9999px; text-transform: uppercase; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder};">${prop.status}</span>
+            <span style="font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.05em; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeBorder};">${prop.status}</span>
           </div>
 
           <div style="margin-bottom: 8px; font-size: 11.5px; line-height: 1.45;">
@@ -283,7 +283,7 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
             <div style="color: #6B7280; margin-top: 2px;">📍 ${road?.name || 'Assigned Road'} • <span style="color: #374151; font-weight: 600;">${prop.propertyType}</span></div>
           </div>
 
-          <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 8px; padding: 6px 10px; margin-bottom: 10px; font-size: 11px;">
+          <div style="background: #F9FAFB; border: 1px solid #D1D5DB; border-radius: 4px; padding: 6px 10px; margin-bottom: 10px; font-size: 11px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
               <span style="color: #6B7280;">Annual Assessed Value:</span>
               <span style="font-weight: 700; color: #1F2937;">${formatLKR(prop.annualAssessedValue)}</span>
@@ -302,9 +302,9 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
             </div>
           </div>
 
-          <button id="btn-open-prop-${prop.id}" style="width: 100%; padding: 8px 12px; background: #A31736; color: white; border: none; border-radius: 8px; font-weight: 800; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
+          <button id="btn-open-prop-${prop.id}" style="width: 100%; padding: 8px 12px; background: #A31736; color: white; border: none; border-radius: 4px; font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">
             <span>Open Property 360 Dossier</span>
-            <span>→</span>
+            <span>↗</span>
           </button>
         </div>
       `
@@ -368,7 +368,7 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
       <div ref={mapContainerRef} className="w-full h-full min-h-[500px] z-10" />
 
       {/* Floating Status Legend Bar */}
-      <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md border border-gray-200/80 rounded-xl px-3 py-1.5 shadow-lg flex flex-wrap items-center gap-2.5 text-xs select-none">
+      <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md border border-gray-300 rounded px-3 py-1.5 shadow-xs flex flex-wrap items-center gap-2.5 text-xs select-none">
         <span className="font-bold text-gray-500 uppercase tracking-wider text-[10px]">Tax Status:</span>
         <div className="flex items-center gap-1.5">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs" />
@@ -393,7 +393,7 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
               mapInstanceRef.current.flyTo(settings.mapCentre || [6.8415, 80.0035], settings.defaultZoom || 14)
             }
           }}
-          className="ml-2 px-2 py-0.5 text-[10px] font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-md border border-gray-300 transition-colors cursor-pointer"
+          className="ml-2 px-2.5 py-1 text-[10px] font-bold text-gray-700 bg-white hover:bg-gray-50 rounded border border-gray-300 transition-colors cursor-pointer uppercase tracking-wider shadow-2xs"
         >
           Reset View
         </button>
@@ -401,7 +401,7 @@ export const VaripanamMap: React.FC<VaripanamMapProps> = ({
 
       {/* Pick Mode Active Banner */}
       {isPickMode && (
-        <div className="absolute top-3 right-14 z-20 bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-xl flex items-center gap-2 border border-slate-700 animate-pulse">
+        <div className="absolute top-3 right-14 z-20 bg-slate-900 text-white text-xs font-bold uppercase tracking-wider px-3.5 py-2 rounded shadow-lg flex items-center gap-2 border border-slate-700 animate-pulse">
           <span className="w-2 h-2 rounded-full bg-amber-400" />
           <span>Click on map to drop pin, or drag yellow pin</span>
         </div>
