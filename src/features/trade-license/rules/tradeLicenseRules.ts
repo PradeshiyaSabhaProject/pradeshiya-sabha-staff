@@ -3,6 +3,7 @@
  * Covered by tradeLicenseRules.test.ts (npm run test:trade-license).
  */
 import type {
+  Actor,
   Application,
   ApprovalStage,
   Business,
@@ -301,20 +302,35 @@ const PERMISSIONS: Record<TradeAction, Designation[]> = {
   SETTINGS_MANAGE: ['System Administrator', 'Secretary'],
 }
 
-export function can(designation: Designation | undefined, action: TradeAction): boolean {
-  return !!designation && PERMISSIONS[action].includes(designation)
+/** Someone who acts: a single office, a list of offices, or an Actor. */
+export type Who = Designation | Designation[] | Actor | undefined | null
+
+export function officesOf(who: Who): Designation[] {
+  if (!who) return []
+  if (typeof who === 'string') return [who]
+  if (Array.isArray(who)) return who
+  return who.designations && who.designations.length ? who.designations : [who.designation]
+}
+
+/** First office of `who` that is in `allowed`, or null. */
+export function pickOffice(who: Who, allowed: Designation[]): Designation | null {
+  return officesOf(who).find((d) => allowed.includes(d)) ?? null
+}
+
+export function can(who: Who, action: TradeAction): boolean {
+  return pickOffice(who, PERMISSIONS[action]) !== null
 }
 
 export function allowedDesignations(action: TradeAction): Designation[] {
   return PERMISSIONS[action]
 }
 
-export function canSubmitInspection(designation: Designation | undefined, type: InspectionType): boolean {
-  return !!designation && INSPECTION_TYPE_DESIGNATION[type] === designation
+export function canSubmitInspection(who: Who, type: InspectionType): boolean {
+  return officesOf(who).includes(INSPECTION_TYPE_DESIGNATION[type])
 }
 
-export function canActOnStage(designation: Designation | undefined, stage: ApprovalStage | null): boolean {
-  return !!designation && !!stage && APPROVAL_STAGE_DESIGNATION[stage] === designation
+export function canActOnStage(who: Who, stage: ApprovalStage | null): boolean {
+  return !!stage && officesOf(who).includes(APPROVAL_STAGE_DESIGNATION[stage])
 }
 
 // ── Input validation ────────────────────────────────────────────────────────

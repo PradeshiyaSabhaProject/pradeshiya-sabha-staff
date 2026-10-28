@@ -276,7 +276,7 @@ export const ApplicationDetailPage: React.FC = () => {
       nextAction = (
         <div className="space-y-3 text-xs">
           <p className="text-gray-600">Online submission received. The processing fee must be paid before the Business ID is issued and documents are validated.</p>
-          {processingCharge && can(actor.designation, 'PAYMENT_RECORD') ? (
+          {processingCharge && can(actor, 'PAYMENT_RECORD') ? (
             <button type="button" className={btnPrimary} onClick={() => setPayCharge(processingCharge)}>
               Record Processing Fee Payment
             </button>
@@ -287,7 +287,7 @@ export const ApplicationDetailPage: React.FC = () => {
       )
       break
     case 'DOCUMENT_REVIEW':
-      nextAction = can(actor.designation, 'DOCUMENT_VERIFY') ? (
+      nextAction = can(actor, 'DOCUMENT_VERIFY') ? (
         <div className="space-y-3 text-xs">
           <p className="text-gray-600">Mark each document as received and verified, then complete validation to forward the file to the Revenue Inspector.</p>
           <button type="button" className={btnPrimary} onClick={() => setTab('documents')}>
@@ -299,7 +299,7 @@ export const ApplicationDetailPage: React.FC = () => {
       )
       break
     case 'RI_REVIEW':
-      nextAction = can(actor.designation, 'RI_REVIEW') ? <RiReviewForm app={app} /> : <InfoBanner>Awaiting review by the Revenue Inspector.</InfoBanner>
+      nextAction = can(actor, 'RI_REVIEW') ? <RiReviewForm app={app} /> : <InfoBanner>Awaiting review by the Revenue Inspector.</InfoBanner>
       break
     case 'UNDER_INSPECTION':
       nextAction = (
@@ -323,7 +323,7 @@ export const ApplicationDetailPage: React.FC = () => {
               )
             })}
           </ul>
-          {can(actor.designation, 'INSPECTION_ASSIGN') && <AssignInspectionForm app={app} />}
+          {can(actor, 'INSPECTION_ASSIGN') && <AssignInspectionForm app={app} />}
           <button type="button" className={btnSecondary} onClick={() => setTab('inspections')}>
             View Inspection Reports
           </button>
@@ -375,13 +375,13 @@ export const ApplicationDetailPage: React.FC = () => {
             </p>
           </div>
           <div className="flex flex-wrap gap-2 shrink-0">
-            {preInspection && can(actor.designation, 'APPLICATION_EDIT') && (
+            {preInspection && can(actor, 'APPLICATION_EDIT') && (
               <button type="button" className={btnSecondary} onClick={() => setEditing(true)}>
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
             )}
             {['SUBMITTED', 'DOCUMENT_REVIEW', 'RI_REVIEW', 'UNDER_INSPECTION', 'CORRECTIONS_REQUESTED', 'IN_APPROVAL'].includes(app.status) &&
-              can(actor.designation, 'APPLICATION_EDIT') && (
+              can(actor, 'APPLICATION_EDIT') && (
                 <button type="button" className={btnSecondary} onClick={() => setWithdrawOpen(true)}>
                   Withdraw
                 </button>
@@ -515,7 +515,7 @@ export const ApplicationDetailPage: React.FC = () => {
 
           {tab === 'documents' && (
             <Panel title="Required Documents" bodyClassName="p-0">
-              <DocumentsEditor key={app.updatedAt} app={app} editable={preInspection && can(actor.designation, 'DOCUMENT_VERIFY')} />
+              <DocumentsEditor key={app.updatedAt} app={app} editable={preInspection && can(actor, 'DOCUMENT_VERIFY')} />
             </Panel>
           )}
 
@@ -614,7 +614,7 @@ export const ApplicationDetailPage: React.FC = () => {
                           <PaymentStatusPill status={b.status} />
                         </td>
                         <td className="px-4 py-2.5 text-right">
-                          {c.status === 'ACTIVE' && b.outstanding > 0 && can(actor.designation, 'PAYMENT_RECORD') && (
+                          {c.status === 'ACTIVE' && b.outstanding > 0 && can(actor, 'PAYMENT_RECORD') && (
                             <button type="button" className={btnGhost} onClick={() => setPayCharge(c)}>
                               Record payment
                             </button>
@@ -670,7 +670,7 @@ export const ApplicationDetailPage: React.FC = () => {
           )}
         </div>
 
-        <Panel title={`Next Step · acting as ${actor.designation}`} className="xl:col-span-4 xl:sticky xl:top-4">
+        <Panel title="Next Step" className="xl:col-span-4 xl:sticky xl:top-4">
           {nextAction}
         </Panel>
       </div>
