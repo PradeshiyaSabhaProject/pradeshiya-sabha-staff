@@ -4,8 +4,6 @@ import type { FacilityBooking, FacilityType } from '../../booking-management/typ
 import type { StaffBookingWorkflow } from '../types'
 
 interface MyBookingSectionProps {
-  bookings: FacilityBooking[]
-  workflows: Record<string, StaffBookingWorkflow>
   onCreateBooking: (booking: FacilityBooking, workflow: StaffBookingWorkflow) => boolean
 }
 
@@ -78,7 +76,7 @@ const attachmentType = (file: File): 'image' | 'pdf' | 'doc' => {
   return 'doc'
 }
 
-const MyBookingSection: React.FC<MyBookingSectionProps> = ({ bookings, workflows, onCreateBooking }) => {
+const MyBookingSection: React.FC<MyBookingSectionProps> = ({ onCreateBooking }) => {
   const [form, setForm] = useState<BookingFormValues>(createEmptyForm)
   const [files, setFiles] = useState<File[]>([])
   const [formError, setFormError] = useState('')
@@ -235,7 +233,7 @@ const MyBookingSection: React.FC<MyBookingSectionProps> = ({ bookings, workflows
         {successRef && (
           <div role="status" className="mb-4 flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
-            Booking {successRef} was saved and added to the approval queue.
+            Booking {successRef} was saved and added to the staff dashboard and approval queue.
           </div>
         )}
         {formError && (
@@ -351,43 +349,6 @@ const MyBookingSection: React.FC<MyBookingSectionProps> = ({ bookings, workflows
         </form>
       </section>
 
-      <section className="space-y-3">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <h2 className="text-sm font-bold text-gray-900">My manual bookings</h2>
-            <p className="mt-0.5 text-[11px] text-gray-500">Bookings entered manually by staff on this browser.</p>
-          </div>
-          <span className="rounded-full bg-gray-100 px-2.5 py-1 text-[11px] font-bold text-gray-600">{bookings.length}</span>
-        </div>
-        {bookings.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-gray-300 bg-white px-5 py-10 text-center text-xs text-gray-500">
-            No manual bookings have been created yet.
-          </div>
-        ) : (
-          bookings.map((booking) => (
-            <article key={booking.id} className="rounded-xl border border-gray-200 bg-white p-4 shadow-xs">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-[#A31736]">{booking.refId}</span>
-                    <StatusPill status={booking.status} />
-                    <PaymentPill workflow={workflows[booking.id]} />
-                  </div>
-                  <h3 className="mt-1 text-sm font-bold text-gray-900">{booking.eventTitle}</h3>
-                  <p className="mt-1 text-xs text-gray-500">{booking.facilityName} · {booking.bookingDate} · {booking.timeSlot}</p>
-                </div>
-                <p className="text-[11px] text-gray-500">Entered {booking.submittedDate} by {booking.assignedOfficer || 'Staff Officer'}</p>
-              </div>
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 border-t border-gray-100 pt-3 text-[11px] text-gray-600">
-                <span>Applicant: <strong className="text-gray-800">{booking.citizenName}</strong></span>
-                <span>Rental: <strong className="text-gray-800">Rs. {booking.rentalFee.toLocaleString()}</strong></span>
-                <span>Deposit: <strong className="text-gray-800">Rs. {booking.securityDeposit.toLocaleString()}</strong></span>
-                <span>{booking.attachments.length} supporting document(s)</span>
-              </div>
-            </article>
-          ))
-        )}
-      </section>
     </div>
   )
 }
@@ -409,23 +370,5 @@ const Field: React.FC<{ label: string; required?: boolean; wide?: boolean; child
     {children}
   </label>
 )
-
-const StatusPill: React.FC<{ status: FacilityBooking['status'] }> = ({ status }) => (
-  <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase ${
-    status === 'PENDING' ? 'border-amber-200 bg-amber-50 text-amber-800' :
-      status === 'APPROVED' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
-        'border-gray-200 bg-gray-100 text-gray-700'
-  }`}>{status}</span>
-)
-
-const PaymentPill: React.FC<{ workflow: StaffBookingWorkflow | undefined }> = ({ workflow }) => {
-  const complete = workflow?.upfrontReceived && (workflow.paymentPlan === 'FULL' || workflow.balanceReceived)
-  const label = complete ? 'Payment complete' : workflow?.upfrontReceived ? 'Balance due' : 'Payment pending'
-  return <span className={`rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase ${
-    complete ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
-      workflow?.upfrontReceived ? 'border-amber-200 bg-amber-50 text-amber-800' :
-        'border-gray-200 bg-gray-100 text-gray-600'
-  }`}>{label}</span>
-}
 
 export default MyBookingSection

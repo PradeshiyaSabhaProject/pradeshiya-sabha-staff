@@ -14,7 +14,6 @@ export interface PublicPlaceBookingFilterState {
 
 interface PublicPlaceBookingFiltersProps {
   facilities: string[]
-  dates: string[]
   filters: PublicPlaceBookingFilterState
   onFilterChange: (filters: Partial<PublicPlaceBookingFilterState>) => void
   onResetFilters: () => void
@@ -30,7 +29,6 @@ const statuses: { value: PublicPlaceBookingStatusFilter; label: string }[] = [
 
 const PublicPlaceBookingFilters: React.FC<PublicPlaceBookingFiltersProps> = ({
   facilities,
-  dates,
   filters,
   onFilterChange,
   onResetFilters,
@@ -93,14 +91,13 @@ const PublicPlaceBookingFilters: React.FC<PublicPlaceBookingFiltersProps> = ({
 
         <label className="flex items-center gap-1">
           <span className="text-[10px] font-bold uppercase text-gray-500">Event date:</span>
-          <select
+          <input
+            type="date"
             value={filters.date}
             onChange={(event) => onFilterChange({ date: event.target.value })}
+            aria-label="Filter bookings by event date"
             className="rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[#A31736]"
-          >
-            <option value="">All Dates</option>
-            {dates.map((date) => <option key={date} value={date}>{date}</option>)}
-          </select>
+          />
         </label>
 
         <label className="flex items-center gap-1">
