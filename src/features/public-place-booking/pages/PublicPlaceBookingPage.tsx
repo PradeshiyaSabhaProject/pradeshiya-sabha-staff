@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import {
-  AlertCircle,
   ArrowRight,
   Banknote,
   CalendarDays,
@@ -22,7 +21,7 @@ import MyBookingSection from '../components/MyBookingSection'
 
 const sections = [
   { id: 'dashboard', label: 'Staff Booking Dashboard', description: 'Booking officer overview and live payment flags' },
-  { id: 'my-booking', label: 'My Booking', description: 'Create and track manually entered bookings' },
+  { id: 'my-booking', label: 'Add New Booking', description: 'Create and track manually entered bookings' },
   { id: 'payments', label: 'Payment & Billing', description: 'Verify advance or full payment and outstanding balances' },
   { id: 'readiness', label: 'Venue Preparation', description: 'Superintendent readiness checklist for grounds, setup and utilities' },
   { id: 'handover', label: 'Permit & Venue Handover', description: 'Verify permit, hand over the venue and record its return' },
@@ -63,10 +62,6 @@ const PublicPlaceBookingPage: React.FC = () => {
   )
   const facilities = useMemo(
     () => Array.from(new Set(allActiveBookings.map((booking) => booking.facilityName))).sort((a, b) => a.localeCompare(b)),
-    [allActiveBookings],
-  )
-  const dates = useMemo(
-    () => Array.from(new Set(allActiveBookings.map((booking) => booking.bookingDate))).sort((a, b) => a.localeCompare(b)),
     [allActiveBookings],
   )
   const activeBookings = useMemo(() => {
@@ -117,10 +112,6 @@ const PublicPlaceBookingPage: React.FC = () => {
     const workflow = workflows[booking.id]
     return workflow && isApproved(workflow)
   })
-  const manualBookings = bookings
-    .filter((booking) => booking.source === 'STAFF_MANUAL')
-    .sort((a, b) => b.submittedDate.localeCompare(a.submittedDate))
-
   const update = (bookingId: string, changes: Partial<StaffBookingWorkflow>) =>
     updateWorkflow(bookingId, changes)
 
@@ -131,6 +122,7 @@ const PublicPlaceBookingPage: React.FC = () => {
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <span className="font-mono text-xs font-bold text-[#A31736]">{booking.refId}</span>
+            {booking.source === 'STAFF_MANUAL' && <Pill>Manual Booking</Pill>}
             <Pill tone={workflow.status === 'APPROVED' || workflow.status === 'COMPLETED' ? 'green' : workflow.status === 'PENDING' ? 'amber' : 'gray'}>
               {workflow.status}
             </Pill>
@@ -169,13 +161,6 @@ const PublicPlaceBookingPage: React.FC = () => {
           <SummaryCard label="Awaiting staff approval" value={activeBookings.filter((booking) => workflows[booking.id]?.status === 'PENDING').length} icon={<ClipboardCheck className="h-5 w-5" />} />
           <SummaryCard label="Payment follow-up" value={pendingPayments} icon={<Banknote className="h-5 w-5" />} />
           <SummaryCard label="Venue operations" value={preparationQueue} icon={<Wrench className="h-5 w-5" />} />
-        </div>
-
-        <div className="rounded-lg border border-[#e7c6ce] bg-[#fffafb] p-4">
-          <h2 className="text-sm font-bold text-gray-900">Booking Officer Dashboard</h2>
-          <p className="mt-1 text-xs leading-relaxed text-gray-600">
-            Monitor booking references and payment ledger status, then coordinate the venue superintendent's preparation, permit verification, handover and post-event settlement. This module is for staff operations only.
-          </p>
         </div>
 
         <div className="space-y-3">
@@ -483,8 +468,6 @@ const PublicPlaceBookingPage: React.FC = () => {
     dashboard: renderDashboard(),
     'my-booking': (
       <MyBookingSection
-        bookings={manualBookings}
-        workflows={workflows}
         onCreateBooking={createManualBooking}
       />
     ),
@@ -509,14 +492,9 @@ const PublicPlaceBookingPage: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex items-start gap-2 rounded-md border border-sky-200 bg-sky-50 p-3 text-[11px] leading-relaxed text-sky-900">
-        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-        <p>Staff workflow actions are saved in this browser for this prototype. Citizen application, availability search and payment-gateway screens are intentionally not part of this feature.</p>
-      </div>
       {section !== 'my-booking' && (
         <PublicPlaceBookingFilters
           facilities={facilities}
-          dates={dates}
           filters={filters}
           onFilterChange={(nextFilters) => setFilters((current) => ({ ...current, ...nextFilters }))}
           onResetFilters={resetFilters}

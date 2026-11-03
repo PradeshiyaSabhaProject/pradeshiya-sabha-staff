@@ -300,6 +300,39 @@ const getRealisticBookings = (): FacilityBooking[] => [
     ],
     assignedOfficer: 'Council Secretary (S. Fernando)',
     reviewedDate: formatRelativeDate(-14)
+  },
+  {
+    id: 'demo-manual-booking-1',
+    refId: '#PS-FB-2026-M0001',
+    source: 'STAFF_MANUAL',
+    facilityName: 'Mattegoda Community Center',
+    citizenName: 'Nadeesha Perera',
+    citizenNic: '199012345678',
+    citizenPhone: '0712345678',
+    citizenEmail: 'nadeesha.perera@example.com',
+    citizenAddress: 'No. 24, Temple Road, Mattegoda',
+    eventTitle: 'Community Health Awareness Programme',
+    eventType: 'Community programme',
+    bookingDate: formatRelativeDate(7),
+    timeSlot: '09:00 AM - 01:00 PM',
+    submittedDate: formatRelativeDate(-1),
+    submittedTime: '10:30 AM',
+    expectedAttendees: 80,
+    rentalFee: 12000,
+    securityDeposit: 5000,
+    paymentStatus: 'PENDING',
+    status: 'PENDING',
+    specialRequirements: 'Demo record for staff-assisted manual booking.',
+    attachments: [],
+    remarks: [{
+      id: 'demo-manual-booking-1-remark',
+      author: 'Staff Officer',
+      text: 'Demo booking entered manually by council staff.',
+      date: formatRelativeDate(-1),
+      time: '10:30 AM',
+      action: 'NOTE'
+    }],
+    assignedOfficer: 'Staff Officer (Demo)'
   }
 ]
 
