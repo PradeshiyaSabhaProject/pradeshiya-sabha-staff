@@ -119,6 +119,14 @@ const VaripanamIcon = () => (
     <path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3" />
   </svg>
 )
+const PaymentPortalIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <circle cx="12" cy="12" r="3" />
+    <line x1="6" y1="12" x2="6.01" y2="12" />
+    <line x1="18" y1="12" x2="18.01" y2="12" />
+  </svg>
+)
 const TradeLicenseIcon = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
     <path d="M3 9l1.5-5h15L21 9" />
@@ -270,6 +278,18 @@ const navItems: NavItem[] = [
       { label: 'Licenses & Payments', path: '/trade-license/licenses' },
     ],
   },
+  {
+    label: 'Payment Portal',
+    path: '/payment-portal',
+    icon: <PaymentPortalIcon />,
+    roles: ['superadmin', 'admin', 'staff'],
+    children: [
+      { label: 'Overview', path: '/payment-portal/overview' },
+      { label: 'Payment Collection', path: '/payment-portal/collection' },
+      { label: 'Total Payments', path: '/payment-portal/total-payments' },
+    ],
+  },
+
   {
     label: 'Complain Management',
     path: '/complaints',
@@ -426,6 +446,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
               location.pathname === child.path ||
               (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
               (child.path === '/trade-license/applications' && location.pathname.startsWith('/trade-license/applications/')) ||
+              (child.path === '/payment-portal/collection' && location.pathname.startsWith('/payment-portal/collection/')) ||
               (hasSubChildren && location.pathname.startsWith(child.path))
             const isSubOpen = openSubMenus[child.path] ?? location.pathname.startsWith(child.path)
 
@@ -530,6 +551,7 @@ const SidebarNavItem: React.FC<SidebarNavItemProps> = ({
                 const childActive =
                   location.pathname === child.path ||
                   (child.path === '/varipanam/properties' && location.pathname.startsWith('/varipanam/properties/')) ||
+                  (child.path === '/payment-portal/collection' && location.pathname.startsWith('/payment-portal/collection/')) ||
                   (hasSubChildren && location.pathname.startsWith(child.path))
 
                 if (hasSubChildren) {
@@ -624,6 +646,7 @@ const Sidebar: React.FC = () => {
     '/inventory-management': false,
     '/fleet': false,
     '/varipanam': false,
+    '/payment-portal': false,
     '/users': false,
   })
 
